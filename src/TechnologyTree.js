@@ -1,0 +1,41 @@
+
+function TechnologyTree(name, technologies)
+{
+	this.name = name;
+	this.technologies = technologies;
+
+	for (var i = 0; i < this.technologies.length; i++)
+	{
+		var technology = this.technologies[i];
+		this.technologies[technology.name] = technology;
+	}
+}
+
+{
+	TechnologyTree.buildExample = function()
+	{
+		var returnValue = new TechnologyTree
+		(
+			"All Technologies",
+			// technologies
+			[
+				new Technology("A", 		5, []),
+				new Technology("A.1", 		8, ["A"]),
+				new Technology("A.2", 		8, ["A"]),
+				new Technology("A.3", 		8, ["A"]),
+				new Technology("B", 		5, []),
+				new Technology("C", 		5, []),
+	
+				new Technology("A+B", 		10, ["A", "B"]),
+				new Technology("A+C", 		10, ["A", "C"]),
+				new Technology("B+C", 		10, ["B", "C"]),
+	
+				new Technology("A+B+C", 	15, ["A", "B", "C"]),
+	
+				new Technology("(A+B)+(B+C)", 	20, ["A+B", "B+C"]),
+			]
+		);
+
+		return returnValue;
+	}
+}

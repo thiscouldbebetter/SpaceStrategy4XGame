@@ -1,0 +1,132 @@
+
+function Constraint_Cursor()
+{
+	this.name = "Cursor";
+}
+
+{
+	Constraint_Cursor.prototype.applyToBody = function(body)
+	{
+		var cursor = body;
+		var venue = Globals.Instance.universe.venueCurrent;
+		var mousePos = Globals.Instance.inputHelper.mouseMovePos.clone();
+
+		var camera = venue.camera;
+		var cameraPos = camera.loc.pos;
+		var cameraOrientation = camera.orientation;
+		mousePos.subtract(camera.viewSizeHalf);
+
+		var xyPlaneNormal = new Coords(0, 0, 1);
+
+		var boundsToRestrictTo;
+		var cursorPos = cursor.loc.pos;
+
+		var cameraForward = cameraOrientation.forward;
+		var displacementFromCameraToMousePosProjected = cameraForward.clone().multiplyScalar
+		(
+			camera.focalLength
+		).add
+		(
+			cameraOrientation.right.clone().multiplyScalar
+			(
+				mousePos.x
+			)
+		).add
+		(
+			cameraOrientation.down.clone().multiplyScalar
+			(
+				mousePos.y
+			)
+		);
+
+		var rayFromCameraToMousePos = new Ray
+		(
+			cameraPos,
+			displacementFromCameraToMousePosProjected
+		);
+
+		if (cursor.hasXYPositionBeenSpecified == false)
+		{
+			boundsToRestrictTo = new Bounds
+			(
+				new Coords
+				(
+					Number.NEGATIVE_INFINITY, 
+					Number.NEGATIVE_INFINITY, 
+					0
+				),
+				new Coords
+				(
+					Number.POSITIVE_INFINITY, 
+					Number.POSITIVE_INFINITY, 
+					0
+				)
+			);
+
+			var planeToRestrictTo = new Plane
+			(
+				xyPlaneNormal,
+				0
+			);
+
+			var collisionPos = new Collision().rayAndPlane
+			(
+				rayFromCameraToMousePos,
+				planeToRestrictTo
+			).pos;
+
+			if (collisionPos != null)
+			{
+				body.loc.pos.overwriteWith(collisionPos);
+			}
+		}
+		else
+		{
+			boundsToRestrictTo = new Bounds
+			(
+				new Coords
+				(
+					cursorPos.x, 
+					cursorPos.y, 
+					Number.NEGATIVE_INFINITY
+				),
+				new Coords
+				(
+					cursorPos.x, 
+					cursorPos.y, 
+					Number.POSITIVE_INFINITY
+				)
+			);
+
+			var planeNormal = xyPlaneNormal.clone().crossProduct
+			(
+				cameraOrientation.right
+			);
+
+			cursorPos.z = 0;
+
+			var planeToRestrictTo = new Plane
+			(
+				planeNormal,
+				cursorPos.dotProduct(planeNormal)
+			);
+
+			var collisionPos = new Collision().rayAndPlane
+			(
+				rayFromCameraToMousePos,
+				planeToRestrictTo
+			).pos;
+
+			if (collisionPos != null)
+			{
+				cursorPos.z = collisionPos.z;
+			}			
+		}
+
+		cursorPos.trimToRangeMinMax
+		(
+			boundsToRestrictTo.min,	
+			boundsToRestrictTo.max
+		);
+	}	
+}

@@ -1,0 +1,138 @@
+
+function ActivityDefn(name, perform)
+{
+	this.name = name;
+	this.perform = perform;
+}
+
+{
+	function ActivityDefn_Instances()
+	{
+		this.DoNothing = new ActivityDefn
+		(
+			"DoNothing",
+			function(actor, activity)
+			{
+				// do nothing
+			}
+		);	
+
+		this.MoveToTarget = new ActivityDefn
+		(
+			"MoveToTarget",
+			// perform
+			function(actor, activity)
+			{	
+				var variables = activity.variables;
+				var target = variables[0];
+
+				var distanceMovedThisStep = variables[1];
+				if (distanceMovedThisStep == null)
+				{
+					distanceMovedThisStep = 0;
+				}
+				var distanceToMoveThisTick = 3; // hack
+				var distancePerStepMax = 100000; // hack
+				if (distanceMovedThisStep + distanceToMoveThisTick > distancePerStepMax)
+				{
+					distanceToMoveThisTick = distancePerStepMax - distanceMovedThisStep;	
+				}
+
+				var actorPos = actor.loc.pos;				
+
+				var targetPos = target.loc.pos;
+				var displacementFromActorToTarget = targetPos.clone().subtract
+				(
+					actorPos	
+				);
+				var distanceFromActorToTarget = displacementFromActorToTarget.magnitude();
+
+				if (distanceFromActorToTarget < distanceToMoveThisTick)
+				{
+					distanceToMoveThisTick = distanceFromActorToTarget;
+					actorPos.overwriteWith(targetPos);
+
+					actor.activity = null; // hack
+					actor.order = null; // hack
+
+					Globals.Instance.inputHelper.isEnabled = true;
+					
+					var targetDefnName = target.defn.name;
+					if (targetDefnName == "LinkPortal")
+					{
+						var universe = Globals.Instance.universe;
+						
+						var links = universe.world.network.links;
+
+						var venueCurrent = universe.venueCurrent;
+						var starsystemFrom = venueCurrent.starsystem;
+
+						var starsystemNamesFromAndTo = target.starsystemNamesFromAndTo;
+						var starsystemNameFrom = starsystemNamesFromAndTo[0];
+						var starsystemNameTo = starsystemNamesFromAndTo[1];
+						
+						var link = links[starsystemNameFrom][starsystemNameTo];
+
+						starsystemFrom.ships.splice
+						(
+							starsystemFrom.ships.indexOf(actor), 1
+						);
+						venueCurrent.bodies.splice
+						(
+							venueCurrent.bodies.indexOf(actor), 1
+						)
+						
+						link.ships.push(actor);
+
+						var direction;
+						if (link.nodesLinked()[0].starsystem == starsystemFrom)
+						{
+							direction = 1;	
+						}
+						else
+						{
+							direction = -1;
+						}
+						
+						actorPos.overwriteWithDimensions(0, 0, 0);
+						var speed = 10; // hack
+						actor.vel.overwriteWithDimensions(speed * direction, 0, 0);
+					}
+					else if (targetDefnName == "Planet")
+					{
+						alert("todo - planet collision");
+					}
+				}
+				else
+				{
+					var directionFromActorToTarget = displacementFromActorToTarget.divideScalar
+					(
+						distanceFromActorToTarget
+					);
+
+					actor.vel.overwriteWith
+					(
+						directionFromActorToTarget
+					).multiplyScalar
+					(
+						distanceToMoveThisTick
+					);
+
+					actorPos.add(actor.vel);
+				}
+				
+				distanceMovedThisStep += distanceToMoveThisTick;
+				variables[1] = distanceMovedThisStep;
+			}
+		);
+
+		this._All = 
+		[
+			this.DoNothing,
+
+			this.MoveToTarget,
+		];
+	}
+
+	ActivityDefn.Instances = new ActivityDefn_Instances();
+}

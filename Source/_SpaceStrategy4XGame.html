@@ -1,51 +1,78 @@
 <html>
 <body>
 
-<script type="text/javascript" src="Framework/Source/ArrayExtensions.js"></script>
-<script type="text/javascript" src="Framework/Source/StringExtensions.js"></script>
+<script type="text/javascript" src="Framework/Source/Extensions/ArrayExtensions.js"></script>
+<script type="text/javascript" src="Framework/Source/Extensions/StringExtensions.js"></script>
 
-<script type="text/javascript" src="Framework/Source/CollisionHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlBuilder.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlButton.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlContainer.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlImage.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlLabel.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlList.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlScrollbar.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlSelect.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlSelectOption.js"></script>
-<script type="text/javascript" src="Framework/Source/ControlTextBox.js"></script>
-<script type="text/javascript" src="Framework/Source/Coords.js"></script>
-<script type="text/javascript" src="Framework/Source/DataBinding.js"></script>
-<script type="text/javascript" src="Framework/Source/DateTime.js"></script>
-<script type="text/javascript" src="Framework/Source/Display.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlBuilder.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlButton.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlContainer.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlImage.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlLabel.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlList.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlScrollbar.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlSelect.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlSelectOption.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/ControlTextBox.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/DataBinding.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/VenueControls.js"></script>
+<script type="text/javascript" src="Framework/Source/Controls/VenueMessage.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Display/Display.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VenueFader.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualAnimation.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualCircle.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualDirectional.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualDynamic.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualGroup.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualImage.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualNone.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualOffset.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualPolygon.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualRay.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualRectangle.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/VisualText.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Bounds.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Collision.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/CollisionHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Edge.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Face.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Location.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Orientation.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Plane.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Sphere.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Input/InputHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Input/InputToActionMapping.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Media/Image.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/MediaLibrary.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/Sound.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/SoundHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/VenueVideo.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/Video.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/VideoHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Universe.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/VenueWorld.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/World.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Profiles/Profile.js"></script>
+<script type="text/javascript" src="Framework/Source/Profiles/ProfileHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Storage/FileHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Storage/Serializer.js"></script>
+<script type="text/javascript" src="Framework/Source/Storage/StorageHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Storage/VenueFileUpload.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Utility/DateTime.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/NumberHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/PlatformHelper.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Globals.js"></script>
-<script type="text/javascript" src="Framework/Source/Image.js"></script>
-<script type="text/javascript" src="Framework/Source/InputToActionMapping.js"></script>
-<script type="text/javascript" src="Framework/Source/InputHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Location.js"></script>
-<script type="text/javascript" src="Framework/Source/MediaLibrary.js"></script>
-<script type="text/javascript" src="Framework/Source/NumberHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Orientation.js"></script>
-<script type="text/javascript" src="Framework/Source/PlatformHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Profile.js"></script>
-<script type="text/javascript" src="Framework/Source/ProfileHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Serializer.js"></script>
-<script type="text/javascript" src="Framework/Source/Sound.js"></script>
-<script type="text/javascript" src="Framework/Source/SoundHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/StorageHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Universe.js"></script>
-<script type="text/javascript" src="Framework/Source/VenueControls.js"></script>
-<script type="text/javascript" src="Framework/Source/VenueFader.js"></script>
-<script type="text/javascript" src="Framework/Source/VenueVideo.js"></script>
-<script type="text/javascript" src="Framework/Source/Video.js"></script>
-<script type="text/javascript" src="Framework/Source/VideoHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/VisualGroup.js"></script>
-<script type="text/javascript" src="Framework/Source/VisualRectangle.js"></script>
-<script type="text/javascript" src="Framework/Source/VisualText.js"></script>
 
-
-<script type="text/javascript" src="main.js"></script>
 <script type="text/javascript" src="Action_CameraMove.js"></script>
 <script type="text/javascript" src="Action_CylinderMove_Yaw.js"></script>
 <script type="text/javascript" src="Action_CylinderMove_DistanceAlongAxis.js"></script>
@@ -121,6 +148,8 @@
 <!-- hack - These classes have static dependencies. -->
 <script type="text/javascript" src="Planet.js"></script>
 <script type="text/javascript" src="Cursor.js"></script>
+
+<script type="text/javascript" src="main.js"></script>
 
 <script type="text/javascript">
 main();

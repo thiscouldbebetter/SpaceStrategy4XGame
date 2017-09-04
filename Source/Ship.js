@@ -56,7 +56,7 @@ function Ship(name, defn, pos, factionName)
 			new Coords(10, 10), // size
 			new VisualGroup
 			([
-				new VisualRectangle(color, new Coords(10, 10)),
+				new VisualRectangle(new Coords(10, 10), color.systemColor),
 			])
 		);
 

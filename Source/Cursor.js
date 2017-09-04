@@ -22,7 +22,7 @@ function Cursor(bodyParent)
 		new Coords(10, 10), // size
 		new VisualGroup
 		([
-			new VisualRectangle(Color.Instances.Brown, new Coords(10, 10)),
+			new VisualRectangle(new Coords(10, 10), Color.Instances.Brown.systemColor),
 		])
 	);
 

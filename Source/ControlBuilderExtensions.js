@@ -22,7 +22,7 @@ function ControlBuilderExtensions()
 				new ControlLabel
 				(
 					"labelSelected",
-					new Coords(margin, 0), // pos
+					new Coords(margin, margin), // pos
 					new Coords(size.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
 					new DataBinding("Selection:")
@@ -42,6 +42,43 @@ function ControlBuilderExtensions()
 					)
 				),
 				*/
+
+				new ControlLabel
+				(
+					"textSelectionName",
+					new Coords(margin, controlHeight), // pos
+					new Coords(size.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					new DataBinding
+					(
+						Globals.Instance.universe,
+						"venueCurrent.selectionName()"
+					)
+				),
+
+				new ControlButton
+				(
+					"buttonDetails", // name, 
+					new Coords(margin, size.y - margin - controlHeight), // pos
+					new Coords(size.x - margin * 2, controlHeight), // size, 
+					"Details", // text, 
+					Globals.Instance.display.fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					// click
+					function() 
+					{ 
+						var universe = Globals.Instance.universe;
+						var selection = universe.venueCurrent.selection;
+						if (selection != null)
+						{
+							var venueNext = new VenueStarsystem(selection.starsystem);
+							venueNext = new VenueFader(venueNext);
+							Globals.Instance.universe.venueNext = venueNext;
+						}
+					}
+				),
+
 			]
 		);
 

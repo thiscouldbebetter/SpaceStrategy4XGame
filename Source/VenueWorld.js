@@ -141,6 +141,11 @@ function VenueWorld(world)
 		soundHelper.soundWithNamePlayAsMusic("Music");
 	}
 
+	VenueWorld.prototype.selectionName = function()
+	{
+		return (this.selection == null ? "[none]" : this.selection.name);
+	}
+
 	VenueWorld.prototype.updateForTimerTick = function()
 	{
 		this.draw();
@@ -151,9 +156,9 @@ function VenueWorld(world)
 		var camera = world.camera;
 
 		var inputHelper = Globals.Instance.inputHelper;
-		if (inputHelper.isMouseLeftPressed == true)
+		if (inputHelper.isMouseClicked == true)
 		{
-			inputHelper.isMouseLeftPressed = false;
+			inputHelper.isMouseClicked = false;
 			Globals.Instance.soundHelper.soundWithNamePlayAsEffect("Sound");
 			var mouseClickPos = inputHelper.mouseClickPos.clone().subtract
 			(
@@ -196,42 +201,46 @@ function VenueWorld(world)
 			}
 		}
 
-		var key = inputHelper.keyPressed;
+		var inputsActive = inputHelper.inputsActive;
+		for (var i = 0; i < inputsActive.length; i++)
+		{
+			var inputActive = inputsActive[i];
 
-		if (key == "Escape")
-		{
-			var universe = Globals.Instance.universe;
-			var venueNext = new VenueControls
-			(
-				Globals.Instance.controlBuilder.configure()
-			);
-			venueNext = new VenueFader(venueNext);
-			universe.venueNext = venueNext;
-		}
+			if (inputActive == "Escape")
+			{
+				var universe = Globals.Instance.universe;
+				var venueNext = new VenueControls
+				(
+					Globals.Instance.controlBuilder.configure()
+				);
+				venueNext = new VenueFader(venueNext);
+				universe.venueNext = venueNext;
+			}
 
-		var cameraSpeed = 20;
-		var displacementToMoveCamera = null;
+			var cameraSpeed = 20;
+			var displacementToMoveCamera = null;
 
-		if (key == "A")
-		{
-			displacementToMoveCamera = [cameraSpeed, 0];
-		}
-		else if (key == "D")
-		{
-			displacementToMoveCamera = [0 - cameraSpeed, 0];
-		}
-		else if (key == "S")
-		{
-			displacementToMoveCamera = [0, 0 - cameraSpeed];
-		}
-		else if (key == "W")
-		{
-			displacementToMoveCamera = [0, cameraSpeed];
-		}
+			if (inputActive == "a")
+			{
+				displacementToMoveCamera = [cameraSpeed, 0];
+			}
+			else if (inputActive == "d")
+			{
+				displacementToMoveCamera = [0 - cameraSpeed, 0];
+			}
+			else if (inputActive == "s")
+			{
+				displacementToMoveCamera = [0, 0 - cameraSpeed];
+			}
+			else if (inputActive == "w")
+			{
+				displacementToMoveCamera = [0, cameraSpeed];
+			}
 
-		if (displacementToMoveCamera != null)
-		{
-			new Action_CameraMove(displacementToMoveCamera).perform(camera);
+			if (displacementToMoveCamera != null)
+			{
+				new Action_CameraMove(displacementToMoveCamera).perform(camera);
+			}
 		}
 	}
 	

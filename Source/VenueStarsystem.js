@@ -174,32 +174,32 @@ function VenueStarsystem(starsystem)
 
 		var inputHelper = Globals.Instance.inputHelper;
 
-		var keyCode = inputHelper.keyCodePressed;
-		if (keyCode == 65) // A
+		var inputPressed = inputHelper.inputsPressed[0];
+		if (inputPressed == "A")
 		{
 			new Action_CylinderMove_Yaw(-.01).perform(camera);
 		}
-		else if (keyCode == 68) // D
+		else if (inputPressed == "D")
 		{
 			new Action_CylinderMove_Yaw(.01).perform(camera);
 		}
-		else if (keyCode == 70) // F
+		else if (inputPressed == "F")
 		{
 			new Action_CylinderMove_DistanceAlongAxis(10).perform(camera);
 		}
-		else if (keyCode == 82) // R
+		else if (inputPressed == "R")
 		{
 			new Action_CylinderMove_DistanceAlongAxis(-10).perform(camera);
 		}
-		else if (keyCode == 83) // S
+		else if (inputPressed == "S")
 		{
 			new Action_CylinderMove_Radius(10).perform(camera);
 		}
-		else if (keyCode == 87) // W
+		else if (inputPressed == "W")
 		{
 			new Action_CylinderMove_Radius(-10).perform(camera);
 		}
-		else if (inputHelper.isMouseLeftPressed == true)
+		else if (inputHelper.isMouseClicked == true)
 		{
 			inputHelper.isMouseLeftPressed = false;
 			Globals.Instance.soundHelper.soundWithNamePlayAsEffect("Sound");
@@ -358,12 +358,12 @@ function VenueStarsystem(starsystem)
 	{
 		var returnValue = null;
 
-		var containerMainSize = Globals.Instance.display.sizeInPixels.clone();
+		var display = Globals.Instance.display;
+		var containerMainSize = display.sizeInPixels.clone();
+		var fontHeightInPixels = display.fontHeightInPixels;
 		var controlHeight = 16;
 		var margin = 10;
-
 		var containerInnerSize = new Coords(100, 60);
-
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
 		var controlBuilder = new ControlBuilder();

@@ -43,9 +43,9 @@ function VenueLayout(venueParent, layout)
 
 		if (cursorPos.isInRangeMax(map.sizeInCellsMinusOnes) == true)
 		{
-			if (inputHelper.isMouseLeftPressed == true)
+			if (inputHelper.isMouseClicked == true)
 			{
-				inputHelper.isMouseLeftPressed = false;
+				inputHelper.isMouseClicked = false;
 
 				var cursorBodyDefn = cursor.bodyDefn;
 				var cellAtCursor = map.cellAtPos(cursorPos);

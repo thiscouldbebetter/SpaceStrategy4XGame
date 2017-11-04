@@ -2,11 +2,12 @@ function main()
 {
 	localStorage.clear(); 
 
-	var displaySizeInPixels = new Coords(400, 300);
+	var displaySizeInPixels = new Coords(400, 300, 1);
 	
 	var display = new Display
 	(
-		displaySizeInPixels, 
+		[ displaySizeInPixels ],
+		"Font", // fontName
 		10, // fontHeightInPixels
 		"Gray", "White" // colorFore, colorBack
 	);
@@ -25,17 +26,22 @@ function main()
 		// videos
 		[
 			new Video("Movie", "../Media/Movie.webm"),
-		]
+		],
+		// fonts
+		[
+			new Font("Font", "../Media/Font.ttf")
+		],
 	);
 
 	var universe0 = Universe.new(null);
 
 	Globals.prototype.initialize
 	(
-		"Cursor Quest",
+		"Space Strategy 4X",
 		20, // timerTicksPerSecond
 		display,
-		mediaLibrary,		
+		mediaLibrary,
+		new ControlBuilder([ControlStyle.Instances.Default]),
 		universe0
 	);
 }

@@ -174,179 +174,183 @@ function VenueStarsystem(starsystem)
 
 		var inputHelper = Globals.Instance.inputHelper;
 
-		var inputPressed = inputHelper.inputsPressed[0];
-		if (inputPressed == "A")
+		var inputsActive = inputHelper.inputsActive;
+		for (var i = 0; i < inputsActive.length; i++)
 		{
-			new Action_CylinderMove_Yaw(-.01).perform(camera);
-		}
-		else if (inputPressed == "D")
-		{
-			new Action_CylinderMove_Yaw(.01).perform(camera);
-		}
-		else if (inputPressed == "F")
-		{
-			new Action_CylinderMove_DistanceAlongAxis(10).perform(camera);
-		}
-		else if (inputPressed == "R")
-		{
-			new Action_CylinderMove_DistanceAlongAxis(-10).perform(camera);
-		}
-		else if (inputPressed == "S")
-		{
-			new Action_CylinderMove_Radius(10).perform(camera);
-		}
-		else if (inputPressed == "W")
-		{
-			new Action_CylinderMove_Radius(-10).perform(camera);
-		}
-		else if (inputHelper.isMouseClicked == true)
-		{
-			inputHelper.isMouseLeftPressed = false;
-			Globals.Instance.soundHelper.soundWithNamePlayAsEffect("Sound");
-			var mouseClickPos = inputHelper.mouseClickPos.clone().subtract
-			(
-				camera.viewSizeHalf
-			);
-
-			var rayFromCameraThroughClick = camera.rayToViewPos(mouseClickPos);
-
-			var bodiesClickedAsCollisions = Collision.rayAndBodies
-			(
-				rayFromCameraThroughClick,
-				this.bodies,
-				10, // bodyRadius
-				[]
-			);
-			
-			var bodyClicked;
-
-			if (bodiesClickedAsCollisions.length == 0)
-			{				
-				bodyClicked = null;
-			}
-			else
+			var inputActive = inputsActive[i];
+			if (inputActive == "a")
 			{
-				var bodiesClickedAsCollisionsSorted = [];
+				new Action_CylinderMove_Yaw(-.01).perform(camera);
+			}
+			else if (inputActive == "d")
+			{
+				new Action_CylinderMove_Yaw(.01).perform(camera);
+			}
+			else if (inputActive == "f")
+			{
+				new Action_CylinderMove_DistanceAlongAxis(10).perform(camera);
+			}
+			else if (inputActive == "r")
+			{
+				new Action_CylinderMove_DistanceAlongAxis(-10).perform(camera);
+			}
+			else if (inputActive == "s")
+			{
+				new Action_CylinderMove_Radius(10).perform(camera);
+			}
+			else if (inputActive == "w")
+			{
+				new Action_CylinderMove_Radius(-10).perform(camera);
+			}
+			else if (inputHelper.isMouseClicked == true)
+			{
+				inputHelper.isMouseLeftPressed = false;
+				Globals.Instance.soundHelper.soundWithNamePlayAsEffect("Sound");
+				var mouseClickPos = inputHelper.mouseClickPos.clone().subtract
+				(
+					camera.viewSizeHalf
+				);
 
-				for (var i = 0; i < bodiesClickedAsCollisions.length; i++)
+				var rayFromCameraThroughClick = camera.rayToViewPos(mouseClickPos);
+
+				var bodiesClickedAsCollisions = Collision.rayAndBodies
+				(
+					rayFromCameraThroughClick,
+					this.bodies,
+					10, // bodyRadius
+					[]
+				);
+				
+				var bodyClicked;
+
+				if (bodiesClickedAsCollisions.length == 0)
+				{				
+					bodyClicked = null;
+				}
+				else
 				{
-					var collisionToSort = bodiesClickedAsCollisions[i];
+					var bodiesClickedAsCollisionsSorted = [];
 
-					var j = 0;
-					for (j = 0; j < bodiesClickedAsCollisionsSorted.length; j++)
-					{						
-						var collisionSorted = bodiesClickedAsCollisionsSorted[j];
+					for (var i = 0; i < bodiesClickedAsCollisions.length; i++)
+					{
+						var collisionToSort = bodiesClickedAsCollisions[i];
 
-						if (collisionToSort.distance < collisionSorted.distance)
+						var j = 0;
+						for (j = 0; j < bodiesClickedAsCollisionsSorted.length; j++)
+						{						
+							var collisionSorted = bodiesClickedAsCollisionsSorted[j];
+
+							if (collisionToSort.distance < collisionSorted.distance)
+							{
+								break;
+							}
+						}
+
+						bodiesClickedAsCollisionsSorted.splice
+						(
+							j, 0, collisionToSort 
+						);					
+					}
+
+					var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
+					if (this.selection == null || numberOfCollisions == 1)
+					{
+						bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
+					}
+					else
+					{
+						for (var c = 0; c < numberOfCollisions; c++)
 						{
-							break;
+							var collision = bodiesClickedAsCollisionsSorted[c];
+							bodyClicked = collision.colliders[0];
+		
+							if (bodyClicked == this.selection)
+							{
+								var cNext = c + 1;
+								if (cNext >= numberOfCollisions)
+								{
+									cNext = 0;
+								}
+								collision = bodiesClickedAsCollisionsSorted[cNext];
+								bodyClicked = collision.colliders[0];
+								break;
+							}	
 						}
 					}
-
-					bodiesClickedAsCollisionsSorted.splice
-					(
-						j, 0, collisionToSort 
-					);					
 				}
 
-				var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
-				if (this.selection == null || numberOfCollisions == 1)
-				{
-					bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
-				}
-				else
-				{
-					for (var c = 0; c < numberOfCollisions; c++)
-					{
-						var collision = bodiesClickedAsCollisionsSorted[c];
-						bodyClicked = collision.colliders[0];
-	
-						if (bodyClicked == this.selection)
-						{
-							var cNext = c + 1;
-							if (cNext >= numberOfCollisions)
-							{
-								cNext = 0;
-							}
-							collision = bodiesClickedAsCollisionsSorted[cNext];
-							bodyClicked = collision.colliders[0];
-							break;
-						}	
-					}
-				}
-			}
-
-			if (this.selection == null)
-			{
-				this.selection = bodyClicked;
-			}
-			else
-			{
-				var selectionDefnName = this.selection.defn.name;
-				if (selectionDefnName == "Cursor")
-				{
-					var cursor = this.selection;
-
-					if (bodyClicked != null && bodyClicked.defn.name != "Cursor")
-					{
-						var targetBody = bodyClicked;
-
-						var ship = cursor.bodyParent;
-
-						ship.order = new Order
-						(
-							"Go",
-							targetBody	
-						);
-
-						this.cursorClear();
-
-						Globals.Instance.inputHelper.isEnabled = false;
-					}
-					else if (cursor.hasXYPositionBeenSpecified == false)
-					{
-						cursor.hasXYPositionBeenSpecified = true;
-					}
-					else if (cursor.hasZPositionBeenSpecified == false)
-					{
-						var targetBody = new Body
-						(
-							"Target", 
-							new BodyDefn
-							(
-								"MoveTarget", 
-								new Coords(0, 0, 0)
-							), 
-							cursor.loc.pos.clone()
-						); 
-
-						var ship = cursor.bodyParent;
-
-						ship.order = new Order
-						(
-							"Go",
-							targetBody	
-						);
-
-						this.cursorClear();
-
-						Globals.Instance.inputHelper.isEnabled = false;
-					}
-	
-				}
-				else if (this.selection == bodyClicked)
-				{
-					if (selectionDefnName == "Planet")
-					{
-						var layout = bodyClicked.layout;
-						var venueNext = new VenueLayout(this, layout);
-						venueNext = new VenueFader(venueNext);
-						Globals.Instance.universe.venueNext = venueNext;						
-					}	
-				}
-				else
+				if (this.selection == null)
 				{
 					this.selection = bodyClicked;
+				}
+				else
+				{
+					var selectionDefnName = this.selection.defn.name;
+					if (selectionDefnName == "Cursor")
+					{
+						var cursor = this.selection;
+
+						if (bodyClicked != null && bodyClicked.defn.name != "Cursor")
+						{
+							var targetBody = bodyClicked;
+
+							var ship = cursor.bodyParent;
+
+							ship.order = new Order
+							(
+								"Go",
+								targetBody	
+							);
+
+							this.cursorClear();
+
+							Globals.Instance.inputHelper.isEnabled = false;
+						}
+						else if (cursor.hasXYPositionBeenSpecified == false)
+						{
+							cursor.hasXYPositionBeenSpecified = true;
+						}
+						else if (cursor.hasZPositionBeenSpecified == false)
+						{
+							var targetBody = new Body
+							(
+								"Target", 
+								new BodyDefn
+								(
+									"MoveTarget", 
+									new Coords(0, 0, 0)
+								), 
+								cursor.loc.pos.clone()
+							); 
+
+							var ship = cursor.bodyParent;
+
+							ship.order = new Order
+							(
+								"Go",
+								targetBody	
+							);
+
+							this.cursorClear();
+
+							Globals.Instance.inputHelper.isEnabled = false;
+						}
+		
+					}
+					else if (this.selection == bodyClicked)
+					{
+						if (selectionDefnName == "Planet")
+						{
+							var layout = bodyClicked.layout;
+							var venueNext = new VenueLayout(this, layout);
+							venueNext = new VenueFader(venueNext);
+							Globals.Instance.universe.venueNext = venueNext;						
+						}	
+					}
+					else
+					{
+						this.selection = bodyClicked;
+					}
 				}
 			}
 		}
@@ -366,7 +370,7 @@ function VenueStarsystem(starsystem)
 		var containerInnerSize = new Coords(100, 60);
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
-		var controlBuilder = new ControlBuilder();
+		var controlBuilder = Globals.Instance.controlBuilder;
 
 		var returnValue = new ControlContainer
 		(
@@ -432,6 +436,8 @@ function VenueStarsystem(starsystem)
 
 			]
 		);
+
+		returnValue = new ControlContainerTransparent(returnValue);
 
 		return returnValue;
 	}

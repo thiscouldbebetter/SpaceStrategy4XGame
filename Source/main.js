@@ -1,6 +1,6 @@
 function main()
 {
-	localStorage.clear(); 
+	//localStorage.clear();
 
 	var displaySizeInPixels = new Coords(400, 300, 1);
 	

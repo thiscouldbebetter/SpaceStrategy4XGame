@@ -391,7 +391,7 @@ function DisplayExtensions()
 		for (var d = 0; d < 2; d++)
 		{
 			var multiplier = new Coords(0, 0, 0);
-			multiplier.dimension_Set(d, gridCellSizeInPixels.dimension(d));
+			multiplier.dimension(d, gridCellSizeInPixels.dimension(d));
 
 			for (var i = 0 - gridSizeInCellsHalf.x; i <= gridSizeInCellsHalf.x; i++)			
 			{
@@ -401,8 +401,8 @@ function DisplayExtensions()
 				).multiplyScalar(-1);
 				drawPosTo.overwriteWith(gridSizeInPixelsHalf);
 
-				drawPosFrom.dimension_Set(d, 0);
-				drawPosTo.dimension_Set(d, 0);
+				drawPosFrom.dimension(d, 0);
+				drawPosTo.dimension(d, 0);
 
 				drawPosFrom.add(multiplier.clone().multiplyScalar(i));
 				drawPosTo.add(multiplier.clone().multiplyScalar(i));
@@ -445,17 +445,16 @@ function DisplayExtensions()
 	Display.prototype.drawStarsystemForCamera_Body = function(camera, body)
 	{
 		var graphics = this.graphics;
-		var drawPos = this.drawPos;
-
-		var bodyDefn = body.defn;
-		var bodySize = bodyDefn.size;
-		var bodySizeHalf = bodyDefn.sizeHalf;
+		var drawPos = new Coords();
+		var drawLoc = new Location(drawPos);
 
 		var bodyPos = body.loc.pos;
 		drawPos.overwriteWith(bodyPos);
 		camera.convertWorldCoordsToViewCoords(drawPos);
 
-		bodyDefn.visual.draw(drawPos);
+		var bodyDefn = body.defn;
+		var bodyVisual = bodyDefn.visual;
+		bodyVisual.drawToDisplayForDrawableAndLoc(this, body, drawLoc);
 
 		if (bodyPos.z < 0)
 		{
@@ -474,6 +473,6 @@ function DisplayExtensions()
 		camera.convertWorldCoordsToViewCoords(drawPos);
 
 		graphics.lineTo(drawPos.x, drawPos.y);
-		graphics.stroke();			
+		graphics.stroke();
 	}
 }

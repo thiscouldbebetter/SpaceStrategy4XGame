@@ -28,21 +28,6 @@ function ControlBuilderExtensions()
 					new DataBinding("Selection:")
 				),
 
-				/*
-				new ControlPlaceholder
-				(
-					"placeholderSelection",
-					new Coords(margin, controlHeight), // pos
-					size.clone(), // size - hack
-					"[none]",
-					new DataBinding
-					(
-						Globals.Instance.universe,
-						"venueCurrent.selection.controlBuild_Selection"
-					)
-				),
-				*/
-
 				new ControlLabel
 				(
 					"textSelectionName",
@@ -231,7 +216,8 @@ function ControlBuilderExtensions()
 					{
 						var venueCurrent = Globals.Instance.universe.venueCurrent;
 						var camera = venueCurrent.camera;
-						new Action_CameraMove([0, cameraSpeed]).perform(camera);
+						var cameraAction = new Action_CameraMove([0, cameraSpeed]);
+						cameraAction.perform(camera);
 					}
 				),
 
@@ -259,7 +245,8 @@ function ControlBuilderExtensions()
 						var universe = Globals.Instance.universe;
 						var venueCurrent = universe.venueCurrent;
 						var camera = venueCurrent.camera;
-						new Action_CameraMove([0, 0 - cameraSpeed]).perform(camera);
+						var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
+						cameraAction.perform(camera);
 					}
 				),
 				
@@ -281,7 +268,8 @@ function ControlBuilderExtensions()
 					{
 						var venueCurrent = Globals.Instance.universe.venueCurrent;
 						var camera = venueCurrent.camera;
-						new Action_CameraMove([cameraSpeed, 0]).perform(camera);
+						var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
+						cameraAction.perform(camera);
 					}
 				),
 
@@ -307,10 +295,8 @@ function ControlBuilderExtensions()
 					{
 						var venueCurrent = Globals.Instance.universe.venueCurrent;
 						var camera = venueCurrent.camera;
-						new Action_CameraMove([0 - cameraSpeed, 0]).perform
-						(
-							camera
-						);
+						var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
+						cameraAction.perform(camera);
 					}
 				),
 			]

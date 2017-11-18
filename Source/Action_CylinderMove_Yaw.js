@@ -9,11 +9,7 @@ function Action_CylinderMove_Yaw(cyclesToMove)
 	{
 		var constraintCylinder = actor.constraints["PositionOnCylinder"];
 
-		constraintCylinder.yaw = NumberHelper.wrapValueToRangeMinMax
-		(
-			constraintCylinder.yaw + this.cyclesToMove,
-			0, 
-			1
-		);
+		constraintCylinder.yaw += this.cyclesToMove;
+		constraintCylinder.yaw.wrapToRangeMinMax(0, 1);
 	}
 }

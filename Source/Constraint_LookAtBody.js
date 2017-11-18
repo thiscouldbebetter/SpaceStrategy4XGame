@@ -1,8 +1,5 @@
 
-function Constraint_LookAtBody
-(
-	targetBody
-)
+function Constraint_LookAtBody(targetBody)
 {
 	this.name = "LookAtBody";
 	this.targetBody = targetBody;
@@ -19,10 +16,6 @@ function Constraint_LookAtBody
 			bodyPos
 		).normalize();
 
-		body.orientation = new Orientation
-		(
-			bodyOrientationForward,
-			body.orientation.down	
-		);		
+		body.orientation.forwardSet(bodyOrientationForward);
 	}
 }

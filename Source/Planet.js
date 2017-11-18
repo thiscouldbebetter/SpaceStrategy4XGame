@@ -20,7 +20,7 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		new Coords(10, 10), // size
 		new VisualGroup
 		([
-			new VisualSphere(Color.Instances.Cyan, 10),
+			new VisualCircle(10, null, Color.Instances.Cyan.systemColor),
 		])
 	);
 

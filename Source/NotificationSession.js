@@ -39,7 +39,7 @@ function NotificationSession(notifications)
 					new Coords(margin, margin + controlHeight), // pos
 					new Coords(columnWidth, controlHeight * 4), // size
 					// dataBindingForValueSelected
-					new DataBinding(this, "notificationSelected"), 
+					new DataBinding(this, "notificationSelected"),
 					// dataBindingForOptions
 					new DataBinding(this.notifications),
 					null, // bindingExpressionForOptionValues

@@ -31,7 +31,7 @@ function OrderDefn(name, obey)
 			}
 		);
 
-		this._All = 
+		this._All =
 		[
 			this.Go,
 		];

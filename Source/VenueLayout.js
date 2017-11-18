@@ -4,6 +4,11 @@ function VenueLayout(venueParent, layout)
 	this.venueParent = venueParent;
 	this.layout = layout;
 	this.layoutElementInProgress = null;
+
+	this.venueControls = new VenueControls
+	(
+		this.controlBuild()
+	);
 }
 
 {

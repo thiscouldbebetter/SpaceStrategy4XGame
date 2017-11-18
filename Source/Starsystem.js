@@ -33,7 +33,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				new Coords(40, 40), // size
 				new VisualGroup
 				([
-					new VisualSphere(Color.Instances.Yellow, 40),
+					new VisualCircle(40, null, Color.Instances.Yellow.systemColor),
 					new VisualText(name)
 				])
 			),

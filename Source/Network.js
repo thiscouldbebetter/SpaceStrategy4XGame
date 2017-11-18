@@ -116,7 +116,7 @@ function Network(name, nodes, links)
 			new Coords(10, 10), // size
 			new VisualGroup
 			([
-				new VisualSphere(Color.Instances.Gray, 10)
+				new VisualCircle(10, null, Color.Instances.Gray.systemColor)
 			])
 		);
 

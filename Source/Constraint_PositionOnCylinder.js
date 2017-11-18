@@ -15,7 +15,7 @@ function Constraint_PositionOnCylinder
 {
 	Constraint_PositionOnCylinder.prototype.applyToBody = function(body)
 	{
-		this.yaw = NumberHelper.wrapValueToRangeMinMax(this.yaw, 0, 1);
+		this.yaw.wrapToRangeMinMax(0, 1);
 		var yawInRadians = this.yaw * Polar.RadiansPerCycle;
 
 		var bodyPos = body.loc.pos;		

@@ -54,9 +54,11 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var planets = [];
 		for (var i = 0; i < numberOfPlanets; i++)
 		{
+			var planetName = name + " " + (i + 1);
+
 			var planet = new Planet
 			(
-				name + " " + (i + 1),
+				planetName,
 				null, // factionName
 				// pos
 				new Coords().randomize().multiply
@@ -71,8 +73,10 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				),
 				new PlanetDemographics(1),
 				new PlanetIndustry(0, null),
-				Layout.generateRandom()
+				null // layout
 			);
+
+			planet.layout = Layout.generateRandom(planet);
 
 			planets.push(planet);
 		}

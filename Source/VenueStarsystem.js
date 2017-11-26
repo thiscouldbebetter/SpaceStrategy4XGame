@@ -10,11 +10,6 @@ function VenueStarsystem(starsystem)
 }
 
 {
-	VenueStarsystem.prototype.model = function()
-	{
-		return this.starsystem;
-	}
-
 	VenueStarsystem.prototype.cursorBuild = function()
 	{
 		var ship = this.selection;
@@ -124,6 +119,16 @@ function VenueStarsystem(starsystem)
 		this.bodies = this.bodies.concat(starsystem.ships);
 	}
 
+	VenueStarsystem.prototype.model = function()
+	{
+		return this.starsystem;
+	}
+
+	VenueStarsystem.prototype.selectionName = function()
+	{
+		return (this.selection == null ? "[none]" : this.selection.name);
+	}
+
 	VenueStarsystem.prototype.updateForTimerTick = function()
 	{
 		this.venueControls.updateForTimerTick();
@@ -204,7 +209,8 @@ function VenueStarsystem(starsystem)
 			}
 			else if (inputHelper.isMouseClicked == true)
 			{
-				inputHelper.isMouseLeftPressed = false;
+				inputHelper.isMouseClicked = false;
+
 				Globals.Instance.soundHelper.soundWithNamePlayAsEffect("Sound");
 				var mouseClickPos = inputHelper.mouseClickPos.clone().subtract
 				(
@@ -381,7 +387,7 @@ function VenueStarsystem(starsystem)
 			[
 				new ControlButton
 				(
-					"buttonMenu",
+					"buttonBack",
 					new Coords
 					(
 						(containerMainSize.x - buttonWidth) / 2, 
@@ -391,6 +397,7 @@ function VenueStarsystem(starsystem)
 					"Back",
 					fontHeightInPixels,
 					true, // hasBorder
+					true, // isEnabled
 					// click
 					function()
 					{

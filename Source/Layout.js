@@ -1,10 +1,13 @@
 
-function Layout(sizeInPixels, bodyDefns, map, bodies)
+function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 {
+	this.modelParent = modelParent;
 	this.sizeInPixels = sizeInPixels;
 	this.bodyDefns = bodyDefns;
 	this.map = map;
 	this.bodies = bodies;
+
+	this.name = this.modelParent.name;
 
 	for (var i = 0; i < this.bodies.length; i++)
 	{
@@ -66,6 +69,7 @@ function Layout(sizeInPixels, bodyDefns, map, bodies)
 
 		var layout = new Layout
 		(
+			parent,
 			viewSize.clone(), // sizeInPixels
 			bodyDefns,
 			map,
@@ -77,7 +81,7 @@ function Layout(sizeInPixels, bodyDefns, map, bodies)
 
 		return layout;
 	}
-
+	
 	// instance methods
 
 	Layout.prototype.elementAdd = function(elementToAdd)

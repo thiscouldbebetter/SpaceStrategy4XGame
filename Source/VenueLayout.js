@@ -24,6 +24,11 @@ function VenueLayout(venueParent, layout)
 		this.venueControls = new VenueControls(controlRoot);
 	}
 
+	VenueLayout.prototype.model = function()
+	{
+		return this.layout;
+	}
+
 	VenueLayout.prototype.updateForTimerTick = function()
 	{
 		this.venueControls.updateForTimerTick();
@@ -125,6 +130,8 @@ function VenueLayout(venueParent, layout)
 	{
 		var returnValue = null;
 
+		var controlBuilder = Globals.Instance.controlBuilder;
+
 		var display = Globals.Instance.display;
 		var containerMainSize = display.sizeInPixels.clone();
 		var controlHeight = 16;
@@ -208,6 +215,8 @@ function VenueLayout(venueParent, layout)
 			]
 		);
 
+		returnValue = new ControlContainerTransparent(returnValue);
+
 		return returnValue;
 	}
 
@@ -220,6 +229,8 @@ function VenueLayout(venueParent, layout)
 		buttonWidth
 	)
 	{
+		var fontHeightInPixels = controlHeight / 2; // hack
+
 		var returnValue = new ControlContainer
 		(
 			"containerViewControls",
@@ -237,7 +248,11 @@ function VenueLayout(venueParent, layout)
 				(
 					"labelBuilding", 
 					new Coords(margin, margin), // pos
-					new Coords(0, 0), // size
+					new Coords
+					(
+						containerInnerSize.x - margin * 2, 
+						controlHeight
+					), // size
 					false, // isTextCentered
 					new DataBinding("Building:")
 				),
@@ -269,7 +284,7 @@ function VenueLayout(venueParent, layout)
 					"selectBuilding",
 					new Coords(margin, controlHeight + margin), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size, 
-					new DataBinding(Globals.Instance.universe.venueCurrent, "layout.map.cursor.bodyDefn" ), // dataBindingForValueSelected,
+					new DataBinding(this, "layout.map.cursor.bodyDefn" ), // dataBindingForValueSelected,
 					new DataBinding(this.layout.bodyDefns), // dataBindingForOptions,
 					null, // bindingExpressionForOptionValues,
 					"name", // bindingExpressionForOptionText,

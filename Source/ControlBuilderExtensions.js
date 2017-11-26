@@ -54,12 +54,26 @@ function ControlBuilderExtensions()
 					function() 
 					{ 
 						var universe = Globals.Instance.universe;
-						var selection = universe.venueCurrent.selection;
+						var venueCurrent = universe.venueCurrent;
+						var selection = venueCurrent.selection;
 						if (selection != null)
 						{
-							var venueNext = new VenueStarsystem(selection.starsystem);
-							venueNext = new VenueFader(venueNext);
-							Globals.Instance.universe.venueNext = venueNext;
+							var venueNext;
+							var selectionTypeName = selection.constructor.name;
+							if (selectionTypeName == "NetworkNode")
+							{
+								venueNext = new VenueStarsystem(selection.starsystem);
+							}
+							else if (selectionTypeName == "Planet")
+							{
+								venueNext = new VenueLayout(venueCurrent, selection.layout);
+							}
+
+							if (venueNext != null)
+							{
+								venueNext = new VenueFader(venueNext);
+								universe.venueNext = venueNext;
+							}
 						}
 					}
 				),
@@ -91,7 +105,7 @@ function ControlBuilderExtensions()
 			[
 				new ControlLabel
 				(
-					"textDate",
+					"textPlace",
 					new Coords(margin,  margin), // pos
 					new Coords
 					(

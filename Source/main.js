@@ -9,7 +9,7 @@ function main()
 		[ displaySizeInPixels ],
 		"Font", // fontName
 		10, // fontHeightInPixels
-		"Gray", "White" // colorFore, colorBack
+		"Blue", "rgb(16, 0, 32)" // colorFore, colorBack
 	);
 	
 	var mediaLibrary = new MediaLibrary
@@ -33,6 +33,15 @@ function main()
 		],
 	);
 
+	var controlStyle = new ControlStyle
+	(
+		"Default", // name
+		"rgb(60, 60, 240)", // colorBackground
+		"rgb(30, 30, 120)", // colorFill
+		"rgb(180, 180, 240)", // colorBorder
+		"LightGray" // colorDisabled
+	);
+
 	var universe0 = Universe.new(null);
 
 	Globals.prototype.initialize
@@ -41,7 +50,7 @@ function main()
 		20, // timerTicksPerSecond
 		display,
 		mediaLibrary,
-		new ControlBuilder([ControlStyle.Instances.Default]),
+		new ControlBuilder([controlStyle]),
 		universe0
 	);
 }

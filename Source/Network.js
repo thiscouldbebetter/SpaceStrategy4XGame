@@ -116,7 +116,7 @@ function Network(name, nodes, links)
 			new Coords(10, 10), // size
 			new VisualGroup
 			([
-				new VisualCircle(10, null, Color.Instances.Gray.systemColor)
+				new VisualCircle(10, Color.Instances.Gray.systemColor, Color.Instances.Gray.systemColor)
 			])
 		);
 
@@ -171,10 +171,11 @@ function Network(name, nodes, links)
 				var starsystem = node.starsystem;
 				var starsystemSize = starsystem.size;
 				var starsystemOther = nodePairClosestSoFar[1 - i];
+				var linkName = "Link to " + starsystemOther.name;
 				
 				var linkPortal = new LinkPortal
 				(
-					"LinkPortal" + linkIndex,
+					linkName,
 					bodyDefnLinkPortal,
 					new Coords().randomize().multiply
 					(
@@ -219,4 +220,324 @@ function Network(name, nodes, links)
 			link.updateForTurn(this);
 		}
 	}
+
+	// drawing
+
+	Network.prototype.drawToDisplayForCamera = function(display, camera)
+	{
+		var network = this;
+		var drawPos = display.drawPos;
+		var drawPosFrom = new Coords(0, 0, 0);
+		var drawPosTo = new Coords(0, 0, 0);
+
+		var cameraPos = camera.loc.pos;
+
+		var networkNodes = network.nodes;
+		var numberOfNetworkNodes = networkNodes.length;
+
+		var networkLinks = network.links;
+		var numberOfNetworkLinks = networkLinks.length;
+
+		var graphics = display.graphics;
+		graphics.fillStyle = "rgba(128, 128, 128, .1)";
+
+		var nodeRadiusActual = NetworkNode.RadiusActual;
+
+		for (var i = 0; i < numberOfNetworkLinks; i++)
+		{
+			var link = networkLinks[i];
+			this.drawToDisplayForCamera_Link
+			(
+				display, camera, link, 
+				nodeRadiusActual, drawPos, 
+				drawPosFrom, drawPosTo
+			);
+		}
+
+		for (var i = 0; i < numberOfNetworkNodes; i++)
+		{
+			var node = networkNodes[i];
+			this.drawToDisplayForCamera_Node
+			(
+				display, node, nodeRadiusActual, camera, drawPos
+			);
+		}
+	}
+
+	Network.prototype.drawToDisplayForCamera_Link = function
+	(
+		display, 
+		camera, 
+		link,
+		nodeRadiusActual, 
+		drawPos, 
+		drawPosFrom, 
+		drawPosTo
+	)
+	{
+		var network = this;
+		var nodesLinked = link.nodesLinked(network);
+		var nodeFromPos = nodesLinked[0].loc.pos;
+		var nodeToPos = nodesLinked[1].loc.pos;
+
+		camera.convertWorldCoordsToViewCoords
+		(
+			drawPosFrom.overwriteWith(nodeFromPos)
+		);
+		
+		camera.convertWorldCoordsToViewCoords
+		(
+			drawPosTo.overwriteWith(nodeToPos)
+		);
+
+		var directionFromNode0To1InView = drawPosTo.clone().subtract
+		(
+			drawPosFrom
+		).normalize();
+
+		var perpendicular = directionFromNode0To1InView.clone().right();
+
+		var perspectiveFactorFrom = 
+			camera.focalLength / drawPosFrom.z;
+		var perspectiveFactorTo = 
+			camera.focalLength / drawPosTo.z;
+			
+		var radiusApparentFrom = 
+			nodeRadiusActual * perspectiveFactorFrom;
+		var radiusApparentTo = 
+			nodeRadiusActual * perspectiveFactorTo;
+
+		var graphics = display.graphics;
+		graphics.beginPath();
+		graphics.moveTo(drawPosFrom.x, drawPosFrom.y);
+		graphics.lineTo(drawPosTo.x, drawPosTo.y);
+		graphics.lineTo
+		(
+			drawPosTo.x + perpendicular.x * radiusApparentTo,
+			drawPosTo.y + perpendicular.y * radiusApparentTo
+		);
+		graphics.lineTo
+		(
+			drawPosFrom.x + perpendicular.x * radiusApparentFrom, 
+			drawPosFrom.y + perpendicular.y * radiusApparentFrom
+		);
+		graphics.fill();
+
+		for (var i = 0; i < link.ships.length; i++)
+		{
+			var ship = link.ships[i];
+			this.drawToDisplayForCamera_Link_Ship
+			(
+				display, camera, link, ship, drawPos, nodeFromPos, nodeToPos
+			);
+		}
+	}
+
+	Network.prototype.drawToDisplayForCamera_Link_Ship = function
+	(
+		display, camera, link, ship, drawPos, nodeFromPos, nodeToPos
+	)
+	{
+		var forward = link.direction();
+		var linkLength = link.length();
+
+		var fractionOfLinkTraversed = ship.loc.pos.x / linkLength; 
+
+		if (ship.vel.x < 0)
+		{
+			fractionOfLinkTraversed = 1 - fractionOfLinkTraversed;
+			forward.multiplyScalar(-1);
+		}
+
+		drawPos.overwriteWith
+		(
+			nodeFromPos
+		).multiplyScalar
+		(
+			1 - fractionOfLinkTraversed
+		).add
+		(
+			nodeToPos.clone().multiplyScalar
+			(
+				fractionOfLinkTraversed
+			)
+		);
+
+		// todo
+		display.graphics.strokeRect(drawPos.x, drawPos.y, 10, 10);
+	}
+
+	Network.prototype.drawToDisplayForCamera_Node = function
+	(
+		display, node, nodeRadiusActual, camera, drawPos
+	)
+	{
+		var nodePos = node.loc.pos;
+
+		drawPos.overwriteWith(nodePos);
+		camera.convertWorldCoordsToViewCoords(drawPos);
+
+		var perspectiveFactor = camera.focalLength / drawPos.z;
+		var radiusApparent = nodeRadiusActual * perspectiveFactor;
+
+		var alpha = Math.pow(perspectiveFactor, 4); // hack
+
+		//var nodeColor = node.defn.color.systemColor;
+		var nodeColor = "rgba(128, 128, 128, " + alpha + ")"
+
+		var graphics = display.graphics;
+		graphics.strokeStyle = nodeColor; 
+		graphics.fillStyle = nodeColor;
+
+		graphics.beginPath();
+		graphics.arc
+		(
+			drawPos.x, drawPos.y, 
+			radiusApparent, 
+			0, 2 * Math.PI, // start and stop angles 
+			false // counterClockwise
+		);
+		graphics.stroke();
+
+		graphics.fillText
+		(
+			node.starsystem.name, 
+			(drawPos.x + radiusApparent), 
+			drawPos.y
+		);
+	}
+
+	Display.prototype.drawLayout = function(layout)
+	{
+		this.clear();
+		this.drawMap(layout.map);
+	}
+
+	Display.prototype.drawMap = function(map)
+	{
+		var pos = map.pos;
+		var mapSizeInCells = map.sizeInCells;
+
+		var cellPos = new Coords(0, 0);
+		var drawPos = this.drawPos;
+		var cellSizeInPixels = map.cellSizeInPixels;
+		var cellSizeInPixelsHalf = 
+			cellSizeInPixels.clone().divideScalar(2);
+
+		for (var y = 0; y < mapSizeInCells.y; y++)
+		{
+			cellPos.y = y;
+
+			for (var x = 0; x < mapSizeInCells.x; x++)
+			{
+				cellPos.x = x;
+
+				drawPos.overwriteWith
+				(
+					cellPos
+				).multiply
+				(
+					cellSizeInPixels
+				).add
+				(
+					pos
+				);
+
+				var cell = map.cellAtPos(cellPos);
+				var cellBody = cell.body;
+
+				var colorFill = 
+				(
+					cellBody == null 
+					? "Transparent" 
+					: cellBody.defn.color
+				);
+				var colorBorder = cell.terrain.color;
+
+				this.graphics.fillStyle = colorFill;
+				this.graphics.fillRect
+				(
+					drawPos.x,
+					drawPos.y,
+					cellSizeInPixels.x,
+					cellSizeInPixels.y
+				);
+
+				this.graphics.strokeStyle = colorBorder;
+				this.graphics.strokeRect
+				(
+					drawPos.x,
+					drawPos.y,
+					cellSizeInPixels.x,
+					cellSizeInPixels.y
+				);
+
+			}
+		}
+
+		var cursor = map.cursor;
+		var cursorPos = cursor.pos;
+		var cursorIsWithinMap = cursorPos.isInRangeMax
+		(
+			map.sizeInCellsMinusOnes
+		);
+
+		if (cursorIsWithinMap == true)
+		{
+			drawPos.overwriteWith
+			(
+				cursorPos
+			).multiply
+			(
+				cellSizeInPixels
+			).add
+			(
+				pos
+			);			
+
+			this.graphics.strokeStyle = "Cyan";
+
+			if (cursor.bodyDefn == null)
+			{
+				this.graphics.beginPath();
+				this.graphics.moveTo(drawPos.x, drawPos.y);
+				this.graphics.lineTo
+				(
+					drawPos.x + cellSizeInPixels.x, 
+					drawPos.y + cellSizeInPixels.y
+				);
+				this.graphics.moveTo
+				(
+					drawPos.x + cellSizeInPixels.x, 
+					drawPos.y
+				);
+				this.graphics.lineTo
+				(
+					drawPos.x, 
+					drawPos.y + cellSizeInPixels.y
+				);
+				this.graphics.stroke();
+			}			
+			else
+			{
+				this.graphics.fillStyle = cursor.bodyDefn.color;
+				this.graphics.fillRect
+				(
+					drawPos.x,
+					drawPos.y,
+					cellSizeInPixels.x,
+					cellSizeInPixels.y
+				);
+			}
+
+			this.graphics.strokeRect
+			(
+				drawPos.x,
+				drawPos.y,
+				cellSizeInPixels.x,
+				cellSizeInPixels.y
+			);
+		}
+	}
+
 }

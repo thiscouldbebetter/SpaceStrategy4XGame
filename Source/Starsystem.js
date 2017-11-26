@@ -33,7 +33,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				new Coords(40, 40), // size
 				new VisualGroup
 				([
-					new VisualCircle(40, null, Color.Instances.Yellow.systemColor),
+					new VisualCircle(40, Color.Instances.Yellow.systemColor, Color.Instances.Yellow.systemColor),
 					new VisualText(name)
 				])
 			),
@@ -134,5 +134,118 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 			}
 		}
 	}
-	
+
+	// drawing
+
+	Starsystem.prototype.drawToDisplayForCamera = function(display, camera)
+	{
+		var starsystem = this;
+		var cameraViewSize = camera.viewSize;
+		var cameraPos = camera.loc.pos;
+
+		var drawPos = display.drawPos;
+		var drawPosFrom = new Coords(0, 0, 0);
+		var drawPosTo = new Coords(0, 0, 0);
+
+		var gridCellSizeInPixels = new Coords(10, 10, 0);
+		var gridSizeInCells = new Coords(40, 40, 0); 
+		var gridSizeInPixels = gridSizeInCells.clone().multiply
+		(
+			gridCellSizeInPixels
+		);
+		var gridSizeInCellsHalf = gridSizeInCells.clone().divideScalar(2);
+		var gridSizeInPixelsHalf = gridSizeInPixels.clone().divideScalar(2);
+
+		var graphics = display.graphics;
+
+		graphics.strokeStyle = Color.Instances.CyanHalfTranslucent.systemColor;
+
+		for (var d = 0; d < 2; d++)
+		{
+			var multiplier = new Coords(0, 0, 0);
+			multiplier.dimension(d, gridCellSizeInPixels.dimension(d));
+
+			for (var i = 0 - gridSizeInCellsHalf.x; i <= gridSizeInCellsHalf.x; i++)			
+			{
+				drawPosFrom.overwriteWith
+				(
+					gridSizeInPixelsHalf
+				).multiplyScalar(-1);
+				drawPosTo.overwriteWith(gridSizeInPixelsHalf);
+
+				drawPosFrom.dimension(d, 0);
+				drawPosTo.dimension(d, 0);
+
+				drawPosFrom.add(multiplier.clone().multiplyScalar(i));
+				drawPosTo.add(multiplier.clone().multiplyScalar(i));
+
+				camera.convertWorldCoordsToViewCoords(drawPosFrom);
+				camera.convertWorldCoordsToViewCoords(drawPosTo);
+
+				graphics.beginPath();
+				graphics.moveTo(drawPosFrom.x, drawPosFrom.y);
+				graphics.lineTo(drawPosTo.x, drawPosTo.y);
+				graphics.stroke();
+			}
+		}
+
+		var bodiesByType =
+		[
+			[ starsystem.star ],
+			starsystem.linkPortals,
+			starsystem.planets,
+			starsystem.ships,
+		];
+
+		for (var t = 0; t < bodiesByType.length; t++)
+		{
+			var bodies = bodiesByType[t];
+
+			for (var i = 0; i < bodies.length; i++)
+			{
+				var body = bodies[i];
+				this.drawToDisplayForCamera_Body
+				(
+					display,
+					camera, 
+					body
+				);
+			}
+
+		}
+	}
+
+	Starsystem.prototype.drawToDisplayForCamera_Body = function(display, camera, body)
+	{
+		var graphics = display.graphics;
+		var drawPos = new Coords();
+		var drawLoc = new Location(drawPos);
+
+		var bodyPos = body.loc.pos;
+		drawPos.overwriteWith(bodyPos);
+		camera.convertWorldCoordsToViewCoords(drawPos);
+
+		var bodyDefn = body.defn;
+		var bodyVisual = bodyDefn.visual;
+		bodyVisual.drawToDisplayForDrawableAndLoc(display, body, drawLoc);
+
+		if (bodyPos.z < 0)
+		{
+			graphics.strokeStyle = Color.Instances.Green.systemColor;
+		}
+		else
+		{
+			graphics.strokeStyle = Color.Instances.Red.systemColor;
+		}
+
+		graphics.beginPath();
+		graphics.moveTo(drawPos.x, drawPos.y);
+
+		drawPos.overwriteWith(bodyPos);
+		drawPos.z = 0;
+		camera.convertWorldCoordsToViewCoords(drawPos);
+
+		graphics.lineTo(drawPos.x, drawPos.y);
+		graphics.stroke();
+	}	
 }

@@ -121,9 +121,9 @@ function VenueWorld(world)
 
 		display.clear();
 
-		display.drawNetworkForCamera
+		this.world.network.drawToDisplayForCamera
 		(
-			this.world.network,
+			display,
 			this.world.camera
 		);
 

@@ -36,16 +36,17 @@ function VenueStarsystem(starsystem)
 	{
 		var display = Globals.Instance.display;
 		display.clear();
-		display.drawStarsystemForCamera
+		this.starsystem.drawToDisplayForCamera
 		(
-			this.starsystem,
+			display,
 			this.camera
 		);
 
 		if (this.cursor != null)
 		{
-			display.drawStarsystemForCamera_Body
+			this.starsystem.drawToDisplayForCamera_Body
 			(
+				display,
 				this.camera,
 				this.cursor
 			);

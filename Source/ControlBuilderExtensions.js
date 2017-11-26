@@ -31,7 +31,7 @@ function ControlBuilderExtensions()
 				new ControlLabel
 				(
 					"textSelectionName",
-					new Coords(margin, controlHeight), // pos
+					new Coords(margin, margin + controlHeight * .6), // pos
 					new Coords(size.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
 					new DataBinding

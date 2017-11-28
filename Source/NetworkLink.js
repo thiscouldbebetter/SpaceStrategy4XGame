@@ -13,7 +13,7 @@ function NetworkLink(namesOfNodesLinked)
 
 	NetworkLink.prototype.displacement = function()
 	{
-		var nodesLinked = this.nodesLinked();
+		var nodesLinked = this.nodesLinked(universe);
 
 		var returnValue = nodesLinked[1].loc.pos.clone().subtract
 		(
@@ -28,9 +28,9 @@ function NetworkLink(namesOfNodesLinked)
 		return this.displacement().magnitude();
 	}
 
-	NetworkLink.prototype.nodesLinked = function()
+	NetworkLink.prototype.nodesLinked = function(universe)
 	{
-		var network = Globals.Instance.universe.world.network;
+		var network = universe.world.network;
 
 		var returnValue = 
 		[
@@ -47,7 +47,7 @@ function NetworkLink(namesOfNodesLinked)
 	{
 		if (this.ships.length > 0)
 		{
-			var nodesLinked = this.nodesLinked();
+			var nodesLinked = this.nodesLinked(universe);
 	
 			var length = this.length();
 

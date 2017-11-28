@@ -1,5 +1,5 @@
 
-function VenueLayout(venueParent, layout)
+function VenueLayout(universe, venueParent, layout)
 {
 	this.venueParent = venueParent;
 	this.layout = layout;
@@ -7,20 +7,20 @@ function VenueLayout(venueParent, layout)
 
 	this.venueControls = new VenueControls
 	(
-		this.controlBuild()
+		this.controlBuild(universe)
 	);
 }
 
 {
-	VenueLayout.prototype.draw = function()
+	VenueLayout.prototype.draw = function(universe)
 	{
-		Globals.Instance.display.drawLayout(this.layout);
-		this.venueControls.draw();
+		universe.display.drawLayout(this.layout);
+		this.venueControls.draw(universe);
 	}
 
-	VenueLayout.prototype.initialize = function()
+	VenueLayout.prototype.initialize = function(universe)
 	{
-		var controlRoot = this.controlBuild();
+		var controlRoot = this.controlBuild(universe);
 		this.venueControls = new VenueControls(controlRoot);
 	}
 
@@ -29,11 +29,11 @@ function VenueLayout(venueParent, layout)
 		return this.layout;
 	}
 
-	VenueLayout.prototype.updateForTimerTick = function()
+	VenueLayout.prototype.updateForTimerTick = function(universe)
 	{
-		this.venueControls.updateForTimerTick();
+		this.venueControls.updateForTimerTick(universe);
 
-		var inputHelper = Globals.Instance.inputHelper;
+		var inputHelper = universe.inputHelper;
 
 		var layout = this.layout;
 		var map = layout.map;
@@ -121,18 +121,18 @@ function VenueLayout(venueParent, layout)
 			}	
 		}
 
-		this.draw();
+		this.draw(universe);
 	}
 
 	// controls
 
-	VenueLayout.prototype.controlBuild = function()
+	VenueLayout.prototype.controlBuild = function(universe)
 	{
 		var returnValue = null;
 
-		var controlBuilder = Globals.Instance.controlBuilder;
+		var controlBuilder = universe.controlBuilder;
 
-		var display = Globals.Instance.display;
+		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
 		var controlHeight = 16;
 		var buttonWidth = 30;
@@ -141,7 +141,7 @@ function VenueLayout(venueParent, layout)
 
 		var containerInnerSize = new Coords(100, 60);
 
-		var faction = Globals.Instance.universe.world.factionCurrent();
+		var faction = universe.world.factionCurrent();
 
 		var returnValue = new ControlContainer
 		(
@@ -163,18 +163,17 @@ function VenueLayout(venueParent, layout)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;
 						var venueNext = universe.venueCurrent.venueParent;
-						venueNext = new VenueFader(venueNext);
+						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}
 				),
 
 				faction.controlBuild
 				(
+					universe,
 					containerMainSize,
 					containerInnerSize, 
 					margin, 
@@ -193,6 +192,7 @@ function VenueLayout(venueParent, layout)
 
 				controlBuilder.timeAndPlace
 				(
+					universe,
 					containerMainSize, 
 					containerInnerSize, 
 					margin,
@@ -201,6 +201,7 @@ function VenueLayout(venueParent, layout)
 
 				controlBuilder.selection
 				(
+					universe,
 					new Coords
 					(
 						containerMainSize.x - margin - containerInnerSize.x,
@@ -270,10 +271,8 @@ function VenueLayout(venueParent, layout)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;
 						var venueCurrent = universe.venueCurrent;
 						venueCurrent.layout.map.cursor.bodyDefn = null;
 					}

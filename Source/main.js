@@ -41,16 +41,11 @@ function main()
 		"rgb(180, 180, 240)", // colorBorder
 		"LightGray" // colorDisabled
 	);
-
-	var universe0 = Universe.new(null);
-
-	Globals.prototype.initialize
+	
+	var universe = Universe.new
 	(
-		"Space Strategy 4X",
-		20, // timerTicksPerSecond
-		display,
-		mediaLibrary,
-		new ControlBuilder([controlStyle]),
-		universe0
+		"Space_Strategy_4X", new TimerHelper(20), display, mediaLibrary, null
 	);
+	universe.initialize();
+	
 }

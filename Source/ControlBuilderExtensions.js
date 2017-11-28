@@ -6,12 +6,15 @@ function ControlBuilderExtensions()
 {
 	ControlBuilder.prototype.selection = function
 	(
+		universe,
 		pos, 
 		size, 
 		margin,
 		controlHeight
 	)
 	{	
+		var fontHeightInPixels = universe.display.fontHeightInPixels;
+	
 		var returnValue = new ControlContainer
 		(
 			"containerSelected",
@@ -36,7 +39,7 @@ function ControlBuilderExtensions()
 					false, // isTextCentered
 					new DataBinding
 					(
-						Globals.Instance.universe,
+						universe,
 						"venueCurrent.selectionName()"
 					)
 				),
@@ -47,13 +50,11 @@ function ControlBuilderExtensions()
 					new Coords(margin, size.y - margin - controlHeight), // pos
 					new Coords(size.x - margin * 2, controlHeight), // size, 
 					"Details", // text, 
-					Globals.Instance.display.fontHeightInPixels,
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function() 
+					function click(universe) 
 					{ 
-						var universe = Globals.Instance.universe;
 						var venueCurrent = universe.venueCurrent;
 						var selection = venueCurrent.selection;
 						if (selection != null)
@@ -62,16 +63,16 @@ function ControlBuilderExtensions()
 							var selectionTypeName = selection.constructor.name;
 							if (selectionTypeName == "NetworkNode")
 							{
-								venueNext = new VenueStarsystem(selection.starsystem);
+								venueNext = new VenueStarsystem(universe, selection.starsystem);
 							}
 							else if (selectionTypeName == "Planet")
 							{
-								venueNext = new VenueLayout(venueCurrent, selection.layout);
+								venueNext = new VenueLayout(universe, venueCurrent, selection.layout);
 							}
 
 							if (venueNext != null)
 							{
-								venueNext = new VenueFader(venueNext);
+								venueNext = new VenueFader(venueNext, universe.venueCurrent);
 								universe.venueNext = venueNext;
 							}
 						}
@@ -86,12 +87,15 @@ function ControlBuilderExtensions()
 
 	ControlBuilder.prototype.timeAndPlace = function
 	(
+		universe,
 		containerMainSize, 
 		containerInnerSize, 
 		margin,
 		controlHeight
 	)
 	{
+		var fontHeightInPixels = universe.display.fontHeightInPixels;
+		
 		var returnValue = new ControlContainer
 		(
 			"containerTimeAndPlace",
@@ -115,7 +119,7 @@ function ControlBuilderExtensions()
 					false, // isTextCentered
 					new DataBinding
 					(
-						Globals.Instance.universe, "venueCurrent.model().name"
+						universe, "venueCurrent.model().name"
 					)
 				),
 
@@ -138,7 +142,7 @@ function ControlBuilderExtensions()
 						controlHeight
 					), // size
 					false, // isTextCentered
-					new DataBinding(Globals.Instance.universe.world, "turnsSoFar")
+					new DataBinding(universe.world, "turnsSoFar")
 				),
 
 				new ControlButton
@@ -147,13 +151,11 @@ function ControlBuilderExtensions()
 					new Coords(margin + 50, margin + controlHeight), // pos
 					new Coords(controlHeight, controlHeight), // size, 
 					">", // text, 
-					Globals.Instance.display.fontHeightInPixels,
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function() 
+					function click(universe) 
 					{ 
-						var universe = Globals.Instance.universe;
 						universe.world.updateForTurn();
 					}
 				),
@@ -164,11 +166,10 @@ function ControlBuilderExtensions()
 					new Coords(margin + 50 + controlHeight, margin + controlHeight), // pos
 					new Coords(controlHeight, controlHeight), // size, 
 					">>", // text, 
-					Globals.Instance.display.fontHeightInPixels,
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function() 
+					function click(universe) 
 					{ 
 						alert("todo - fast forward");
 					}
@@ -182,6 +183,7 @@ function ControlBuilderExtensions()
 
 	ControlBuilder.prototype.view = function
 	(
+		universe,
 		containerMainSize, 
 		containerInnerSize, 
 		margin,
@@ -189,6 +191,7 @@ function ControlBuilderExtensions()
 	)
 	{
 		var cameraSpeed = 10;
+		var fontHeightInPixels = universe.display.fontHeightInPixels;
 
 		var returnValue = new ControlContainer
 		(
@@ -222,13 +225,12 @@ function ControlBuilderExtensions()
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					"^",
-					Globals.Instance.display.fontHeightInPixels,
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var venueCurrent = Globals.Instance.universe.venueCurrent;
+						var venueCurrent = universe.venueCurrent;
 						var camera = venueCurrent.camera;
 						var cameraAction = new Action_CameraMove([0, cameraSpeed]);
 						cameraAction.perform(camera);
@@ -250,13 +252,11 @@ function ControlBuilderExtensions()
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					"v",
-					Globals.Instance.display.fontHeightInPixels,
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;
 						var venueCurrent = universe.venueCurrent;
 						var camera = venueCurrent.camera;
 						var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
@@ -274,13 +274,12 @@ function ControlBuilderExtensions()
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					"<",
-					Globals.Instance.display.fontHeightInPixels,
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var venueCurrent = Globals.Instance.universe.venueCurrent;
+						var venueCurrent = universe.venueCurrent;
 						var camera = venueCurrent.camera;
 						var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
 						cameraAction.perform(camera);
@@ -301,13 +300,12 @@ function ControlBuilderExtensions()
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					">",
-					Globals.Instance.display.fontHeightInPixels,
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var venueCurrent = Globals.Instance.universe.venueCurrent;
+						var venueCurrent = universe.venueCurrent;
 						var camera = venueCurrent.camera;
 						var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
 						cameraAction.perform(camera);

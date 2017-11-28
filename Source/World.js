@@ -19,17 +19,18 @@ function World(name, dateCreated, network, factions, ships, camera)
 {
 	// static methods
 
-	World.new = function()
+	World.new = function(universe)
 	{
 		var worldName = NameGenerator.generateName() + " Cluster";
 
-		var viewSize = Globals.Instance.display.sizeInPixels.clone();
+		var viewSize = universe.display.sizeInPixels.clone();
 		var viewDimension = viewSize.y;
 
 		var networkRadius = viewDimension * .35;
 		var numberOfNetworkNodes = 6; // 128;
 		var network = Network.generateRandom
 		(
+			universe, 
 			worldName,
 			NetworkNodeDefn.Instances._All,
 			numberOfNetworkNodes,

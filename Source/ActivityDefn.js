@@ -11,7 +11,7 @@ function ActivityDefn(name, perform)
 		this.DoNothing = new ActivityDefn
 		(
 			"DoNothing",
-			function(actor, activity)
+			function(universe, actor, activity)
 			{
 				// do nothing
 			}
@@ -20,8 +20,7 @@ function ActivityDefn(name, perform)
 		this.MoveToTarget = new ActivityDefn
 		(
 			"MoveToTarget",
-			// perform
-			function(actor, activity)
+			function perform(universe, actor, activity)
 			{	
 				var variables = activity.variables;
 				var target = variables[0];
@@ -55,13 +54,11 @@ function ActivityDefn(name, perform)
 					actor.activity = null; // hack
 					actor.order = null; // hack
 
-					Globals.Instance.inputHelper.isEnabled = true;
+					universe.inputHelper.isEnabled = true;
 					
 					var targetDefnName = target.defn.name;
 					if (targetDefnName == "LinkPortal")
-					{
-						var universe = Globals.Instance.universe;
-						
+					{						
 						var links = universe.world.network.links;
 
 						var venueCurrent = universe.venueCurrent;
@@ -85,7 +82,7 @@ function ActivityDefn(name, perform)
 						link.ships.push(actor);
 
 						var direction;
-						if (link.nodesLinked()[0].starsystem == starsystemFrom)
+						if (link.nodesLinked(universe)[0].starsystem == starsystemFrom)
 						{
 							direction = 1;	
 						}

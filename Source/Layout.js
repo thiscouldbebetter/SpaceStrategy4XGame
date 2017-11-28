@@ -21,7 +21,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 {
 	// static methods
 
-	Layout.generateRandom = function(parent)
+	Layout.generateRandom = function(universe, parent)
 	{
 		var terrains = 
 		[
@@ -29,7 +29,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 		];
 		terrains.addLookups("codeChar");
 	
-		var viewSize = Globals.Instance.display.sizeInPixels;
+		var viewSize = universe.display.sizeInPixels;
 		var mapSizeInPixels = viewSize.clone().multiplyScalar(.5);
 		var mapPosInPixels = viewSize.clone().subtract
 		(

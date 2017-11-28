@@ -6,33 +6,32 @@ function VenueTalkSession(venueParent, talkSession)
 }
 
 {
-	VenueTalkSession.prototype.draw = function()
+	VenueTalkSession.prototype.draw = function(universe)
 	{
-		this.venueControls.draw();
+		this.venueControls.draw(universe);
 	}
 
-	VenueTalkSession.prototype.initialize = function()
+	VenueTalkSession.prototype.initialize = function(universe)
 	{
-		var controlRoot = this.controlBuild();
+		var controlRoot = this.controlBuild(universe);
 		this.venueControls = new VenueControls(controlRoot);
 		this.talkSession.update();
 	}
 
-	VenueTalkSession.prototype.updateForTimerTick = function()
+	VenueTalkSession.prototype.updateForTimerTick = function(universe)
 	{
-
-		this.venueControls.updateForTimerTick();		
+		this.venueControls.updateForTimerTick(universe);
 	}
 
 	// controls
 
-	VenueTalkSession.prototype.controlBuild = function()
+	VenueTalkSession.prototype.controlBuild = function(universe)
 	{
-		var containerSize = Globals.Instance.display.sizeInPixels.clone();
+		var containerSize = universe.display.sizeInPixels.clone();
 		var margin = 10;
 		var controlHeight = 15;
 
-		var controlBuilder = Globals.Instance.controlBuilder;
+		var controlBuilder = universe.controlBuilder;
 
 		var returnValue = new ControlContainer
 		(
@@ -56,12 +55,10 @@ function VenueTalkSession(venueParent, talkSession)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;
 						var venueNext = universe.venueCurrent.venueParent;
-						venueNext = new VenueFader(venueNext);
+						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}
 				),
@@ -81,10 +78,9 @@ function VenueTalkSession(venueParent, talkSession)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var talkSession = Globals.Instance.universe.venueCurrent.talkSession;
+						var talkSession = universe.venueCurrent.talkSession;
 						alert(talkSession.log.join("\n"));
 					}
 				),
@@ -144,8 +140,7 @@ function VenueTalkSession(venueParent, talkSession)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					this.talkSession.respond.bind(this.talkSession)
+					this.talkSession.respond.bind(this.talkSession, universe)
 				),	
 			]
 		);

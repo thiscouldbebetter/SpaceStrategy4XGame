@@ -5,11 +5,11 @@ function Constraint_Cursor()
 }
 
 {
-	Constraint_Cursor.prototype.applyToBody = function(body)
+	Constraint_Cursor.prototype.applyToBody = function(universe, body)
 	{
 		var cursor = body;
-		var venue = Globals.Instance.universe.venueCurrent;
-		var mousePos = Globals.Instance.inputHelper.mouseMovePos.clone();
+		var venue = universe.venueCurrent;
+		var mousePos = universe.inputHelper.mouseMovePos.clone();
 
 		var camera = venue.camera;
 		var cameraPos = camera.loc.pos;

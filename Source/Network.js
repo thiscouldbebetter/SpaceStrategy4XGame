@@ -32,6 +32,7 @@ function Network(name, nodes, links)
 {
 	Network.generateRandom = function
 	(
+		universe,
 		name, 
 		nodeDefns, 
 		numberOfNodes, 
@@ -93,7 +94,7 @@ function Network(name, nodes, links)
 
 			var nodeDefnIndexRandom = Math.floor(nodeDefns.length * Math.random());
 			var nodeDefn = nodeDefns[nodeDefnIndexRandom];
-			var nodeStarsystem = Starsystem.generateRandom();	
+			var nodeStarsystem = Starsystem.generateRandom(universe);
 
 			var node = new NetworkNode
 			(
@@ -223,7 +224,7 @@ function Network(name, nodes, links)
 
 	// drawing
 
-	Network.prototype.drawToDisplayForCamera = function(display, camera)
+	Network.prototype.drawToDisplayForCamera = function(universe, display, camera)
 	{
 		var network = this;
 		var drawPos = display.drawPos;
@@ -248,6 +249,7 @@ function Network(name, nodes, links)
 			var link = networkLinks[i];
 			this.drawToDisplayForCamera_Link
 			(
+				universe,
 				display, camera, link, 
 				nodeRadiusActual, drawPos, 
 				drawPosFrom, drawPosTo
@@ -266,6 +268,7 @@ function Network(name, nodes, links)
 
 	Network.prototype.drawToDisplayForCamera_Link = function
 	(
+		universe,
 		display, 
 		camera, 
 		link,
@@ -276,7 +279,7 @@ function Network(name, nodes, links)
 	)
 	{
 		var network = this;
-		var nodesLinked = link.nodesLinked(network);
+		var nodesLinked = link.nodesLinked(universe);
 		var nodeFromPos = nodesLinked[0].loc.pos;
 		var nodeToPos = nodesLinked[1].loc.pos;
 
@@ -328,14 +331,14 @@ function Network(name, nodes, links)
 			var ship = link.ships[i];
 			this.drawToDisplayForCamera_Link_Ship
 			(
-				display, camera, link, ship, drawPos, nodeFromPos, nodeToPos
+				universe, display, camera, link, ship, drawPos, nodeFromPos, nodeToPos
 			);
 		}
 	}
 
 	Network.prototype.drawToDisplayForCamera_Link_Ship = function
 	(
-		display, camera, link, ship, drawPos, nodeFromPos, nodeToPos
+		universe, display, camera, link, ship, drawPos, nodeFromPos, nodeToPos
 	)
 	{
 		var forward = link.direction();

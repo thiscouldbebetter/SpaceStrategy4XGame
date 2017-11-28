@@ -5,10 +5,10 @@ function VenueWorld(world)
 
 	this.camera = this.world.camera;
 
-	this.venueControls = new VenueControls
-	(
-		this.controlBuild()
-	);
+	// this.venueControls = new VenueControls
+	// (
+		// this.controlBuild(universe)
+	// );
 }
 
 {
@@ -19,22 +19,23 @@ function VenueWorld(world)
 
 	// controls
 
-	VenueWorld.prototype.controlBuild = function()
+	VenueWorld.prototype.controlBuild = function(universe)
 	{
 		var returnValue = null;
 
-		var containerMainSize = Globals.Instance.display.sizeInPixels.clone();
+		var containerMainSize = universe.display.sizeInPixels.clone();
 		var controlHeight = 16;
 
 		var margin = 10;
+		var fontHeightInPixels = universe.display.fontHeightInPixels;
 
 		var containerInnerSize = new Coords(100, 60);
 
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
-		var faction = Globals.Instance.universe.world.factionCurrent();
+		var faction = universe.world.factionCurrent();
 
-		var controlBuilder = Globals.Instance.controlBuilder;
+		var controlBuilder = universe.controlBuilder;
 
 		var returnValue = new ControlContainer
 		(
@@ -53,24 +54,23 @@ function VenueWorld(world)
 					), // pos
 					new Coords(buttonWidth, controlHeight), // size
 					"Menu",
-					Globals.Instance.display.fontHeightInPixels, 
+					fontHeightInPixels, 
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;
 						var venueNext = new VenueControls
 						(
-							Globals.Instance.controlBuilder.configure()
+							universe.controlBuilder.configure(universe)
 						);
-						venueNext = new VenueFader(venueNext);
+						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}
 				),
 
 				faction.controlBuild
 				(
+					universe, 
 					containerMainSize,
 					containerInnerSize, 
 					margin, 
@@ -80,6 +80,7 @@ function VenueWorld(world)
 
 				controlBuilder.view
 				(
+					universe,
 					containerMainSize, 
 					containerInnerSize, 
 					margin,
@@ -88,6 +89,7 @@ function VenueWorld(world)
 
 				controlBuilder.timeAndPlace
 				(
+					universe,
 					containerMainSize, 
 					containerInnerSize, 
 					margin,
@@ -96,6 +98,7 @@ function VenueWorld(world)
 
 				controlBuilder.selection
 				(
+					universe,
 					new Coords
 					(
 						containerMainSize.x - margin - containerInnerSize.x,
@@ -115,30 +118,36 @@ function VenueWorld(world)
 
 	// venue 
 
-	VenueWorld.prototype.draw = function()
+	VenueWorld.prototype.draw = function(universe)
 	{
-		var display = Globals.Instance.display;
+		var display = universe.display;
 
 		display.clear();
 
 		this.world.network.drawToDisplayForCamera
 		(
+			universe,
 			display,
 			this.world.camera
 		);
 
-		this.venueControls.draw();
+		this.venueControls.draw(universe);
 	}
 
-	VenueWorld.prototype.finalize = function()
+	VenueWorld.prototype.finalize = function(universe)
 	{
-		Globals.Instance.soundHelper.soundForMusic.pause();		
+		universe.soundHelper.soundForMusic.pause(universe);		
 	}
 
-	VenueWorld.prototype.initialize = function()
+	VenueWorld.prototype.initialize = function(universe)
 	{
-		var soundHelper = Globals.Instance.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic("Music");
+		this.venueControls = new VenueControls
+		(
+			this.controlBuild(universe)
+		);
+				
+		var soundHelper = universe.soundHelper;
+		soundHelper.soundWithNamePlayAsMusic(universe, "Music");
 	}
 
 	VenueWorld.prototype.selectionName = function()
@@ -146,20 +155,20 @@ function VenueWorld(world)
 		return (this.selection == null ? "[none]" : this.selection.name);
 	}
 
-	VenueWorld.prototype.updateForTimerTick = function()
+	VenueWorld.prototype.updateForTimerTick = function(universe)
 	{
-		this.draw();
+		this.draw(universe);
 
-		this.venueControls.updateForTimerTick();
+		this.venueControls.updateForTimerTick(universe);
 
 		var world = this.world;				
 		var camera = world.camera;
 
-		var inputHelper = Globals.Instance.inputHelper;
+		var inputHelper = universe.inputHelper;
 		if (inputHelper.isMouseClicked == true)
 		{
 			inputHelper.isMouseClicked = false;
-			Globals.Instance.soundHelper.soundWithNamePlayAsEffect("Sound");
+			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 			var mouseClickPos = inputHelper.mouseClickPos.clone().subtract
 			(
 				camera.viewSizeHalf
@@ -170,7 +179,7 @@ function VenueWorld(world)
 			var bodiesClickedAsCollisions = Collision.rayAndBodies
 			(
 				rayFromCameraThroughClick,
-				Globals.Instance.universe.world.network.nodes,
+				universe.world.network.nodes,
 				NetworkNode.RadiusActual,
 				[] // listToAddTo
 			);	
@@ -192,9 +201,9 @@ function VenueWorld(world)
 
 				if (bodyClicked == this.selection)
 				{				
-					var venueNext = new VenueStarsystem(bodyClicked.starsystem);
-					venueNext = new VenueFader(venueNext);
-					Globals.Instance.universe.venueNext = venueNext;
+					var venueNext = new VenueStarsystem(universe, bodyClicked.starsystem);
+					venueNext = new VenueFader(venueNext, universe.venueCurrent);
+					universe.venueNext = venueNext;
 				}
 
 				this.selection = bodyClicked;
@@ -208,12 +217,11 @@ function VenueWorld(world)
 
 			if (inputActive == "Escape")
 			{
-				var universe = Globals.Instance.universe;
 				var venueNext = new VenueControls
 				(
-					Globals.Instance.controlBuilder.configure()
+					universe.controlBuilder.configure(universe)
 				);
-				venueNext = new VenueFader(venueNext);
+				venueNext = new VenueFader(venueNext, universe.venueCurrent);
 				universe.venueNext = venueNext;
 			}
 

@@ -252,10 +252,8 @@ function TechnologyResearchSession(technologyTree, researcher)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function() 
+					function click(universe) 
 					{ 
-						var universe = Globals.Instance.universe;
 						var session = universe.venueCurrent.researchSession;
 						session.researchAccumulatedIncrement(1);
 					}

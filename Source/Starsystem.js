@@ -19,7 +19,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	// static methods
 
-	Starsystem.generateRandom = function()
+	Starsystem.generateRandom = function(universe)
 	{
 		var name = NameGenerator.generateName();
 		var size = Starsystem.SizeStandard;
@@ -76,7 +76,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				null // layout
 			);
 
-			planet.layout = Layout.generateRandom(planet);
+			planet.layout = Layout.generateRandom(universe, planet);
 
 			planets.push(planet);
 		}
@@ -95,9 +95,9 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	// instance methods
 
-	Starsystem.prototype.faction = function()
+	Starsystem.prototype.faction = function(universe)
 	{
-		return (this.factionName == null ? null : Globals.Instance.universe.world.factions[this.factionName]);
+		return (this.factionName == null ? null : universe.world.factions[this.factionName]);
 	}
 
 	Starsystem.prototype.links = function()
@@ -137,7 +137,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	// drawing
 
-	Starsystem.prototype.drawToDisplayForCamera = function(display, camera)
+	Starsystem.prototype.drawToDisplayForCamera = function(universe, display, camera)
 	{
 		var starsystem = this;
 		var cameraViewSize = camera.viewSize;
@@ -206,6 +206,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				var body = bodies[i];
 				this.drawToDisplayForCamera_Body
 				(
+					universe,
 					display,
 					camera, 
 					body
@@ -215,7 +216,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		}
 	}
 
-	Starsystem.prototype.drawToDisplayForCamera_Body = function(display, camera, body)
+	Starsystem.prototype.drawToDisplayForCamera_Body = function(universe, display, camera, body)
 	{
 		var graphics = display.graphics;
 		var drawPos = new Coords();
@@ -227,7 +228,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 		var bodyDefn = body.defn;
 		var bodyVisual = bodyDefn.visual;
-		bodyVisual.drawToDisplayForDrawableAndLoc(display, body, drawLoc);
+		bodyVisual.draw(universe, display, body, drawLoc);
 
 		if (bodyPos.z < 0)
 		{

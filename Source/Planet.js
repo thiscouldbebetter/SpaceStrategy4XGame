@@ -26,9 +26,9 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 
 	// instance methods
 
-	Planet.prototype.faction = function()
+	Planet.prototype.faction = function(universe)
 	{
-		return (this.factionName == null ? null : Globals.Instance.universe.world.factions[this.factionName]);
+		return (this.factionName == null ? null : universe.world.factions[this.factionName]);
 	}
 
 	// controls

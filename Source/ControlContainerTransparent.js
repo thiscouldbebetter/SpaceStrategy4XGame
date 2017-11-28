@@ -30,9 +30,9 @@ function ControlContainerTransparent(containerInner)
 		);
 	}
 
-	ControlContainerTransparent.prototype.actionHandle = function(actionNameToHandle)
+	ControlContainerTransparent.prototype.actionHandle = function(universe, actionNameToHandle)
 	{
-		return this.containerInner.actionHandle(actionNameToHandle);
+		return this.containerInner.actionHandle(universe, actionNameToHandle);
 	}
 
 	ControlContainerTransparent.prototype.mouseClick = function(mouseClickPos)
@@ -47,7 +47,7 @@ function ControlContainerTransparent(containerInner)
 
 	// drawable
 
-	ControlContainerTransparent.prototype.drawToDisplayAtLoc = function(display, drawLoc)
+	ControlContainerTransparent.prototype.drawToDisplayAtLoc = function(universe, display, drawLoc)
 	{
 		var drawPos = drawLoc.pos.add(this.containerInner.pos);
 
@@ -62,7 +62,7 @@ function ControlContainerTransparent(containerInner)
 		for (var i = 0; i < children.length; i++)
 		{
 			var child = children[i];
-			child.drawToDisplayAtLoc(display, drawLoc.clone());
+			child.drawToDisplayAtLoc(universe, display, drawLoc.clone());
 		}
 	}
 }

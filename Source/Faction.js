@@ -123,16 +123,15 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	// instance methods
 
-	Faction.prototype.researchInitialize = function()
+	Faction.prototype.researchInitialize = function(universe)
 	{
 		var researchSession = new TechnologyResearchSession
 		(
-			Globals.Instance.universe.technologyTree,
+			universe.technologyTree,
 			this.technology
 		);
 		var venueNext = new VenueTechnologyResearchSession(researchSession);
-		venueNext = new VenueFader(venueNext);
-		var universe = Globals.Instance.universe;
+		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
 	}
 
@@ -145,6 +144,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	Faction.prototype.controlBuild = function
 	(
+		universe, 
 		containerMainSize,
 		containerInnerSize, 
 		margin, 
@@ -152,7 +152,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		buttonWidth
 	)
 	{
-		var fontHeightInPixels = Globals.Instance.display.fontHeightInPixels;
+		var fontHeightInPixels = universe.fontHeightInPixels;
 
 		var returnValue = new ControlContainer
 		(
@@ -203,7 +203,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					this.researchInitialize.bind(this)
+					this.researchInitialize.bind(this, universe) // click
 				),
 
 				new ControlButton
@@ -220,7 +220,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					true, // hasBorder
 					true, // isEnabled
 					// click
-					this.relationsInitialize.bind(this)
+					this.relationsInitialize.bind(this, universe)
 				),
 
 				new ControlButton
@@ -285,13 +285,12 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		return returnValues;
 	}
 
-	Faction.prototype.notificationSessionInitialize = function()
+	Faction.prototype.notificationSessionInitialize = function(universe)
 	{
-		var universe = Globals.Instance.universe;
 		var notificationSession = new NotificationSession(this.notifications);
-		var notificationSessionAsControl = notificationSession.controlBuild();
+		var notificationSessionAsControl = notificationSession.controlBuild(universe);
 		var venueNext = new VenueControls(notificationSessionAsControl);
-		venueNext = new VenueFader(venueNext);
+		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
 	}
 
@@ -300,9 +299,8 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		return true;
 	}
 
-	Faction.prototype.relationsInitialize = function()
+	Faction.prototype.relationsInitialize = function(universe)
 	{
-		var universe = Globals.Instance.universe;
 		var world = universe.world;
 		var factionCurrent = world.factionCurrent();
 		var factionsOther = world.factionsOtherThanCurrent();
@@ -311,9 +309,9 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 			factionCurrent,
 			factionsOther
 		);
-		var diplomaticSessionAsControl = diplomaticSession.controlBuild();
+		var diplomaticSessionAsControl = diplomaticSession.controlBuild(universe);
 		var venueNext = new VenueControls(diplomaticSessionAsControl, universe.venueCurrent);
-		venueNext = new VenueFader(venueNext);
+		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
 	}
 

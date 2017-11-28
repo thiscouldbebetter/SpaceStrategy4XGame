@@ -12,9 +12,8 @@ function Ship(name, defn, pos, factionName)
 	(
 		"DeviceDefn0",
 		100, // range
-		function (actor, device, target)
+		function use(universe, actor, device, target)
 		{
-			var universe = Globals.Instance.universe;
 			var venueCurrent = universe.venueCurrent;
 
 			var projectile = new Ship
@@ -65,9 +64,9 @@ function Ship(name, defn, pos, factionName)
 
 	// instance methods
 
-	Ship.prototype.faction = function()
+	Ship.prototype.faction = function(universe)
 	{
-		return (this.factionName == null ? null : Globals.Instance.universe.world.factions[this.factionName]);
+		return (this.factionName == null ? null : universe.world.factions[this.factionName]);
 	}
 
 	Ship.prototype.id = function()
@@ -75,11 +74,11 @@ function Ship(name, defn, pos, factionName)
 		return this.factionName + this.name;
 	}
 
-	// controls
+	// controlsF
 
-	Ship.prototype.controlBuild_Selection = function()
+	Ship.prototype.controlBuild_Selection = function(universe)
 	{
-		var viewSize = Globals.Instance.display.sizeInPixels;
+		var viewSize = universe.display.sizeInPixels;
 		var containerSize = new Coords(100, viewSize.y);
 
 		var margin = 10;
@@ -115,8 +114,7 @@ function Ship(name, defn, pos, factionName)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
 						alert("todo - view")
 					}
@@ -131,9 +129,9 @@ function Ship(name, defn, pos, factionName)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function ()
+					function click(universe)
 					{
-						var venueCurrent = Globals.Instance.universe.venueCurrent;
+						var venueCurrent = universe.venueCurrent;
 						venueCurrent.cursorBuild();
 					}
 				),
@@ -146,8 +144,7 @@ function Ship(name, defn, pos, factionName)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
 						alert("todo - repeat")
 					}
@@ -168,7 +165,7 @@ function Ship(name, defn, pos, factionName)
 					new Coords(margin, margin + controlSpacing * 5), // pos
 					new Coords(buttonSize.x, controlSpacing * 4), // size
 					// dataBindingForValueSelected
-					new DataBinding(Globals.Instance.universe.venueCurrent.selection, "deviceSelected"),
+					new DataBinding(universe.venueCurrent.selection, "deviceSelected"),
 					// dataBindingForOptions
 					new DataBinding
 					(

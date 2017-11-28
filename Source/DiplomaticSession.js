@@ -35,9 +35,8 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 		return (this.factionSelected != null);
 	}
 
-	DiplomaticSession.prototype.talkSessionInitialize = function()
+	DiplomaticSession.prototype.talkSessionInitialize = function(universe)
 	{
-		var universe = Globals.Instance.universe;
 		var talkSession = TalkSession.buildExample
 		(
 			this.factionActing,
@@ -47,15 +46,15 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 		(
 			universe.venueCurrent, talkSession
 		);
-		venueNext = new VenueFader(venueNext);
+		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
 	}
 
 	// controls
 
-	DiplomaticSession.prototype.controlBuild = function()
+	DiplomaticSession.prototype.controlBuild = function(universe)
 	{
-		var containerSize = Globals.Instance.display.sizeInPixels.clone();
+		var containerSize = universe.display.sizeInPixels.clone();
 		var margin = 10;
 		var controlHeight = 20;
 		var listWidth = 100;
@@ -82,12 +81,10 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;
 						var venueNext = universe.venueCurrent.venueParent;
-						venueNext = new VenueFader(venueNext);
+						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}
 				),
@@ -123,8 +120,7 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 					"Talk",
 					// isEnabled
 					new DataBinding(this, "isFactionSelected"), 
-					// click
-					this.talkSessionInitialize.bind(this)
+					this.talkSessionInitialize.bind(this, universe) // click
 				),
 
 				Faction.controlBuild_Intelligence

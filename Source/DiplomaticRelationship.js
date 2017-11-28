@@ -83,9 +83,9 @@ function DiplomaticRelationship(factionNameOther, state)
 
 	// instance methods
 
-	DiplomaticRelationship.prototype.factionOther = function()
+	DiplomaticRelationship.prototype.factionOther = function(universe)
 	{
-		return Globals.Instance.universe.factions[this.factionNameOther];
+		return universe.factions[this.factionNameOther];
 	}
 
 	DiplomaticRelationship.prototype.toString = function()

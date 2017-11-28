@@ -14,20 +14,9 @@ function NetworkNode(name, defn, pos, starsystem)
 }
 
 {
-	NetworkNode.prototype.controlBuild_Selection = function()
+	NetworkNode.prototype.controlBuild_Selection = function(universe)
 	{
-		/*
-		var returnValue = new ControlLabel
-		(
-			"labelNetworkNodeAsSelection",
-			new Coords(0, 0),
-			new Coords(0, 0), // this.size
-			false, // isTextCentered
-			new DataBinding(this.starsystem.name)
-		);
-		*/
-
-		var viewSize = Globals.Instance.display.sizeInPixels;
+		var viewSize = universe.display.sizeInPixels;
 		var containerSize = new Coords(100, 80);
 		var margin = 10;
 		var controlSpacing = 8;
@@ -73,12 +62,10 @@ function NetworkNode(name, defn, pos, starsystem)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;						
 						var starsystemToView = universe.venueCurrent.selection.starsystem;
-						universe.venueNext = new VenueStarsystem(starsystemToView); 
+						universe.venueNext = new VenueStarsystem(universe, starsystemToView); 
 					}
 				),
 			]

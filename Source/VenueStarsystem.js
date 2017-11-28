@@ -1,11 +1,11 @@
 
-function VenueStarsystem(starsystem)
+function VenueStarsystem(universe, starsystem)
 {
 	this.starsystem = starsystem;
 
 	this.venueControls = new VenueControls
 	(
-		this.controlBuild()
+		this.controlBuild(universe)
 	);
 }
 
@@ -32,12 +32,13 @@ function VenueStarsystem(starsystem)
 		this.cursor = null;
 	}
 
-	VenueStarsystem.prototype.draw = function()
+	VenueStarsystem.prototype.draw = function(universe)
 	{
-		var display = Globals.Instance.display;
+		var display = universe.display;
 		display.clear();
 		this.starsystem.drawToDisplayForCamera
 		(
+			universe,
 			display,
 			this.camera
 		);
@@ -46,28 +47,29 @@ function VenueStarsystem(starsystem)
 		{
 			this.starsystem.drawToDisplayForCamera_Body
 			(
+				universe, 
 				display,
 				this.camera,
 				this.cursor
 			);
 		}
 
-		this.venueControls.draw();
+		this.venueControls.draw(universe);
 	}
 
-	VenueStarsystem.prototype.finalize = function()
+	VenueStarsystem.prototype.finalize = function(universe)
 	{
-		Globals.Instance.soundHelper.soundForMusic.pause();		
+		universe.soundHelper.soundForMusic.pause(universe);		
 	}
 
-	VenueStarsystem.prototype.initialize = function()
+	VenueStarsystem.prototype.initialize = function(universe)
 	{
 		var starsystem = this.starsystem;
 
-		var soundHelper = Globals.Instance.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic("Music");
+		var soundHelper = universe.soundHelper;
+		soundHelper.soundWithNamePlayAsMusic(universe, "Music");
 
-		var viewSize = Globals.Instance.display.sizeInPixels.clone();
+		var viewSize = universe.display.sizeInPixels.clone();
 		var focalLength = viewSize.y;
 		viewSize.z = focalLength * 4;
 			
@@ -130,9 +132,9 @@ function VenueStarsystem(starsystem)
 		return (this.selection == null ? "[none]" : this.selection.name);
 	}
 
-	VenueStarsystem.prototype.updateForTimerTick = function()
+	VenueStarsystem.prototype.updateForTimerTick = function(universe)
 	{
-		this.venueControls.updateForTimerTick();
+		this.venueControls.updateForTimerTick(universe);
 
 		var camera = this.camera;
 		var cameraConstraints = camera.constraints;
@@ -176,9 +178,9 @@ function VenueStarsystem(starsystem)
 			}
 		}
 
-		this.draw();
+		this.draw(universe);
 
-		var inputHelper = Globals.Instance.inputHelper;
+		var inputHelper = universe.inputHelper;
 
 		var inputsActive = inputHelper.inputsActive;
 		for (var i = 0; i < inputsActive.length; i++)
@@ -212,7 +214,7 @@ function VenueStarsystem(starsystem)
 			{
 				inputHelper.isMouseClicked = false;
 
-				Globals.Instance.soundHelper.soundWithNamePlayAsEffect("Sound");
+				universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 				var mouseClickPos = inputHelper.mouseClickPos.clone().subtract
 				(
 					camera.viewSizeHalf
@@ -311,7 +313,7 @@ function VenueStarsystem(starsystem)
 
 							this.cursorClear();
 
-							Globals.Instance.inputHelper.isEnabled = false;
+							inputHelper.isEnabled = false;
 						}
 						else if (cursor.hasXYPositionBeenSpecified == false)
 						{
@@ -340,7 +342,7 @@ function VenueStarsystem(starsystem)
 
 							this.cursorClear();
 
-							Globals.Instance.inputHelper.isEnabled = false;
+							inputHelper.isEnabled = false;
 						}
 		
 					}
@@ -350,8 +352,8 @@ function VenueStarsystem(starsystem)
 						{
 							var layout = bodyClicked.layout;
 							var venueNext = new VenueLayout(this, layout);
-							venueNext = new VenueFader(venueNext);
-							Globals.Instance.universe.venueNext = venueNext;						
+							venueNext = new VenueFader(venueNext, universe.venueCurrent);
+							universe.venueNext = venueNext;						
 						}	
 					}
 					else
@@ -365,11 +367,11 @@ function VenueStarsystem(starsystem)
 
 	// controls
 
-	VenueStarsystem.prototype.controlBuild = function()
+	VenueStarsystem.prototype.controlBuild = function(universe)
 	{
 		var returnValue = null;
 
-		var display = Globals.Instance.display;
+		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
 		var fontHeightInPixels = display.fontHeightInPixels;
 		var controlHeight = 16;
@@ -377,7 +379,7 @@ function VenueStarsystem(starsystem)
 		var containerInnerSize = new Coords(100, 60);
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
-		var controlBuilder = Globals.Instance.controlBuilder;
+		var controlBuilder = universe.controlBuilder;
 
 		var returnValue = new ControlContainer
 		(
@@ -399,19 +401,18 @@ function VenueStarsystem(starsystem)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;
 						var world = universe.world;
 						var venueNext = new VenueWorld(world);
-						venueNext = new VenueFader(venueNext);
+						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}
 				),
 
 				controlBuilder.view
 				(
+					universe,
 					containerMainSize, 
 					containerInnerSize, 
 					margin,
@@ -420,6 +421,7 @@ function VenueStarsystem(starsystem)
 
 				controlBuilder.timeAndPlace
 				(
+					universe,
 					containerMainSize, 
 					containerInnerSize, 
 					margin,
@@ -428,6 +430,7 @@ function VenueStarsystem(starsystem)
 
 				controlBuilder.selection
 				(
+					universe,
 					new Coords
 					(
 						containerMainSize.x - margin - containerInnerSize.x,

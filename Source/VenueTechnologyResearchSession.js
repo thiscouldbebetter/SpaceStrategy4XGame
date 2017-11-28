@@ -1,5 +1,5 @@
 
-function VenueTechnologyResearchSession(researchSession)
+function VenueTechnologyResearchSession(universe, researchSession)
 {
 	this.researchSession = researchSession;
 
@@ -7,15 +7,15 @@ function VenueTechnologyResearchSession(researchSession)
 	(
 		this.researchSession.controlBuild
 		(
-			Globals.Instance.display.sizeInPixels
+			universe.display.sizeInPixels
 		)
 	);
 }
 
 {
-	VenueTechnologyResearchSession.prototype.draw = function()
+	VenueTechnologyResearchSession.prototype.draw = function(universe)
 	{
-		this.venueControls.draw();
+		this.venueControls.draw(universe);
 	}
 
 	VenueTechnologyResearchSession.prototype.initialize = function()
@@ -23,8 +23,8 @@ function VenueTechnologyResearchSession(researchSession)
 		// do nothing
 	}
 
-	VenueTechnologyResearchSession.prototype.updateForTimerTick = function()
+	VenueTechnologyResearchSession.prototype.updateForTimerTick = function(universe)
 	{
-		this.venueControls.updateForTimerTick();
+		this.venueControls.updateForTimerTick(universe);
 	}
 }

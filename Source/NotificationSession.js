@@ -6,9 +6,9 @@ function NotificationSession(notifications)
 }
 
 {
-	NotificationSession.prototype.controlBuild = function()
+	NotificationSession.prototype.controlBuild = function(universe)
 	{
-		var display = Globals.Instance.display;
+		var display = universe.display;
 		var containerSize = display.sizeInPixels.clone();
 		var controlHeight = containerSize.y / 12;
 		var margin = 10;
@@ -77,8 +77,7 @@ function NotificationSession(notifications)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function()
+					function click(universe)
 					{
 						alert("todo - goto");
 					}
@@ -93,13 +92,11 @@ function NotificationSession(notifications)
 					"Done",
 					fontHeightInPixels,
 					true, // hasBorder
-					// click
-					function()
+					function click(universe)
 					{
-						var universe = Globals.Instance.universe;
 						var world = universe.world;
 						var venueNext = new VenueWorld(world);
-						venueNext = new VenueFader(venueNext);
+						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}
 				),

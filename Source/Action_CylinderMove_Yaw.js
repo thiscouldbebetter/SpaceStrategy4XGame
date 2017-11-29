@@ -1,7 +1,7 @@
 
-function Action_CylinderMove_Yaw(cyclesToMove)
+function Action_CylinderMove_Yaw(turnsToMove)
 {
-	this.cyclesToMove = cyclesToMove;
+	this.turnsToMove = turnsToMove;
 }
 
 {
@@ -9,7 +9,7 @@ function Action_CylinderMove_Yaw(cyclesToMove)
 	{
 		var constraintCylinder = actor.constraints["PositionOnCylinder"];
 
-		constraintCylinder.yaw += this.cyclesToMove;
-		constraintCylinder.yaw.wrapToRangeMinMax(0, 1);
+		constraintCylinder.yawInTurns += this.turnsToMove;
+		constraintCylinder.yawInTurns.wrapToRangeMinMax(0, 1);
 	}
 }

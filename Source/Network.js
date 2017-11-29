@@ -283,12 +283,12 @@ function Network(name, nodes, links)
 		var nodeFromPos = nodesLinked[0].loc.pos;
 		var nodeToPos = nodesLinked[1].loc.pos;
 
-		camera.convertWorldCoordsToViewCoords
+		camera.coordsTransformWorldToView
 		(
 			drawPosFrom.overwriteWith(nodeFromPos)
 		);
 		
-		camera.convertWorldCoordsToViewCoords
+		camera.coordsTransformWorldToView
 		(
 			drawPosTo.overwriteWith(nodeToPos)
 		);
@@ -378,7 +378,7 @@ function Network(name, nodes, links)
 		var nodePos = node.loc.pos;
 
 		drawPos.overwriteWith(nodePos);
-		camera.convertWorldCoordsToViewCoords(drawPos);
+		camera.coordsTransformWorldToView(drawPos);
 
 		var perspectiveFactor = camera.focalLength / drawPos.z;
 		var radiusApparent = nodeRadiusActual * perspectiveFactor;

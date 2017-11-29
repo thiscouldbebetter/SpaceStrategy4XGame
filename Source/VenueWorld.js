@@ -169,12 +169,19 @@ function VenueWorld(world)
 		{
 			inputHelper.isMouseClicked = false;
 			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
-			var mouseClickPos = inputHelper.mouseClickPos.clone().subtract
-			(
-				camera.viewSizeHalf
-			);
 
-			var rayFromCameraThroughClick = camera.rayToViewPos(mouseClickPos);
+			var mouseClickPos = inputHelper.mouseClickPos.clone();
+			var rayFromCameraThroughClick = new Ray
+			(
+				camera.loc.pos,
+				camera.coordsTransformViewToWorld
+				(
+					mouseClickPos
+				).subtract
+				(
+					camera.loc.pos
+				)
+			);
 
 			var bodiesClickedAsCollisions = Collision.rayAndBodies
 			(

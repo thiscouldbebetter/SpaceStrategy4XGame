@@ -2,6 +2,11 @@
 function Constraint_Cursor()
 {
 	this.name = "Cursor";
+
+	// Helper variables.
+
+	this.boundsToRestrictToMin = new Coords();
+	this.boundsToRestrictToMax = new Coords();
 }
 
 {
@@ -18,7 +23,6 @@ function Constraint_Cursor()
 
 		var xyPlaneNormal = new Coords(0, 0, 1);
 
-		var boundsToRestrictTo;
 		var cursorPos = cursor.loc.pos;
 
 		var cameraForward = cameraOrientation.forward;
@@ -47,20 +51,18 @@ function Constraint_Cursor()
 
 		if (cursor.hasXYPositionBeenSpecified == false)
 		{
-			boundsToRestrictTo = new Bounds
+			this.boundsToRestrictToMin.overwriteWithDimensions
 			(
-				new Coords
-				(
-					Number.NEGATIVE_INFINITY, 
-					Number.NEGATIVE_INFINITY, 
-					0
-				),
-				new Coords
-				(
-					Number.POSITIVE_INFINITY, 
-					Number.POSITIVE_INFINITY, 
-					0
-				)
+				Number.NEGATIVE_INFINITY, 
+				Number.NEGATIVE_INFINITY, 
+				0
+			);
+
+			this.boundsToRestrictToMax.overwriteWithDimensions
+			(
+				Number.POSITIVE_INFINITY, 
+				Number.POSITIVE_INFINITY, 
+				0
 			);
 
 			var planeToRestrictTo = new Plane
@@ -82,20 +84,17 @@ function Constraint_Cursor()
 		}
 		else
 		{
-			boundsToRestrictTo = new Bounds
+			this.boundsToRestrictToMin.overwriteWithDimensions
 			(
-				new Coords
-				(
-					cursorPos.x, 
-					cursorPos.y, 
-					Number.NEGATIVE_INFINITY
-				),
-				new Coords
-				(
-					cursorPos.x, 
-					cursorPos.y, 
-					Number.POSITIVE_INFINITY
-				)
+				cursorPos.x, 
+				cursorPos.y, 
+				Number.NEGATIVE_INFINITY
+			);
+			this.boundsToRestrictTo.overwriteWithDimensions
+			(
+				cursorPos.x, 
+				cursorPos.y, 
+				Number.POSITIVE_INFINITY
 			);
 
 			var planeNormal = xyPlaneNormal.clone().crossProduct
@@ -125,8 +124,8 @@ function Constraint_Cursor()
 
 		cursorPos.trimToRangeMinMax
 		(
-			boundsToRestrictTo.min,	
-			boundsToRestrictTo.max
+			this.boundsToRestrictTo.min,
+			this.boundsToRestrictTo.max
 		);
 	}	
 }

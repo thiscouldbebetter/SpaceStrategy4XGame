@@ -179,8 +179,8 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				drawPosFrom.add(multiplier.clone().multiplyScalar(i));
 				drawPosTo.add(multiplier.clone().multiplyScalar(i));
 
-				camera.convertWorldCoordsToViewCoords(drawPosFrom);
-				camera.convertWorldCoordsToViewCoords(drawPosTo);
+				camera.coordsTransformWorldToView(drawPosFrom);
+				camera.coordsTransformWorldToView(drawPosTo);
 
 				graphics.beginPath();
 				graphics.moveTo(drawPosFrom.x, drawPosFrom.y);
@@ -224,7 +224,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 		var bodyPos = body.loc.pos;
 		drawPos.overwriteWith(bodyPos);
-		camera.convertWorldCoordsToViewCoords(drawPos);
+		camera.coordsTransformWorldToView(drawPos);
 
 		var bodyDefn = body.defn;
 		var bodyVisual = bodyDefn.visual;
@@ -244,7 +244,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 		drawPos.overwriteWith(bodyPos);
 		drawPos.z = 0;
-		camera.convertWorldCoordsToViewCoords(drawPos);
+		camera.coordsTransformWorldToView(drawPos);
 
 		graphics.lineTo(drawPos.x, drawPos.y);
 		graphics.stroke();

@@ -11,18 +11,16 @@ function Collision()
 
 	Collision.rayAndBodies = function(ray, bodies, bodyRadius, listToAddTo)
 	{
+		var bodyAsSphere = new Sphere(new Coords(), bodyRadius);
+
 		for (var i = 0; i < bodies.length; i++)
 		{
 			var body = bodies[i];
+			bodyAsSphere.center = body.loc.pos;
 
 			var collisionOfRayWithBody = new Collision().rayAndSphere
 			(
-				ray,
-				new Sphere
-				(
-					bodyRadius,
-					body.loc.pos
-				)
+				ray, bodyAsSphere
 			);
 
 			if (collisionOfRayWithBody.distanceToCollision != null)
@@ -84,7 +82,7 @@ function Collision()
 		this.distanceToCollision = 
 			(
 				plane.distanceFromOrigin 
-				- plane.normal.dotProduct(ray.startPos)
+				- plane.normal.dotProduct(ray.vertex)
 			)
 			/ plane.normal.dotProduct(ray.direction);
 
@@ -98,7 +96,7 @@ function Collision()
 				this.distanceToCollision
 			).add
 			(
-				ray.startPos
+				ray.vertex
 			);
 
 			this.colliders["Plane"] = plane;
@@ -110,9 +108,9 @@ function Collision()
 	Collision.prototype.rayAndSphere = function(ray, sphere)
 	{
 		var rayDirection = ray.direction;
-		var displacementFromSphereCenterToCamera = ray.startPos.clone().subtract
+		var displacementFromSphereCenterToCamera = ray.vertex.clone().subtract
 		(
-			sphere.centerPos
+			sphere.center
 		);
 		var sphereRadius = sphere.radius;
 		var sphereRadiusSquared = sphereRadius * sphereRadius;
@@ -171,7 +169,7 @@ function Collision()
 				this.distanceToCollision
 			).add
 			(
-				ray.startPos
+				ray.vertex
 			);
 
 			this.colliders["Sphere"] = sphere;

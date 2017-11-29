@@ -77,11 +77,14 @@ function VenueStarsystem(universe, starsystem)
 		(
 			viewSize, 
 			focalLength, 
-			new Coords(0 - focalLength, 0, 0), //pos, 
-			new Orientation
+			new Location
 			(
-				new Coords(1, 0, 0), // forward
-				new Coords(0, 0, 1) // down
+				new Coords(0 - focalLength, 0, 0), //pos, 
+				new Orientation
+				(
+					new Coords(1, 0, 0), // forward
+					new Coords(0, 0, 1) // down
+				)
 			)
 		);
 	
@@ -215,12 +218,19 @@ function VenueStarsystem(universe, starsystem)
 				inputHelper.isMouseClicked = false;
 
 				universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
-				var mouseClickPos = inputHelper.mouseClickPos.clone().subtract
-				(
-					camera.viewSizeHalf
-				);
+				var mouseClickPos = inputHelper.mouseClickPos.clone();
 
-				var rayFromCameraThroughClick = camera.rayToViewPos(mouseClickPos);
+				var rayFromCameraThroughClick = new Ray
+				(
+					camera.loc.pos,
+					camera.coordsTransformViewToWorld
+					(
+						mouseClickPos
+					).subtract
+					(
+						camera.loc.pos
+					)
+				);
 
 				var bodiesClickedAsCollisions = Collision.rayAndBodies
 				(

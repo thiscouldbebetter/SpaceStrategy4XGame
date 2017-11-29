@@ -9,13 +9,16 @@ function Constraint_LookAtBody(targetBody)
 	Constraint_LookAtBody.prototype.applyToBody = function(body)
 	{
 		var targetPos = this.targetBody; // hack 
-		var bodyPos = body.loc.pos
 
-		var bodyOrientationForward = targetPos.clone().subtract
+		var bodyLoc = body.loc;
+		var bodyPos = bodyLoc.pos;
+		var bodyOrientation = bodyLoc.orientation;
+
+		var bodyOrientationForwardNew = targetPos.clone().subtract
 		(
 			bodyPos
 		).normalize();
 
-		body.orientation.forwardSet(bodyOrientationForward);
+		bodyOrientation.forwardSet(bodyOrientationForwardNew);
 	}
 }

@@ -1,13 +1,13 @@
 
 function Constraint_PositionOnCylinder
 (
-	center, orientation, yaw, radius, distanceFromCenterAlongAxis
+	center, orientation, yawInTurns, radius, distanceFromCenterAlongAxis
 )
 {
 	this.name = "PositionOnCylinder";
 	this.center = center;
 	this.orientation = orientation;
-	this.yaw = yaw;
+	this.yawInTurns = yawInTurns;
 	this.radius = radius;
 	this.distanceFromCenterAlongAxis = distanceFromCenterAlongAxis;
 }
@@ -15,10 +15,12 @@ function Constraint_PositionOnCylinder
 {
 	Constraint_PositionOnCylinder.prototype.applyToBody = function(body)
 	{
-		this.yaw.wrapToRangeMinMax(0, 1);
-		var yawInRadians = this.yaw * Polar.RadiansPerCycle;
+		this.yawInTurns.wrapToRangeMinMax(0, 1);
+		var yawInRadians = this.yawInTurns * Polar.RadiansPerTurn;
 
-		var bodyPos = body.loc.pos;		
+		var bodyLoc = body.loc;
+		var bodyPos = bodyLoc.pos;
+		var bodyOrientation = bodyLoc.orientation;
 
 		bodyPos.overwriteWith
 		(
@@ -47,6 +49,6 @@ function Constraint_PositionOnCylinder
 
 		)
 
-		body.orientation.overwriteWith(this.orientation);
+		bodyOrientation.overwriteWith(this.orientation);
 	}	
 }

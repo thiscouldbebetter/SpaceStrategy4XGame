@@ -151,11 +151,14 @@ function World(name, dateCreated, network, factions, ships, camera)
 		(
 			viewSize, 
 			focalLength, 
-			new Coords(-viewDimension, 0, 0), //pos, 
-			new Orientation
+			new Location
 			(
-				new Coords(1, 0, 0), // forward
-				new Coords(0, 0, 1) // down
+				new Coords(-viewDimension, 0, 0), //pos, 
+				new Orientation
+				(
+					new Coords(1, 0, 0), // forward
+					new Coords(0, 0, 1) // down
+				)
 			)
 		);
 

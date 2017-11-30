@@ -33,19 +33,17 @@ function NotificationSession(notifications)
 					fontHeightInPixels
 				),
 
-				new ControlSelect
+				new ControlList
 				(
 					"listNotifications",
 					new Coords(margin, margin + controlHeight), // pos
 					new Coords(columnWidth, controlHeight * 4), // size
-					// dataBindingForValueSelected
-					new DataBinding(this, "notificationSelected"),
-					// dataBindingForOptions
 					new DataBinding(this.notifications),
-					null, // bindingExpressionForOptionValues
-					"message", // bindingExpressionForOptionText
-					true, // isEnabled
-					4 // numberOfItemsVisible
+					"message", // bindingExpressionForItemText
+					fontHeightInPixels,
+					// bindingForItemSelected
+					new DataBinding(this, "notificationSelected"),
+					null // bindingExpressionForItemValue
 				),
 
 				new ControlLabel
@@ -83,15 +81,15 @@ function NotificationSession(notifications)
 					}
 				),
 
-
 				new ControlButton
 				(
-					"buttonDone",
+					"buttonBack",
 					new Coords(margin, containerSize.y - margin - controlHeight), // pos
 					new Coords(columnWidth, controlHeight), // size
-					"Done",
+					"Back",
 					fontHeightInPixels,
 					true, // hasBorder
+					true, // isEnabled
 					function click(universe)
 					{
 						var world = universe.world;

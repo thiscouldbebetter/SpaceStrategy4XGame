@@ -30,6 +30,7 @@ function VenueTalkSession(venueParent, talkSession)
 		var containerSize = universe.display.sizeInPixels.clone();
 		var margin = 10;
 		var controlHeight = 15;
+		var fontHeightInPixels = margin;
 
 		var controlBuilder = universe.controlBuilder;
 
@@ -42,15 +43,9 @@ function VenueTalkSession(venueParent, talkSession)
 			[
 				new ControlButton
 				(
-					"buttonDone",
-					new Coords
-					(
-						margin, margin
-					), // pos
-					new Coords
-					(
-						controlHeight, controlHeight
-					), // size
+					"buttonBack",
+					new Coords(margin, margin), // pos
+					new Coords(controlHeight, controlHeight), // size
 					"<",
 					fontHeightInPixels,
 					true, // hasBorder
@@ -95,11 +90,11 @@ function VenueTalkSession(venueParent, talkSession)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					new DataBinding(this.talkSession, "displayTextCurrent")
+					new DataBinding(this.talkSession, "displayTextCurrent()"),
+					fontHeightInPixels
 				),
 
-
-				new ControlSelect
+				new ControlList
 				(
 					"listResponses",
 					new Coords
@@ -111,17 +106,16 @@ function VenueTalkSession(venueParent, talkSession)
 						containerSize.x - margin * 2, 
 						controlHeight * 4
 					), // size
-					// dataBindingForValueSelected
-					new DataBinding(this.talkSession, "optionSelected"),
 					// options
 					new DataBinding
 					(
-						this.talkSession, "optionsAvailable"
+						this.talkSession, "optionsAvailable()"
 					),
-					null, // bindingExpressionForOptionValues
-					"text", // bindingExpressionForOptionText
-					new DataBinding(true), // isEnabled
-					4 // numberOfItemsVisible
+					"text()", // bindingExpressionForOptionText
+					fontHeightInPixels,
+					// dataBindingForValueSelected
+					new DataBinding(this.talkSession, "optionSelected"),
+					null 
 				),
 
 				new ControlButton

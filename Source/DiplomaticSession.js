@@ -1,5 +1,5 @@
 
-function DiplomaticSession(diplomaticActions, factionActing, factions)
+function DiplomaticSession(diplomaticActions, factionActing, factions, venueParent)
 {
 	this.diplomaticActions = diplomaticActions;
 	this.diplomaticActions.addLookups("name");
@@ -8,13 +8,15 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 	this.factions = factions;
 	this.factions.addLookups("name");
 
+	this.venueParent = venueParent;
+
 	this.factionSelected = null;
 }
 
 {
 	// static methods
 
-	DiplomaticSession.buildExample = function(factionActing, factions)
+	DiplomaticSession.demo = function(factionActing, factions, venueParent)
 	{
 		var diplomaticActions = DiplomaticAction.Instances._All;
 
@@ -22,7 +24,8 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 		(
 			diplomaticActions,
 			factionActing,
-			factions
+			factions,
+			venueParent
 		);
 
 		return session;
@@ -58,6 +61,7 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 		var margin = 10;
 		var controlHeight = 20;
 		var listWidth = 100;
+		var fontHeightInPixels = margin;
 
 		var returnValue = new ControlContainer
 		(
@@ -68,7 +72,7 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 			[
 				new ControlButton
 				(
-					"buttonDone",
+					"buttonBack",
 					new Coords
 					(
 						margin, margin
@@ -83,7 +87,7 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 					true, // isEnabled
 					function click(universe)
 					{
-						var venueNext = universe.venueCurrent.venueParent;
+						var venueNext = new VenueWorld(universe.world);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}
@@ -98,18 +102,17 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 					new DataBinding("Factions:")
 				),
 
-				new ControlSelect
+				new ControlList
 				(
 					"listFactions",
 					new Coords(margin, margin * 2 + controlHeight * 2), // pos
 					new Coords(listWidth, controlHeight * 4), // size
-					// dataBindingForValueSelected
-					new DataBinding(this, "factionSelected"), 
-					new DataBinding(this.factions), // options
-					null, // bindingExpressionForOptionValues
-					"name", // bindingExpressionForOptionText,
-					new DataBinding(true), // isEnabled
-					6 // numberOfItemsVisible
+					new DataBinding(this.factions), // items
+					"name", // bindingExpressionForItemText,
+					fontHeightInPixels,
+					// bindingForItemSelected
+					new DataBinding(this, "factionSelected"),
+					null // bindingExpressionForItemValue
 				),
 
 				new ControlButton
@@ -118,8 +121,9 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 					new Coords(margin, margin * 3 + controlHeight * 6), // pos
 					new Coords(listWidth, controlHeight), // size
 					"Talk",
-					// isEnabled
-					new DataBinding(this, "isFactionSelected"), 
+					fontHeightInPixels, 
+					true, // hasBorder
+					new DataBinding(this, "isFactionSelected()"), // isEnabled
 					this.talkSessionInitialize.bind(this, universe) // click
 				),
 

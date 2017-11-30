@@ -5,31 +5,35 @@ function Action_CameraMove(displacementAmountsRightAndDown)
 {
 	this.displacementAmountsRightAndDown = displacementAmountsRightAndDown;
 	this.displacement = new Coords(0, 0, 0);
+	this.polar = new Polar();
 }
 
 {
 	Action_CameraMove.prototype.perform = function(camera)
 	{
+		var cameraLoc = camera.loc;
+		var cameraOrientation = cameraLoc.orientation;
+
 		this.displacement.overwriteWith
 		(
-			camera.orientation.right
+			cameraOrientation.right
 		).multiplyScalar
 		(
 			this.displacementAmountsRightAndDown[0]
 		).add
 		(
-			camera.orientation.down.clone().multiplyScalar
+			cameraOrientation.down.clone().multiplyScalar
 			(
 				this.displacementAmountsRightAndDown[1]
 			)
 		);
-		var cameraPos = camera.loc.pos;
+		var cameraPos = cameraLoc.pos;
 		cameraPos.add(this.displacement);
-		var cameraPosAsPolar = Polar.fromCoords(cameraPos);
+		var cameraPosAsPolar = this.polar.fromCoords(cameraPos);
 		cameraPosAsPolar.radius = camera.focalLength;
-		cameraPos.overwriteWith(cameraPosAsPolar.toCoords());
+		cameraPosAsPolar.toCoords(cameraPos);
 
 		var cameraOrientationForward = cameraPos.clone().multiplyScalar(-1).normalize();
-		camera.orientation.forwardSet(cameraOrientationForward);
+		cameraOrientation.forwardSet(cameraOrientationForward);
 	}
 }

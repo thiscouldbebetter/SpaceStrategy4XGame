@@ -26,6 +26,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		var controlSpacing = 20;
 		var listWidth = 100;
 		var columnWidth = 60;
+		var fontHeightInPixels = 10;
 
 		var returnValue = new ControlContainer
 		(
@@ -79,18 +80,16 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					new DataBinding("Planets:")
 				),
 
-				new ControlSelect
+				new ControlList
 				(
 					"listPlanets",
 					new Coords(margin, margin + controlSpacing * 3), // pos
 					new Coords(listWidth, controlSpacing * 4), // size
-					// dataBindingForValueSelected
-					new DataBinding(diplomaticSession, "factionSelected.planetSelected"), 
-					new DataBinding(diplomaticSession, "factionSelected.planets"), // options
-					null, // bindingExpressionForOptionValues
-					"name", // bindingExpressionForOptionText,
-					new DataBinding(true), // isEnabled
-					6 // numberOfItemsVisible
+					new DataBinding(diplomaticSession, "factionSelected.planets"), // items
+					"name", // bindingExpressionForItemText,
+					fontHeightInPixels,
+					// dataBindingForItemValue
+					new DataBinding(diplomaticSession, "factionSelected.planetSelected")
 				),
 
 				new ControlLabel
@@ -102,18 +101,15 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					new DataBinding("Ships:")
 				),
 
-				new ControlSelect
+				new ControlList
 				(
 					"listShips",
 					new Coords(margin, margin + controlSpacing * 8), // pos
 					new Coords(listWidth, controlSpacing * 4), // size
-					// dataBindingForValueSelected
-					new DataBinding(diplomaticSession, "factionSelected.shipSelected"), 
 					new DataBinding(diplomaticSession, "factionSelected.ships"), // options
-					null, // bindingExpressionForOptionValues
 					"name", // bindingExpressionForOptionText,
-					new DataBinding(true), // isEnabled
-					6 // numberOfItemsVisible
+					// dataBindingForValueSelected
+					new DataBinding(diplomaticSession, "factionSelected.shipSelected")
 				),
 			]
 		);
@@ -304,10 +300,11 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		var world = universe.world;
 		var factionCurrent = world.factionCurrent();
 		var factionsOther = world.factionsOtherThanCurrent();
-		var diplomaticSession = DiplomaticSession.buildExample
+		var diplomaticSession = DiplomaticSession.demo
 		(
 			factionCurrent,
-			factionsOther
+			factionsOther,
+			universe.venueCurrent
 		);
 		var diplomaticSessionAsControl = diplomaticSession.controlBuild(universe);
 		var venueNext = new VenueControls(diplomaticSessionAsControl, universe.venueCurrent);

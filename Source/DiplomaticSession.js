@@ -71,7 +71,7 @@ function DiplomaticSession(diplomaticActions, factionActing, factions)
 					"buttonDone",
 					new Coords
 					(
-						margin, margin	
+						margin, margin
 					), // pos
 					new Coords
 					(

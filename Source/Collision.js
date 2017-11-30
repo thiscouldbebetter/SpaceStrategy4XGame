@@ -1,6 +1,6 @@
 
 function Collision()
-{	
+{
 	this.pos = new Coords(0, 0, 0);
 	this.distanceToCollision = null;
 	this.colliders = [];
@@ -59,7 +59,7 @@ function Collision()
 			else
 			{
 				this.colliders["Face"] = face;
-	
+
 				var displacementFromVertex0ToCollision = new Coords(0, 0, 0);
 
 				for (var t = 0; t < face.triangles.length; t++)
@@ -158,9 +158,9 @@ function Collision()
 			}
 			else
 			{
-				this.distanceToCollision = distanceToCollision2;				
+				this.distanceToCollision = distanceToCollision2;
 			}
-	
+
 			this.pos.overwriteWith
 			(
 				ray.direction
@@ -197,7 +197,7 @@ function Collision()
 			(
 				edgeFromFace.vertices[0].pos
 			);
-		
+
 			// hack?
 			var epsilon = .01;
 
@@ -209,7 +209,7 @@ function Collision()
 			{
 				isPosWithinAllEdgesOfFaceSoFar = false;
 				break;
-			}	
+			}
 		}
 
 		return isPosWithinAllEdgesOfFaceSoFar;

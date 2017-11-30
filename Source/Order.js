@@ -2,7 +2,7 @@
 function Order(defnName, target)
 {
 	this.defnName = defnName;
-	this.target = target;	
+	this.target = target;
 	this.isComplete = false;
 }
 
@@ -18,5 +18,5 @@ function Order(defnName, target)
 		{
 			this.defn().obey(actor, this);
 		}
-	}	
+	}
 }

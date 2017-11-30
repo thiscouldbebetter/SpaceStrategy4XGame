@@ -97,7 +97,7 @@ function TalkSession(defn, factions)
 			"pop DeclareWar.Acquiesce",
 
 			"label ProposeAlliance",
-			"program 	AcceptAlliance ' return talkSession.factions[1].allianceProposalAcceptFrom(talkSession.factions[0]); ' ",	
+			"program 	AcceptAlliance ' return talkSession.factions[1].allianceProposalAcceptFrom(talkSession.factions[0]); ' ",
 			"ifGoto 	AcceptAllance false ProposeAlliance.Reject",
 
 			"label ProposeAlliance.Accept",
@@ -106,7 +106,7 @@ function TalkSession(defn, factions)
 			"goto SubjectOptions",
 
 			"label ProposeAlliance.Reject",
-			"display 	'While we value your friendship, we wish to avoid such entanglements for now.' ",			
+			"display 	'While we value your friendship, we wish to avoid such entanglements for now.' ",
 			"prompt",
 
 			"label CancelAlliance",
@@ -214,8 +214,8 @@ function TalkSession(defn, factions)
 	{
 		document.body.appendChild(this.htmlElementBuild());
 
-		//this.update();		
-	}	
+		//this.update();
+	}
 
 	TalkSession.prototype.update = function()
 	{

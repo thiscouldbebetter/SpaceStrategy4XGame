@@ -2,6 +2,10 @@
 function ControlContainerTransparent(containerInner)
 {
 	this.containerInner = containerInner;
+
+	// Helper variables.
+	this.drawPos = new Coords();
+	this.drawLoc = new Location(this.drawPos);
 }
 
 {
@@ -47,9 +51,10 @@ function ControlContainerTransparent(containerInner)
 
 	// drawable
 
-	ControlContainerTransparent.prototype.drawToDisplayAtLoc = function(universe, display, drawLoc)
+	ControlContainerTransparent.prototype.draw = function(universe, display, drawLoc)
 	{
-		var drawPos = drawLoc.pos.add(this.containerInner.pos);
+		drawLoc = this.drawLoc.overwriteWith(drawLoc);
+		var drawPos = this.drawPos.overwriteWith(drawLoc.pos).add(this.containerInner.pos);
 
 		display.drawRectangle
 		(
@@ -62,7 +67,8 @@ function ControlContainerTransparent(containerInner)
 		for (var i = 0; i < children.length; i++)
 		{
 			var child = children[i];
-			child.drawToDisplayAtLoc(universe, display, drawLoc.clone());
+			child.drawLoc.overwriteWith(drawLoc);
+			child.draw(universe, display, child.drawLoc);
 		}
 	}
 }

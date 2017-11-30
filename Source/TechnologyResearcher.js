@@ -21,6 +21,23 @@ function TechnologyResearcher
 		return returnValues;
 	}
 
+	TechnologyResearcher.prototype.researchAccumulatedIncrement = function(universe, amountToIncrement)
+	{
+		var technologyBeingResearched = this.technologyBeingResearched(universe);
+
+		this.researchAccumulated += amountToIncrement;
+
+		if (this.researchAccumulated >= technologyBeingResearched.researchRequired)
+		{
+			this.namesOfTechnologiesKnown.push
+			(
+				this.nameOfTechnologyBeingResearched
+			);
+			this.nameOfTechnologyBeingResearched = null;
+			this.researchAccumulated = 0;
+		}
+	}
+
 	TechnologyResearcher.prototype.strength = function()
 	{
 		var returnValue = 0;
@@ -35,10 +52,9 @@ function TechnologyResearcher
 		return returnValue;
 	}
 
-	TechnologyResearcher.prototype.technologiesAvailable = function(universe)
+	TechnologyResearcher.prototype.technologiesAvailable = function(technologyResearchSession)
 	{
-		var technologyTree = universe.technologyTree;
-
+		var technologyTree = technologyResearchSession.technologyTree;
 		var technologies = technologyTree.technologies;
 		var technologiesKnown = this.namesOfTechnologiesKnown;
 		var technologiesUnknown = [];
@@ -47,24 +63,24 @@ function TechnologyResearcher
 		{
 			var technology = technologies[i];
 			var technologyName = technology.name;
-	
+
 			var isAlreadyKnown = (technologiesKnown.indexOf(technologyName) >= 0);
-			
+
 			if (isAlreadyKnown == false)
 			{
 				technologiesUnknown.push(technology);
 			}
 		}
-	
+
 		var technologiesUnknownWithKnownPrerequisites = [];
-	
+
 		for (var i = 0; i < technologiesUnknown.length; i++)
 		{
 			var technology = technologiesUnknown[i];
 			var prerequisites = technology.namesOfPrerequisiteTechnologies;
-	
+
 			var areAllPrerequisitesKnown = true;
-		
+
 			for (var p = 0; p < prerequisites.length; p++)
 			{
 				var prerequisite = prerequisites[p];
@@ -99,33 +115,16 @@ function TechnologyResearcher
 		for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++)
 		{
 			var techName = this.namesOfTechnologiesKnown[i];
-			var technology = universe.technologyTree.technologies[techName];
+			var technology = universe.world.technologyTree.technologies[techName];
 			returnValues.push(technology);
 		}
 
 		return returnValues;
 	}
 
-	TechnologyResearcher.prototype.technologyAccumulatedIncrement = function()
-	{
-		var technologyBeingResearched = this.technologyBeingResearched();
-
-		this.researchAccumulated += amountToIncrement;
-
-		if (this.researchAccumulated >= technologyBeingResearched.researchRequired)
-		{
-			this.namesOfTechnologiesKnown.push
-			(
-				this.nameOfTechnologyBeingResearched
-			);
-			this.nameOfTechnologyBeingResearched = null;
-			this.researchAccumulated = 0;
-		}
-	}
-
 	TechnologyResearcher.prototype.technologyBeingResearched = function(universe)
 	{
-		var technologyTree = universe.technologyTree;
+		var technologyTree = universe.world.technologyTree;
 
 		var returnValue = technologyTree.technologies[this.nameOfTechnologyBeingResearched];
 
@@ -136,6 +135,6 @@ function TechnologyResearcher
 
 	TechnologyResearcher.prototype.updateForTurn = function()
 	{
-		var todo = 1;	
+		var todo = 1;
 	}
 }

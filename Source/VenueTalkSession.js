@@ -45,7 +45,7 @@ function VenueTalkSession(venueParent, talkSession)
 					"buttonDone",
 					new Coords
 					(
-						margin, margin	
+						margin, margin
 					), // pos
 					new Coords
 					(
@@ -68,7 +68,7 @@ function VenueTalkSession(venueParent, talkSession)
 					"buttonLog",
 					new Coords
 					(
-						containerSize.x - margin - controlHeight * 2, margin	
+						containerSize.x - margin - controlHeight * 2, margin
 					), // pos
 					new Coords
 					(
@@ -129,7 +129,7 @@ function VenueTalkSession(venueParent, talkSession)
 					"buttonContinue",
 					new Coords
 					(
-						margin, controlHeight * 6 + margin * 4	
+						margin, controlHeight * 6 + margin * 4
 					), // pos
 					new Coords
 					(
@@ -141,7 +141,7 @@ function VenueTalkSession(venueParent, talkSession)
 					true, // hasBorder
 					true, // isEnabled
 					this.talkSession.respond.bind(this.talkSession, universe)
-				),	
+				),
 			]
 		);
 

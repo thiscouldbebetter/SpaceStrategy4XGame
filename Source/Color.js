@@ -12,8 +12,7 @@ function Color(name, systemColor)
 		this.Blue = new Color("Blue", "rgb(0, 0, 255)");
 		this.Brown = new Color("Brown", "Brown");
 		this.Cyan = new Color("Cyan", "rgb(0, 255, 255)");
-		//this.CyanHalfTranslucent = new Color("CyanHalfTranslucent", "rgba(0, 128, 128, .5)");
-		this.CyanHalfTranslucent = new Color("CyanHalfTranslucent", "rgba(128, 128, 128, .1)");
+		this.CyanHalfTranslucent = new Color("CyanHalfTranslucent", "rgba(0, 128, 128, .5)");
 		this.Gray = new Color("Gray", "rgb(128, 128, 128)");
 		this.GrayLight = new Color("Gray", "rgb(224, 224, 224)");
 		this.Green = new Color("Green", "rgb(0, 255, 0)");

@@ -8,23 +8,23 @@ function TechnologyResearchSession(technologyTree, researcher)
 {
 	// static methods
 
-	TechnologyResearchSession.buildExample = function()
+	TechnologyResearchSession.demo = function()
 	{
 		var technologies =
 		[
-			new Technology("A", 		5, 	[], 			[]),
-			new Technology("A.1", 		8, 	["A"], 			[]),
-			new Technology("A.2", 		8, 	["A"], 			[]),
-			new Technology("A.3", 		8, 	["A"], 			[]),
-			new Technology("B", 		5, 	[], 			[]),
-			new Technology("C", 		5, 	[], 			[]),
+			new Technology("A", 	5, 	[], 	[]),
+			new Technology("A.1", 	8, 	["A"], 	[]),
+			new Technology("A.2", 	8, 	["A"], 	[]),
+			new Technology("A.3", 	8, 	["A"], 	[]),
+			new Technology("B", 	5, 	[], 	[]),
+			new Technology("C", 	5, 	[], 	[]),
 
-			new Technology("A+B", 		10, 	["A", "B"], 		[]),
-			new Technology("A+C", 		10, 	["A", "C"], 		[]),
-			new Technology("B+C", 		10, 	["B", "C"], 		[]),
+			new Technology("A+B", 	10, 	["A", "B"], []),
+			new Technology("A+C", 	10, 	["A", "C"], []),
+			new Technology("B+C", 	10, 	["B", "C"], []),
 
-			new Technology("A+B+C", 	15, 	["A", "B", "C"], 	[]),
-	
+			new Technology("A+B+C", 15, 	["A", "B", "C"], 	[]),
+
 			new Technology("(A+B)+(B+C)", 	20, 	["A+B", "B+C"], 	[]),
 		];
 
@@ -55,7 +55,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 	}
 
 	// instance methods
-	
+
 	TechnologyResearchSession.prototype.isResearchNotInProgress = function()
 	{
 		var returnValue = (this.researcher.researchAccumulated == 0);
@@ -69,12 +69,13 @@ function TechnologyResearchSession(technologyTree, researcher)
 
 	TechnologyResearchSession.prototype.researchAccumulatedIncrement = function
 	(
+		universe,
 		amountToIncrement
 	)
 	{
-		this.researcher.researchAccumulatedIncrement();
+		this.researcher.researchAccumulatedIncrement(universe, amountToIncrement);
 	}
-	
+
 	TechnologyResearchSession.prototype.researchRequired = function()
 	{
 		var technologyBeingResearched = this.technologyBeingResearched();
@@ -97,9 +98,13 @@ function TechnologyResearchSession(technologyTree, researcher)
 
 	// controls
 
-	TechnologyResearchSession.prototype.controlBuild = function(size)
+	TechnologyResearchSession.prototype.controlBuild = function(universe)
 	{
-		var margin = 10;
+		var display = universe.display;
+		var size = display.sizeInPixels;
+		var margin = display.fontHeightInPixels;
+		var labelHeight = display.fontHeightInPixels;
+		var buttonHeight = labelHeight * 2.5;
 
 		var returnValue = new ControlContainer
 		(
@@ -112,7 +117,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 				(
 					"labelResearcher", // name, 
 					new Coords(margin, margin), // pos, 
-					new Coords(10, 10), // size, 
+					new Coords(size.x - margin * 2, labelHeight), // size, 
 					false, // isTextCentered, 
 					new DataBinding("Researcher:") //text
 				),
@@ -121,7 +126,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 				(
 					"textResearcher", // name, 
 					new Coords(70, margin), // pos, 
-					new Coords(10, 10), // size, 
+					new Coords(size.x - margin * 2, labelHeight), // size, 
 					false, // isTextCentered, 
 					new DataBinding(this.researcher.name) //text
 				),
@@ -130,66 +135,56 @@ function TechnologyResearchSession(technologyTree, researcher)
 				(
 					"labelTechnologiesKnown", // name, 
 					new Coords(margin, 30), // pos, 
-					new Coords(10, 10), // size, 
+					new Coords(size.x - margin * 2, labelHeight), // size, 
 					false, // isTextCentered, 
 					new DataBinding("Technologies Known:") //text
 				),
 
-				new ControlSelect
+				new ControlList
 				(
 					"listTechnologiesKnown",
 					new Coords(margin, 45), // pos
 					new Coords(110, 50), // size
-					null, // dataBindingForValueSelected
-					// options
+					// items
 					new DataBinding
 					(
 						this.researcher.namesOfTechnologiesKnown,
 						null
 					),
-					null, // optionvalues,
-					null, // optionText,
-					new DataBinding(true), // isEnabled
-					4 // itemsVisible
+					null, // bindingExpressionForItemText
+					labelHeight // fontHeightInPixels
 				),
 
 				new ControlLabel
 				(
 					"labelTechnologiesAvailable", // name, 
 					new Coords(140, 30), // pos, 
-					new Coords(10, 10), // size, 
+					new Coords(size.x - margin * 2, labelHeight), // size, 
 					false, // isTextCentered, 
 					new DataBinding("Technologies Available:") // text
 				),
 
-				new ControlSelect
+				new ControlList
 				(
 					"listTechnologiesAvailable", // name, 
 					new Coords(140, 45), // pos, 
 					new Coords(110, 50), // size, 
-					// valueSelected,
+					// items,
 					new DataBinding
 					(
-						this.researcher, 
-						"nameOfTechnologyBeingResearched"
+						this, "researcher.technologiesAvailable()" 
 					),
-					// options,
-					new DataBinding
-					(
-						this.researcher, "technologiesAvailable" 
-					),
-					"name", // bindingExpressionForOptionValues,
-					"name", // bindingExpressionForOptionText
-					//true, // isEnabled
-					new DataBinding(this, "isResearchNotInProgress"),
-					4 // numberOfItemsVisible
+					"name", // bindingExpressionForItemText
+					labelHeight, // fontHeightInPixels
+					new DataBinding(this.researcher, "nameOfTechnologyBeingResearched"), // bindingForItemSelected
+					"name" // bindingExpressionForItemValue
 				),
-			
+
 				new ControlLabel
 				(
 					"labelTechnologyBeingResearched", // name, 
 					new Coords(margin, 120), // pos, 
-					new Coords(10, 10), // size, 
+					new Coords(size.x - margin * 2, labelHeight), // size, 
 					false, // isTextCentered, 
 					new DataBinding("Technology Being Researched:") // text
 				),
@@ -198,7 +193,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 				(
 					"textTechnologyBeingResearched", // name, 
 					new Coords(160, 120), // pos, 
-					new Coords(10, 10), // size, 
+					new Coords(size.x - margin * 2, labelHeight), // size, 
 					false, // isTextCentered, 
 					new DataBinding
 					(
@@ -210,8 +205,8 @@ function TechnologyResearchSession(technologyTree, researcher)
 				new ControlLabel
 				(
 					"labelResearchAccumulated", // name, 
-					new Coords(10, 135), // pos, 
-					new Coords(10, 10), // size, 
+					new Coords(margin, 135), // pos, 
+					new Coords(size.x - margin * 2, labelHeight), // size, 
 					false, // isTextCentered, 
 					new DataBinding("Research Accumulated:") // text
 				),
@@ -219,8 +214,8 @@ function TechnologyResearchSession(technologyTree, researcher)
 				new ControlLabel
 				(
 					"textResearchAccumulated", // name, 
-					new Coords(120, 135), // pos, 
-					new Coords(30, 10), // size, 
+					new Coords(120, 140), // pos, 
+					new Coords(30, labelHeight), // size, 
 					true, // isTextCentered, 
 					new DataBinding(this.researcher, "researchAccumulated") // text
 				),
@@ -228,8 +223,8 @@ function TechnologyResearchSession(technologyTree, researcher)
 				new ControlLabel
 				(
 					"labelSlash", // name, 
-					new Coords(130, 135), // pos, 
-					new Coords(30, 10), // size, 
+					new Coords(130, 140), // pos, 
+					new Coords(30, labelHeight), // size, 
 					true, // isTextCentered, 
 					new DataBinding("/") // text
 				),
@@ -237,27 +232,45 @@ function TechnologyResearchSession(technologyTree, researcher)
 				new ControlLabel
 				(
 					"textResearchRequired", // name, 
-					new Coords(140, 135), // pos, 
-					new Coords(30, 10), // size, 
+					new Coords(140, 140), // pos, 
+					new Coords(30, labelHeight), // size, 
 					true, // isTextCentered, 
-					new DataBinding(this, "researchRequired") // text
+					new DataBinding(this, "researchRequired()") // text
 				),
 
 				new ControlButton
 				(
 					"buttonResearchPlusOne", //name, 
-					new Coords(10, 155), //pos, 
-					new Coords(100, 25), // size, 
+					new Coords(margin, 155), //pos, 
+					new Coords(buttonHeight * 4, buttonHeight), // size, 
 					"Research + 1", // text, 
-					fontHeightInPixels,
+					labelHeight, // fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
 					function click(universe) 
 					{ 
 						var session = universe.venueCurrent.researchSession;
-						session.researchAccumulatedIncrement(1);
+						session.researchAccumulatedIncrement(universe, 1);
+					}
+				),
+
+				new ControlButton
+				(
+					"buttonBack", //name, 
+					new Coords(margin, size.y - margin - buttonHeight), //pos, 
+					new Coords(buttonHeight, buttonHeight), // size, 
+					"Back", // text, 
+					labelHeight, // fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					function click(universe) 
+					{ 
+						var venueNext = new VenueWorld(universe.world);
+						venueNext = new VenueFader(venueNext, universe.venueCurrent);
+						universe.venueNext = venueNext;
 					}
 				)
+
 			]
 		);
 

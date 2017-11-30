@@ -19,6 +19,6 @@ function TalkScope(parent, talkNodeCurrent, talkNodesForOptions)
 
 	TalkScope.prototype.update = function(talkSession)
 	{
-		this.talkNodeCurrent.execute(talkSession, this);	
+		this.talkNodeCurrent.execute(talkSession, this);
 	}
 }

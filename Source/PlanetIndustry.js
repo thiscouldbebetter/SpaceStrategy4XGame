@@ -18,7 +18,7 @@ function PlanetIndustry(industryAccumulated, buildableInProgress)
 			{
 				this.industryAccumulated = 0;
 				// todo
-				var one = 1;			
+				var one = 1;
 			}
 		}
 	}

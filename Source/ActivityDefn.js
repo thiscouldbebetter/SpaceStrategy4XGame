@@ -15,13 +15,13 @@ function ActivityDefn(name, perform)
 			{
 				// do nothing
 			}
-		);	
+		);
 
 		this.MoveToTarget = new ActivityDefn
 		(
 			"MoveToTarget",
 			function perform(universe, actor, activity)
-			{	
+			{
 				var variables = activity.variables;
 				var target = variables[0];
 
@@ -34,15 +34,15 @@ function ActivityDefn(name, perform)
 				var distancePerStepMax = 100000; // hack
 				if (distanceMovedThisStep + distanceToMoveThisTick > distancePerStepMax)
 				{
-					distanceToMoveThisTick = distancePerStepMax - distanceMovedThisStep;	
+					distanceToMoveThisTick = distancePerStepMax - distanceMovedThisStep;
 				}
 
-				var actorPos = actor.loc.pos;				
+				var actorPos = actor.loc.pos;
 
 				var targetPos = target.loc.pos;
 				var displacementFromActorToTarget = targetPos.clone().subtract
 				(
-					actorPos	
+					actorPos
 				);
 				var distanceFromActorToTarget = displacementFromActorToTarget.magnitude();
 
@@ -55,10 +55,10 @@ function ActivityDefn(name, perform)
 					actor.order = null; // hack
 
 					universe.inputHelper.isEnabled = true;
-					
+
 					var targetDefnName = target.defn.name;
 					if (targetDefnName == "LinkPortal")
-					{						
+					{
 						var links = universe.world.network.links;
 
 						var venueCurrent = universe.venueCurrent;
@@ -67,7 +67,7 @@ function ActivityDefn(name, perform)
 						var starsystemNamesFromAndTo = target.starsystemNamesFromAndTo;
 						var starsystemNameFrom = starsystemNamesFromAndTo[0];
 						var starsystemNameTo = starsystemNamesFromAndTo[1];
-						
+
 						var link = links[starsystemNameFrom][starsystemNameTo];
 
 						starsystemFrom.ships.splice
@@ -78,19 +78,19 @@ function ActivityDefn(name, perform)
 						(
 							venueCurrent.bodies.indexOf(actor), 1
 						)
-						
+
 						link.ships.push(actor);
 
 						var direction;
 						if (link.nodesLinked(universe)[0].starsystem == starsystemFrom)
 						{
-							direction = 1;	
+							direction = 1;
 						}
 						else
 						{
 							direction = -1;
 						}
-						
+
 						actorPos.overwriteWithDimensions(0, 0, 0);
 						var speed = 10; // hack
 						actor.vel.overwriteWithDimensions(speed * direction, 0, 0);
@@ -117,7 +117,7 @@ function ActivityDefn(name, perform)
 
 					actorPos.add(actor.vel);
 				}
-				
+
 				distanceMovedThisStep += distanceToMoveThisTick;
 				variables[1] = distanceMovedThisStep;
 			}

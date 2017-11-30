@@ -23,7 +23,7 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 
 {
 	// static methods
-	
+
 	Map.fromCellsAsStrings = function
 	(
 		sizeInPixels, pos, terrains, cellsAsStrings

@@ -1,7 +1,7 @@
 
 function Planet(name, factionName, pos, demographics, industry, layout)
 {
-	this.name = name;	
+	this.name = name;
 	this.factionName = factionName;
 	this.loc = new Location(pos);
 	this.demographics = demographics;
@@ -57,7 +57,7 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 	// turns
 
 	Planet.prototype.updateForTurn = function()
-	{	
+	{
 		this.layout.updateForTurn();
 		this.industry.updateForTurn(this);
 		this.demographics.updateForTurn(this);

@@ -24,6 +24,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var name = NameGenerator.generateName();
 		var size = Starsystem.SizeStandard;
 
+		var starColor = Color.Instances.Yellow.systemColor;
 		var star = new Body
 		(
 			"Star", 
@@ -33,7 +34,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				new Coords(40, 40), // size
 				new VisualGroup
 				([
-					new VisualCircle(40, Color.Instances.Yellow.systemColor, Color.Instances.Yellow.systemColor),
+					new VisualCircle(40, starColor, starColor),
 					new VisualText(name)
 				])
 			),
@@ -119,7 +120,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 	Starsystem.prototype.updateForMove = function()
 	{
 		alert("todo");
-	}	
+	}
 
 	// turns
 
@@ -137,13 +138,45 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	// drawing
 
-	Starsystem.prototype.drawToDisplayForCamera = function(universe, display, camera)
+	Starsystem.prototype.draw = function(universe, display, camera)
 	{
 		var starsystem = this;
 		var cameraViewSize = camera.viewSize;
 		var cameraPos = camera.loc.pos;
 
 		var drawPos = display.drawPos;
+
+		this.draw_Grid(universe, display, camera);
+
+		var bodiesByType =
+		[
+			[ starsystem.star ],
+			starsystem.linkPortals,
+			starsystem.planets,
+			starsystem.ships,
+		];
+
+		for (var t = 0; t < bodiesByType.length; t++)
+		{
+			var bodies = bodiesByType[t];
+
+			for (var i = 0; i < bodies.length; i++)
+			{
+				var body = bodies[i];
+				this.draw_Body
+				(
+					universe,
+					display,
+					camera, 
+					body
+				);
+			}
+
+		}
+	}
+
+	Starsystem.prototype.draw_Grid = function(universe, display, camera)
+	{
 		var drawPosFrom = new Coords(0, 0, 0);
 		var drawPosTo = new Coords(0, 0, 0);
 
@@ -165,7 +198,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 			var multiplier = new Coords(0, 0, 0);
 			multiplier.dimension(d, gridCellSizeInPixels.dimension(d));
 
-			for (var i = 0 - gridSizeInCellsHalf.x; i <= gridSizeInCellsHalf.x; i++)			
+			for (var i = 0 - gridSizeInCellsHalf.x; i <= gridSizeInCellsHalf.x; i++)
 			{
 				drawPosFrom.overwriteWith
 				(
@@ -188,35 +221,9 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				graphics.stroke();
 			}
 		}
-
-		var bodiesByType =
-		[
-			[ starsystem.star ],
-			starsystem.linkPortals,
-			starsystem.planets,
-			starsystem.ships,
-		];
-
-		for (var t = 0; t < bodiesByType.length; t++)
-		{
-			var bodies = bodiesByType[t];
-
-			for (var i = 0; i < bodies.length; i++)
-			{
-				var body = bodies[i];
-				this.drawToDisplayForCamera_Body
-				(
-					universe,
-					display,
-					camera, 
-					body
-				);
-			}
-
-		}
 	}
 
-	Starsystem.prototype.drawToDisplayForCamera_Body = function(universe, display, camera, body)
+	Starsystem.prototype.draw_Body = function(universe, display, camera, body)
 	{
 		var graphics = display.graphics;
 		var drawPos = new Coords();
@@ -248,5 +255,5 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 		graphics.lineTo(drawPos.x, drawPos.y);
 		graphics.stroke();
-	}	
+	}
 }

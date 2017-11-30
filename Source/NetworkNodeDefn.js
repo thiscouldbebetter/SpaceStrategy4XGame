@@ -18,7 +18,7 @@ function NetworkNodeDefn(name, color)
 		[
 			this.Blue,
 			this.Green,
-			this.Red,			
+			this.Red,
 		];
 	}
 

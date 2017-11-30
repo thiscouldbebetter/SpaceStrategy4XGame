@@ -48,7 +48,7 @@ function NetworkLink(namesOfNodesLinked)
 		if (this.ships.length > 0)
 		{
 			var nodesLinked = this.nodesLinked(universe);
-	
+
 			var length = this.length();
 
 			var shipsExitingLink = [];
@@ -88,7 +88,7 @@ function NetworkLink(namesOfNodesLinked)
 			}
 		}
 
-		
-		
+
+
 	}
 }

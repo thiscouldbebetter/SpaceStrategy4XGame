@@ -28,7 +28,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 			new MapTerrain("Default", ".", "LightGray", false),
 		];
 		terrains.addLookups("codeChar");
-	
+
 		var viewSize = universe.display.sizeInPixels;
 		var mapSizeInPixels = viewSize.clone().multiplyScalar(.5);
 		var mapPosInPixels = viewSize.clone().subtract
@@ -39,7 +39,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 			2
 		);
 		mapPosInPixels.z = 0;
-	
+
 		var map = Map.fromCellsAsStrings
 		(
 			mapSizeInPixels,
@@ -81,7 +81,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 
 		return layout;
 	}
-	
+
 	// instance methods
 
 	Layout.prototype.elementAdd = function(elementToAdd)

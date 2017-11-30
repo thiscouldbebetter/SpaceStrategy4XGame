@@ -18,6 +18,6 @@ function PlanetDemographics(population)
 			{
 				this.population++;
 			}
-		}	
+		}
 	}
 }

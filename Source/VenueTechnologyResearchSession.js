@@ -1,15 +1,7 @@
 
-function VenueTechnologyResearchSession(universe, researchSession)
+function VenueTechnologyResearchSession(researchSession)
 {
 	this.researchSession = researchSession;
-
-	this.venueControls = new VenueControls
-	(
-		this.researchSession.controlBuild
-		(
-			universe.display.sizeInPixels
-		)
-	);
 }
 
 {
@@ -18,9 +10,12 @@ function VenueTechnologyResearchSession(universe, researchSession)
 		this.venueControls.draw(universe);
 	}
 
-	VenueTechnologyResearchSession.prototype.initialize = function()
+	VenueTechnologyResearchSession.prototype.initialize = function(universe)
 	{
-		// do nothing
+		this.venueControls = new VenueControls
+		(
+			this.researchSession.controlBuild(universe)
+		);
 	}
 
 	VenueTechnologyResearchSession.prototype.updateForTimerTick = function(universe)

@@ -42,7 +42,7 @@ function VenueLayout(universe, venueParent, layout)
 
 		cursorPos.overwriteWith
 		(
-			inputHelper.mouseMovePos	
+			inputHelper.mouseMovePos
 		).subtract
 		(
 			map.pos
@@ -59,7 +59,7 @@ function VenueLayout(universe, venueParent, layout)
 
 				var cursorBodyDefn = cursor.bodyDefn;
 				var cellAtCursor = map.cellAtPos(cursorPos);
-	
+
 				if (cursorBodyDefn == null)
 				{
 					var bodyToRemove = cellAtCursor.body;
@@ -79,8 +79,8 @@ function VenueLayout(universe, venueParent, layout)
 					{
 						layout.elementRemove
 						(
-							this.layoutElementInProgress	
-						);	
+							this.layoutElementInProgress
+						);
 					}
 
 					this.layoutElementInProgress = new LayoutElement
@@ -116,9 +116,9 @@ function VenueLayout(universe, venueParent, layout)
 					{
 						cursor.bodyDefn = null;
 					}
-					
-				}	
-			}	
+
+				}
+			}
 		}
 
 		this.draw(universe);
@@ -212,7 +212,7 @@ function VenueLayout(universe, venueParent, layout)
 					controlHeight
 				),
 
-				
+
 			]
 		);
 
@@ -277,7 +277,7 @@ function VenueLayout(universe, venueParent, layout)
 						venueCurrent.layout.map.cursor.bodyDefn = null;
 					}
 				),
-					
+
 				new ControlSelect
 				(
 					"selectBuilding",

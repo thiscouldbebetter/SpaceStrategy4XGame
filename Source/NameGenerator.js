@@ -13,7 +13,7 @@ function NameGenerator()
 		var numberOfSyllablesMax = 3;
 		var numberOfSyllablesRange = 
 			numberOfSyllablesMax - numberOfSyllablesMin;
-		
+
 		var numberOfSyllables = 
 			numberOfSyllablesMin
 			+ Math.floor
@@ -22,7 +22,7 @@ function NameGenerator()
 			);
 
 		var consonants = "bdfghjklmnprstvwxyz";
-		var vowels = "aeiou";		
+		var vowels = "aeiou";
 
 		for (var s = 0; s < numberOfSyllables; s++)
 		{

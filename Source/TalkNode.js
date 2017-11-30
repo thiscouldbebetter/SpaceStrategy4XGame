@@ -25,7 +25,7 @@ function TalkNode(defn, parameters)
 			stringLiteral = stringLiteral.split(" ").join("_");
 			stringSplitOnQuotes[i] = stringLiteral;
 		}
-	
+
 		stringToParse = stringSplitOnQuotes.join("'");
 		stringToParse = stringToParse.split("\t").join(" ");
 

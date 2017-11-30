@@ -127,7 +127,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 	{
 		var researchSession = new TechnologyResearchSession
 		(
-			universe.technologyTree,
+			universe.world.technologyTree,
 			this.technology
 		);
 		var venueNext = new VenueTechnologyResearchSession(researchSession);
@@ -247,7 +247,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	// diplomacy
 
-	Faction.prototype.allianceProposalAcceptFrom = function(factionOther)	
+	Faction.prototype.allianceProposalAcceptFrom = function(factionOther)
 	{
 		return true;
 	}
@@ -270,7 +270,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	Faction.prototype.factionsMatchingRelationshipState = function(stateToMatch)
 	{
-		var returnValues = [];	
+		var returnValues = [];
 
 		for (var i = 0; i < this.relationships.length; i++)
 		{
@@ -294,7 +294,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		universe.venueNext = venueNext;
 	}
 
-	Faction.prototype.peaceOfferAcceptFrom = function(factionOther)	
+	Faction.prototype.peaceOfferAcceptFrom = function(factionOther)
 	{
 		return true;
 	}
@@ -350,7 +350,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		return returnValue;
 	}
 
-	Faction.prototype.warThreatOfferConcessionsTo = function(factionOther)	
+	Faction.prototype.warThreatOfferConcessionsTo = function(factionOther)
 	{
 		return true;
 	}

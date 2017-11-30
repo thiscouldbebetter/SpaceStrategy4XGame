@@ -97,7 +97,7 @@ function Ship(name, defn, pos, factionName)
 			// children
 			[
 				new ControlLabel
-				(	
+				(
 					"labelShipAsSelection",
 					new Coords(margin, margin),
 					new Coords(0, 0), // this.size
@@ -151,7 +151,7 @@ function Ship(name, defn, pos, factionName)
 				),
 
 				new ControlLabel
-				(	
+				(
 					"labelDevices",
 					new Coords(margin, margin + controlSpacing * 4), // pos
 					new Coords(0, 0), // this.size

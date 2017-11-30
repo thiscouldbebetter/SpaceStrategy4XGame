@@ -4,11 +4,6 @@ function VenueWorld(world)
 	this.world = world;
 
 	this.camera = this.world.camera;
-
-	// this.venueControls = new VenueControls
-	// (
-		// this.controlBuild(universe)
-	// );
 }
 
 {
@@ -136,7 +131,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.finalize = function(universe)
 	{
-		universe.soundHelper.soundForMusic.pause(universe);		
+		universe.soundHelper.soundForMusic.pause(universe);
 	}
 
 	VenueWorld.prototype.initialize = function(universe)
@@ -145,7 +140,7 @@ function VenueWorld(world)
 		(
 			this.controlBuild(universe)
 		);
-				
+
 		var soundHelper = universe.soundHelper;
 		soundHelper.soundWithNamePlayAsMusic(universe, "Music");
 	}
@@ -161,7 +156,7 @@ function VenueWorld(world)
 
 		this.venueControls.updateForTimerTick(universe);
 
-		var world = this.world;				
+		var world = this.world;
 		var camera = world.camera;
 
 		var inputHelper = universe.inputHelper;
@@ -189,8 +184,8 @@ function VenueWorld(world)
 				universe.world.network.nodes,
 				NetworkNode.RadiusActual,
 				[] // listToAddTo
-			);	
-			
+			);
+
 			if (bodiesClickedAsCollisions.length > 0)
 			{
 				var collisionNearest = bodiesClickedAsCollisions[0];
@@ -207,7 +202,7 @@ function VenueWorld(world)
 				var bodyClicked = collisionNearest.colliders[0]; // todo
 
 				if (bodyClicked == this.selection)
-				{				
+				{
 					var venueNext = new VenueStarsystem(universe, bodyClicked.starsystem);
 					venueNext = new VenueFader(venueNext, universe.venueCurrent);
 					universe.venueNext = venueNext;
@@ -235,19 +230,19 @@ function VenueWorld(world)
 			var cameraSpeed = 20;
 			var displacementToMoveCamera = null;
 
-			if (inputActive == "a")
+			if (inputActive == "_a")
 			{
 				displacementToMoveCamera = [cameraSpeed, 0];
 			}
-			else if (inputActive == "d")
+			else if (inputActive == "_d")
 			{
 				displacementToMoveCamera = [0 - cameraSpeed, 0];
 			}
-			else if (inputActive == "s")
+			else if (inputActive == "_s")
 			{
 				displacementToMoveCamera = [0, 0 - cameraSpeed];
 			}
-			else if (inputActive == "w")
+			else if (inputActive == "_w")
 			{
 				displacementToMoveCamera = [0, cameraSpeed];
 			}
@@ -258,5 +253,5 @@ function VenueWorld(world)
 			}
 		}
 	}
-	
+
 }

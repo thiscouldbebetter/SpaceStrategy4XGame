@@ -12,7 +12,7 @@ function DiplomaticAction(name, effect)
 		(
 			"Declare War on",
 			function(universe, factionActing, factionReceiving) 
-			{	
+			{
 				var message;
 
 				var stateExisting = factionActing.relationships[factionReceiving.name].state;
@@ -67,15 +67,15 @@ function DiplomaticAction(name, effect)
 					(
 						factionReceiving.enemies()
 					);
-	
+
 					var strengthOfSelfAndAllies = DiplomaticRelationship.strengthOfFactions
 					(
 						factionReceiving.selfAndAllies()
 					);
-			
+
 					var strengthOfAlliesMinusEnemies = 
 						strengthOfSelfAndAllies - strengthOfEnemies;
-	
+
 					if (strengthOfAlliesMinusEnemies <= 0)
 					{
 						var relationship = factionActing.relationships[factionReceiving.name];
@@ -179,7 +179,7 @@ function DiplomaticAction(name, effect)
 							if (factionReceiving.enemies().indexOf() == -1)
 							{
 								factionsDeclaringWarOnReceiving.push(enemy);
-							}			
+							}
 						}
 
 						var strengthOfNewEnemies = DiplomaticRelationship.strengthOfFactions
@@ -238,7 +238,7 @@ function DiplomaticAction(name, effect)
 				} // end if stateExisting
 
 				alert(message);
-				
+
 			} // end effect
 		); // end new DiplomaticAction
 

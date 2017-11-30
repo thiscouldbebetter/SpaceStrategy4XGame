@@ -36,7 +36,7 @@ function NetworkNode(name, defn, pos, starsystem)
 			// children
 			[
 				new ControlLabel
-				(	
+				(
 					"labelStarsystemName",
 					new Coords(margin, margin),
 					new Coords(0, 0), // this.size
@@ -45,7 +45,7 @@ function NetworkNode(name, defn, pos, starsystem)
 				),
 
 				new ControlLabel
-				(	
+				(
 					"labelStarsystemHolder",
 					new Coords(margin, margin + controlSpacing),
 					new Coords(0, 0), // this.size

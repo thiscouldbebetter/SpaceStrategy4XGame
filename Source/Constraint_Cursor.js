@@ -119,7 +119,7 @@ function Constraint_Cursor()
 			if (collisionPos != null)
 			{
 				cursorPos.z = collisionPos.z;
-			}			
+			}
 		}
 
 		cursorPos.trimToRangeMinMax
@@ -127,5 +127,5 @@ function Constraint_Cursor()
 			this.boundsToRestrictTo.min,
 			this.boundsToRestrictTo.max
 		);
-	}	
+	}
 }

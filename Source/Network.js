@@ -86,9 +86,9 @@ function Network(name, nodes, links)
 					{
 						distanceOfNodeNewFromExisting = distanceOfNodeNewFromOther;
 						break;
-					}	
+					}
 
-					
+
 				}
 			}
 
@@ -173,7 +173,7 @@ function Network(name, nodes, links)
 				var starsystemSize = starsystem.size;
 				var starsystemOther = nodePairClosestSoFar[1 - i];
 				var linkName = "Link to " + starsystemOther.name;
-				
+
 				var linkPortal = new LinkPortal
 				(
 					linkName,
@@ -287,7 +287,7 @@ function Network(name, nodes, links)
 		(
 			drawPosFrom.overwriteWith(nodeFromPos)
 		);
-		
+
 		camera.coordsTransformWorldToView
 		(
 			drawPosTo.overwriteWith(nodeToPos)
@@ -304,7 +304,7 @@ function Network(name, nodes, links)
 			camera.focalLength / drawPosFrom.z;
 		var perspectiveFactorTo = 
 			camera.focalLength / drawPosTo.z;
-			
+
 		var radiusApparentFrom = 
 			nodeRadiusActual * perspectiveFactorFrom;
 		var radiusApparentTo = 
@@ -496,7 +496,7 @@ function Network(name, nodes, links)
 			).add
 			(
 				pos
-			);			
+			);
 
 			this.graphics.strokeStyle = "Cyan";
 
@@ -520,7 +520,7 @@ function Network(name, nodes, links)
 					drawPos.y + cellSizeInPixels.y
 				);
 				this.graphics.stroke();
-			}			
+			}
 			else
 			{
 				this.graphics.fillStyle = cursor.bodyDefn.color;

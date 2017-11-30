@@ -36,7 +36,7 @@ function VenueStarsystem(universe, starsystem)
 	{
 		var display = universe.display;
 		display.clear();
-		this.starsystem.drawToDisplayForCamera
+		this.starsystem.draw
 		(
 			universe,
 			display,
@@ -45,7 +45,7 @@ function VenueStarsystem(universe, starsystem)
 
 		if (this.cursor != null)
 		{
-			this.starsystem.drawToDisplayForCamera_Body
+			this.starsystem.draw_Body
 			(
 				universe, 
 				display,
@@ -59,7 +59,7 @@ function VenueStarsystem(universe, starsystem)
 
 	VenueStarsystem.prototype.finalize = function(universe)
 	{
-		universe.soundHelper.soundForMusic.pause(universe);		
+		universe.soundHelper.soundForMusic.pause(universe);
 	}
 
 	VenueStarsystem.prototype.initialize = function(universe)
@@ -72,7 +72,7 @@ function VenueStarsystem(universe, starsystem)
 		var viewSize = universe.display.sizeInPixels.clone();
 		var focalLength = viewSize.y;
 		viewSize.z = focalLength * 4;
-			
+
 		this.camera = new Camera
 		(
 			viewSize, 
@@ -87,9 +87,9 @@ function VenueStarsystem(universe, starsystem)
 				)
 			)
 		);
-	
+
 		var targetForCamera = new Coords(0, 0, 0);
-	
+
 		this.camera.constraints = [];
 
 		this.camera.constraints.push
@@ -107,7 +107,7 @@ function VenueStarsystem(universe, starsystem)
 				0 - this.camera.focalLength / 2 // distanceFromCenterAlongAxisMax
 			)
 		);
-	
+
 		this.camera.constraints.push
 		(
 			new Constraint_LookAtBody
@@ -177,7 +177,7 @@ function VenueStarsystem(universe, starsystem)
 				if (shipActivity != null)
 				{
 					shipActivity.perform(ship);
-				}				
+				}
 			}
 		}
 
@@ -189,27 +189,27 @@ function VenueStarsystem(universe, starsystem)
 		for (var i = 0; i < inputsActive.length; i++)
 		{
 			var inputActive = inputsActive[i];
-			if (inputActive == "a")
+			if (inputActive == "_a")
 			{
 				new Action_CylinderMove_Yaw(-.01).perform(camera);
 			}
-			else if (inputActive == "d")
+			else if (inputActive == "_d")
 			{
 				new Action_CylinderMove_Yaw(.01).perform(camera);
 			}
-			else if (inputActive == "f")
+			else if (inputActive == "_f")
 			{
 				new Action_CylinderMove_DistanceAlongAxis(10).perform(camera);
 			}
-			else if (inputActive == "r")
+			else if (inputActive == "_r")
 			{
 				new Action_CylinderMove_DistanceAlongAxis(-10).perform(camera);
 			}
-			else if (inputActive == "s")
+			else if (inputActive == "_s")
 			{
 				new Action_CylinderMove_Radius(10).perform(camera);
 			}
-			else if (inputActive == "w")
+			else if (inputActive == "_w")
 			{
 				new Action_CylinderMove_Radius(-10).perform(camera);
 			}
@@ -239,11 +239,11 @@ function VenueStarsystem(universe, starsystem)
 					10, // bodyRadius
 					[]
 				);
-				
+
 				var bodyClicked;
 
 				if (bodiesClickedAsCollisions.length == 0)
-				{				
+				{
 					bodyClicked = null;
 				}
 				else
@@ -256,7 +256,7 @@ function VenueStarsystem(universe, starsystem)
 
 						var j = 0;
 						for (j = 0; j < bodiesClickedAsCollisionsSorted.length; j++)
-						{						
+						{
 							var collisionSorted = bodiesClickedAsCollisionsSorted[j];
 
 							if (collisionToSort.distance < collisionSorted.distance)
@@ -268,7 +268,7 @@ function VenueStarsystem(universe, starsystem)
 						bodiesClickedAsCollisionsSorted.splice
 						(
 							j, 0, collisionToSort 
-						);					
+						);
 					}
 
 					var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
@@ -282,7 +282,7 @@ function VenueStarsystem(universe, starsystem)
 						{
 							var collision = bodiesClickedAsCollisionsSorted[c];
 							bodyClicked = collision.colliders[0];
-		
+
 							if (bodyClicked == this.selection)
 							{
 								var cNext = c + 1;
@@ -293,7 +293,7 @@ function VenueStarsystem(universe, starsystem)
 								collision = bodiesClickedAsCollisionsSorted[cNext];
 								bodyClicked = collision.colliders[0];
 								break;
-							}	
+							}
 						}
 					}
 				}
@@ -318,7 +318,7 @@ function VenueStarsystem(universe, starsystem)
 							ship.order = new Order
 							(
 								"Go",
-								targetBody	
+								targetBody
 							);
 
 							this.cursorClear();
@@ -347,14 +347,14 @@ function VenueStarsystem(universe, starsystem)
 							ship.order = new Order
 							(
 								"Go",
-								targetBody	
+								targetBody
 							);
 
 							this.cursorClear();
 
 							inputHelper.isEnabled = false;
 						}
-		
+
 					}
 					else if (this.selection == bodyClicked)
 					{
@@ -363,8 +363,8 @@ function VenueStarsystem(universe, starsystem)
 							var layout = bodyClicked.layout;
 							var venueNext = new VenueLayout(this, layout);
 							venueNext = new VenueFader(venueNext, universe.venueCurrent);
-							universe.venueNext = venueNext;						
-						}	
+							universe.venueNext = venueNext;
+						}
 					}
 					else
 					{

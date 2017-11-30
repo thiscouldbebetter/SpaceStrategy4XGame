@@ -12,9 +12,9 @@ function ControlBuilderExtensions()
 		margin,
 		controlHeight
 	)
-	{	
+	{
 		var fontHeightInPixels = universe.display.fontHeightInPixels;
-	
+
 		var returnValue = new ControlContainer
 		(
 			"containerSelected",
@@ -95,7 +95,7 @@ function ControlBuilderExtensions()
 	)
 	{
 		var fontHeightInPixels = universe.display.fontHeightInPixels;
-		
+
 		var returnValue = new ControlContainer
 		(
 			"containerTimeAndPlace",
@@ -263,7 +263,7 @@ function ControlBuilderExtensions()
 						cameraAction.perform(camera);
 					}
 				),
-				
+
 				new ControlButton
 				(
 					"buttonViewLeft",

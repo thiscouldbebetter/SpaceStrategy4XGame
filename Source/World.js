@@ -1,8 +1,10 @@
 
-function World(name, dateCreated, network, factions, ships, camera)
+function World(name, dateCreated, technologyTree, network, factions, ships, camera)
 {
 	this.name = name;
 	this.dateCreated = dateCreated;
+
+	this.technologyTree = technologyTree;
 	this.network = network;
 	this.factions = factions;
 	this.ships = ships;
@@ -22,6 +24,8 @@ function World(name, dateCreated, network, factions, ships, camera)
 	World.new = function(universe)
 	{
 		var worldName = NameGenerator.generateName() + " Cluster";
+
+		var technologyTree = TechnologyTree.demo();
 
 		var viewSize = universe.display.sizeInPixels.clone();
 		var viewDimension = viewSize.y;
@@ -119,7 +123,7 @@ function World(name, dateCreated, network, factions, ships, camera)
 			var faction = new Faction
 			(
 				factionName,
-				factionColor,	
+				factionColor,
 				[], // relationships 
 				new TechnologyResearcher
 				(
@@ -127,7 +131,7 @@ function World(name, dateCreated, network, factions, ships, camera)
 					null, // nameOfTechnologyBeingResearched,
 					0, // researchAccumulated
 					// namesOfTechnologiesKnown
-					[]					
+					[ "A" ]
 				), 
 				[
 					factionHomeStarsystem.planets[0]
@@ -143,9 +147,9 @@ function World(name, dateCreated, network, factions, ships, camera)
 			);
 			factions.push(faction);
 
-		}	
+		}
 
-		DiplomaticRelationship.initializeForFactions(factions);	
+		DiplomaticRelationship.initializeForFactions(factions);
 
 		var camera = new Camera
 		(
@@ -166,6 +170,7 @@ function World(name, dateCreated, network, factions, ships, camera)
 		(
 			worldName,
 			DateTime.now(),
+			technologyTree,
 			network,
 			factions,
 			ships,
@@ -174,7 +179,7 @@ function World(name, dateCreated, network, factions, ships, camera)
 		return returnValue;
 	}
 
-	// instance methods	
+	// instance methods
 
 	World.prototype.factionCurrent = function()
 	{
@@ -187,7 +192,7 @@ function World(name, dateCreated, network, factions, ships, camera)
 		var returnValues = this.factions.slice();
 		returnValues.splice
 		(
-			this.factionIndexCurrent, 1	
+			this.factionIndexCurrent, 1
 		);
 		return returnValues;
 	}
@@ -195,7 +200,7 @@ function World(name, dateCreated, network, factions, ships, camera)
 	World.prototype.updateForTurn = function()
 	{
 		this.network.updateForTurn();
-	
+
 		for (var i = 0; i < this.factions.length; i++)
 		{
 			var faction = this.factions[i];

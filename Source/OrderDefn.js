@@ -25,7 +25,7 @@ function OrderDefn(name, obey)
 					(
 						"MoveToTarget",
 						[ order.target ]
-					);					
+					);
 				}
 
 			}

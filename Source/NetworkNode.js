@@ -14,12 +14,13 @@ function NetworkNode(name, defn, pos, starsystem)
 }
 
 {
-	NetworkNode.prototype.controlBuild_Selection = function(universe)
+	NetworkNode.prototype.controlBuild = function(universe)
 	{
 		var viewSize = universe.display.sizeInPixels;
 		var containerSize = new Coords(100, 80);
 		var margin = 10;
 		var controlSpacing = 8;
+		var fontHeightInPixels = margin;
 		var buttonSize = new Coords
 		(
 			containerSize.x - margin * 4,

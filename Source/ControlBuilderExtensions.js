@@ -28,7 +28,7 @@ function ControlBuilderExtensions()
 					new Coords(margin, margin), // pos
 					new Coords(size.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
-					new DataBinding("Selection:")
+					"Selection:" // text
 				),
 
 				new ControlLabel
@@ -42,6 +42,14 @@ function ControlBuilderExtensions()
 						universe,
 						"venueCurrent.selectionName()"
 					)
+				),
+
+				new ControlDynamic
+				(
+					"dynamicSelection", 
+					new Coords(margin, margin * 2 + controlHeight * 2), // pos
+					new Coords(size.x - margin * 2, size.y - margin * 4 - controlHeight * 3), // size
+					new DataBinding(universe, "venueCurrent.selection")
 				),
 
 				new ControlButton
@@ -67,7 +75,7 @@ function ControlBuilderExtensions()
 							}
 							else if (selectionTypeName == "Planet")
 							{
-								venueNext = new VenueLayout(universe, venueCurrent, selection.layout);
+								venueNext = new VenueLayout(venueCurrent, selection.layout);
 							}
 
 							if (venueNext != null)

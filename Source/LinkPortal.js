@@ -21,7 +21,7 @@ function LinkPortal(name, defn, pos, starsystemNamesFromAndTo)
 
 	// controls
 
-	LinkPortal.prototype.controlBuild_Selection = function()
+	LinkPortal.prototype.controlBuild = function()
 	{
 		var returnValue = new ControlLabel
 		(

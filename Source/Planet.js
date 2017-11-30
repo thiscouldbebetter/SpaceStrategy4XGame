@@ -33,15 +33,24 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 
 	// controls
 
-	Planet.prototype.controlBuild_Selection = function()
+	Planet.prototype.controlBuild = function(universe, size)
 	{
-		var returnValue = new ControlLabel
+		var returnValue = new ControlContainer
 		(
-			"labelPlanetAsSelection",
-			new Coords(0, 0),
-			new Coords(0, 0), // this.size
-			false, // isTextCentered
-			new DataBinding(this.name)
+			"containerPlanet",
+			new Coords(0, 0), // pos
+			size,
+			[
+				new ControlLabel
+				(
+					"labelName",
+					new Coords(0, 0), // pos
+					new Coords(size.x, 0), // size
+					false, // isTextCentered
+					new DataBinding(this.name),
+					10 // fontHeightInPixels
+				)
+			]
 		);
 
 		return returnValue;

@@ -28,8 +28,8 @@ function Cursor(bodyParent)
 
 	// controls
 
-	Cursor.prototype.controlBuild_Selection = function()
+	Cursor.prototype.controlBuild = function(universe)
 	{
-		return this.bodyParent.controlBuild_Selection();
+		return this.bodyParent.controlBuild(universe);
 	}
 }

@@ -74,33 +74,31 @@ function Ship(name, defn, pos, factionName)
 		return this.factionName + this.name;
 	}
 
-	// controlsF
+	// controls
 
-	Ship.prototype.controlBuild_Selection = function(universe)
+	Ship.prototype.controlBuild = function(universe, containerSize)
 	{
-		var viewSize = universe.display.sizeInPixels;
-		var containerSize = new Coords(100, viewSize.y);
-
 		var margin = 10;
 		var controlSpacing = 20;
 		var buttonSize = new Coords
 		(
-			containerSize.x - margin * 4,
+			containerSize.x - margin * 2,
 			15
 		);
+		var fontHeightInPixels = margin;
 
 		var returnValue = new ControlContainer
 		(
 			"containerShip",
-			new Coords(viewSize.x - margin - containerSize.x, margin), // pos
-			new Coords(containerSize.x - margin * 2, containerSize.y - margin * 4),
+			new Coords(0, 0), // pos
+			containerSize,
 			// children
 			[
 				new ControlLabel
 				(
 					"labelShipAsSelection",
 					new Coords(margin, margin),
-					new Coords(0, 0), // this.size
+					new Coords(containerSize.x, 0), // this.size
 					false, // isTextCentered
 					new DataBinding(this.name)
 				),
@@ -154,35 +152,28 @@ function Ship(name, defn, pos, factionName)
 				(
 					"labelDevices",
 					new Coords(margin, margin + controlSpacing * 4), // pos
-					new Coords(0, 0), // this.size
+					new Coords(containerSize.x, 0), // this.size
 					false, // isTextCentered
 					new DataBinding("Devices:")
 				),
 
-				new ControlSelect
+				new ControlList
 				(
 					"listDevices",
 					new Coords(margin, margin + controlSpacing * 5), // pos
-					new Coords(buttonSize.x, controlSpacing * 4), // size
-					// dataBindingForValueSelected
-					new DataBinding(universe.venueCurrent.selection, "deviceSelected"),
-					// dataBindingForOptions
-					new DataBinding
-					(
-						this.devices,
-						null
-					),
-					null, // bindingExpressionForOptionValues
+					new Coords(buttonSize.x, controlSpacing * 2), // size
+					// dataBindingForItems
+					new DataBinding(this.devices, null),
 					"defn.name", // bindingExpressionForOptionText
 					fontHeightInPixels,
-					true, // hasBorder
-					4 // numberOfItemsVisible
+					new DataBinding(this, "deviceSelected"), // dataBindingForItemSelected
+					"defn.name" // bindingExpressionForItemValue
 				),
 
 				new ControlButton
 				(
 					"buttonDeviceUse",
-					new Coords(margin, margin + controlSpacing * 10), // pos
+					new Coords(margin, margin * 2 + controlSpacing * 7), // pos
 					buttonSize,
 					"Use Device",
 					true, // hasBorder

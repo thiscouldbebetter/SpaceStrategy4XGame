@@ -98,6 +98,8 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 		cell.body = null;
 	}
 
+	// turnable
+
 	Layout.prototype.updateForTurn = function()
 	{
 		var cells = this.map.cells;
@@ -114,5 +116,13 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 			}
 		}
 
+	}
+
+	// drawable
+
+	Layout.prototype.draw = function(universe, display)
+	{
+		display.clear();
+		this.map.draw(universe, display);
 	}
 }

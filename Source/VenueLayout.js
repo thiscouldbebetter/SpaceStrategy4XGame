@@ -1,23 +1,12 @@
 
-function VenueLayout(universe, venueParent, layout)
+function VenueLayout(venueParent, layout)
 {
 	this.venueParent = venueParent;
 	this.layout = layout;
 	this.layoutElementInProgress = null;
-
-	this.venueControls = new VenueControls
-	(
-		this.controlBuild(universe)
-	);
 }
 
 {
-	VenueLayout.prototype.draw = function(universe)
-	{
-		universe.display.drawLayout(this.layout);
-		this.venueControls.draw(universe);
-	}
-
 	VenueLayout.prototype.initialize = function(universe)
 	{
 		var controlRoot = this.controlBuild(universe);
@@ -91,33 +80,9 @@ function VenueLayout(universe, venueParent, layout)
 					layout.elementAdd(this.layoutElementInProgress);
 				}
 			}
-			else if (inputHelper.keyPressed == 13) // return
+			else
 			{
-				inputHelper.keyPressed = null;
-
-				var cursorBodyDefnPrev = cursor.body;
-				var bodyDefns = layout.bodyDefns;
-				if (cursorBodyDefnPrev == null)
-				{
-					cursor.bodyDefn = bodyDefns[0];
-				}
-				else
-				{
-					var indexOfCursorBodyDefn = bodyDefns.indexOf
-					(
-						cursorBodyDefnPrev
-					);
-					indexOfCursorBodyDefn++;
-					if (indexOfCursorBodyDefn < bodyDefns.length)
-					{
-						cursor.bodyDefn = bodyDefns[indexOfCursorBodyDefn];
-					}
-					else
-					{
-						cursor.bodyDefn = null;
-					}
-
-				}
+				// todo - other inputs
 			}
 		}
 
@@ -255,7 +220,7 @@ function VenueLayout(universe, venueParent, layout)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					new DataBinding("Building:")
+					"Building:"
 				),
 
 				new ControlButton
@@ -287,8 +252,8 @@ function VenueLayout(universe, venueParent, layout)
 					new DataBinding(this.layout.bodyDefns), // dataBindingForOptions,
 					null, // bindingExpressionForOptionValues,
 					"name", // bindingExpressionForOptionText,
-					true, // isEnabled,
-					1 // numberOfItemsVisible
+					//true, // isEnabled,
+					//1 // numberOfItemsVisible
 				),
 
 				new ControlLabel
@@ -311,8 +276,14 @@ function VenueLayout(universe, venueParent, layout)
 			]
 		);
 
-
 		return returnValue;
 	}
 
+	// drawable
+
+	VenueLayout.prototype.draw = function(universe)
+	{
+		this.layout.draw(universe, universe.display);
+		this.venueControls.draw(universe);
+	}
 }

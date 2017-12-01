@@ -99,9 +99,9 @@ function VenueLayout(venueParent, layout)
 
 		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
-		var controlHeight = 16;
+		var controlHeight = 12;
 		var buttonWidth = 30;
-		var margin = 10;
+		var margin = 8;
 		var fontHeightInPixels = display.fontHeightInPixels;
 
 		var containerInnerSize = new Coords(100, 60);
@@ -136,7 +136,7 @@ function VenueLayout(venueParent, layout)
 					}
 				),
 
-				controlBuilder.timeAndPlace
+				this.controlBuild_Vitals
 				(
 					universe,
 					containerMainSize, 
@@ -195,6 +195,8 @@ function VenueLayout(venueParent, layout)
 		buttonWidth
 	)
 	{
+		var planet = this.layout.modelParent;
+
 		var fontHeightInPixels = controlHeight / 2; // hack
 
 		var returnValue = new ControlContainer
@@ -248,12 +250,10 @@ function VenueLayout(venueParent, layout)
 					"selectBuilding",
 					new Coords(margin, controlHeight + margin), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size, 
-					new DataBinding(this, "layout.map.cursor.bodyDefn" ), // dataBindingForValueSelected,
+					new DataBinding(planet,  "industry.buildableInProgress()" ), // dataBindingForValueSelected,
 					new DataBinding(this.layout.bodyDefns), // dataBindingForOptions,
 					null, // bindingExpressionForOptionValues,
 					"name", // bindingExpressionForOptionText,
-					//true, // isEnabled,
-					//1 // numberOfItemsVisible
 				),
 
 				new ControlLabel
@@ -262,7 +262,7 @@ function VenueLayout(venueParent, layout)
 					new Coords(margin, controlHeight * 2 + margin), // pos
 					new Coords(50, controlHeight), // size
 					false, // isTextCentered
-					new DataBinding("[progress]") 
+					new DataBinding(planet.industry, "industryAccumulated") 
 				),
 
 				new ControlLabel
@@ -271,13 +271,126 @@ function VenueLayout(venueParent, layout)
 					new Coords(margin + 50, controlHeight * 2 + margin), // pos
 					new Coords(50, controlHeight), // size
 					false, // isTextCentered
- 					new DataBinding("[required]") 
+					new DataBinding(planet.industry, "buildableInProgress().industryToBuild") 
 				),
 			]
 		);
 
 		return returnValue;
 	}
+
+	VenueLayout.prototype.controlBuild_Vitals = function
+	(
+		universe,
+		containerMainSize, 
+		containerInnerSize, 
+		margin,
+		controlHeight
+	)
+	{
+		var fontHeightInPixels = universe.display.fontHeightInPixels;
+
+		var returnValue = new ControlContainer
+		(
+			"containerTimeAndPlace",
+			new Coords
+			(
+				margin,
+				margin
+			),
+			containerInnerSize,
+			// children
+			[
+				new ControlLabel
+				(
+					"textPlace",
+					new Coords(margin,  margin), // pos
+					new Coords
+					(
+						containerInnerSize.x - margin * 2, 
+						controlHeight
+					), // size
+					false, // isTextCentered
+					new DataBinding
+					(
+						universe, "venueCurrent.model().name"
+					)
+				),
+
+				new ControlLabel
+				(
+					"labelIndustry",
+					new Coords(margin, margin + controlHeight), // pos
+					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					"Industry:"
+				),
+
+				new ControlLabel
+				(
+					"textIndustry",
+					new Coords(margin * 8, margin + controlHeight), // pos
+					new Coords
+					(
+						containerInnerSize.x - margin * 3, 
+						controlHeight
+					), // size
+					false, // isTextCentered
+					new DataBinding(this.layout, "industryPerTurn()")
+				),
+
+				new ControlLabel
+				(
+					"labelProsperity",
+					new Coords(margin, margin + controlHeight * 2), // pos
+					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					"Prosperity:"
+				),
+
+				new ControlLabel
+				(
+					"textProsperity",
+					new Coords(margin * 8, margin + controlHeight * 2), // pos
+					new Coords
+					(
+						containerInnerSize.x - margin * 3, 
+						controlHeight
+					), // size
+					false, // isTextCentered
+					new DataBinding(this.layout, "prosperityPerTurn()")
+				),
+
+				new ControlLabel
+				(
+					"labelResearch",
+					new Coords(margin, margin + controlHeight * 3), // pos
+					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					"Research:"
+				),
+
+				new ControlLabel
+				(
+					"textResearch",
+					new Coords(margin * 8, margin + controlHeight * 3), // pos
+					new Coords
+					(
+						containerInnerSize.x - margin * 3, 
+						controlHeight
+					), // size
+					false, // isTextCentered
+					new DataBinding(this.layout, "researchPerTurn()")
+				),
+
+
+
+			]
+		);
+
+		return returnValue;
+	}
+
 
 	// drawable
 

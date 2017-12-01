@@ -60,10 +60,10 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 
 		var bodyDefns = 
 		[
-			new LayoutElementDefn("Default", "Gray", 10),
-			new LayoutElementDefn("Factory", "Red", 20),
-			new LayoutElementDefn("Farm", "Green", 30),
-			new LayoutElementDefn("Laboratory", "Blue", 40),
+			new LayoutElementDefn("Base", "Gray", 100, 1, 1, 1),
+			new LayoutElementDefn("Factory", "Red", 30, 0, 1, 0),
+			new LayoutElementDefn("Farm", "Green", 30, 1, 0, 0),
+			new LayoutElementDefn("Laboratory", "Blue", 30, 0, 0, 1),
 		];
 		bodyDefns.addLookups("name");
 
@@ -75,7 +75,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 			map,
 			// bodies
 			[
-				new LayoutElement(bodyDefns["Default"], new Coords(0, 0))
+				new LayoutElement(bodyDefns["Base"], new Coords(0, 0))
 			] 
 		);
 
@@ -99,6 +99,74 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 	}
 
 	// turnable
+
+
+	Layout.prototype.facilities = function(universe, faction, planet)
+	{
+		var returnValues = [];
+
+		var cells = this.map.cells;
+		for (var i = 0; i < cells.length; i++)
+		{
+			var cell = cells[i];
+			var facility = cell.body;
+			if (facility != null)
+			{
+				returnValues.push(facility);
+			}
+		}
+
+		return returnValues;
+	}
+
+	Layout.prototype.industryPerTurn = function(universe, faction, planet)
+	{
+		var returnValue = 0;
+
+		var facilities = this.facilities(universe);
+		for (var i = 0; i < facilities.length; i++)
+		{
+			var facility = facilities[i];
+			var facilityDefn = facility.defn;
+			var producedThisTurn = facilityDefn.industryPerTurn;
+			returnValue += producedThisTurn;
+		}
+
+		return returnValue;
+	}
+
+	Layout.prototype.prosperityPerTurn = function(universe, faction, planet)
+	{
+		var returnValue = 0;
+
+		var facilities = this.facilities(universe);
+		for (var i = 0; i < facilities.length; i++)
+		{
+			var facility = facilities[i];
+			var facilityDefn = facility.defn;
+			var producedThisTurn = facilityDefn.prosperityPerTurn;
+			returnValue += producedThisTurn;
+		}
+
+		return returnValue;
+	}
+
+	Layout.prototype.researchPerTurn = function(universe, faction, planet)
+	{
+		var returnValue = 0;
+
+		var facilities = this.facilities(universe);
+		for (var i = 0; i < facilities.length; i++)
+		{
+			var facility = facilities[i];
+			var facilityDefn = facility.defn;
+			var producedThisTurn = facilityDefn.researchPerTurn;
+			returnValue += producedThisTurn;
+		}
+
+		return returnValue;
+	}
+
 
 	Layout.prototype.updateForTurn = function(universe, parent)
 	{

@@ -27,14 +27,15 @@ function TechnologyResearcher
 
 		this.researchAccumulated += amountToIncrement;
 
-		if (this.researchAccumulated >= technologyBeingResearched.researchRequired)
+		var researchRequired = technologyBeingResearched.researchRequired;
+		if (this.researchAccumulated >= researchRequired)
 		{
 			this.namesOfTechnologiesKnown.push
 			(
 				this.nameOfTechnologyBeingResearched
 			);
 			this.nameOfTechnologyBeingResearched = null;
-			this.researchAccumulated = 0;
+			this.researchAccumulated -= researchRequired;
 		}
 	}
 
@@ -133,8 +134,9 @@ function TechnologyResearcher
 
 	// turns
 
-	TechnologyResearcher.prototype.updateForTurn = function(universe)
+	TechnologyResearcher.prototype.updateForTurn = function(universe, faction)
 	{
-		alert("todo - TechnologyResearcher.updateForTurn()");
+		var researchThisTurn = faction.researchPerTurn();
+		this.researchAccumulatedIncrement(researchThisTurn);
 	}
 }

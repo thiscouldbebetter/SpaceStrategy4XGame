@@ -281,15 +281,6 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		return returnValues;
 	}
 
-	Faction.prototype.notificationSessionInitialize = function(universe)
-	{
-		var notificationSession = new NotificationSession(this.notifications);
-		var notificationSessionAsControl = notificationSession.controlBuild(universe);
-		var venueNext = new VenueControls(notificationSessionAsControl);
-		venueNext = new VenueFader(venueNext, universe.venueCurrent);
-		universe.venueNext = venueNext;
-	}
-
 	Faction.prototype.peaceOfferAcceptFrom = function(factionOther)
 	{
 		return true;
@@ -352,22 +343,47 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		return true;
 	}
 
+	// notifications
+
+	Faction.prototype.notificationSessionInitialize = function(universe)
+	{
+		var notificationSession = new NotificationSession(this.notifications);
+		var notificationSessionAsControl = notificationSession.controlBuild(universe);
+		var venueNext = new VenueControls(notificationSessionAsControl);
+		venueNext = new VenueFader(venueNext, universe.venueCurrent);
+		universe.venueNext = venueNext;
+	}
+
 	// turns
+
+	Faction.prototype.researchPerTurn = function()
+	{
+		var returnValue = 0;
+
+		for (var i = 0; i < this.planets.length; i++)
+		{
+			var planet = this.planets[i];
+			var planetResearchThisTurn = planet.researchPerTurn(universe, this);
+			returnValue += planetResearchThisTurn;
+		}
+
+		return returnValue;
+	}
 
 	Faction.prototype.updateForTurn = function(universe)
 	{
 		for (var i = 0; i < this.planets.length; i++)
 		{
 			var planet = this.planets[i];
-			planet.updateForTurn(universe);
+			planet.updateForTurn(universe, this);
 		}
 
 		for (var i = 0; i < this.ships.length; i++)
 		{
 			var ship = this.ships[i];
-			ship.updateForTurn(universe);
+			ship.updateForTurn(universe, this);
 		}
 
-		this.technology.updateForTurn(universe);
+		this.technology.updateForTurn(universe, this);
 	}
 }

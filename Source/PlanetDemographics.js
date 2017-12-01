@@ -5,7 +5,7 @@ function PlanetDemographics(population)
 }
 
 {
-	PlanetDemographics.prototype.updateForTurn = function(planet)
+	PlanetDemographics.prototype.updateForTurn = function(universe, faction, planet)
 	{
 		var prosperityThisTurn = 1;
 		this.prosperityAccumulated += prosperityThisTurn;

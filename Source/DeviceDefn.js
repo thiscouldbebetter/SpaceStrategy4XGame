@@ -1,7 +1,11 @@
 
-function DeviceDefn(name, range, use)
+function DeviceDefn(name, isActive, needsTarget, categoryNames, initialize, updateForTurn, use)
 {
 	this.name = name;
-	this.range = range;
+	this.isActive = isActive;
+	this.needsTarget = needsTarget;
+	this.categoryNames = categoryNames;
+	this.initialize = initialize;
+	this.updateForTurn = updateForTurn;
 	this.use = use;
 }

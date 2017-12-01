@@ -5,8 +5,13 @@ function Device(defn)
 }
 
 {
-	Device.prototype.use = function(actor, target)
+	Device.prototype.updateForTurn = function(universe, actor)
 	{
-		this.defn.use(actor, this, target);
+		this.defn.updateForTurn(universe, actor, this);
+	}
+
+	Device.prototype.use = function(universe, place, actor)
+	{
+		this.defn.use(universe, place, actor, this);
 	}
 }

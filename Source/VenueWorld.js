@@ -63,6 +63,15 @@ function VenueWorld(world)
 					}
 				),
 
+				controlBuilder.timeAndPlace
+				(
+					universe,
+					containerMainSize, 
+					containerInnerSize, 
+					margin,
+					controlHeight
+				),
+
 				faction.controlBuild
 				(
 					universe, 
@@ -74,15 +83,6 @@ function VenueWorld(world)
 				),
 
 				controlBuilder.view
-				(
-					universe,
-					containerMainSize, 
-					containerInnerSize, 
-					margin,
-					controlHeight
-				),
-
-				controlBuilder.timeAndPlace
 				(
 					universe,
 					containerMainSize, 

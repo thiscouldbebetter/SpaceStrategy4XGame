@@ -39,7 +39,9 @@ function ActivityDefn(name, perform)
 					distanceToMoveThisTick = distancePerStepMax - distanceMovedThisStep;
 				}
 
-				var actorPos = actor.loc.pos;
+				var actorLoc = actor.loc;
+				var actorPos = actorLoc.pos;
+				var actorVel = actorLoc.vel;
 
 				var targetPos = target.loc.pos;
 				var displacementFromActorToTarget = targetPos.clone().subtract
@@ -95,7 +97,7 @@ function ActivityDefn(name, perform)
 
 						actorPos.overwriteWithDimensions(0, 0, 0);
 						var speed = 10; // hack
-						actor.vel.overwriteWithDimensions(speed * direction, 0, 0);
+						actorVel.overwriteWithDimensions(speed * direction, 0, 0);
 					}
 					else if (targetDefnName == "Planet")
 					{
@@ -109,7 +111,7 @@ function ActivityDefn(name, perform)
 						distanceFromActorToTarget
 					);
 
-					actor.vel.overwriteWith
+					actorVel.overwriteWith
 					(
 						directionFromActorToTarget
 					).multiplyScalar
@@ -117,7 +119,7 @@ function ActivityDefn(name, perform)
 						distanceToMoveThisTick
 					);
 
-					actorPos.add(actor.vel);
+					actorPos.add(actorVel);
 				}
 
 				distanceMovedThisStep += distanceToMoveThisTick;

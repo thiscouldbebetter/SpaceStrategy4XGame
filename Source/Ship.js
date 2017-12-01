@@ -1,47 +1,16 @@
 
-function Ship(name, defn, pos, factionName)
+function Ship(name, defn, pos, factionName, devices)
 {
 	this.name = name;
 	this.defn = defn;
 	this.loc = new Location(pos);
 	this.factionName = factionName;
+	this.devices = devices;
 
-	this.vel = new Coords(0, 0, 0);
-
-	var deviceDefnDefault = new DeviceDefn
-	(
-		"DeviceDefn0",
-		100, // range
-		function use(universe, actor, device, target)
-		{
-			var venueCurrent = universe.venueCurrent;
-
-			var projectile = new Ship
-			(
-				"[projectile]",
-				Ship.bodyDefnBuild(Color.Instances.Yellow),
-				actor.loc.pos.clone(),
-				actor.factionName
-			);
-
-			projectile.activity = new Activity
-			(
-				"MoveToTarget",
-				[ target ]
-			);
-
-			venueCurrent.model().bodies.push(projectile);
-		}
-	);
-
-	this.devices = 
-	[
-		new Device(deviceDefnDefault),
-		new Device(deviceDefnDefault),
-		new Device(deviceDefnDefault),
-	];
-
-	this.movesThisTurn = 0;
+	this.integrity = 10;
+	this.energyThisTurn = 0;
+	this.distancePerMove = 0;
+	this.shieldingThisTurn = 0;
 }
 
 {
@@ -167,7 +136,7 @@ function Ship(name, defn, pos, factionName)
 					"defn.name", // bindingExpressionForOptionText
 					fontHeightInPixels,
 					new DataBinding(this, "deviceSelected"), // dataBindingForItemSelected
-					"defn.name" // bindingExpressionForItemValue
+					null // bindingExpressionForItemValue
 				),
 
 				new ControlButton
@@ -176,12 +145,26 @@ function Ship(name, defn, pos, factionName)
 					new Coords(margin, margin * 2 + controlSpacing * 7), // pos
 					buttonSize,
 					"Use Device",
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					// click
-					function ()
+					function click(universe)
 					{
-						alert("todo - use device")
+						var venue = universe.venueCurrent;
+						var starsystem = venue.starsystem;
+						var ship = venue.selection;
+						var device = ship.deviceSelected;
+						var deviceDefn = device.defn;
+						if (deviceDefn.needsTarget == true)
+						{
+							var projectile = new Projectile(ship);
+							var cursor = new Cursor(projectile);
+							venue.selection = cursor;
+						}
+						else
+						{
+							device.use(universe, starsystem, ship);
+						}
 					}
 				),
 
@@ -201,8 +184,16 @@ function Ship(name, defn, pos, factionName)
 
 	// turns
 
-	Ship.prototype.updateForTurn = function()
+	Ship.prototype.updateForTurn = function(universe)
 	{
-		// todo
+		this.energyThisTurn = 0;
+		this.distancePerMove = 0;
+		this.shieldingThisTurn = 0;
+
+		for (var i = 0; i < this.devices.length; i++)
+		{
+			var device = this.devices[i];
+			device.updateForTurn(universe, this);
+		}
 	}
 }

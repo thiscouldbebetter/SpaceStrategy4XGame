@@ -354,20 +354,20 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	// turns
 
-	Faction.prototype.updateForTurn = function()
+	Faction.prototype.updateForTurn = function(universe)
 	{
 		for (var i = 0; i < this.planets.length; i++)
 		{
 			var planet = this.planets[i];
-			planet.updateForTurn();
+			planet.updateForTurn(universe);
 		}
 
 		for (var i = 0; i < this.ships.length; i++)
 		{
 			var ship = this.ships[i];
-			ship.updateForTurn();
+			ship.updateForTurn(universe);
 		}
 
-		this.technology.updateForTurn();
+		this.technology.updateForTurn(universe);
 	}
 }

@@ -133,8 +133,8 @@ function TechnologyResearcher
 
 	// turns
 
-	TechnologyResearcher.prototype.updateForTurn = function()
+	TechnologyResearcher.prototype.updateForTurn = function(universe)
 	{
-		var todo = 1;
+		alert("todo - TechnologyResearcher.updateForTurn()");
 	}
 }

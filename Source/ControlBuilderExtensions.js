@@ -164,7 +164,7 @@ function ControlBuilderExtensions()
 					true, // isEnabled
 					function click(universe) 
 					{ 
-						universe.world.updateForTurn();
+						universe.world.updateForTurn(universe);
 					}
 				),
 

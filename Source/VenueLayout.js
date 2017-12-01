@@ -117,7 +117,7 @@ function VenueLayout(venueParent, layout)
 			[
 				new ControlButton
 				(
-					"buttonMenu",
+					"buttonBack",
 					new Coords
 					(
 						(containerMainSize.x - buttonWidth) / 2, 
@@ -134,6 +134,15 @@ function VenueLayout(venueParent, layout)
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}
+				),
+
+				controlBuilder.timeAndPlace
+				(
+					universe,
+					containerMainSize, 
+					containerInnerSize, 
+					margin,
+					controlHeight
 				),
 
 				faction.controlBuild
@@ -153,15 +162,6 @@ function VenueLayout(venueParent, layout)
 					margin, 
 					controlHeight,
 					buttonWidth
-				),
-
-				controlBuilder.timeAndPlace
-				(
-					universe,
-					containerMainSize, 
-					containerInnerSize, 
-					margin,
-					controlHeight
 				),
 
 				controlBuilder.selection

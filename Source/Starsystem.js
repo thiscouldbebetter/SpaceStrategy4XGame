@@ -124,14 +124,14 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	// turns
 
-	Starsystem.prototype.updateForTurn = function()
+	Starsystem.prototype.updateForTurn = function(universe)
 	{
 		for (var i = 0; i < this.bodies.length; i++)
 		{
 			var body = this.bodies[i];
 			if (body.updateForTurn != null)
 			{
-				body.updateForTurn();
+				body.updateForTurn(universe, this);
 			}
 		}
 	}

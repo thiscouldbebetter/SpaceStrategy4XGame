@@ -56,11 +56,14 @@ function NetworkLink(namesOfNodesLinked)
 			for (var i = 0; i < this.ships.length; i++)
 			{
 				var ship = this.ships[i];
-				var shipPos = ship.loc.pos;
-				shipPos.x += Math.abs(ship.vel.x);
+				var shipLoc = ship.loc;
+				var shipPos = shipLoc.pos;
+				var shipVel = shipLoc.vel;
+				shipPos.x += Math.abs(shipVel.x);
+
 				if (shipPos.x >= length)
 				{
-					var indexOfNodeDestination = (ship.vel.x > 0 ? 1 : 0);
+					var indexOfNodeDestination = (shipVel.x > 0 ? 1 : 0);
 					var indexOfNodeSource = 1 - indexOfNodeDestination;
 
 					var nodeDestination = nodesLinked[indexOfNodeDestination];

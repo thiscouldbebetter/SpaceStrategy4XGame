@@ -65,10 +65,10 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 
 	// turns
 
-	Planet.prototype.updateForTurn = function()
+	Planet.prototype.updateForTurn = function(universe)
 	{
-		this.layout.updateForTurn();
-		this.industry.updateForTurn(this);
-		this.demographics.updateForTurn(this);
+		this.layout.updateForTurn(universe, this);
+		this.industry.updateForTurn(universe, this);
+		this.demographics.updateForTurn(universe, this);
 	}
 }

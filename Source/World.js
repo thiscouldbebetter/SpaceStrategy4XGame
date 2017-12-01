@@ -62,6 +62,107 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 			colors.Violet,
 		];
 
+		var deviceDefns = 
+		[
+			new DeviceDefn
+			(
+				"Drive",
+				false, // isActive
+				false, // needsTarget
+				[ "Drive" ], // categoryNames
+				function initialize(universe, actor, device)
+				{
+					actor.distancePerMove = 0;
+				},
+				function updateForTurn(universe, actor, device)
+				{
+					actor.distancePerMove += 1;
+				},
+				function use(universe, actor, device, target)
+				{
+					actor.energyThisTurn -= 1;
+				}
+			),
+			new DeviceDefn
+			(
+				"Generator",
+				false, // isActive
+				false, // needsTarget
+				[ "Generator" ], // categoryNames
+				function initialize(universe, actor, device)
+				{
+					actor.energyThisTurn = 0;
+				},
+				function updateForTurn(universe, actor, device)
+				{
+					actor.energyThisTurn += 10;
+				},
+				function use(universe, actor, device, target)
+				{
+					// Do nothing.
+				}
+			),
+			new DeviceDefn
+			(
+				"Shield",
+				true, // isActive
+				false, // needsTarget
+				[ "Shield" ], // categoryNames
+				function initialize(universe, actor, device)
+				{
+					device.isActive = false;
+				},
+				function updateForTurn(universe, actor, device)
+				{
+					if (device.isActive == true)
+					{
+						actor.energyThisTurn -= 1;
+						actor.shieldingThisTurn = 0;
+					}
+				},
+				function use(universe, actor, device, target)
+				{
+					if (device.isActive == true)
+					{
+						device.isActive = false;
+						actor.energyThisTurn += 1;
+					}
+					else
+					{
+						device.isActive = true;
+						actor.energyThisTurn -= 1;
+					}
+				}
+			),
+			new DeviceDefn
+			(
+				"Weapon",
+				true, // isActive
+				true, // needsTarget
+				[ "Weapon" ], // categoryNames
+				function initialize(universe, actor, device)
+				{
+					// todo
+				},
+				function updateForTurn(universe, actor, device)
+				{
+					device.usesThisTurn = 3;
+				},
+				function use(universe, place, actor, device, target)
+				{
+					if (device.usesThisTurn > 0)
+					{
+						device.usesThisTurn--;
+						target.integrity -= 1;
+						if (target.integrity <= 0)
+						{
+							alert("todo - ship destroyed");
+						}
+					}
+				}
+			),
+		].addLookups("name");
+
 		for (var i = 0; i < numberOfFactions; i++)
 		{
 			var factionHomeStarsystem = null;
@@ -116,7 +217,13 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 				(
 					factionHomeStarsystem.size
 				),
-				factionName
+				factionName,
+				[
+					new Device(deviceDefns["Generator"]),
+					new Device(deviceDefns["Drive"]),
+					new Device(deviceDefns["Shield"]),
+					new Device(deviceDefns["Weapon"]),
+				]
 			);
 			ships.push(ship);
 			factionHomeStarsystem.ships.push(ship);
@@ -199,14 +306,14 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 		return returnValues;
 	}
 
-	World.prototype.updateForTurn = function()
+	World.prototype.updateForTurn = function(universe)
 	{
-		this.network.updateForTurn();
+		this.network.updateForTurn(universe);
 
 		for (var i = 0; i < this.factions.length; i++)
 		{
 			var faction = this.factions[i];
-			faction.updateForTurn();
+			faction.updateForTurn(universe);
 		}
 
 		this.turnsSoFar++;

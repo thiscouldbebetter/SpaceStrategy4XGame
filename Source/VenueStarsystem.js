@@ -13,12 +13,7 @@ function VenueStarsystem(universe, starsystem)
 	VenueStarsystem.prototype.cursorBuild = function()
 	{
 		var ship = this.selection;
-		var cursor = new Cursor
-		(
-			ship,
-			false,
-			false
-		);
+		var cursor = new Cursor(ship);
 		this.cursor = cursor;
 		this.bodies.push(cursor);
 		this.selection = cursor;
@@ -414,7 +409,7 @@ function VenueStarsystem(universe, starsystem)
 					}
 				),
 
-				controlBuilder.view
+				controlBuilder.timeAndPlace
 				(
 					universe,
 					containerMainSize, 
@@ -423,7 +418,7 @@ function VenueStarsystem(universe, starsystem)
 					controlHeight
 				),
 
-				controlBuilder.timeAndPlace
+				controlBuilder.view
 				(
 					universe,
 					containerMainSize, 

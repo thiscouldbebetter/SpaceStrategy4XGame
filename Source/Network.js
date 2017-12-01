@@ -213,12 +213,12 @@ function Network(name, nodes, links)
 
 	// turns
 
-	Network.prototype.updateForTurn = function()
+	Network.prototype.updateForTurn = function(universe)
 	{
 		for (var i = 0; i < this.links.length; i++)
 		{
 			var link = this.links[i];
-			link.updateForTurn(this);
+			link.updateForTurn(universe, this);
 		}
 	}
 
@@ -346,7 +346,8 @@ function Network(name, nodes, links)
 
 		var fractionOfLinkTraversed = ship.loc.pos.x / linkLength; 
 
-		if (ship.vel.x < 0)
+		var shipVel = ship.loc.vel;
+		if (shipVel.x < 0)
 		{
 			fractionOfLinkTraversed = 1 - fractionOfLinkTraversed;
 			forward.multiplyScalar(-1);

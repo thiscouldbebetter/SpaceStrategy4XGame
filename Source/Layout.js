@@ -100,7 +100,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 
 	// turnable
 
-	Layout.prototype.updateForTurn = function()
+	Layout.prototype.updateForTurn = function(universe, parent)
 	{
 		var cells = this.map.cells;
 		for (var i = 0; i < cells.length; i++)
@@ -111,7 +111,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 			{
 				if (cellBody.updateForTurn != null)
 				{
-					cellBody.updateForTurn();
+					cellBody.updateForTurn(universe);
 				}
 			}
 		}

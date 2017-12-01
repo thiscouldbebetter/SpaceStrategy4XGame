@@ -8,11 +8,11 @@ function Activity(defnName, variables)
 {
 	Activity.prototype.defn = function(universe)
 	{
-		return (universe.activityDefns[this.defnName]);
+		return (universe.world.activityDefns[this.defnName]);
 	}
 
-	Activity.prototype.perform = function(actor)
+	Activity.prototype.perform = function(universe, actor)
 	{
-		this.defn().perform(actor, this);
+		this.defn(universe).perform(universe, actor, this);
 	}
 }

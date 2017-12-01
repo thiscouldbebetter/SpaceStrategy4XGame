@@ -22,14 +22,28 @@ function Cursor(bodyParent)
 		new Coords(10, 10), // size
 		new VisualGroup
 		([
-			new VisualRectangle(new Coords(10, 10), Color.Instances.Brown.systemColor),
+			new VisualRectangle(new Coords(10, 10), null, Color.Instances.Cyan),
 		])
 	);
 
 	// controls
 
-	Cursor.prototype.controlBuild = function(universe)
+	Cursor.prototype.controlBuild = function(universe, controlSize)
 	{
-		return this.bodyParent.controlBuild(universe);
+		return this.bodyParent.controlBuild(universe, controlSize);
+	}
+
+	// drawable
+
+	Cursor.prototype.draw = function(universe, display, venueStarsystem)
+	{
+		var starsystem = venueStarsystem.starsystem;
+		starsystem.draw_Body
+		(
+			universe, 
+			display,
+			venueStarsystem.camera,
+			this
+		);
 	}
 }

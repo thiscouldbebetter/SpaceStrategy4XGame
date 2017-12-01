@@ -1,9 +1,10 @@
 
-function World(name, dateCreated, technologyTree, network, factions, ships, camera)
+function World(name, dateCreated, activityDefns, technologyTree, network, factions, ships, camera)
 {
 	this.name = name;
 	this.dateCreated = dateCreated;
 
+	this.activityDefns = activityDefns.addLookups("name");
 	this.technologyTree = technologyTree;
 	this.network = network;
 	this.factions = factions;
@@ -170,6 +171,7 @@ function World(name, dateCreated, technologyTree, network, factions, ships, came
 		(
 			worldName,
 			DateTime.now(),
+			ActivityDefn.Instances._All,
 			technologyTree,
 			network,
 			factions,

@@ -6,6 +6,8 @@ function ActivityDefn(name, perform)
 }
 
 {
+	ActivityDefn.Instances = new ActivityDefn_Instances();
+
 	function ActivityDefn_Instances()
 	{
 		this.DoNothing = new ActivityDefn
@@ -130,6 +132,4 @@ function ActivityDefn(name, perform)
 			this.MoveToTarget,
 		];
 	}
-
-	ActivityDefn.Instances = new ActivityDefn_Instances();
 }

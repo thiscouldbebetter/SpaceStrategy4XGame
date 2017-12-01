@@ -160,9 +160,9 @@ function VenueWorld(world)
 		var camera = world.camera;
 
 		var inputHelper = universe.inputHelper;
-		if (inputHelper.isMouseClicked == true)
+		if (inputHelper.isMouseClicked() == true)
 		{
-			inputHelper.isMouseClicked = false;
+			inputHelper.isMouseClicked(false);
 			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 
 			var mouseClickPos = inputHelper.mouseClickPos.clone();

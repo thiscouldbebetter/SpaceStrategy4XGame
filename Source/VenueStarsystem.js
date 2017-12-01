@@ -45,13 +45,7 @@ function VenueStarsystem(universe, starsystem)
 
 		if (this.cursor != null)
 		{
-			this.starsystem.draw_Body
-			(
-				universe, 
-				display,
-				this.camera,
-				this.cursor
-			);
+			this.cursor.draw(universe, display, this);
 		}
 
 		this.venueControls.draw(universe);
@@ -144,7 +138,7 @@ function VenueStarsystem(universe, starsystem)
 		for (var i = 0; i < cameraConstraints.length; i++)
 		{
 			var constraint = cameraConstraints[i];
-			constraint.applyToBody(camera);
+			constraint.applyToBody(universe, camera);
 		}
 
 		if (this.cursor != null)
@@ -153,7 +147,7 @@ function VenueStarsystem(universe, starsystem)
 			for (var i = 0; i < constraints.length; i++)
 			{
 				var constraint = constraints[i];
-				constraint.applyToBody(this.cursor);
+				constraint.applyToBody(universe, this.cursor);
 			}
 		}
 
@@ -176,7 +170,7 @@ function VenueStarsystem(universe, starsystem)
 				var shipActivity = ship.activity;
 				if (shipActivity != null)
 				{
-					shipActivity.perform(ship);
+					shipActivity.perform(universe, ship);
 				}
 			}
 		}
@@ -213,9 +207,9 @@ function VenueStarsystem(universe, starsystem)
 			{
 				new Action_CylinderMove_Radius(-10).perform(camera);
 			}
-			else if (inputHelper.isMouseClicked == true)
+			else if (inputHelper.isMouseClicked() == true)
 			{
-				inputHelper.isMouseClicked = false;
+				inputHelper.isMouseClicked(false);
 
 				universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 				var mouseClickPos = inputHelper.mouseClickPos.clone();

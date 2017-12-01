@@ -8,13 +8,15 @@ function ControlDynamic(name, pos, size, binding)
 
 	this.boundValuePrev = null;
 	this.child = null;
-	
+
 	// Helper variables.
-	
+
 	this.drawPos = new Coords();
 	this.drawLoc = new Location(this.drawPos);
+	this.mouseClickPos = new Coords();
+	this.mouseMovePos = new Coords();
 }
-{	
+{
 	ControlDynamic.prototype.actionHandle = function(universe, actionNameToHandle)
 	{
 		if (this.child != null)
@@ -22,7 +24,7 @@ function ControlDynamic(name, pos, size, binding)
 			this.child.actionHandle(universe, actionNameToHandle);
 		}
 	}
-	
+
 	ControlDynamic.prototype.focusGain = function()
 	{
 		if (this.child != null && this.child.focusGain != null)
@@ -39,38 +41,43 @@ function ControlDynamic(name, pos, size, binding)
 		}
 	}
 
-	ControlDynamic.prototype.mouseClick = function(universe, clickPos)
+	ControlDynamic.prototype.mouseClick = function(universe, mouseClickPos)
 	{
+		var wasHandledByChild = false;
 		if (this.child != null && this.child.mouseClick != null)
 		{
-			return this.child.mouseClick(universe, clickPos);
+			mouseClickPos = this.mouseClickPos.overwriteWith(mouseClickPos).subtract(this.pos);
+
+			wasHandledByChild = this.child.mouseClick(universe, mouseClickPos);
 		}
+		return wasHandledByChild;
 	}
 
-	ControlDynamic.prototype.mouseEnter = function(mouseMovePos)
+	ControlDynamic.prototype.mouseEnter = function()
 	{
 		if (this.child != null && this.child.mouseEnter != null)
 		{
-			return this.child.mouseEnter(mouseMovePos);
+			return this.child.mouseEnter();
 		}
 	}
 
-	ControlDynamic.prototype.mouseExit = function(mouseMovePos)
+	ControlDynamic.prototype.mouseExit = function()
 	{
 		if (this.child != null && this.child.mouseExit != null)
 		{
-			return this.child.mouseExit(mouseMovePos);
+			return this.child.mouseExit();
 		}
 	}
-	
+
 	ControlDynamic.prototype.mouseMove = function(mouseMovePos)
 	{
 		if (this.child != null && this.child.mouseMove != null)
 		{
+			mouseMovePos = this.mouseMovePos.overwriteWith(mouseMovePos).subtract(this.pos);
 			return this.child.mouseMove(mouseMovePos);
-		}	
+		}
 	}
-		
+
 	// drawable
 
 	ControlDynamic.prototype.draw = function(universe, display, drawLoc)
@@ -88,12 +95,12 @@ function ControlDynamic(name, pos, size, binding)
 				this.child = boundValue.controlBuild(universe, this.size);
 			}
 		}
-		
+
 		if (this.child != null)
 		{
 			var drawLoc = this.drawLoc.overwriteWith(drawLoc);
 			drawLoc.pos.add(this.pos);
-			this.child.draw(universe, display, drawLoc);			
+			this.child.draw(universe, display, drawLoc);
 		}
 	}
 }

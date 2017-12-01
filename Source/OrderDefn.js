@@ -14,8 +14,15 @@ function OrderDefn(name, obey)
 			// obey
 			function(actor, order)
 			{
+				var actorLoc = actor.loc;
 				var target = order.target;
-				if (actor.loc.equals(target.loc) == true)
+				var targetLoc = target.loc;
+
+				if 
+				(
+					actorLoc.venueName == targetLoc.venueName
+					&& actorLoc.pos.equals(targetLoc.pos)
+				)
 				{
 					order.isComplete = true;
 				}

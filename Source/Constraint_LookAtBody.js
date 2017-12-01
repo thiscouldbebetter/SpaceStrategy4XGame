@@ -6,7 +6,7 @@ function Constraint_LookAtBody(targetBody)
 }
 
 {
-	Constraint_LookAtBody.prototype.applyToBody = function(body)
+	Constraint_LookAtBody.prototype.applyToBody = function(universe, body)
 	{
 		var targetPos = this.targetBody; // hack 
 

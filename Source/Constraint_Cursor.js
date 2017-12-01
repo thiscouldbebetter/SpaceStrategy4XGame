@@ -17,8 +17,10 @@ function Constraint_Cursor()
 		var mousePos = universe.inputHelper.mouseMovePos.clone();
 
 		var camera = venue.camera;
-		var cameraPos = camera.loc.pos;
-		var cameraOrientation = camera.orientation;
+		var cameraLoc = camera.loc;
+		var cameraPos = cameraLoc.pos;
+		var cameraOrientation = cameraLoc.orientation;
+
 		mousePos.subtract(camera.viewSizeHalf);
 
 		var xyPlaneNormal = new Coords(0, 0, 1);
@@ -90,7 +92,7 @@ function Constraint_Cursor()
 				cursorPos.y, 
 				Number.NEGATIVE_INFINITY
 			);
-			this.boundsToRestrictTo.overwriteWithDimensions
+			this.boundsToRestrictToMax.overwriteWithDimensions
 			(
 				cursorPos.x, 
 				cursorPos.y, 
@@ -124,8 +126,8 @@ function Constraint_Cursor()
 
 		cursorPos.trimToRangeMinMax
 		(
-			this.boundsToRestrictTo.min,
-			this.boundsToRestrictTo.max
+			this.boundsToRestrictToMin,
+			this.boundsToRestrictToMax
 		);
 	}
 }

@@ -126,7 +126,7 @@ function TalkNodeDefn(name, execute)
 			// execute
 			function(talkSession, scope, talkNode) 
 			{ 
-				scope.talkNodesForOptions.length = 0;
+				scope.talkNodesForOptions.clear();
 
 				scope.talkNodeAdvance(talkSession);
 

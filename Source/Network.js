@@ -389,25 +389,8 @@ function Network(name, nodes, links)
 		//var nodeColor = node.defn.color.systemColor;
 		var nodeColor = "rgba(128, 128, 128, " + alpha + ")"
 
-		var graphics = display.graphics;
-		graphics.strokeStyle = nodeColor; 
-		graphics.fillStyle = nodeColor;
-
-		graphics.beginPath();
-		graphics.arc
-		(
-			drawPos.x, drawPos.y, 
-			radiusApparent, 
-			0, 2 * Math.PI, // start and stop angles 
-			false // counterClockwise
-		);
-		graphics.stroke();
-
-		graphics.fillText
-		(
-			node.starsystem.name, 
-			(drawPos.x + radiusApparent), 
-			drawPos.y
-		);
+		display.drawCircle(drawPos, radiusApparent, nodeColor, nodeColor);
+		drawPos.x += radiusApparent;
+		display.drawText(node.starsystem.name, 10, drawPos, "White", nodeColor);
 	}
 }

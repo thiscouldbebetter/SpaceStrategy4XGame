@@ -11,7 +11,8 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	this.notifications = 
 	[
-		new Notification("Default", "This is a test."),
+		new Notification("Default", 0, "Nothing being built.", this.planets[0]),
+		new Notification("Default", 0, "Nothing being researched.", this.technology),
 	];
 }
 
@@ -356,7 +357,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	// turns
 
-	Faction.prototype.researchPerTurn = function()
+	Faction.prototype.researchPerTurn = function(universe)
 	{
 		var returnValue = 0;
 

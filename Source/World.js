@@ -16,7 +16,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 	this.factions.addLookups("name");
 	this.ships.addLookups("name");
 
-	this.turnsSoFar = 0;
+	this.turnsSoFar = 1;
 	this.factionIndexCurrent = 0;
 }
 {
@@ -235,7 +235,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 				[], // relationships 
 				new TechnologyResearcher
 				(
-					factionName + "_Research",
+					factionName + " Research",
 					null, // nameOfTechnologyBeingResearched,
 					0, // researchAccumulated
 					// namesOfTechnologiesKnown

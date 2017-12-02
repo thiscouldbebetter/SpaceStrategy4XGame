@@ -13,7 +13,7 @@ function NotificationSession(notifications)
 		var controlHeight = containerSize.y / 12;
 		var margin = 10;
 		var columnWidth = containerSize.x - margin * 2;
-		var buttonWidth = (columnWidth - margin) / 2;
+		var buttonWidth = (containerSize.x - margin * 3) / 2;
 		var fontHeightInPixels = display.fontHeightInPixels;
 
 		var returnValue = new ControlContainer
@@ -39,7 +39,7 @@ function NotificationSession(notifications)
 					new Coords(margin, margin + controlHeight), // pos
 					new Coords(columnWidth, controlHeight * 4), // size
 					new DataBinding(this.notifications),
-					"message", // bindingExpressionForItemText
+					"toString()", // bindingExpressionForItemText
 					fontHeightInPixels,
 					// bindingForItemSelected
 					new DataBinding(this, "notificationSelected"),
@@ -70,14 +70,31 @@ function NotificationSession(notifications)
 				(
 					"buttonGoTo",
 					new Coords(margin, margin * 2 + controlHeight * 7), // pos
-					new Coords(columnWidth, controlHeight), // size
+					new Coords(buttonWidth, controlHeight), // size
 					"Go To",
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
 					function click(universe)
 					{
-						alert("todo - goto");
+						// todo
+					}
+				),
+
+				new ControlButton
+				(
+					"buttonDismiss",
+					new Coords(margin * 2 + buttonWidth, margin * 2 + controlHeight * 7), // pos
+					new Coords(buttonWidth, controlHeight), // size
+					"Dismiss",
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					function click(universe)
+					{
+						var session = universe.venueCurrent;
+						var notification = session.notificationSelected;
+						notification.hasBeenRead = true;
 					}
 				),
 

@@ -21,9 +21,9 @@ function PlanetIndustry(industryAccumulated, buildableInProgress)
 		return this._buildableInProgress;
 	}
 
-	PlanetIndustry.prototype.updateForTurn = function(planet)
+	PlanetIndustry.prototype.updateForTurn = function(universe, faction, planet)
 	{
-		var industryThisTurn = planet.industryThisTurn();
+		var industryThisTurn = planet.industryPerTurn(universe, faction);
 		this.industryAccumulated += industryThisTurn;
 		var buildableInProgress = this.buildableInProgress();
 		if (buildableInProgress != null)

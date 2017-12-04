@@ -8,21 +8,34 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 	this.industry = industry;
 	this.layout = layout;
 
-	this.defn = Planet.BodyDefn;
+	this.defn = Planet.BodyDefn();
 }
 
 {
 	// constants
 
-	Planet.BodyDefn = new BodyDefn
-	(
-		"Planet", 
-		new Coords(10, 10), // size
-		new VisualGroup
-		([
-			new VisualCircle(10, Color.Instances.Cyan.systemColor, Color.Instances.Cyan.systemColor),
-		])
-	);
+	Planet.BodyDefn = function()
+	{
+		if (Planet._bodyDefn == null)
+		{
+			Planet._bodyDefn = new BodyDefn
+			(
+				"Planet", 
+				new Coords(10, 10), // size
+				new VisualGroup
+				([
+					new VisualCircle
+					(
+						10,
+						Color.Instances().Cyan.systemColor, 
+						Color.Instances().Cyan.systemColor
+					),
+				])
+			);
+		}
+		
+		return Planet._bodyDefn;		
+	}
 
 	// instance methods
 

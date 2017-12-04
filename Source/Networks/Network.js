@@ -110,14 +110,15 @@ function Network(name, nodes, links)
 		var nodesLinked = [ nodesNotYetLinked[0] ];
 		nodesNotYetLinked.splice(0, 1);
 		var links = [];
-
+		var colors = Color.Instances();
+		
 		var bodyDefnLinkPortal = new BodyDefn
 		(
 			"LinkPortal", 
 			new Coords(10, 10), // size
 			new VisualGroup
 			([
-				new VisualCircle(10, Color.Instances.Gray.systemColor, Color.Instances.Gray.systemColor)
+				new VisualCircle(10, colors.Gray.systemColor, colors.Gray.systemColor)
 			])
 		);
 

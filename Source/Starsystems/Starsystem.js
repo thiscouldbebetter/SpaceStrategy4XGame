@@ -24,7 +24,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var name = NameGenerator.generateName();
 		var size = Starsystem.SizeStandard;
 
-		var starColor = Color.Instances.Yellow.systemColor;
+		var starColor = Color.Instances().Yellow.systemColor;
 		var star = new Body
 		(
 			"Star", 
@@ -190,8 +190,9 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var gridSizeInPixelsHalf = gridSizeInPixels.clone().divideScalar(2);
 
 		var graphics = display.graphics;
-
-		graphics.strokeStyle = Color.Instances.CyanHalfTranslucent.systemColor;
+		var colors = Color.Instances();
+	
+		graphics.strokeStyle = colors.CyanHalfTranslucent.systemColor;
 
 		for (var d = 0; d < 2; d++)
 		{
@@ -236,14 +237,16 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var bodyDefn = body.defn;
 		var bodyVisual = bodyDefn.visual;
 		bodyVisual.draw(universe, display, body, drawLoc);
+		
+		var colors = Color.Instances();
 
 		if (bodyPos.z < 0)
 		{
-			graphics.strokeStyle = Color.Instances.Green.systemColor;
+			graphics.strokeStyle = colors.Green.systemColor;
 		}
 		else
 		{
-			graphics.strokeStyle = Color.Instances.Red.systemColor;
+			graphics.strokeStyle = colors.Red.systemColor;
 		}
 
 		graphics.beginPath();

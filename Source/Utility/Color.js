@@ -6,6 +6,15 @@ function Color(name, systemColor)
 }
 
 {
+	Color.Instances = function()
+	{
+		if (Color._instances == null)
+		{
+			Color._instances = new Color_Instances();
+		}
+		return Color._instances;
+	}
+	
 	function Color_Instances()
 	{
 		this.Black = new Color("Black", "rgb(0, 0, 0)");
@@ -23,6 +32,4 @@ function Color(name, systemColor)
 		this.YellowDark = new Color("YellowDark", "rgb(192, 192, 0)");
 		this.White = new Color("White", "rgb(255, 255, 255)");
 	}
-
-	Color.Instances = new Color_Instances();
 }

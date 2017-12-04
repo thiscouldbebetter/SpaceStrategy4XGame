@@ -16,15 +16,22 @@ function Cursor(bodyParent)
 }
 
 {
-	Cursor.BodyDefn = new BodyDefn
-	(
-		"Cursor", 
-		new Coords(10, 10), // size
-		new VisualGroup
-		([
-			new VisualRectangle(new Coords(10, 10), null, Color.Instances.Cyan),
-		])
-	);
+	Cursor.BodyDefn = function()
+	{
+		if (Cursor._bodyDefn == null)
+		{
+			Cursor._bodyDefn = new BodyDefn
+			(
+				"Cursor", 
+				new Coords(10, 10), // size
+				new VisualGroup
+				([
+					new VisualRectangle(new Coords(10, 10), null, Color.Instances().Cyan),
+				])
+			);
+		}
+		return Cursor._bodyDefn;
+	}
 
 	// controls
 

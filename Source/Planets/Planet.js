@@ -33,8 +33,8 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 				])
 			);
 		}
-		
-		return Planet._bodyDefn;		
+
+		return Planet._bodyDefn;
 	}
 
 	// instance methods

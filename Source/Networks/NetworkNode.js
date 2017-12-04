@@ -74,4 +74,30 @@ function NetworkNode(name, defn, pos, starsystem)
 
 		return returnValue;
 	}
+
+	// drawable
+
+	NetworkNode.prototype.draw = function
+	(
+		universe, nodeRadiusActual, camera, drawPos
+	)
+	{
+		var nodePos = this.loc.pos;
+
+		drawPos.overwriteWith(nodePos);
+		camera.coordsTransformWorldToView(drawPos);
+
+		var perspectiveFactor = camera.focalLength / drawPos.z;
+		var radiusApparent = nodeRadiusActual * perspectiveFactor;
+
+		var alpha = Math.pow(perspectiveFactor, 4); // hack
+
+		//var nodeColor = node.defn.color.systemColor;
+		var nodeColor = "rgba(128, 128, 128, " + alpha + ")"
+
+		var display = universe.display;
+		display.drawCircle(drawPos, radiusApparent, nodeColor, nodeColor);
+		drawPos.x += radiusApparent;
+		display.drawText(this.starsystem.name, 10, drawPos, "White", nodeColor);
+	}
 }

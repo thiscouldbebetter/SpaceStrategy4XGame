@@ -115,17 +115,8 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.draw = function(universe)
 	{
-		var display = universe.display;
-
-		display.clear();
-
-		this.world.network.drawToDisplayForCamera
-		(
-			universe,
-			display,
-			this.world.camera
-		);
-
+		universe.display.clear();
+		this.world.network.draw(universe, this.world.camera);
 		this.venueControls.draw(universe);
 	}
 
@@ -136,6 +127,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.initialize = function(universe)
 	{
+		this.world.initialize(universe);
 		this.venueControls = new VenueControls
 		(
 			this.controlBuild(universe)

@@ -21,9 +21,7 @@ function VenueStarsystem(universe, starsystem)
 
 	VenueStarsystem.prototype.cursorClear = function()
 	{
-		var bodyIndexOfCursor = this.bodies.indexOf(this.cursor);
-		this.bodies.splice(bodyIndexOfCursor, 1);
-		this.selection = this.cursor.bodyParent;
+		this.bodies.remove(this.cursor);
 		this.cursor = null;
 	}
 
@@ -155,12 +153,6 @@ function VenueStarsystem(universe, starsystem)
 			if (bodyDefnName == "Ship")
 			{
 				var ship = body;
-
-				var shipOrder = ship.order;
-				if (shipOrder != null)
-				{
-					shipOrder.obey(ship);
-				}
 
 				var shipActivity = ship.activity;
 				if (shipActivity != null)
@@ -313,6 +305,8 @@ function VenueStarsystem(universe, starsystem)
 							this.cursorClear();
 
 							inputHelper.isEnabled = false;
+
+							ship.order.obey(ship);
 						}
 						else if (cursor.hasXYPositionBeenSpecified == false)
 						{
@@ -342,6 +336,8 @@ function VenueStarsystem(universe, starsystem)
 							this.cursorClear();
 
 							inputHelper.isEnabled = false;
+
+							ship.order.obey(ship);
 						}
 
 					}

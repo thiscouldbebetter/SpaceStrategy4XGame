@@ -14,7 +14,11 @@ function Order(defnName, target)
 
 	Order.prototype.obey = function(actor)
 	{
-		if (this.isComplete == false)
+		if (this.isComplete == true)
+		{
+			actor.order = null;
+		}
+		else
 		{
 			this.defn().obey(actor, this);
 		}

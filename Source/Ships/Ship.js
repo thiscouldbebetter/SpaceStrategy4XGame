@@ -11,6 +11,9 @@ function Ship(name, defn, pos, factionName, devices)
 	this.energyThisTurn = 0;
 	this.distancePerMove = 0;
 	this.shieldingThisTurn = 0;
+
+	// Helper variables.
+	this.displacement = new Coords();
 }
 
 {
@@ -43,12 +46,109 @@ function Ship(name, defn, pos, factionName, devices)
 		return this.factionName + this.name;
 	}
 
+	// movement
+
+	Ship.prototype.linkPortalEnter = function(universe, linkPortal)
+	{
+		var starsystemFrom = linkPortal.starsystemFrom(universe);
+		var starsystemTo = linkPortal.starsystemTo(universe);
+		var link = linkPortal.link(universe);
+
+		starsystemFrom.ships.remove(this);
+		link.ships.push(this);
+		shipLoc.pos.clear().x = 0;
+		shipLoc.vel.clear().x = 1;
+	}
+
+	Ship.prototype.moveTowardTarget = function(universe, target)
+	{
+		if (this.distanceLeftThisMove == null)
+		{
+			if (this.energyThisTurn >= this.energyPerMove)
+			{
+				this.energyThisTurn -= this.energyPerMove;
+				this.distanceLeftThisMove = this.distancePerMove;
+			}
+		}
+
+		if (this.distanceLeftThisMove > 0)
+		{
+			var shipLoc = this.loc;
+			var shipPos = shipLoc.pos;
+			var targetLoc = target.loc;
+			var targetPos = targetLoc.pos;
+
+			var displacementToTarget = this.displacement.overwriteWith
+			(
+				targetPos
+			).subtract
+			(
+				shipPos
+			);
+			var distanceToTarget = displacementToTarget.magnitude();
+
+			var distanceMaxPerTick = 3; // hack
+
+			var distanceToMoveThisTick = (this.distanceLeftThisMove < distanceMaxPerTick ? this.distanceLeftThisMove : distanceMaxPerTick);
+
+			if (distanceToTarget < distanceToMoveThisTick)
+			{
+				shipPos.overwriteWith(targetPos);
+
+				// hack
+				this.distanceLeftThisMove = null;
+				this.activity = null;
+				universe.inputHelper.isEnabled = true;
+				this.order = null;
+
+				var targetDefnName = target.defn.name;
+				if (targetDefnName == "LinkPortal")
+				{
+					this.linkPortalEnter(target);
+				}
+				else if (targetDefnName == "Planet")
+				{
+					alert("todo - planet collision");
+				}
+			}
+			else
+			{
+				var directionToTarget = displacementToTarget.divideScalar
+				(
+					distanceToTarget
+				);
+
+				var shipVel = shipLoc.vel;
+				shipVel.overwriteWith
+				(
+					directionToTarget
+				).multiplyScalar
+				(
+					distanceToMoveThisTick
+				);
+
+				shipPos.add(shipVel);
+
+				this.distanceLeftThisMove -= distanceToMoveThisTick;
+				if (this.distanceLeftThisMove <= 0)
+				{
+					// hack
+					this.distanceLeftThisMove = null;
+					this.activity = null;
+					universe.inputHelper.isEnabled = true;
+				}
+			}
+		}
+	}
+
+
+
 	// controls
 
 	Ship.prototype.controlBuild = function(universe, containerSize)
 	{
-		var margin = 10;
-		var controlSpacing = 20;
+		var margin = 8;
+		var controlSpacing = 16;
 		var buttonSize = new Coords
 		(
 			containerSize.x - margin * 2,
@@ -65,17 +165,54 @@ function Ship(name, defn, pos, factionName, devices)
 			[
 				new ControlLabel
 				(
-					"labelShipAsSelection",
+					"textShipAsSelection",
 					new Coords(margin, margin),
 					new Coords(containerSize.x, 0), // this.size
 					false, // isTextCentered
 					new DataBinding(this.name)
 				),
 
+				new ControlLabel
+				(
+					"labelIntegrity",
+					new Coords(margin, margin + controlSpacing),
+					new Coords(containerSize.x, controlSpacing), // this.size
+					false, // isTextCentered
+					"H:"
+				),
+
+				new ControlLabel
+				(
+					"textIntegrity",
+					new Coords(containerSize.x / 4, margin + controlSpacing),
+					new Coords(containerSize.x, controlSpacing), // this.size
+					false, // isTextCentered
+					new DataBinding(this, "integrity")
+				),
+
+				new ControlLabel
+				(
+					"labelEnergy",
+					new Coords(containerSize.x / 2, margin + controlSpacing),
+					new Coords(containerSize.x, controlSpacing), // this.size
+					false, // isTextCentered
+					"E:"
+				),
+
+				new ControlLabel
+				(
+					"textEnergy",
+					new Coords(3 * containerSize.x / 4, margin + controlSpacing),
+					new Coords(containerSize.x, controlSpacing), // this.size
+					false, // isTextCentered
+					new DataBinding(this, "energyThisTurn")
+				),
+
+
 				new ControlButton
 				(
 					"buttonView",
-					new Coords(margin, margin + controlSpacing), // pos
+					new Coords(margin, margin + controlSpacing * 2), // pos
 					buttonSize, // size
 					"View",
 					fontHeightInPixels,
@@ -90,7 +227,7 @@ function Ship(name, defn, pos, factionName, devices)
 				new ControlButton
 				(
 					"buttonMove",
-					new Coords(margin, margin + controlSpacing * 2), // pos
+					new Coords(margin, margin + controlSpacing * 3), // pos
 					buttonSize,
 					"Move",
 					fontHeightInPixels,
@@ -98,14 +235,15 @@ function Ship(name, defn, pos, factionName, devices)
 					true, // isEnabled
 					function click(universe)
 					{
-						var venueCurrent = universe.venueCurrent;
-						venueCurrent.cursorBuild();
+						var venue = universe.venueCurrent;
+						var ship = venue.selection;
+						venue.cursorBuild(ship);
 					}
 				),
 				new ControlButton
 				(
 					"buttonRepeat",
-					new Coords(margin, margin + controlSpacing * 3), // pos
+					new Coords(margin, margin + controlSpacing * 4), // pos
 					buttonSize,
 					"Repeat",
 					fontHeightInPixels,
@@ -113,14 +251,20 @@ function Ship(name, defn, pos, factionName, devices)
 					true, // isEnabled
 					function click(universe)
 					{
-						alert("todo - repeat")
+						var venue = universe.venueCurrent;
+						var cursor = venue.selection;
+						var ship = cursor.bodyParent;
+						if (ship.order != null)
+						{
+							ship.order.obey(ship);
+						}
 					}
 				),
 
 				new ControlLabel
 				(
 					"labelDevices",
-					new Coords(margin, margin + controlSpacing * 4), // pos
+					new Coords(margin, margin + controlSpacing * 5), // pos
 					new Coords(containerSize.x, 0), // this.size
 					false, // isTextCentered
 					new DataBinding("Devices:")
@@ -129,7 +273,7 @@ function Ship(name, defn, pos, factionName, devices)
 				new ControlList
 				(
 					"listDevices",
-					new Coords(margin, margin + controlSpacing * 5), // pos
+					new Coords(margin, margin + controlSpacing * 6), // pos
 					new Coords(buttonSize.x, controlSpacing * 2), // size
 					// dataBindingForItems
 					new DataBinding(this.devices, null),
@@ -142,7 +286,7 @@ function Ship(name, defn, pos, factionName, devices)
 				new ControlButton
 				(
 					"buttonDeviceUse",
-					new Coords(margin, margin * 2 + controlSpacing * 7), // pos
+					new Coords(margin, margin * 2 + controlSpacing * 7.5), // pos
 					buttonSize,
 					"Use Device",
 					fontHeightInPixels,
@@ -188,6 +332,7 @@ function Ship(name, defn, pos, factionName, devices)
 	{
 		this.energyThisTurn = 0;
 		this.distancePerMove = 0;
+		this.energyPerMove = 0;
 		this.shieldingThisTurn = 0;
 
 		for (var i = 0; i < this.devices.length; i++)

@@ -14,25 +14,27 @@ function OrderDefn(name, obey)
 			// obey
 			function(actor, order)
 			{
-				var actorLoc = actor.loc;
-				var target = order.target;
-				var targetLoc = target.loc;
-
-				if 
-				(
-					actorLoc.venueName == targetLoc.venueName
-					&& actorLoc.pos.equals(targetLoc.pos)
-				)
-				{
-					order.isComplete = true;
-				}
-				else if (actor.activity == null)
+				if (actor.activity == null)
 				{
 					actor.activity = new Activity
 					(
-						"MoveToTarget",
-						[ order.target ]
+						"MoveToTarget", order.target
 					);
+				}
+				else
+				{
+					var actorLoc = actor.loc;
+					var target = order.target;
+					var targetLoc = target.loc;
+
+					if
+					(
+						actorLoc.venueName == targetLoc.venueName
+						&& actorLoc.pos.equals(targetLoc.pos)
+					)
+					{
+						order.isComplete = true;
+					}
 				}
 
 			}

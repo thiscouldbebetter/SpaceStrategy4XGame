@@ -16,7 +16,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 	this.factions.addLookups("name");
 	this.ships.addLookups("name");
 
-	this.turnsSoFar = 1;
+	this.turnsSoFar = 0;
 	this.factionIndexCurrent = 0;
 }
 {
@@ -31,7 +31,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 		var viewSize = universe.display.sizeInPixels.clone();
 		var viewDimension = viewSize.y;
 
-		var networkRadius = viewDimension * .35;
+		var networkRadius = viewDimension * .25;
 		var numberOfNetworkNodes = 6; // 128;
 		var network = Network.generateRandom
 		(
@@ -70,17 +70,15 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 				false, // isActive
 				false, // needsTarget
 				[ "Drive" ], // categoryNames
-				function initialize(universe, actor, device)
-				{
-					actor.distancePerMove = 0;
-				},
+				function initialize(universe, actor, device) {},
 				function updateForTurn(universe, actor, device)
 				{
-					actor.distancePerMove += 1;
+					actor.distancePerMove += 50;
+					actor.energyPerMove += 1;
 				},
 				function use(universe, actor, device, target)
 				{
-					actor.energyThisTurn -= 1;
+					actor.energyThisTurn -= actor.energyPerMove;
 				}
 			),
 			new DeviceDefn
@@ -89,10 +87,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 				false, // isActive
 				false, // needsTarget
 				[ "Generator" ], // categoryNames
-				function initialize(universe, actor, device)
-				{
-					actor.energyThisTurn = 0;
-				},
+				function initialize(universe, actor, device) {},
 				function updateForTurn(universe, actor, device)
 				{
 					actor.energyThisTurn += 10;
@@ -285,6 +280,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 			ships,
 			camera
 		);
+
 		return returnValue;
 	}
 
@@ -304,6 +300,14 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 			this.factionIndexCurrent, 1
 		);
 		return returnValues;
+	}
+
+	World.prototype.initialize = function(universe)
+	{
+		if (this.turnsSoFar == 0)
+		{
+			this.updateForTurn(universe);
+		}
 	}
 
 	World.prototype.updateForTurn = function(universe)

@@ -1,8 +1,8 @@
 
-function Activity(defnName, variables)
+function Activity(defnName, target)
 {
 	this.defnName = defnName;
-	this.variables = variables;
+	this.target = target;
 }
 
 {

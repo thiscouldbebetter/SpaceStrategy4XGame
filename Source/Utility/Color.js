@@ -14,7 +14,7 @@ function Color(name, systemColor)
 		}
 		return Color._instances;
 	}
-	
+
 	function Color_Instances()
 	{
 		this.Black = new Color("Black", "rgb(0, 0, 0)");

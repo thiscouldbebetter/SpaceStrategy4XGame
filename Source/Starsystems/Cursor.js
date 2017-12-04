@@ -5,7 +5,7 @@ function Cursor(bodyParent)
 	this.hasXYPositionBeenSpecified = false;
 	this.hasZPositionBeenSpecified = false;
 
-	this.defn = Cursor.BodyDefn;
+	this.defn = Cursor.BodyDefn();
 
 	this.loc = this.bodyParent.loc.clone();
 

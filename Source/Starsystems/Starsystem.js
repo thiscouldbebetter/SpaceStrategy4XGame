@@ -10,6 +10,13 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 	this.factionName = factionName;
 
 	this.ships = [];
+
+	// Helper variables
+	this.drawPos = new Coords();
+	this.drawPos2 = new Coords();
+	this.drawLoc = new Location(this.drawPos);
+	this.visualElevationStem = new VisualElevationStem(null);
+	this.visualGrid = new VisualGrid(null, 40, 10, Color.Instances().CyanHalfTranslucent.systemColor);
 }
 
 {
@@ -140,20 +147,17 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	Starsystem.prototype.draw = function(universe, display, camera)
 	{
-		var starsystem = this;
-		var cameraViewSize = camera.viewSize;
-		var cameraPos = camera.loc.pos;
+		this.visualElevationStem.camera = camera;
+		this.visualGrid.camera = camera;
 
-		var drawPos = display.drawPos;
-
-		this.draw_Grid(universe, display, camera);
+		this.visualGrid.draw(universe, display);
 
 		var bodiesByType =
 		[
-			[ starsystem.star ],
-			starsystem.linkPortals,
-			starsystem.planets,
-			starsystem.ships,
+			[ this.star ],
+			this.linkPortals,
+			this.planets,
+			this.ships,
 		];
 
 		for (var t = 0; t < bodiesByType.length; t++)
@@ -175,60 +179,10 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		}
 	}
 
-	Starsystem.prototype.draw_Grid = function(universe, display, camera)
-	{
-		var drawPosFrom = new Coords(0, 0, 0);
-		var drawPosTo = new Coords(0, 0, 0);
-
-		var gridCellSizeInPixels = new Coords(10, 10, 0);
-		var gridSizeInCells = new Coords(40, 40, 0); 
-		var gridSizeInPixels = gridSizeInCells.clone().multiply
-		(
-			gridCellSizeInPixels
-		);
-		var gridSizeInCellsHalf = gridSizeInCells.clone().divideScalar(2);
-		var gridSizeInPixelsHalf = gridSizeInPixels.clone().divideScalar(2);
-
-		var graphics = display.graphics;
-		var colors = Color.Instances();
-	
-		graphics.strokeStyle = colors.CyanHalfTranslucent.systemColor;
-
-		for (var d = 0; d < 2; d++)
-		{
-			var multiplier = new Coords(0, 0, 0);
-			multiplier.dimension(d, gridCellSizeInPixels.dimension(d));
-
-			for (var i = 0 - gridSizeInCellsHalf.x; i <= gridSizeInCellsHalf.x; i++)
-			{
-				drawPosFrom.overwriteWith
-				(
-					gridSizeInPixelsHalf
-				).multiplyScalar(-1);
-				drawPosTo.overwriteWith(gridSizeInPixelsHalf);
-
-				drawPosFrom.dimension(d, 0);
-				drawPosTo.dimension(d, 0);
-
-				drawPosFrom.add(multiplier.clone().multiplyScalar(i));
-				drawPosTo.add(multiplier.clone().multiplyScalar(i));
-
-				camera.coordsTransformWorldToView(drawPosFrom);
-				camera.coordsTransformWorldToView(drawPosTo);
-
-				graphics.beginPath();
-				graphics.moveTo(drawPosFrom.x, drawPosFrom.y);
-				graphics.lineTo(drawPosTo.x, drawPosTo.y);
-				graphics.stroke();
-			}
-		}
-	}
-
 	Starsystem.prototype.draw_Body = function(universe, display, camera, body)
 	{
-		var graphics = display.graphics;
-		var drawPos = new Coords();
-		var drawLoc = new Location(drawPos);
+		var drawPos = this.drawPos;
+		var drawLoc = this.drawLoc;
 
 		var bodyPos = body.loc.pos;
 		drawPos.overwriteWith(bodyPos);
@@ -237,26 +191,87 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var bodyDefn = body.defn;
 		var bodyVisual = bodyDefn.visual;
 		bodyVisual.draw(universe, display, body, drawLoc);
-		
+
+		this.visualElevationStem.draw(universe, display, body, body.loc);
+	}
+}
+
+// Visuals.
+
+function VisualElevationStem(camera)
+{
+	this.camera = camera;
+	this.drawPosTip = new Coords();
+	this.drawPosPlane = new Coords();
+}
+{
+	VisualElevationStem.prototype.draw = function(universe, display, drawable, drawLoc)
+	{
+		var drawablePosWorld = drawable.loc.pos;
+		var drawPosTip = this.camera.coordsTransformWorldToView
+		(
+			this.drawPosTip.overwriteWith(drawablePosWorld)
+		);
+		var drawPosPlane = this.camera.coordsTransformWorldToView
+		(
+			this.drawPosPlane.overwriteWith(drawablePosWorld).clearZ()
+		);
+		var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
 		var colors = Color.Instances();
+		display.drawLine(drawPosTip, drawPosPlane, colors[colorName].systemColor);
+	}
+}
 
-		if (bodyPos.z < 0)
+function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, color)
+{
+	this.camera = camera;
+	this.gridSizeInCells = new Coords(1, 1, 0).multiplyScalar(gridDimensionInCells);
+	this.gridCellSizeInPixels = new Coords(1, 1, 0).multiplyScalar(gridCellDimensionInPixels);
+	this.color = color;
+
+	this.gridSizeInPixels = this.gridSizeInCells.clone().multiply(this.gridCellSizeInPixels);
+	this.gridSizeInCellsHalf = this.gridSizeInCells.clone().half();
+	this.gridSizeInPixelsHalf = this.gridSizeInPixels.clone().half();
+
+	this.drawPosFrom = new Coords();
+	this.drawPosTo = new Coords();
+	this.multiplier = new Coords();
+}
+{
+	VisualGrid.prototype.draw = function(universe, display, drawable, drawLoc)
+	{
+		var drawPosFrom = this.drawPosFrom;
+		var drawPosTo = this.drawPosTo;
+		var multiplier = this.multiplier;
+
+		for (var d = 0; d < 2; d++)
 		{
-			graphics.strokeStyle = colors.Green.systemColor;
+			multiplier.clear();
+			multiplier.dimension(d, this.gridCellSizeInPixels.dimension(d));
+
+			for (var i = 0 - this.gridSizeInCellsHalf.x; i <= this.gridSizeInCellsHalf.x; i++)
+			{
+				drawPosFrom.overwriteWith
+				(
+					this.gridSizeInPixelsHalf
+				).multiplyScalar(-1);
+
+				drawPosTo.overwriteWith
+				(
+					this.gridSizeInPixelsHalf
+				);
+
+				drawPosFrom.dimension(d, 0);
+				drawPosTo.dimension(d, 0);
+
+				drawPosFrom.add(multiplier.clone().multiplyScalar(i));
+				drawPosTo.add(multiplier.clone().multiplyScalar(i));
+
+				this.camera.coordsTransformWorldToView(drawPosFrom);
+				this.camera.coordsTransformWorldToView(drawPosTo);
+
+				display.drawLine(drawPosFrom, drawPosTo, this.color);
+			}
 		}
-		else
-		{
-			graphics.strokeStyle = colors.Red.systemColor;
-		}
-
-		graphics.beginPath();
-		graphics.moveTo(drawPos.x, drawPos.y);
-
-		drawPos.overwriteWith(bodyPos);
-		drawPos.z = 0;
-		camera.coordsTransformWorldToView(drawPos);
-
-		graphics.lineTo(drawPos.x, drawPos.y);
-		graphics.stroke();
 	}
 }

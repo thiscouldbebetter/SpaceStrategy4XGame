@@ -245,7 +245,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 				new FactionKnowledge
 				(
 					[ factionHomeStarsystem ],
-					[ factionHomeStarsystem.links() ]
+					[ factionHomeStarsystem.links(network) ]
 				)
 			);
 			factions.push(faction);

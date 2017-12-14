@@ -54,9 +54,28 @@ function ControlBuilderExtensions()
 
 				new ControlButton
 				(
-					"buttonDetails", // name, 
+					"buttonCenter", // name, 
 					new Coords(margin, size.y - margin - controlHeight), // pos
-					new Coords(size.x - margin * 2, controlHeight), // size, 
+					new Coords((size.x - margin * 3) / 2, controlHeight), // size, 
+					"Center", // text, 
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					function click(universe) 
+					{ 
+						// todo
+					}
+				),
+
+				new ControlButton
+				(
+					"buttonDetails", // name, 
+					new Coords
+					(
+						margin * 2 + ((size.x - margin * 3) / 2), 
+						size.y - margin - controlHeight
+					), // pos
+					new Coords((size.x - margin * 3) / 2, controlHeight), // size, 
 					"Details", // text, 
 					fontHeightInPixels,
 					true, // hasBorder
@@ -228,8 +247,8 @@ function ControlBuilderExtensions()
 					"buttonViewUp",
 					new Coords
 					(
-						(containerInnerSize.x - (controlHeight * 3)) / 2 + controlHeight, 
-						controlHeight
+						margin + controlHeight,
+						margin * 2
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					"^",
@@ -238,10 +257,7 @@ function ControlBuilderExtensions()
 					true, // isEnabled
 					function click(universe)
 					{
-						var venueCurrent = universe.venueCurrent;
-						var camera = venueCurrent.camera;
-						var cameraAction = new Action_CameraMove([0, cameraSpeed]);
-						cameraAction.perform(camera);
+						universe.venueCurrent.cameraUp(cameraSpeed);
 					}
 				),
 
@@ -250,13 +266,8 @@ function ControlBuilderExtensions()
 					"buttonViewDown",
 					new Coords
 					(
-						(
-							containerInnerSize.x 
-							- (controlHeight * 3)
-						) 
-						/ 2 
-						+ controlHeight, 
-						controlHeight * 2
+						margin + controlHeight,
+						margin * 2 + controlHeight
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					"v",
@@ -265,10 +276,7 @@ function ControlBuilderExtensions()
 					true, // isEnabled
 					function click(universe)
 					{
-						var venueCurrent = universe.venueCurrent;
-						var camera = venueCurrent.camera;
-						var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
-						cameraAction.perform(camera);
+						universe.venueCurrent.cameraDown(cameraSpeed);
 					}
 				),
 
@@ -277,8 +285,8 @@ function ControlBuilderExtensions()
 					"buttonViewLeft",
 					new Coords
 					(
-						(containerInnerSize.x - (controlHeight * 3)) / 2, 
-						controlHeight * 2
+						margin,
+						margin * 2 + controlHeight
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					"<",
@@ -287,10 +295,7 @@ function ControlBuilderExtensions()
 					true, // isEnabled
 					function click(universe)
 					{
-						var venueCurrent = universe.venueCurrent;
-						var camera = venueCurrent.camera;
-						var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
-						cameraAction.perform(camera);
+						universe.venueCurrent.cameraLeft(cameraSpeed);
 					}
 				),
 
@@ -299,12 +304,8 @@ function ControlBuilderExtensions()
 					"buttonViewRight",
 					new Coords
 					(
-						(
-							containerInnerSize.x 
-							- (controlHeight * 3)
-						) / 2 
-						+ controlHeight * 2, 
-						controlHeight * 2
+						margin + controlHeight * 2,
+						margin * 2 + controlHeight
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					">",
@@ -313,12 +314,49 @@ function ControlBuilderExtensions()
 					true, // isEnabled
 					function click(universe)
 					{
-						var venueCurrent = universe.venueCurrent;
-						var camera = venueCurrent.camera;
-						var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
-						cameraAction.perform(camera);
+						universe.venueCurrent.cameraRight(cameraSpeed);
 					}
 				),
+
+				new ControlButton
+				(
+					"buttonViewZoomIn",
+					new Coords
+					(
+						margin * 2 + controlHeight * 3,
+						margin * 2
+					), // pos
+					new Coords(controlHeight, controlHeight), // size
+					"In",
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					function click(universe)
+					{
+						universe.venueCurrent.cameraIn(cameraSpeed);
+					}
+				),
+
+				new ControlButton
+				(
+					"buttonViewZoomOut",
+					new Coords
+					(
+						margin * 2 + controlHeight * 3,
+						margin * 2 + controlHeight
+					), // pos
+					new Coords(controlHeight, controlHeight), // size
+					"Out",
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					function click(universe)
+					{
+						universe.venueCurrent.cameraOut(cameraSpeed);
+					}
+				),
+
+
 			]
 		);
 

@@ -6,14 +6,14 @@ function NetworkLink(namesOfNodesLinked)
 }
 
 {
-	NetworkLink.prototype.direction = function()
+	NetworkLink.prototype.direction = function(cluster)
 	{
-		return this.displacement().normalize();
+		return this.displacement(cluster).normalize();
 	}
 
-	NetworkLink.prototype.displacement = function()
+	NetworkLink.prototype.displacement = function(cluster)
 	{
-		var nodesLinked = this.nodesLinked(universe);
+		var nodesLinked = this.nodesLinked(cluster);
 
 		var returnValue = nodesLinked[1].loc.pos.clone().subtract
 		(
@@ -23,19 +23,17 @@ function NetworkLink(namesOfNodesLinked)
 		return returnValue;
 	}
 
-	NetworkLink.prototype.length = function()
+	NetworkLink.prototype.length = function(cluster)
 	{
-		return this.displacement().magnitude();
+		return this.displacement(cluster).magnitude();
 	}
 
-	NetworkLink.prototype.nodesLinked = function(universe)
+	NetworkLink.prototype.nodesLinked = function(cluster)
 	{
-		var network = universe.world.network;
-
 		var returnValue = 
 		[
-			network.nodes[this.namesOfNodesLinked[0]],
-			network.nodes[this.namesOfNodesLinked[1]],
+			cluster.nodes[this.namesOfNodesLinked[0]],
+			cluster.nodes[this.namesOfNodesLinked[1]],
 		];
 
 		return returnValue;
@@ -49,7 +47,7 @@ function NetworkLink(namesOfNodesLinked)
 		{
 			var nodesLinked = this.nodesLinked(universe);
 
-			var length = this.length();
+			var length = this.length(network);
 
 			var shipsExitingLink = [];
 
@@ -103,8 +101,8 @@ function NetworkLink(namesOfNodesLinked)
 		drawPosTo
 	)
 	{
-		var link = this;
-		var nodesLinked = link.nodesLinked(universe);
+		var cluster = universe.world.network;
+		var nodesLinked = this.nodesLinked(cluster);
 		var nodeFromPos = nodesLinked[0].loc.pos;
 		var nodeToPos = nodesLinked[1].loc.pos;
 
@@ -158,17 +156,17 @@ function NetworkLink(namesOfNodesLinked)
 		for (var i = 0; i < ships.length; i++)
 		{
 			var ship = ships[i];
-			this.draw_Ship(universe, camera, this, ship, drawPos, nodeFromPos, nodeToPos);
+			this.draw_Ship(cluster, camera, ship, drawPos, nodeFromPos, nodeToPos);
 		}
 	}
 
 	NetworkLink.prototype.draw_Ship = function
 	(
-		universe, display, camera, link, ship, drawPos, nodeFromPos, nodeToPos
+		cluster, camera, ship, drawPos, nodeFromPos, nodeToPos
 	)
 	{
-		var forward = link.direction();
-		var linkLength = link.length();
+		var forward = this.direction(cluster);
+		var linkLength = this.length(cluster);
 
 		var fractionOfLinkTraversed = ship.loc.pos.x / linkLength; 
 

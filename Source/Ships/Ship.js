@@ -48,14 +48,16 @@ function Ship(name, defn, pos, factionName, devices)
 
 	// movement
 
-	Ship.prototype.linkPortalEnter = function(universe, linkPortal)
+	Ship.prototype.linkPortalEnter = function(cluster, linkPortal)
 	{
-		var starsystemFrom = linkPortal.starsystemFrom(universe);
-		var starsystemTo = linkPortal.starsystemTo(universe);
-		var link = linkPortal.link(universe);
+		var starsystemFrom = linkPortal.starsystemFrom(cluster);
+		var starsystemTo = linkPortal.starsystemTo(cluster);
+		var link = linkPortal.link(cluster);
 
 		starsystemFrom.ships.remove(this);
 		link.ships.push(this);
+
+		var shipLoc = this.loc;
 		shipLoc.pos.clear().x = 0;
 		shipLoc.vel.clear().x = 1;
 	}
@@ -104,11 +106,13 @@ function Ship(name, defn, pos, factionName, devices)
 				var targetDefnName = target.defn.name;
 				if (targetDefnName == "LinkPortal")
 				{
-					this.linkPortalEnter(target);
+					var portal = target;
+					this.linkPortalEnter(universe.world.network, portal);
 				}
 				else if (targetDefnName == "Planet")
 				{
-					alert("todo - planet collision");
+					var planet = target;
+					this.planetOrbitEnter(universe.world.network, "todo", planet);
 				}
 			}
 			else
@@ -139,9 +143,13 @@ function Ship(name, defn, pos, factionName, devices)
 				}
 			}
 		}
+
+		Ship.prototype.planetOrbitEnter = function(universe, starsystem, planet)
+		{
+			starsystem.ships.remove(this);
+			starsystem.ships.push(this);
+		}
 	}
-
-
 
 	// controls
 
@@ -252,8 +260,7 @@ function Ship(name, defn, pos, factionName, devices)
 					function click(universe)
 					{
 						var venue = universe.venueCurrent;
-						var cursor = venue.selection;
-						var ship = cursor.bodyParent;
+						var ship = venue.selection;
 						if (ship.order != null)
 						{
 							ship.order.obey(ship);

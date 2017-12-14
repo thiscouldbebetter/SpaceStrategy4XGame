@@ -31,6 +31,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var name = NameGenerator.generateName();
 		var size = Starsystem.SizeStandard;
 
+		var starRadius = 30;
 		var starColor = Color.Instances().Yellow.systemColor;
 		var star = new Body
 		(
@@ -38,11 +39,11 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 			new BodyDefn
 			(
 				"Star", 
-				new Coords(40, 40), // size
+				new Coords(1, 1).multiplyScalar(starRadius), // size
 				new VisualGroup
 				([
-					new VisualCircle(40, starColor, starColor),
-					new VisualText(name)
+					new VisualCircle(starRadius, starColor, starColor),
+					new VisualText(name, "Gray"),
 				])
 			),
 			new Coords(0, 0, -10)
@@ -108,14 +109,14 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		return (this.factionName == null ? null : universe.world.factions[this.factionName]);
 	}
 
-	Starsystem.prototype.links = function()
+	Starsystem.prototype.links = function(cluster)
 	{
 		var returnValues = [];
 
 		for (var i = 0; i < this.linkPortals.length; i++)
 		{
 			var linkPortal = this.linkPortals[i];
-			var link = linkPortal.link();
+			var link = linkPortal.link(cluster);
 			returnValues.push(link);
 		}
 
@@ -160,22 +161,43 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 			this.ships,
 		];
 
+		var bodyToSortDrawPos = new Coords();
+		var bodySortedDrawPos = new Coords();
+		var bodiesToDrawSorted = [];
+
 		for (var t = 0; t < bodiesByType.length; t++)
 		{
 			var bodies = bodiesByType[t];
 
 			for (var i = 0; i < bodies.length; i++)
 			{
-				var body = bodies[i];
-				this.draw_Body
+				var bodyToSort = bodies[i];
+				camera.coordsTransformWorldToView
 				(
-					universe,
-					display,
-					camera, 
-					body
+					bodyToSortDrawPos.overwriteWith(bodyToSort.loc.pos)
 				);
-			}
+				var j = 0;
+				for (j = 0; j < bodiesToDrawSorted.length; j++)
+				{
+					var bodySorted = bodiesToDrawSorted[j];
+					camera.coordsTransformWorldToView
+					(
+						bodySortedDrawPos.overwriteWith(bodySorted.loc.pos)
+					);
+					if (bodyToSortDrawPos.z >= bodySortedDrawPos.z)
+					{
+						break;
+					}
+				}
 
+				bodiesToDrawSorted.splice(j, 0, bodyToSort);
+			}
+		}
+
+		for (var i = 0; i < bodiesToDrawSorted.length; i++)
+		{
+			var body = bodiesToDrawSorted[i];
+			this.draw_Body(universe, display, camera, body);
 		}
 	}
 

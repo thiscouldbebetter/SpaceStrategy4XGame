@@ -9,6 +9,8 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 	this.layout = layout;
 
 	this.defn = Planet.BodyDefn();
+
+	this.ships = [];
 }
 
 {

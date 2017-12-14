@@ -21,6 +21,7 @@ function VenueStarsystem(universe, starsystem)
 
 	VenueStarsystem.prototype.cursorClear = function()
 	{
+		this.selection = this.cursor.bodyParent;
 		this.bodies.remove(this.cursor);
 		this.cursor = null;
 	}
@@ -172,27 +173,27 @@ function VenueStarsystem(universe, starsystem)
 			var inputActive = inputsActive[i];
 			if (inputActive == "_a")
 			{
-				new Action_CylinderMove_Yaw(-.01).perform(camera);
+				this.cameraLeft(.01);
 			}
 			else if (inputActive == "_d")
 			{
-				new Action_CylinderMove_Yaw(.01).perform(camera);
+				this.cameraRight(.01);
 			}
 			else if (inputActive == "_f")
 			{
-				new Action_CylinderMove_DistanceAlongAxis(10).perform(camera);
+				this.cameraDown(10);
 			}
 			else if (inputActive == "_r")
 			{
-				new Action_CylinderMove_DistanceAlongAxis(-10).perform(camera);
+				this.cameraUp(10);
 			}
 			else if (inputActive == "_s")
 			{
-				new Action_CylinderMove_Radius(10).perform(camera);
+				this.cameraOut(10);
 			}
 			else if (inputActive == "_w")
 			{
-				new Action_CylinderMove_Radius(-10).perform(camera);
+				this.cameraIn(10);
 			}
 			else if (inputHelper.isMouseClicked() == true)
 			{
@@ -206,7 +207,7 @@ function VenueStarsystem(universe, starsystem)
 					camera.loc.pos,
 					camera.coordsTransformViewToWorld
 					(
-						mouseClickPos
+						mouseClickPos, true // ignoreZ
 					).subtract
 					(
 						camera.loc.pos
@@ -358,6 +359,48 @@ function VenueStarsystem(universe, starsystem)
 				}
 			}
 		}
+	}
+
+	// camera
+
+	VenueStarsystem.prototype.cameraCenter = function()
+	{
+		// todo
+	}
+
+	VenueStarsystem.prototype.cameraDown = function(cameraSpeed)
+	{
+		new Action_CylinderMove_DistanceAlongAxis(cameraSpeed).perform(this.camera);
+	}
+
+	VenueStarsystem.prototype.cameraIn = function(cameraSpeed)
+	{
+		new Action_CylinderMove_Radius(0 - cameraSpeed).perform(this.camera);
+	}
+
+	VenueStarsystem.prototype.cameraLeft = function(cameraSpeed)
+	{
+		new Action_CylinderMove_Yaw(0 - cameraSpeed).perform(this.camera);
+	}
+
+	VenueStarsystem.prototype.cameraOut = function(cameraSpeed)
+	{
+		new Action_CylinderMove_Radius(cameraSpeed).perform(this.camera);
+	}
+
+	VenueStarsystem.prototype.cameraReset = function()
+	{
+		// todo
+	}
+
+	VenueStarsystem.prototype.cameraRight = function(cameraSpeed)
+	{
+		new Action_CylinderMove_Yaw(cameraSpeed).perform(this.camera);
+	}
+
+	VenueStarsystem.prototype.cameraUp = function(cameraSpeed)
+	{
+		new Action_CylinderMove_DistanceAlongAxis(0 - cameraSpeed).perform(this.camera);
 	}
 
 	// controls

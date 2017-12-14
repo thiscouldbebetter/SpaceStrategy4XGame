@@ -12,6 +12,42 @@ function VenueWorld(world)
 		return this.world.network;
 	}
 
+	// camera
+
+	VenueWorld.prototype.cameraDown = function(cameraSpeed)
+	{
+		var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
+		cameraAction.perform(this.camera);
+	}
+
+	VenueWorld.prototype.cameraIn = function(cameraSpeed)
+	{
+		// todo
+	}
+
+	VenueWorld.prototype.cameraLeft = function(cameraSpeed)
+	{
+		var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
+		cameraAction.perform(this.camera);
+	}
+
+	VenueWorld.prototype.cameraOut = function(cameraSpeed)
+	{
+		// todo
+	}
+
+	VenueWorld.prototype.cameraRight = function(cameraSpeed)
+	{
+		var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
+		cameraAction.perform(this.camera);
+	}
+
+	VenueWorld.prototype.cameraUp = function(cameraSpeed)
+	{
+		var cameraAction = new Action_CameraMove([0, cameraSpeed]);
+		cameraAction.perform(this.camera);
+	}
+
 	// controls
 
 	VenueWorld.prototype.controlBuild = function(universe)
@@ -163,7 +199,7 @@ function VenueWorld(world)
 				camera.loc.pos,
 				camera.coordsTransformViewToWorld
 				(
-					mouseClickPos
+					mouseClickPos, true // ignoreZ
 				).subtract
 				(
 					camera.loc.pos

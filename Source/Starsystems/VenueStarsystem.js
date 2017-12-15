@@ -1,12 +1,8 @@
 
-function VenueStarsystem(universe, starsystem)
+function VenueStarsystem(venueParent, starsystem)
 {
+	this.venueParent = venueParent;
 	this.starsystem = starsystem;
-
-	this.venueControls = new VenueControls
-	(
-		this.controlBuild(universe)
-	);
 }
 
 {
@@ -52,6 +48,11 @@ function VenueStarsystem(universe, starsystem)
 
 	VenueStarsystem.prototype.initialize = function(universe)
 	{
+		this.venueControls = new VenueControls
+		(
+			this.controlBuild(universe)
+		);
+
 		var starsystem = this.starsystem;
 
 		var soundHelper = universe.soundHelper;
@@ -78,10 +79,8 @@ function VenueStarsystem(universe, starsystem)
 
 		var targetForCamera = new Coords(0, 0, 0);
 
-		this.camera.constraints = [];
-
-		this.camera.constraints.push
-		(
+		this.camera.constraints = 
+		[
 			new Constraint_PositionOnCylinder
 			(
 				targetForCamera, // center
@@ -93,18 +92,12 @@ function VenueStarsystem(universe, starsystem)
 				0, // yaw
 				this.camera.focalLength, // radius
 				0 - this.camera.focalLength / 2 // distanceFromCenterAlongAxisMax
-			)
-		);
+			),
 
-		this.camera.constraints.push
-		(
-			new Constraint_LookAtBody
-			(
-				targetForCamera
-			)
-		);
+			new Constraint_LookAt(targetForCamera),
+		].addLookups("name");
 
-		this.camera.constraints.addLookups("name");
+		Constrainable.constrain(universe, universe.world, this, this.camera);
 
 		this.bodies = [];
 		this.bodies.push(starsystem.star);
@@ -127,22 +120,11 @@ function VenueStarsystem(universe, starsystem)
 	{
 		this.venueControls.updateForTimerTick(universe);
 
-		var camera = this.camera;
-		var cameraConstraints = camera.constraints;
-		for (var i = 0; i < cameraConstraints.length; i++)
-		{
-			var constraint = cameraConstraints[i];
-			constraint.applyToBody(universe, camera);
-		}
+		Constrainable.constrain(universe, universe.world, this, this.camera);
 
 		if (this.cursor != null)
 		{
-			var constraints = this.cursor.constraints;
-			for (var i = 0; i < constraints.length; i++)
-			{
-				var constraint = constraints[i];
-				constraint.applyToBody(universe, this.cursor);
-			}
+			Constrainable.constrain(universe, universe.world, this, this.cursor);
 		}
 
 		var bodies = this.starsystem.ships;
@@ -165,6 +147,11 @@ function VenueStarsystem(universe, starsystem)
 
 		this.draw(universe);
 
+		this.updateForTimerTick_Input(universe);
+	}
+
+	VenueStarsystem.prototype.updateForTimerTick_Input = function(universe)
+	{
 		var inputHelper = universe.inputHelper;
 
 		var inputsActive = inputHelper.inputsActive;
@@ -197,175 +184,200 @@ function VenueStarsystem(universe, starsystem)
 			}
 			else if (inputHelper.isMouseClicked() == true)
 			{
-				inputHelper.isMouseClicked(false);
-
-				universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
-				var mouseClickPos = inputHelper.mouseClickPos.clone();
-
-				var rayFromCameraThroughClick = new Ray
-				(
-					camera.loc.pos,
-					camera.coordsTransformViewToWorld
-					(
-						mouseClickPos, true // ignoreZ
-					).subtract
-					(
-						camera.loc.pos
-					)
-				);
-
-				var bodiesClickedAsCollisions = Collision.rayAndBodies
-				(
-					rayFromCameraThroughClick,
-					this.bodies,
-					10, // bodyRadius
-					[]
-				);
-
-				var bodyClicked;
-
-				if (bodiesClickedAsCollisions.length == 0)
-				{
-					bodyClicked = null;
-				}
-				else
-				{
-					var bodiesClickedAsCollisionsSorted = [];
-
-					for (var i = 0; i < bodiesClickedAsCollisions.length; i++)
-					{
-						var collisionToSort = bodiesClickedAsCollisions[i];
-
-						var j = 0;
-						for (j = 0; j < bodiesClickedAsCollisionsSorted.length; j++)
-						{
-							var collisionSorted = bodiesClickedAsCollisionsSorted[j];
-
-							if (collisionToSort.distance < collisionSorted.distance)
-							{
-								break;
-							}
-						}
-
-						bodiesClickedAsCollisionsSorted.splice
-						(
-							j, 0, collisionToSort 
-						);
-					}
-
-					var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
-					if (this.selection == null || numberOfCollisions == 1)
-					{
-						bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
-					}
-					else
-					{
-						for (var c = 0; c < numberOfCollisions; c++)
-						{
-							var collision = bodiesClickedAsCollisionsSorted[c];
-							bodyClicked = collision.colliders[0];
-
-							if (bodyClicked == this.selection)
-							{
-								var cNext = c + 1;
-								if (cNext >= numberOfCollisions)
-								{
-									cNext = 0;
-								}
-								collision = bodiesClickedAsCollisionsSorted[cNext];
-								bodyClicked = collision.colliders[0];
-								break;
-							}
-						}
-					}
-				}
-
-				if (this.selection == null)
-				{
-					this.selection = bodyClicked;
-				}
-				else
-				{
-					var selectionDefnName = this.selection.defn.name;
-					if (selectionDefnName == "Cursor")
-					{
-						var cursor = this.selection;
-
-						if (bodyClicked != null && bodyClicked.defn.name != "Cursor")
-						{
-							var targetBody = bodyClicked;
-
-							var ship = cursor.bodyParent;
-
-							ship.order = new Order
-							(
-								"Go",
-								targetBody
-							);
-
-							this.cursorClear();
-
-							inputHelper.isEnabled = false;
-
-							ship.order.obey(ship);
-						}
-						else if (cursor.hasXYPositionBeenSpecified == false)
-						{
-							cursor.hasXYPositionBeenSpecified = true;
-						}
-						else if (cursor.hasZPositionBeenSpecified == false)
-						{
-							var targetBody = new Body
-							(
-								"Target", 
-								new BodyDefn
-								(
-									"MoveTarget", 
-									new Coords(0, 0, 0)
-								), 
-								cursor.loc.pos.clone()
-							); 
-
-							var ship = cursor.bodyParent;
-
-							ship.order = new Order
-							(
-								"Go",
-								targetBody
-							);
-
-							this.cursorClear();
-
-							inputHelper.isEnabled = false;
-
-							ship.order.obey(ship);
-						}
-
-					}
-					else if (this.selection == bodyClicked)
-					{
-						if (selectionDefnName == "Planet")
-						{
-							var layout = bodyClicked.layout;
-							var venueNext = new VenueLayout(this, layout);
-							venueNext = new VenueFader(venueNext, universe.venueCurrent);
-							universe.venueNext = venueNext;
-						}
-					}
-					else
-					{
-						this.selection = bodyClicked;
-					}
-				}
+				this.updateForTimerTick_Input_Mouse(universe);
 			}
 		}
 	}
 
+	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse = function(universe)
+	{
+		var inputHelper = universe.inputHelper;
+		inputHelper.isMouseClicked(false);
+
+		universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
+		var mouseClickPos = inputHelper.mouseClickPos.clone();
+
+		var camera = this.camera;
+
+		var rayFromCameraThroughClick = new Ray
+		(
+			camera.loc.pos,
+			camera.coordsTransformViewToWorld
+			(
+				mouseClickPos, true // ignoreZ
+			).subtract
+			(
+				camera.loc.pos
+			)
+		);
+
+		var bodiesClickedAsCollisions = Collision.rayAndBodies
+		(
+			rayFromCameraThroughClick,
+			this.bodies,
+			10, // bodyRadius
+			[]
+		);
+
+		var bodyClicked;
+
+		if (bodiesClickedAsCollisions.length == 0)
+		{
+			bodyClicked = null;
+		}
+		else
+		{
+			var bodiesClickedAsCollisionsSorted = [];
+
+			for (var i = 0; i < bodiesClickedAsCollisions.length; i++)
+			{
+				var collisionToSort = bodiesClickedAsCollisions[i];
+
+				var j = 0;
+				for (j = 0; j < bodiesClickedAsCollisionsSorted.length; j++)
+				{
+					var collisionSorted = bodiesClickedAsCollisionsSorted[j];
+
+					if (collisionToSort.distance < collisionSorted.distance)
+					{
+						break;
+					}
+				}
+
+				bodiesClickedAsCollisionsSorted.insertElementAt
+				(
+					collisionToSort, j 
+				);
+			}
+
+			var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
+			if (this.selection == null || numberOfCollisions == 1)
+			{
+				bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
+			}
+			else
+			{
+				for (var c = 0; c < numberOfCollisions; c++)
+				{
+					var collision = bodiesClickedAsCollisionsSorted[c];
+					bodyClicked = collision.colliders[0];
+
+					if (bodyClicked == this.selection)
+					{
+						var cNext = c + 1;
+						if (cNext >= numberOfCollisions)
+						{
+							cNext = 0;
+						}
+						collision = bodiesClickedAsCollisionsSorted[cNext];
+						bodyClicked = collision.colliders[0];
+						break;
+					}
+				}
+			}
+		}
+
+		this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
+	}
+
+	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse_Selection = function(universe, bodyClicked)
+	{
+		var inputHelper = universe.inputHelper;
+
+		if (this.selection == null)
+		{
+			this.selection = bodyClicked;
+		}
+		else
+		{
+			var selectionDefnName = this.selection.defn.name;
+			if (selectionDefnName == "Cursor")
+			{
+				var cursor = this.selection;
+
+				var cursorBodyParentName = cursor.bodyParent.constructor.name;
+
+				if (cursorBodyParentName == "Ship")
+				{
+					if (bodyClicked != null && bodyClicked.defn.name != "Cursor")
+					{
+						var targetBody = bodyClicked;
+
+						var ship = cursor.bodyParent;
+
+						ship.order = new Order
+						(
+							"Go",
+							targetBody
+						);
+
+						this.cursorClear();
+
+						inputHelper.isEnabled = false;
+
+						ship.order.obey(ship);
+					}
+					else if (cursor.hasXYPositionBeenSpecified == false)
+					{
+						cursor.hasXYPositionBeenSpecified = true;
+					}
+					else if (cursor.hasZPositionBeenSpecified == false)
+					{
+						var targetBody = new Body
+						(
+							"Target", 
+							new BodyDefn
+							(
+								"MoveTarget", 
+								new Coords(0, 0, 0)
+							), 
+							cursor.loc.pos.clone()
+						); 
+
+						var ship = cursor.bodyParent;
+
+						ship.order = new Order
+						(
+							"Go",
+							targetBody
+						);
+
+						this.cursorClear();
+
+						inputHelper.isEnabled = false;
+
+						ship.order.obey(ship);
+					}
+				}
+			}
+			else if (this.selection == bodyClicked)
+			{
+				if (selectionDefnName == "Planet")
+				{
+					var layout = bodyClicked.layout;
+					var venueNext = new VenueLayout(this, layout);
+					venueNext = new VenueFader(venueNext, universe.venueCurrent);
+					universe.venueNext = venueNext;
+				}
+			}
+			else
+			{
+				this.selection = bodyClicked;
+			}
+		}
+
+
+	}
+
 	// camera
 
-	VenueStarsystem.prototype.cameraCenter = function()
+	VenueStarsystem.prototype.cameraCenterOnSelection = function()
 	{
-		// todo
+		if (this.selection != null)
+		{
+			var cameraConstraint = this.camera.constraints["PositionOnCylinder"];
+			cameraConstraint.center.overwriteWith(this.selection.loc.pos);
+		}
 	}
 
 	VenueStarsystem.prototype.cameraDown = function(cameraSpeed)
@@ -390,7 +402,7 @@ function VenueStarsystem(universe, starsystem)
 
 	VenueStarsystem.prototype.cameraReset = function()
 	{
-		// todo
+		new Action_CylinderMove_Reset().perform(this.camera);
 	}
 
 	VenueStarsystem.prototype.cameraRight = function(cameraSpeed)
@@ -441,8 +453,7 @@ function VenueStarsystem(universe, starsystem)
 					true, // isEnabled
 					function click(universe)
 					{
-						var world = universe.world;
-						var venueNext = new VenueWorld(world);
+						var venueNext = universe.venueCurrent.venueParent;
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
 					}

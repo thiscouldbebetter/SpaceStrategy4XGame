@@ -5,6 +5,10 @@ function NetworkNode(name, defn, pos, starsystem)
 	this.defn = defn;
 	this.loc = new Location(pos);
 	this.starsystem = starsystem;
+
+	// Helper variables.
+	this.drawPos = new Coords();
+	this.drawLoc = new Location(this.drawPos);
 }
 
 {
@@ -27,8 +31,6 @@ function NetworkNode(name, defn, pos, starsystem)
 			10
 		);
 
-		var starsystem = this.starsystem;
-
 		var returnValue = new ControlContainer
 		(
 			"containerStarsystem",
@@ -42,7 +44,7 @@ function NetworkNode(name, defn, pos, starsystem)
 					new Coords(margin, margin),
 					new Coords(0, 0), // this.size
 					false, // isTextCentered
-					new DataBinding(starsystem.name)
+					new DataBinding(this.name)
 				),
 
 				new ControlLabel
@@ -51,7 +53,7 @@ function NetworkNode(name, defn, pos, starsystem)
 					new Coords(margin, margin + controlSpacing),
 					new Coords(0, 0), // this.size
 					false, // isTextCentered
-					new DataBinding(starsystem, "faction.name")
+					new DataBinding(this.starsystem, "faction.name")
 				),
 
 				new ControlButton
@@ -65,8 +67,12 @@ function NetworkNode(name, defn, pos, starsystem)
 					true, // isEnabled
 					function click(universe)
 					{
-						var starsystemToView = universe.venueCurrent.selection.starsystem;
-						universe.venueNext = new VenueStarsystem(universe, starsystemToView); 
+						var venueCurrent = universe.venueCurrent;
+						var starsystemToView = venueCurrent.selection.starsystem;
+						if (starsystemToView != null)
+						{
+							universe.venueNext = new VenueStarsystem(venueCurrent, starsystemToView); 
+						}
 					}
 				),
 			]
@@ -77,27 +83,116 @@ function NetworkNode(name, defn, pos, starsystem)
 
 	// drawable
 
-	NetworkNode.prototype.draw = function
-	(
-		universe, nodeRadiusActual, camera, drawPos
-	)
+	NetworkNode.prototype.draw = function(universe, nodeRadiusActual, camera)
 	{
 		var nodePos = this.loc.pos;
 
-		drawPos.overwriteWith(nodePos);
+		var drawPos = this.drawPos.overwriteWith(nodePos);
 		camera.coordsTransformWorldToView(drawPos);
 
 		var perspectiveFactor = camera.focalLength / drawPos.z;
 		var radiusApparent = nodeRadiusActual * perspectiveFactor;
 
 		var alpha = Math.pow(perspectiveFactor, 4); // hack
+		if (alpha > 1)
+		{
+			alpha = 1;
+		}
 
-		//var nodeColor = node.defn.color.systemColor;
-		var nodeColor = "rgba(128, 128, 128, " + alpha + ")"
+		var nodeIntensity = Math.floor(128 * alpha);
+		var nodeColor = 
+			"rgb(" 
+			+ nodeIntensity + "," 
+			+ nodeIntensity + "," 
+			+ nodeIntensity 
+			+ ")";
 
 		var display = universe.display;
-		display.drawCircle(drawPos, radiusApparent, nodeColor, nodeColor);
-		drawPos.x += radiusApparent;
-		display.drawText(this.starsystem.name, 10, drawPos, "White", nodeColor);
+		var gradient = new Gradient
+		([
+			new GradientStop(0, "White"),
+			new GradientStop(1, nodeColor), 
+		]);
+		var visual = new VisualCircleGradient(radiusApparent, gradient);
+		visual.draw(universe, universe.display, this, new Location(drawPos));
+
+		var starsystem = this.starsystem;
+
+		if (starsystem != null)
+		{
+			this.draw_Starsystem(universe, radiusApparent, drawPos, nodeColor, starsystem);
+		}
+	}
+
+	NetworkNode.prototype.draw_Starsystem = function(universe, radiusApparent, drawPos, nodeColor, starsystem)
+	{
+		var factionsPresent = [];
+		var planets = starsystem.planets;
+		for (var i = 0; i < planets.length; i++)
+		{
+			var planet = planets[i];
+			if (planet.factionName != null)
+			{
+				var faction = planet.faction(universe.world);
+				factionsPresent.push(faction);
+			}
+		}
+
+		var ringThickness = radiusApparent * .1;
+		for (var i = 0; i < factionsPresent.length; i++)
+		{
+			var faction = factionsPresent[i];
+			var factionColor = faction.color;
+			var ringRadius = radiusApparent + (ringThickness * (i + 5));
+			var visualRing = new VisualCircle
+			(
+				ringRadius, null, factionColor.systemColor
+			);
+			visualRing.draw(universe, universe.display, this, this.drawLoc);
+		}
+
+		var ships = starsystem.ships;
+		var numberOfShips = ships.length;
+		var shipOffset = new Coords(0, -2).multiplyScalar(radiusApparent);
+		var shipDrawPos = new Coords();
+		var shipDrawLoc = new Location(shipDrawPos);
+		for (var i = 0; i < numberOfShips; i++)
+		{
+			var ship = ships[i];
+			var shipFaction = ship.faction(universe.world);
+			var shipColor = shipFaction.color;
+			shipDrawPos.overwriteWith(drawPos).add(shipOffset);
+
+			var visualShip = new VisualPolygon
+			(
+				[ 
+					new Coords(0, 0), 
+					new Coords(.5, -1).multiplyScalar(radiusApparent), 
+					new Coords(-.5, -1).multiplyScalar(radiusApparent), 
+				],
+				shipColor.systemColor
+			);
+			visualShip.draw(universe, universe.display, ship, shipDrawLoc);
+		}
+
+		var visualText = new VisualText
+		(
+			this.starsystem.name, nodeColor, "Black"
+		);
+		drawPos.y += radiusApparent * 2;
+		visualText.draw(universe, universe.display, this.starsystem, this.drawLoc);
+
+	}
+}
+
+function VisualCircleGradient(radius, gradient)
+{
+	this.radius = radius;
+	this.gradient = gradient;
+}
+{
+	VisualCircleGradient.prototype.draw = function(universe, display, drawable, loc)
+	{
+		display.drawCircleWithGradient(loc.pos, this.radius, this.gradient);
 	}
 }

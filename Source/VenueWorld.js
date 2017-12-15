@@ -14,6 +14,20 @@ function VenueWorld(world)
 
 	// camera
 
+	VenueWorld.prototype.cameraCenterOnSelection = function()
+	{
+		if (this.selection != null)
+		{
+			var targetPosNew = this.selection.loc.pos;
+
+			var constraintDistance = this.camera.constraints["HoldDistanceFromTarget"];
+			constraintDistance.targetPos = targetPosNew;
+
+			var constraintLookAt = this.camera.constraints["LookAt"];
+			constraintLookAt.targetPos = targetPosNew;
+		}
+	}
+
 	VenueWorld.prototype.cameraDown = function(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
@@ -22,7 +36,12 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraIn = function(cameraSpeed)
 	{
-		// todo
+		var constraint = this.camera.constraints["HoldDistanceFromTarget"];
+		constraint.distanceToHold -= cameraSpeed;
+		if (constraint.distanceToHold < 1)
+		{
+			constraint.distanceToHold = 1;
+		}
 	}
 
 	VenueWorld.prototype.cameraLeft = function(cameraSpeed)
@@ -33,7 +52,25 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraOut = function(cameraSpeed)
 	{
-		// todo
+		var constraint = this.camera.constraints["HoldDistanceFromTarget"];
+		constraint.distanceToHold += cameraSpeed;
+		if (constraint.distanceToHold < 0)
+		{
+			constraint.distanceToHold = 0;
+		}
+	}
+
+	VenueWorld.prototype.cameraReset = function()
+	{
+		var origin = new Coords(0, 0, 0);
+		var constraintDistance = this.camera.constraints["HoldDistanceFromTarget"];
+		constraintDistance.distanceToHold = this.camera.focalLength;
+		constraintDistance.targetPos = origin;
+
+		constraintLookAt = this.camera.constraints["LookAt"];
+		constraintLookAt.targetPos = origin;
+
+		this.camera.loc.pos.clear().x = 0 - this.camera.focalLength;
 	}
 
 	VenueWorld.prototype.cameraRight = function(cameraSpeed)
@@ -152,7 +189,11 @@ function VenueWorld(world)
 	VenueWorld.prototype.draw = function(universe)
 	{
 		universe.display.clear();
-		this.world.network.draw(universe, this.world.camera);
+		//this.world.network.draw(universe, this.world.camera);
+		var playerFaction = this.world.factions[0];
+		var playerKnowledge = playerFaction.knowledge;
+		var worldKnown = playerKnowledge.worldKnown(universe, this.world);
+		worldKnown.network.draw(universe, worldKnown.camera);
 		this.venueControls.draw(universe);
 	}
 
@@ -171,6 +212,18 @@ function VenueWorld(world)
 
 		var soundHelper = universe.soundHelper;
 		soundHelper.soundWithNamePlayAsMusic(universe, "Music");
+
+		var origin = new Coords(0, 0, 0);
+
+		this.camera.constraints = 
+		[
+			new Constraint_HoldDistanceFromTarget
+			(
+				this.camera.focalLength, // distanceToHold
+				origin
+			),
+			new Constraint_LookAt(origin),
+		].addLookups("name");
 	}
 
 	VenueWorld.prototype.selectionName = function()
@@ -180,6 +233,9 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.updateForTimerTick = function(universe)
 	{
+		var world = universe.world;
+		Constrainable.constrain(universe, world, this, this.camera);
+
 		this.draw(universe);
 
 		this.venueControls.updateForTimerTick(universe);
@@ -206,10 +262,13 @@ function VenueWorld(world)
 				)
 			);
 
+			var playerFaction = world.factions[0];
+			var worldKnown = playerFaction.knowledge.worldKnown();
+
 			var bodiesClickedAsCollisions = Collision.rayAndBodies
 			(
 				rayFromCameraThroughClick,
-				universe.world.network.nodes,
+				worldKnown.network.nodes,
 				NetworkNode.RadiusActual,
 				[] // listToAddTo
 			);
@@ -231,9 +290,14 @@ function VenueWorld(world)
 
 				if (bodyClicked == this.selection)
 				{
-					var venueNext = new VenueStarsystem(universe, bodyClicked.starsystem);
-					venueNext = new VenueFader(venueNext, universe.venueCurrent);
-					universe.venueNext = venueNext;
+					var venueCurrent = universe.venueCurrent;
+					var starsystem = bodyClicked.starsystem;
+					if (starsystem != null)
+					{
+						var venueNext = new VenueStarsystem(venueCurrent, starsystem);
+						venueNext = new VenueFader(venueNext, venueCurrent);
+						universe.venueNext = venueNext;
+					}
 				}
 
 				this.selection = bodyClicked;
@@ -256,28 +320,30 @@ function VenueWorld(world)
 			}
 
 			var cameraSpeed = 20;
-			var displacementToMoveCamera = null;
 
 			if (inputActive == "_a")
 			{
-				displacementToMoveCamera = [cameraSpeed, 0];
+				this.cameraLeft(cameraSpeed);
 			}
 			else if (inputActive == "_d")
 			{
-				displacementToMoveCamera = [0 - cameraSpeed, 0];
+				this.cameraRight(cameraSpeed);
 			}
 			else if (inputActive == "_s")
 			{
-				displacementToMoveCamera = [0, 0 - cameraSpeed];
+				this.cameraDown(cameraSpeed);
 			}
 			else if (inputActive == "_w")
 			{
-				displacementToMoveCamera = [0, cameraSpeed];
+				this.cameraUp(cameraSpeed);
 			}
-
-			if (displacementToMoveCamera != null)
+			else if (inputActive == "_f")
 			{
-				new Action_CameraMove(displacementToMoveCamera).perform(camera);
+				this.cameraOut(cameraSpeed);
+			}
+			else if (inputActive == "_r")
+			{
+				this.cameraIn(cameraSpeed);
 			}
 		}
 	}

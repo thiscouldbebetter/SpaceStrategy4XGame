@@ -80,7 +80,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				(
 					size
 				),
-				new PlanetDemographics(1),
+				new PlanetDemographics(0),
 				new PlanetIndustry(0, null),
 				null // layout
 			);
@@ -104,9 +104,9 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	// instance methods
 
-	Starsystem.prototype.faction = function(universe)
+	Starsystem.prototype.faction = function(world)
 	{
-		return (this.factionName == null ? null : universe.world.factions[this.factionName]);
+		return (this.factionName == null ? null : world.factions[this.factionName]);
 	}
 
 	Starsystem.prototype.links = function(cluster)
@@ -190,7 +190,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 					}
 				}
 
-				bodiesToDrawSorted.splice(j, 0, bodyToSort);
+				bodiesToDrawSorted.insertElementAt(bodyToSort, j);
 			}
 		}
 
@@ -255,6 +255,8 @@ function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, col
 	this.gridSizeInCellsHalf = this.gridSizeInCells.clone().half();
 	this.gridSizeInPixelsHalf = this.gridSizeInPixels.clone().half();
 
+	// Helper variables.
+	this.displacement = new Coords();
 	this.drawPosFrom = new Coords();
 	this.drawPosTo = new Coords();
 	this.multiplier = new Coords();
@@ -292,7 +294,12 @@ function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, col
 				this.camera.coordsTransformWorldToView(drawPosFrom);
 				this.camera.coordsTransformWorldToView(drawPosTo);
 
-				display.drawLine(drawPosFrom, drawPosTo, this.color);
+				if (drawPosFrom.z >= 0 && drawPosTo.z >= 0)
+				{
+					// todo - Real clipping.
+					display.drawLine(drawPosFrom, drawPosTo, this.color);
+				}
+
 			}
 		}
 	}

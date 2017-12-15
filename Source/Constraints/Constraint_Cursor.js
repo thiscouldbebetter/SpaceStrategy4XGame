@@ -10,7 +10,7 @@ function Constraint_Cursor()
 }
 
 {
-	Constraint_Cursor.prototype.applyToBody = function(universe, body)
+	Constraint_Cursor.prototype.constrain = function(universe, world, place, body)
 	{
 		var cursor = body;
 		var venue = universe.venueCurrent;

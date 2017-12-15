@@ -92,7 +92,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 
 	Layout.prototype.elementRemove = function(elementToRemove)
 	{
-		this.bodies.splice(this.bodies.indexOf(elementToRemove), 1);
+		this.bodies.remove(elementToRemove);
 		var elementPos = elementToRemove.loc.pos;
 		var cell = this.map.cellAtPos(elementPos);
 		cell.body = null;

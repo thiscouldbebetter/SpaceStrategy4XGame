@@ -63,7 +63,7 @@ function ControlBuilderExtensions()
 					true, // isEnabled
 					function click(universe) 
 					{ 
-						// todo
+						universe.venueCurrent.cameraCenterOnSelection();
 					}
 				),
 
@@ -90,7 +90,11 @@ function ControlBuilderExtensions()
 							var selectionTypeName = selection.constructor.name;
 							if (selectionTypeName == "NetworkNode")
 							{
-								venueNext = new VenueStarsystem(universe, selection.starsystem);
+								var starsystem = selection.starsystem;
+								if (starsystem != null)
+								{
+									venueNext = new VenueStarsystem(venueCurrent, starsystem);
+								}
 							}
 							else if (selectionTypeName == "Planet")
 							{
@@ -323,8 +327,8 @@ function ControlBuilderExtensions()
 					"buttonViewZoomIn",
 					new Coords
 					(
-						margin * 2 + controlHeight * 3,
-						margin * 2
+						margin * 2 + controlHeight * 2,
+						margin
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					"In",
@@ -343,7 +347,7 @@ function ControlBuilderExtensions()
 					new Coords
 					(
 						margin * 2 + controlHeight * 3,
-						margin * 2 + controlHeight
+						margin
 					), // pos
 					new Coords(controlHeight, controlHeight), // size
 					"Out",
@@ -356,7 +360,24 @@ function ControlBuilderExtensions()
 					}
 				),
 
-
+				new ControlButton
+				(
+					"buttonViewReset",
+					new Coords
+					(
+						margin * 2.5 + controlHeight * 3,
+						margin * 2 + controlHeight
+					), // pos
+					new Coords(controlHeight, controlHeight), // size
+					"x",
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					function click(universe)
+					{
+						universe.venueCurrent.cameraReset();
+					}
+				),
 			]
 		);
 

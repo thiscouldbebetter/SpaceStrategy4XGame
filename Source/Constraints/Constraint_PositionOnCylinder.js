@@ -13,8 +13,10 @@ function Constraint_PositionOnCylinder
 }
 
 {
-	Constraint_PositionOnCylinder.prototype.applyToBody = function(universe, body)
+	Constraint_PositionOnCylinder.prototype.constrain = function(universe, world, place, constrainable)
 	{
+		var body = constrainable;
+
 		this.yawInTurns.wrapToRangeMinMax(0, 1);
 		var yawInRadians = this.yawInTurns * Polar.RadiansPerTurn;
 

@@ -1,20 +1,18 @@
 
-function Constraint_LookAtBody(targetBody)
+function Constraint_LookAt(targetPos)
 {
-	this.name = "LookAtBody";
-	this.targetBody = targetBody;
+	this.name = "LookAt";
+	this.targetPos = targetPos;
 }
 
 {
-	Constraint_LookAtBody.prototype.applyToBody = function(universe, body)
+	Constraint_LookAt.prototype.constrain = function(universe, world, place, body)
 	{
-		var targetPos = this.targetBody; // hack 
-
 		var bodyLoc = body.loc;
 		var bodyPos = bodyLoc.pos;
 		var bodyOrientation = bodyLoc.orientation;
 
-		var bodyOrientationForwardNew = targetPos.clone().subtract
+		var bodyOrientationForwardNew = this.targetPos.clone().subtract
 		(
 			bodyPos
 		).normalize();

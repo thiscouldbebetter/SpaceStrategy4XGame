@@ -21,13 +21,23 @@ function Ship(name, defn, pos, factionName, devices)
 
 	Ship.bodyDefnBuild = function(color)
 	{
+		var scaleFactor = 10;
+
 		var returnValue = new BodyDefn
 		(
 			"Ship", 
-			new Coords(10, 10), // size
+			new Coords(1, 1).multiplyScalar(scaleFactor), // size
 			new VisualGroup
 			([
-				new VisualRectangle(new Coords(10, 10), color.systemColor),
+				new VisualPolygon
+				(
+					[
+						new Coords(.5, 0).multiplyScalar(scaleFactor),
+						new Coords(-.5, .5).multiplyScalar(scaleFactor),
+						new Coords(-.5, -.5).multiplyScalar(scaleFactor),
+					], 
+					color.systemColor
+				),
 			])
 		);
 
@@ -36,9 +46,9 @@ function Ship(name, defn, pos, factionName, devices)
 
 	// instance methods
 
-	Ship.prototype.faction = function(universe)
+	Ship.prototype.faction = function(world)
 	{
-		return (this.factionName == null ? null : universe.world.factions[this.factionName]);
+		return (this.factionName == null ? null : world.factions[this.factionName]);
 	}
 
 	Ship.prototype.id = function()
@@ -57,9 +67,57 @@ function Ship(name, defn, pos, factionName, devices)
 		starsystemFrom.ships.remove(this);
 		link.ships.push(this);
 
+		var linkStarsystem1 = link.nodesLinked(cluster)[1].starsystem;
 		var shipLoc = this.loc;
-		shipLoc.pos.clear().x = 0;
-		shipLoc.vel.clear().x = 1;
+		var isLinkForward = (starsystemTo == linkStarsystem1);
+		shipLoc.pos.clear().x = (isLinkForward ? 0 : link.length(cluster));
+		shipLoc.vel.clear().x = (isLinkForward ? 1 : -1);
+	}
+
+	Ship.prototype.linkExit = function(world, link)
+	{
+		link.ships.remove(this);
+
+		var cluster = world.network;
+		var ship = this;
+		var shipLoc = ship.loc;
+		var shipPos = shipLoc.pos;
+		var shipVel = shipLoc.vel;
+
+		var indexOfNodeDestination = (shipVel.x > 0 ? 1 : 0);
+		var indexOfNodeSource = 1 - indexOfNodeDestination;
+
+		var nodesLinked = link.nodesLinked(cluster);
+		var nodeDestination = nodesLinked[indexOfNodeDestination];
+		var nodeSource = nodesLinked[indexOfNodeSource];
+
+		var starsystemDestination = nodeDestination.starsystem;
+		var starsystemSource = nodeSource.starsystem;
+
+		var portalToExitFrom = starsystemDestination.linkPortals[starsystemSource.name];
+		var exitPos = portalToExitFrom.loc.pos;
+		shipPos.overwriteWith(exitPos).add(new Coords(1, 1, 1));
+
+		starsystemDestination.ships.push(ship);
+
+		var shipFaction = ship.faction(world);
+		var factionKnowledge = shipFaction.knowledge;
+		var starsystemNamesKnown = factionKnowledge.starsystemNames;
+		var starsystemName = starsystemDestination.name;
+		if (starsystemNamesKnown.contains(starsystemName) == false)
+		{
+			starsystemNamesKnown.push(starsystemName);
+			var linkPortals = starsystemDestination.linkPortals;
+			for (var i = 0; i < linkPortals.length; i++)
+			{
+				var linkPortal = linkPortals[i];
+				var link = linkPortal.link(cluster);
+				var linkName = link.name;
+				factionKnowledge.linkNames.push(linkName);
+			}
+
+			factionKnowledge.worldKnownUpdate();
+		}
 	}
 
 	Ship.prototype.moveTowardTarget = function(universe, target)
@@ -143,12 +201,17 @@ function Ship(name, defn, pos, factionName, devices)
 				}
 			}
 		}
+	}
 
-		Ship.prototype.planetOrbitEnter = function(universe, starsystem, planet)
-		{
-			starsystem.ships.remove(this);
-			starsystem.ships.push(this);
-		}
+	Ship.prototype.movementThroughLinkPerTurn = function(link)
+	{
+		return 8; // todo
+	}
+
+	Ship.prototype.planetOrbitEnter = function(universe, starsystem, planet)
+	{
+		starsystem.ships.remove(this);
+		starsystem.ships.push(this);
 	}
 
 	// controls

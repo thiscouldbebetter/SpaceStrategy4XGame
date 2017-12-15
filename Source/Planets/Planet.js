@@ -26,12 +26,38 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 				new Coords(10, 10), // size
 				new VisualGroup
 				([
-					new VisualCircle
+					new VisualCircleGradient
 					(
-						10,
-						Color.Instances().Cyan.systemColor, 
-						Color.Instances().Cyan.systemColor
+						10, // radius
+						new Gradient
+						([
+							new GradientStop(0, "White"),
+							new GradientStop(.2, "White"),
+							new GradientStop(.3, "Cyan"),
+							new GradientStop(.75, "Cyan"),
+							new GradientStop(1, "Black"), 
+						])
 					),
+					new VisualDynamic
+					(
+						function visual(drawable)
+						{
+							var returnValue = null;
+							if (drawable.factionName == null)
+							{
+								returnValue = new VisualNone();
+							}
+							else
+							{
+								returnValue = new VisualOffset
+								(
+									new VisualText(drawable.factionName, "White"),
+									new Coords(0, 16)
+								)
+							}
+							return returnValue;
+						}
+					)
 				])
 			);
 		}
@@ -41,9 +67,9 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 
 	// instance methods
 
-	Planet.prototype.faction = function(universe)
+	Planet.prototype.faction = function(world)
 	{
-		return (this.factionName == null ? null : universe.world.factions[this.factionName]);
+		return (this.factionName == null ? null : world.factions[this.factionName]);
 	}
 
 	// controls

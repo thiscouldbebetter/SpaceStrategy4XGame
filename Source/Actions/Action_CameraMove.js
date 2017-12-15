@@ -29,11 +29,13 @@ function Action_CameraMove(displacementAmountsRightAndDown)
 		);
 		var cameraPos = cameraLoc.pos;
 		cameraPos.add(this.displacement);
+		/*
 		var cameraPosAsPolar = this.polar.fromCoords(cameraPos);
 		cameraPosAsPolar.radius = camera.focalLength;
 		cameraPosAsPolar.toCoords(cameraPos);
 
 		var cameraOrientationForward = cameraPos.clone().multiplyScalar(-1).normalize();
 		cameraOrientation.forwardSet(cameraOrientationForward);
+		*/
 	}
 }

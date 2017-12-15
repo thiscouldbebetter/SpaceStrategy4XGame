@@ -43,7 +43,7 @@ function TalkNode(defn, parameters)
 
 			if (token == "")
 			{
-				stringAsTokens.splice(i, 1);
+				stringAsTokens.removeAt(i);
 				i--;
 			}
 		}

@@ -29,6 +29,7 @@ function Network(name, nodes, links)
 	}
 
 	// Helper variables.
+	this.drawPos = new Coords();
 	this.drawPosFrom = new Coords();
 	this.drawPosTo = new Coords();
 }
@@ -124,7 +125,7 @@ function Network(name, nodes, links)
 		}
 
 		var nodesLinked = [ nodesNotYetLinked[0] ];
-		nodesNotYetLinked.splice(0, 1);
+		nodesNotYetLinked.removeAt(0);
 		var links = [];
 		var colors = Color.Instances();
 
@@ -134,7 +135,17 @@ function Network(name, nodes, links)
 			new Coords(10, 10), // size
 			new VisualGroup
 			([
-				new VisualCircle(10, colors.Gray.systemColor, colors.Gray.systemColor)
+				new VisualCircleGradient
+				(
+					10, // radius
+					new Gradient
+					([
+						new GradientStop(0, "Black"),
+						new GradientStop(.5, "Black"),
+						new GradientStop(.75, "Violet"),
+						new GradientStop(1, "Blue"),
+					])
+				)
 			])
 		);
 
@@ -181,7 +192,7 @@ function Network(name, nodes, links)
 			var linkIndex = links.length;
 			links.push(link);
 			nodesLinked.push(nodeToLink);
-			nodesNotYetLinked.splice(nodesNotYetLinked.indexOf(nodeToLink), 1);
+			nodesNotYetLinked.remove(nodeToLink);
 
 			for (var i = 0; i < nodePairClosestSoFar.length; i++)
 			{
@@ -246,12 +257,9 @@ function Network(name, nodes, links)
 		var display = universe.display;
 
 		var network = this;
-		var drawPos = display.drawPos;
+		var drawPos = this.drawPos;
 		var drawPosFrom = this.drawPosFrom;
 		var drawPosTo = this.drawPosTo;
-
-		var graphics = display.graphics;
-		graphics.fillStyle = "rgba(128, 128, 128, .1)";
 
 		var nodeRadiusActual = NetworkNode.RadiusActual;
 
@@ -268,9 +276,39 @@ function Network(name, nodes, links)
 			);
 		}
 
+		var nodesSortedByZ = [];
 		for (var i = 0; i < this.nodes.length; i++)
 		{
-			var node = this.nodes[i];
+			var nodeToSort = this.nodes[i];
+			camera.coordsTransformWorldToView
+			(
+				drawPos.overwriteWith(nodeToSort.loc.pos)
+			);
+
+			if (drawPos.z > 0)
+			{
+				var j;
+				for (j = 0; j < nodesSortedByZ.length; j++)
+				{
+					var nodeSorted = nodesSortedByZ[j];
+					var nodeSortedDrawPos = camera.coordsTransformWorldToView
+					(
+						nodeSorted.loc.pos.clone()
+					);
+					if (drawPos.z >= nodeSortedDrawPos.z)
+					{
+						break;
+					}
+				}
+
+				nodesSortedByZ.insertElementAt(nodeToSort, j);
+
+			}
+		}
+
+		for (var i = 0; i < nodesSortedByZ.length; i++)
+		{
+			var node = nodesSortedByZ[i];
 			node.draw(universe, nodeRadiusActual, camera, drawPos);
 		}
 	}

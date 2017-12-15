@@ -7,7 +7,11 @@ function Cursor(bodyParent)
 
 	this.defn = Cursor.BodyDefn();
 
-	this.loc = this.bodyParent.loc.clone();
+	this.loc = new Location(new Coords(0, 0, 0));
+	if (this.bodyParent.loc != null)
+	{
+		this.loc.overwriteWith(this.bodyParent.loc);
+	}
 
 	this.constraints = 
 	[

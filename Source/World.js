@@ -32,7 +32,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 		var viewDimension = viewSize.y;
 
 		var networkRadius = viewDimension * .25;
-		var numberOfNetworkNodes = 6; // 128;
+		var numberOfNetworkNodes = 12;
 		var network = Network.generateRandom
 		(
 			universe, 
@@ -58,7 +58,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 			colors.Orange,
 			colors.YellowDark,
 			colors.Green,
-			colors.Blue,
+			colors.Cyan,
 			colors.Violet,
 		];
 
@@ -198,6 +198,11 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 			factionHomeStarsystem.factionName = factionName;
 			var factionColor = colorsForFactions[i];
 
+			var planets = factionHomeStarsystem.planets;
+			var planetIndexRandom = Math.floor(planets.length * Math.random());
+			var factionHomePlanet = planets[planetIndexRandom];
+			factionHomePlanet.factionName = factionName;
+
 			var ship = new Ship
 			(
 				factionName + " Ship0",
@@ -244,8 +249,9 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 				],
 				new FactionKnowledge
 				(
-					[ factionHomeStarsystem ],
-					[ factionHomeStarsystem.links(network) ]
+					[ factionName ],
+					[ factionHomeStarsystem.name ],
+					factionHomeStarsystem.links(network).elementProperties("name")
 				)
 			);
 			factions.push(faction);
@@ -295,10 +301,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 	{
 		var factionCurrent = this.factionCurrent();
 		var returnValues = this.factions.slice();
-		returnValues.splice
-		(
-			this.factionIndexCurrent, 1
-		);
+		returnValues.removeAt(this.factionIndexCurrent);
 		return returnValues;
 	}
 

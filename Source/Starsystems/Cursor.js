@@ -24,13 +24,18 @@ function Cursor(bodyParent)
 	{
 		if (Cursor._bodyDefn == null)
 		{
+			var radius = 5;
+			var color = Color.Instances().White.systemColor;
+
 			Cursor._bodyDefn = new BodyDefn
 			(
 				"Cursor", 
 				new Coords(10, 10), // size
 				new VisualGroup
 				([
-					new VisualRectangle(new Coords(10, 10), null, Color.Instances().Cyan),
+					new VisualCircle(radius, null, color),
+					new VisualLine(new Coords(-radius, 0), new Coords(radius, 0), color),
+					new VisualLine(new Coords(0, -radius), new Coords(0, radius), color),
 				])
 			);
 		}

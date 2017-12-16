@@ -52,7 +52,9 @@ function NetworkLink(namesOfNodesLinked)
 			var world = universe.world;
 			var cluster = world.network;
 
+			var nodesLinked = this.nodesLinked(cluster);
 			var length = this.length(cluster);
+			var direction = this.displacement(cluster).normalize();
 
 			var shipsExitingLink = [];
 
@@ -62,9 +64,21 @@ function NetworkLink(namesOfNodesLinked)
 				var shipLoc = ship.loc;
 				var shipPos = shipLoc.pos;
 				var shipVel = shipLoc.vel;
-				shipPos.x += (shipVel.x * ship.movementThroughLinkPerTurn(this));
+				var shipSpeed = ship.movementThroughLinkPerTurn(this);
+				shipPos.add
+				(
+					shipVel.clone().multiplyScalar(shipSpeed)
+				);
 
-				if (shipPos.x < 0 || shipPos.x > length)
+				var isShipMovingForward = (shipVel.dotProduct(direction) > 0)
+				var nodeIndexFrom = (isShipMovingForward ? 0 : 1);
+				var nodeFrom = nodesLinked[nodeIndexFrom];
+				var distanceAlongLink = shipPos.clone().subtract
+				(
+					nodeFrom.loc.pos
+				).magnitude();
+
+				if (distanceAlongLink >= length)
 				{
 					shipsExitingLink.push(ship);
 				}
@@ -114,7 +128,7 @@ function NetworkLink(namesOfNodesLinked)
 			drawPosFrom
 		).normalize();
 
-		var perpendicular = directionFromNode0To1InView.clone().right();
+		var perpendicular = directionFromNode0To1InView.clone().right().half();
 
 		var perspectiveFactorFrom = 
 			camera.focalLength / drawPosFrom.z;
@@ -131,85 +145,12 @@ function NetworkLink(namesOfNodesLinked)
 		display.drawPolygon
 		(
 			[
-				drawPosFrom, 
-				drawPosTo,
+				perpendicular.clone().multiplyScalar(0 - radiusApparentFrom).add(drawPosFrom),
+				perpendicular.clone().multiplyScalar(0 - radiusApparentTo).add(drawPosTo),
 				perpendicular.clone().multiplyScalar(radiusApparentTo).add(drawPosTo),
 				perpendicular.clone().multiplyScalar(radiusApparentFrom).add(drawPosFrom)
 			],
 			this.color // hack
 		);
-
-		var drawPos = drawPosFrom;
-
-		var ships = this.ships;
-		for (var i = 0; i < ships.length; i++)
-		{
-			var ship = ships[i];
-			this.draw_Ship
-			(
-				universe, 
-				cluster, 
-				display, 
-				camera, 
-				ship, 
-				drawPos, 
-				nodeFromPos, 
-				nodeToPos
-			);
-		}
 	}
-
-	NetworkLink.prototype.draw_Ship = function
-	(
-		universe, cluster, display, camera, ship, drawPos, nodeFromPos, nodeToPos
-	)
-	{
-		var world = universe.world;
-
-		var forward = this.direction(cluster);
-		var linkLength = this.length(cluster);
-
-		var fractionOfLinkTraversed = ship.loc.pos.x / linkLength; 
-
-		/*
-		var shipVel = ship.loc.vel;
-		if (shipVel.x < 0)
-		{
-			fractionOfLinkTraversed = 1 - fractionOfLinkTraversed;
-			forward.multiplyScalar(-1);
-		}
-		*/
-
-		camera.coordsTransformWorldToView
-		(
-			drawPos.overwriteWith
-			(
-				nodeFromPos
-			).multiplyScalar
-			(
-				1 - fractionOfLinkTraversed
-			).add
-			(
-				nodeToPos.clone().multiplyScalar
-				(
-					fractionOfLinkTraversed
-				)
-			)
-		);
-
-		var shipColor = ship.faction(world).color;
-		var shipSizeMultiplier = 4; // hack
-		var shipVisual = new VisualPolygon
-		(
-			[
-				new Coords(0, 0).multiplyScalar(shipSizeMultiplier),
-				new Coords(.5, -1).multiplyScalar(shipSizeMultiplier),
-				new Coords(-.5, -1).multiplyScalar(shipSizeMultiplier)
-			],
-			shipColor.systemColor,
-			null, // colorBorder
-		);
-		shipVisual.draw(universe, display, ship, new Location(drawPos));
-	}
-
 }

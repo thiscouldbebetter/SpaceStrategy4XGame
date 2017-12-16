@@ -263,6 +263,7 @@ function Network(name, nodes, links)
 
 		var nodeRadiusActual = NetworkNode.RadiusActual;
 
+		var shipsInLinks = [];
 		for (var i = 0; i < this.links.length; i++)
 		{
 			var link = this.links[i];
@@ -274,42 +275,43 @@ function Network(name, nodes, links)
 				drawPosFrom, 
 				drawPosTo
 			);
+			shipsInLinks = shipsInLinks.concat(link.ships);
 		}
 
-		var nodesSortedByZ = [];
-		for (var i = 0; i < this.nodes.length; i++)
+		var drawablesToSort = shipsInLinks.concat(this.nodes);
+		var drawablesSortedByZ = [];
+		for (var i = 0; i < drawablesToSort.length; i++)
 		{
-			var nodeToSort = this.nodes[i];
+			var drawableToSort = drawablesToSort[i];
 			camera.coordsTransformWorldToView
 			(
-				drawPos.overwriteWith(nodeToSort.loc.pos)
+				drawPos.overwriteWith(drawableToSort.loc.pos)
 			);
 
 			if (drawPos.z > 0)
 			{
 				var j;
-				for (j = 0; j < nodesSortedByZ.length; j++)
+				for (j = 0; j < drawablesSortedByZ.length; j++)
 				{
-					var nodeSorted = nodesSortedByZ[j];
-					var nodeSortedDrawPos = camera.coordsTransformWorldToView
+					var drawableSorted = drawablesSortedByZ[j];
+					var drawableSortedDrawPos = camera.coordsTransformWorldToView
 					(
-						nodeSorted.loc.pos.clone()
+						drawableSorted.loc.pos.clone()
 					);
-					if (drawPos.z >= nodeSortedDrawPos.z)
+					if (drawPos.z >= drawableSortedDrawPos.z)
 					{
 						break;
 					}
 				}
 
-				nodesSortedByZ.insertElementAt(nodeToSort, j);
-
+				drawablesSortedByZ.insertElementAt(drawableToSort, j);
 			}
 		}
 
-		for (var i = 0; i < nodesSortedByZ.length; i++)
+		for (var i = 0; i < drawablesSortedByZ.length; i++)
 		{
-			var node = nodesSortedByZ[i];
-			node.draw(universe, nodeRadiusActual, camera, drawPos);
+			var drawable = drawablesSortedByZ[i];
+			drawable.draw(universe, nodeRadiusActual, camera, drawPos);
 		}
 	}
 }

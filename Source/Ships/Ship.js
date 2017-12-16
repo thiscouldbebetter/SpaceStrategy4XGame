@@ -67,11 +67,23 @@ function Ship(name, defn, pos, factionName, devices)
 		starsystemFrom.ships.remove(this);
 		link.ships.push(this);
 
-		var linkStarsystem1 = link.nodesLinked(cluster)[1].starsystem;
-		var shipLoc = this.loc;
+		var nodesLinked = link.nodesLinked(cluster);
+		var linkNode0 = nodesLinked[0];
+		var linkNode1 = nodesLinked[1];
+		var linkStarsystem1 = linkNode1.starsystem;
 		var isLinkForward = (starsystemTo == linkStarsystem1);
-		shipLoc.pos.clear().x = (isLinkForward ? 0 : link.length(cluster));
-		shipLoc.vel.clear().x = (isLinkForward ? 1 : -1);
+
+		var shipLoc = this.loc;	
+
+		var nodeFrom = (isLinkForward == true ? linkNode0 : linkNode1);
+		shipLoc.pos.overwriteWith(nodeFrom.loc.pos);
+
+		var linkDirection = link.displacement(cluster).normalize();
+		if (isLinkForward == false)
+		{
+			linkDirection.multiplyScalar(-1)
+		}
+		shipLoc.vel.overwriteWith(linkDirection);
 	}
 
 	Ship.prototype.linkExit = function(world, link)
@@ -84,7 +96,9 @@ function Ship(name, defn, pos, factionName, devices)
 		var shipPos = shipLoc.pos;
 		var shipVel = shipLoc.vel;
 
-		var indexOfNodeDestination = (shipVel.x > 0 ? 1 : 0);
+		var linkDisplacement = link.displacement(cluster);
+		var isShipMovingForward = (shipVel.dotProduct(linkDisplacement) > 0);
+		var indexOfNodeDestination = (isShipMovingForward ? 1 : 0);
 		var indexOfNodeSource = 1 - indexOfNodeDestination;
 
 		var nodesLinked = link.nodesLinked(cluster);
@@ -410,5 +424,38 @@ function Ship(name, defn, pos, factionName, devices)
 			var device = this.devices[i];
 			device.updateForTurn(universe, this);
 		}
+	}
+
+	// drawable
+
+	Ship.prototype.draw = function(universe, nodeRadiusActual, camera, drawPos)
+	{
+		var ship = this;
+		var world = universe.world;
+		var display = universe.display;
+
+		var shipPos = ship.loc.pos;
+
+		camera.coordsTransformWorldToView
+		(
+			drawPos.overwriteWith
+			(
+				shipPos
+			)
+		);
+
+		var shipColor = ship.faction(world).color;
+		var shipSizeMultiplier = 4; // hack
+		var shipVisual = new VisualPolygon
+		(
+			[
+				new Coords(0, 0).multiplyScalar(shipSizeMultiplier),
+				new Coords(.5, -1).multiplyScalar(shipSizeMultiplier),
+				new Coords(-.5, -1).multiplyScalar(shipSizeMultiplier)
+			],
+			shipColor.systemColor,
+			null // colorBorder
+		);
+		shipVisual.draw(universe, display, ship, new Location(drawPos));
 	}
 }

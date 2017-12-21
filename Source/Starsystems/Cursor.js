@@ -51,12 +51,13 @@ function Cursor(bodyParent)
 
 	// drawable
 
-	Cursor.prototype.draw = function(universe, display, venueStarsystem)
+	Cursor.prototype.draw = function(universe, world, display, venueStarsystem)
 	{
 		var starsystem = venueStarsystem.starsystem;
 		starsystem.draw_Body
 		(
 			universe, 
+			world, 
 			display,
 			venueStarsystem.camera,
 			this

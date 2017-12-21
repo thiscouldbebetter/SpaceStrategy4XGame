@@ -12,9 +12,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 	this.ships = [];
 
 	// Helper variables
-	this.drawPos = new Coords();
-	this.drawPos2 = new Coords();
-	this.drawLoc = new Location(this.drawPos);
+	this.posSaved = new Coords();
 	this.visualElevationStem = new VisualElevationStem(null);
 	this.visualGrid = new VisualGrid(null, 40, 10, Color.Instances().CyanHalfTranslucent.systemColor);
 }
@@ -146,7 +144,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	// drawing
 
-	Starsystem.prototype.draw = function(universe, display, camera)
+	Starsystem.prototype.draw = function(universe, world, display, camera)
 	{
 		this.visualElevationStem.camera = camera;
 		this.visualGrid.camera = camera;
@@ -197,24 +195,23 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		for (var i = 0; i < bodiesToDrawSorted.length; i++)
 		{
 			var body = bodiesToDrawSorted[i];
-			this.draw_Body(universe, display, camera, body);
+			this.draw_Body(universe, world, display, camera, body);
 		}
 	}
 
-	Starsystem.prototype.draw_Body = function(universe, display, camera, body)
+	Starsystem.prototype.draw_Body = function(universe, world, display, camera, body)
 	{
-		var drawPos = this.drawPos;
-		var drawLoc = this.drawLoc;
-
 		var bodyPos = body.loc.pos;
-		drawPos.overwriteWith(bodyPos);
-		camera.coordsTransformWorldToView(drawPos);
+		this.posSaved.overwriteWith(bodyPos);
+
+		camera.coordsTransformWorldToView(bodyPos);
 
 		var bodyDefn = body.defn;
 		var bodyVisual = bodyDefn.visual;
-		bodyVisual.draw(universe, display, body, drawLoc);
+		bodyVisual.draw(universe, world, display, body);
+		bodyPos.overwriteWith(this.posSaved);
 
-		this.visualElevationStem.draw(universe, display, body, body.loc);
+		this.visualElevationStem.draw(universe, world, display, body);
 	}
 }
 
@@ -227,7 +224,7 @@ function VisualElevationStem(camera)
 	this.drawPosPlane = new Coords();
 }
 {
-	VisualElevationStem.prototype.draw = function(universe, display, drawable, drawLoc)
+	VisualElevationStem.prototype.draw = function(universe, world, display, drawable)
 	{
 		var drawablePosWorld = drawable.loc.pos;
 		var drawPosTip = this.camera.coordsTransformWorldToView

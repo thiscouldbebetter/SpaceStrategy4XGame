@@ -24,21 +24,24 @@ function VenueStarsystem(venueParent, starsystem)
 
 	VenueStarsystem.prototype.draw = function(universe)
 	{
+		var world = universe.world;
 		var display = universe.display;
+
 		display.clear();
 		this.starsystem.draw
 		(
 			universe,
+			world, 
 			display,
 			this.camera
 		);
 
 		if (this.cursor != null)
 		{
-			this.cursor.draw(universe, display, this);
+			this.cursor.draw(universe, world, display, this);
 		}
 
-		this.venueControls.draw(universe);
+		this.venueControls.draw(universe, world);
 	}
 
 	VenueStarsystem.prototype.finalize = function(universe)

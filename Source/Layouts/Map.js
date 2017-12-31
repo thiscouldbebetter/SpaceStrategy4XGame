@@ -22,7 +22,8 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 
 	// Helper variables.
 
-	this.drawPos = new Coords();
+	this.drawable = {};
+	this.drawable.loc = new Location(new Coords());
 }
 
 {
@@ -96,14 +97,15 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 
 	Map.prototype.draw = function(universe, display)
 	{
+		var world = universe.world;
 		var map = this;
-		var graphics = display.graphics;
 
-		var pos = map.pos;
+		var mapPos = map.pos;
 		var mapSizeInCells = map.sizeInCells;
 
 		var cellPos = new Coords(0, 0);
-		var drawPos = this.drawPos;
+		var drawable = this.drawable;
+		var drawPos = drawable.loc.pos;
 		var cellSizeInPixels = map.cellSizeInPixels;
 		var cellSizeInPixelsHalf = 
 			cellSizeInPixels.clone().divideScalar(2);
@@ -124,38 +126,20 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 					cellSizeInPixels
 				).add
 				(
-					pos
+					mapPos
 				);
 
 				var cell = map.cellAtPos(cellPos);
+
+				var terrainVisual = cell.terrain.visual;
+				terrainVisual.draw(universe, world, display, drawable);
+
 				var cellBody = cell.body;
-
-				var colorFill = 
-				(
-					cellBody == null 
-					? "Transparent" 
-					: cellBody.defn.color
-				);
-				var colorBorder = cell.terrain.color;
-
-				graphics.fillStyle = colorFill;
-				graphics.fillRect
-				(
-					drawPos.x,
-					drawPos.y,
-					cellSizeInPixels.x,
-					cellSizeInPixels.y
-				);
-
-				graphics.strokeStyle = colorBorder;
-				graphics.strokeRect
-				(
-					drawPos.x,
-					drawPos.y,
-					cellSizeInPixels.x,
-					cellSizeInPixels.y
-				);
-
+				if (cellBody != null)
+				{
+					var cellBodyVisual = cellBody.defn.visual;
+					cellBodyVisual.draw(universe, world, display, drawable);
+				}
 			}
 		}
 
@@ -168,6 +152,8 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 
 		if (cursorIsWithinMap == true)
 		{
+			var cursorVisual = new VisualRectangle(new Coords(10, 10), null, "Cyan"); // hack
+
 			drawPos.overwriteWith
 			(
 				cursorPos
@@ -176,51 +162,16 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 				cellSizeInPixels
 			).add
 			(
-				pos
+				mapPos
 			);
 
-			graphics.strokeStyle = "Cyan";
-
-			if (cursor.bodyDefn == null)
+			if (cursor.bodyDefn != null)
 			{
-				graphics.beginPath();
-				graphics.moveTo(drawPos.x, drawPos.y);
-				graphics.lineTo
-				(
-					drawPos.x + cellSizeInPixels.x, 
-					drawPos.y + cellSizeInPixels.y
-				);
-				graphics.moveTo
-				(
-					drawPos.x + cellSizeInPixels.x, 
-					drawPos.y
-				);
-				graphics.lineTo
-				(
-					drawPos.x, 
-					drawPos.y + cellSizeInPixels.y
-				);
-				graphics.stroke();
-			}
-			else
-			{
-				graphics.fillStyle = cursor.bodyDefn.color;
-				graphics.fillRect
-				(
-					drawPos.x,
-					drawPos.y,
-					cellSizeInPixels.x,
-					cellSizeInPixels.y
-				);
+				var bodyVisual = cursor.bodyDefn.visual;
+				bodyVisual.draw(universe, world, display, drawable);
 			}
 
-			graphics.strokeRect
-			(
-				drawPos.x,
-				drawPos.y,
-				cellSizeInPixels.x,
-				cellSizeInPixels.y
-			);
+			cursorVisual.draw(universe, world, display, drawable);
 		}
 	}
 

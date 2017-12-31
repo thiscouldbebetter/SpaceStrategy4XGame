@@ -1,8 +1,8 @@
 
-function MapTerrain(name, codeChar, color, isBlocked)
+function MapTerrain(name, codeChar, visual, isBlocked)
 {
 	this.name = name
 	this.codeChar = codeChar;
-	this.color = color;
+	this.visual = visual;
 	this.isBlocked = isBlocked;
 }

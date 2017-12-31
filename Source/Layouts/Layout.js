@@ -23,12 +23,6 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 
 	Layout.generateRandom = function(universe, parent)
 	{
-		var terrains = 
-		[
-			new MapTerrain("Default", ".", "LightGray", false),
-		];
-		terrains.addLookups("codeChar");
-
 		var viewSize = universe.display.sizeInPixels;
 		var mapSizeInPixels = viewSize.clone().multiplyScalar(.5);
 		var mapPosInPixels = viewSize.clone().subtract
@@ -40,6 +34,17 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 		);
 		mapPosInPixels.z = 0;
 
+		var mapSizeInCells = new Coords(9, 7);
+		var mapCellSizeInPixels = mapSizeInPixels.clone().divide(mapSizeInCells);
+
+		var terrains = 
+		[
+			new MapTerrain("None", " ", new VisualRectangle(mapCellSizeInPixels, null, "rgba(0, 0, 0, 0)"), false),
+			new MapTerrain("Orbit", "-", new VisualRectangle(mapCellSizeInPixels, null, "Violet"), false),
+			new MapTerrain("Surface", ".", new VisualRectangle(mapCellSizeInPixels, null, "LightGray"), false),
+		];
+		terrains.addLookups("codeChar");
+
 		var map = Map.fromCellsAsStrings
 		(
 			mapSizeInPixels,
@@ -47,23 +52,60 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 			terrains,
 			// cellsAsStrings
 			[
-				"........",
-				"........",
-				"........",
-				"........",
-				"........",
-				"........",
-				"........",
-				"........",
+				"---------",
+				"         ",
+				".........",
+				".........",
+				".........",
+				".........",
+				".........",
 			]
 		);
 
 		var bodyDefns = 
 		[
-			new LayoutElementDefn("Base", "Gray", 100, 1, 1, 1),
-			new LayoutElementDefn("Factory", "Red", 30, 0, 1, 0),
-			new LayoutElementDefn("Farm", "Green", 30, 1, 0, 0),
-			new LayoutElementDefn("Laboratory", "Blue", 30, 0, 0, 1),
+			new LayoutElementDefn
+			(
+				"Hub", 100, ["Surface"], 1, 1, 1,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Gray"),
+					new VisualText("H", "White", "Gray")
+				])
+			),
+			new LayoutElementDefn
+			(
+				"Factory", 30, ["Surface"], 0, 1, 0,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Red"),
+					new VisualText("F", "White", "Gray")
+				])
+			),
+			new LayoutElementDefn
+			(
+				"Plantation", 30, ["Surface"], 1, 0, 0,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Green"),
+					new VisualText("P", "White", "Gray")
+				])
+			),
+			new LayoutElementDefn
+			(
+				"Laboratory", 30, ["Surface"], 0, 0, 1,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Blue"),
+					new VisualText("L", "White", "Gray")
+				])
+			),
+
+			new LayoutElementDefn
+			(
+				"Shipyard", 30, ["Orbit"], 0, 0, 1,
+				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")])
+			),
 		];
 		bodyDefns.addLookups("name");
 
@@ -75,7 +117,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 			map,
 			// bodies
 			[
-				new LayoutElement(bodyDefns["Base"], new Coords(0, 0))
+				new LayoutElement(bodyDefns["Hub"], new Coords(4, 4))
 			] 
 		);
 

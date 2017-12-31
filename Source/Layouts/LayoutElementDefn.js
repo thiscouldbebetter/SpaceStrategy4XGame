@@ -1,13 +1,14 @@
 
 function LayoutElementDefn
 (
-	name, color, industryToBuild, prosperityPerTurn, industryPerTurn, researchPerTurn
+	name, industryToBuild, terrainNamesAllowed, prosperityPerTurn, industryPerTurn, researchPerTurn, visual
 )
 {
 	this.name = name;
-	this.color = color;
 	this.industryToBuild = industryToBuild;
+	this.terrainNamesAllowed = terrainNamesAllowed;
 	this.prosperityPerTurn = prosperityPerTurn;
 	this.industryPerTurn = industryPerTurn;
 	this.researchPerTurn = researchPerTurn;
+	this.visual = visual;
 }

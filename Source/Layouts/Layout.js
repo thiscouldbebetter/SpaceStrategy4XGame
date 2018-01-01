@@ -1,9 +1,8 @@
 
-function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
+function Layout(modelParent, sizeInPixels, map, bodies)
 {
 	this.modelParent = modelParent;
 	this.sizeInPixels = sizeInPixels;
-	this.bodyDefns = bodyDefns;
 	this.map = map;
 	this.bodies = bodies;
 
@@ -21,8 +20,9 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 {
 	// static methods
 
-	Layout.generateRandom = function(universe, parent)
+	Layout.planet = function(universe, planet)
 	{
+		var world = universe.world;
 		var viewSize = universe.display.sizeInPixels;
 		var mapSizeInPixels = viewSize.clone().multiplyScalar(.5);
 		var mapPosInPixels = viewSize.clone().subtract
@@ -62,62 +62,14 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 			]
 		);
 
-		var bodyDefns = 
-		[
-			new LayoutElementDefn
-			(
-				"Hub", 100, ["Surface"], 1, 1, 1,
-				new VisualGroup
-				([
-					new VisualRectangle(mapCellSizeInPixels, "Gray"),
-					new VisualText("H", "White", "Gray")
-				])
-			),
-			new LayoutElementDefn
-			(
-				"Factory", 30, ["Surface"], 0, 1, 0,
-				new VisualGroup
-				([
-					new VisualRectangle(mapCellSizeInPixels, "Red"),
-					new VisualText("F", "White", "Gray")
-				])
-			),
-			new LayoutElementDefn
-			(
-				"Plantation", 30, ["Surface"], 1, 0, 0,
-				new VisualGroup
-				([
-					new VisualRectangle(mapCellSizeInPixels, "Green"),
-					new VisualText("P", "White", "Gray")
-				])
-			),
-			new LayoutElementDefn
-			(
-				"Laboratory", 30, ["Surface"], 0, 0, 1,
-				new VisualGroup
-				([
-					new VisualRectangle(mapCellSizeInPixels, "Blue"),
-					new VisualText("L", "White", "Gray")
-				])
-			),
-
-			new LayoutElementDefn
-			(
-				"Shipyard", 30, ["Orbit"], 0, 0, 1,
-				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")])
-			),
-		];
-		bodyDefns.addLookups("name");
-
 		var layout = new Layout
 		(
-			parent,
+			planet,
 			viewSize.clone(), // sizeInPixels
-			bodyDefns,
 			map,
 			// bodies
 			[
-				new LayoutElement(bodyDefns["Hub"], new Coords(4, 4))
+				new LayoutElement("Hub", new Coords(4, 4))
 			] 
 		);
 
@@ -161,15 +113,17 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 		return returnValues;
 	}
 
-	Layout.prototype.industryPerTurn = function(universe, faction, planet)
+	Layout.prototype.industryPerTurn = function(layout, universe)
 	{
 		var returnValue = 0;
+
+		var world = universe.world;
 
 		var facilities = this.facilities(universe);
 		for (var i = 0; i < facilities.length; i++)
 		{
 			var facility = facilities[i];
-			var facilityDefn = facility.defn;
+			var facilityDefn = facility.defn(universe.world);
 			var producedThisTurn = facilityDefn.industryPerTurn;
 			returnValue += producedThisTurn;
 		}
@@ -177,7 +131,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 		return returnValue;
 	}
 
-	Layout.prototype.prosperityPerTurn = function(universe, faction, planet)
+	Layout.prototype.prosperityPerTurn = function(layout, universe)
 	{
 		var returnValue = 0;
 
@@ -185,7 +139,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 		for (var i = 0; i < facilities.length; i++)
 		{
 			var facility = facilities[i];
-			var facilityDefn = facility.defn;
+			var facilityDefn = facility.defn(universe.world);
 			var producedThisTurn = facilityDefn.prosperityPerTurn;
 			returnValue += producedThisTurn;
 		}
@@ -193,7 +147,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 		return returnValue;
 	}
 
-	Layout.prototype.researchPerTurn = function(universe, faction, planet)
+	Layout.prototype.researchPerTurn = function(layout, universe)
 	{
 		var returnValue = 0;
 
@@ -201,7 +155,7 @@ function Layout(modelParent, sizeInPixels, bodyDefns, map, bodies)
 		for (var i = 0; i < facilities.length; i++)
 		{
 			var facility = facilities[i];
-			var facilityDefn = facility.defn;
+			var facilityDefn = facility.defn(universe.world);
 			var producedThisTurn = facilityDefn.researchPerTurn;
 			returnValue += producedThisTurn;
 		}

@@ -6,7 +6,7 @@ function PlanetIndustry(industryAccumulated, buildableInProgress)
 }
 
 {
-	PlanetIndustry.prototype.buildableInProgress = function(planet, valueToSet)
+	PlanetIndustry.prototype.buildableInProgress = function(planet, universe, valueToSet)
 	{
 		if (valueToSet == null)
 		{

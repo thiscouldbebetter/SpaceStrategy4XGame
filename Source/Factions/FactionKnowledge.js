@@ -66,6 +66,7 @@ function FactionKnowledge(factionNames, starsystemNames, linkNames)
 				worldActual.name,
 				worldActual.dateCreated,
 				worldActual.activityDefns,
+				worldActual.buildables,
 				worldActual.technologyTree,
 				networkKnown,
 				factionsKnown,

@@ -74,7 +74,7 @@ function VenueLayout(venueParent, layout)
 
 					this.layoutElementInProgress = new LayoutElement
 					(
-						cursorBodyDefn, 
+						cursorBodyDefn.name, 
 						cursorPos.clone()
 					);
 					layout.elementAdd(this.layoutElementInProgress);
@@ -157,6 +157,7 @@ function VenueLayout(venueParent, layout)
 
 				this.controlBuild_Industry
 				(
+					universe,
 					containerMainSize,
 					containerInnerSize, 
 					margin, 
@@ -188,6 +189,7 @@ function VenueLayout(venueParent, layout)
 
 	VenueLayout.prototype.controlBuild_Industry = function
 	(
+		universe,
 		containerMainSize,
 		containerInnerSize, 
 		margin, 
@@ -195,7 +197,10 @@ function VenueLayout(venueParent, layout)
 		buttonWidth
 	)
 	{
+		var world = universe.world;
 		var planet = this.layout.modelParent;
+		var faction = planet.faction(world);
+		var buildablesAvailable = faction.technology.buildablesAvailable(world);
 
 		var fontHeightInPixels = controlHeight / 2; // hack
 
@@ -251,7 +256,7 @@ function VenueLayout(venueParent, layout)
 					new Coords(margin, controlHeight + margin), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size, 
 					new DataBinding(planet,  "industry.buildableInProgress()" ), // dataBindingForValueSelected,
-					new DataBinding(this.layout.bodyDefns), // dataBindingForOptions,
+					new DataBinding(buildablesAvailable), // dataBindingForOptions,
 					null, // bindingExpressionForOptionValues,
 					"name", // bindingExpressionForOptionText,
 				),

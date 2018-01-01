@@ -6,54 +6,6 @@ function TechnologyResearchSession(technologyTree, researcher)
 }
 
 {
-	// static methods
-
-	TechnologyResearchSession.demo = function()
-	{
-		var technologies =
-		[
-			new Technology("A", 	5, 	[], 	[]),
-			new Technology("A.1", 	8, 	["A"], 	[]),
-			new Technology("A.2", 	8, 	["A"], 	[]),
-			new Technology("A.3", 	8, 	["A"], 	[]),
-			new Technology("B", 	5, 	[], 	[]),
-			new Technology("C", 	5, 	[], 	[]),
-
-			new Technology("A+B", 	10, 	["A", "B"], []),
-			new Technology("A+C", 	10, 	["A", "C"], []),
-			new Technology("B+C", 	10, 	["B", "C"], []),
-
-			new Technology("A+B+C", 15, 	["A", "B", "C"], 	[]),
-
-			new Technology("(A+B)+(B+C)", 	20, 	["A+B", "B+C"], 	[]),
-		];
-
-		var technologyTree = new TechnologyTree
-		(
-			"All Technologies",
-			technologies
-		);
-
-		var researcher = new TechnologyResearcher
-		(
-			"Researcher0",
-			null, // nameOfTechnologyBeingResearched,
-			0, // researchAccumulated
-			// namesOfTechnologiesKnown
-			[
-				"A",
-			]
-		);
-
-		var researchSession = new TechnologyResearchSession
-		(
-			technologyTree,
-			researcher
-		);
-
-		return researchSession;
-	}
-
 	// instance methods
 
 	TechnologyResearchSession.prototype.isResearchNotInProgress = function()

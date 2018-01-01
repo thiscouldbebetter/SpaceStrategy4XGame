@@ -108,17 +108,17 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 
 	Planet.prototype.industryPerTurn = function(universe, faction)
 	{
-		return this.layout.industryPerTurn(universe, faction, this);
+		return this.layout.industryPerTurn(this.layout, universe);
 	}
 
 	Planet.prototype.prosperityPerTurn = function(universe, faction)
 	{
-		return this.layout.prosperityPerTurn(universe, faction, this);
+		return this.layout.prosperityPerTurn(this.layout, universe);
 	}
 
 	Planet.prototype.researchPerTurn = function(universe, faction)
 	{
-		return this.layout.researchPerTurn(universe, faction, this);
+		return this.layout.researchPerTurn(this.layout, universe);
 	}
 
 	Planet.prototype.updateForTurn = function(universe, faction)

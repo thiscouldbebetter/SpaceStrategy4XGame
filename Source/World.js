@@ -1,10 +1,11 @@
 
-function World(name, dateCreated, activityDefns, technologyTree, network, factions, ships, camera)
+function World(name, dateCreated, activityDefns, buildables, technologyTree, network, factions, ships, camera)
 {
 	this.name = name;
 	this.dateCreated = dateCreated;
 
 	this.activityDefns = activityDefns.addLookups("name");
+	this.buildables = buildables.addLookups("name");
 	this.technologyTree = technologyTree;
 	this.network = network;
 	this.factions = factions;
@@ -25,6 +26,54 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 	World.new = function(universe)
 	{
 		var worldName = NameGenerator.generateName() + " Cluster";
+
+		var mapCellSizeInPixels = new Coords(20, 20); // hack
+
+		var buildables =
+		[
+			new LayoutElementDefn
+			(
+				"Hub", 100, ["Surface"], 1, 1, 1,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Gray"),
+					new VisualText("H", "White", "Gray")
+				])
+			),
+			new LayoutElementDefn
+			(
+				"Factory", 30, ["Surface"], 0, 1, 0,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Red"),
+					new VisualText("F", "White", "Gray")
+				])
+			),
+			new LayoutElementDefn
+			(
+				"Plantation", 30, ["Surface"], 1, 0, 0,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Green"),
+					new VisualText("P", "White", "Gray")
+				])
+			),
+			new LayoutElementDefn
+			(
+				"Laboratory", 30, ["Surface"], 0, 0, 1,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Blue"),
+					new VisualText("L", "White", "Gray")
+				])
+			),
+
+			new LayoutElementDefn
+			(
+				"Shipyard", 30, ["Orbit"], 0, 0, 1,
+				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")])
+			),
+		].addLookups("name");
 
 		var technologyTree = TechnologyTree.demo();
 
@@ -280,6 +329,7 @@ function World(name, dateCreated, activityDefns, technologyTree, network, factio
 			worldName,
 			DateTime.now(),
 			ActivityDefn.Instances._All,
+			buildables,
 			technologyTree,
 			network,
 			factions,

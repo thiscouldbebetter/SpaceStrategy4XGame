@@ -83,7 +83,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				null // layout
 			);
 
-			planet.layout = Layout.generateRandom(universe, planet);
+			planet.layout = Layout.planet(universe, planet);
 
 			planets.push(planet);
 		}

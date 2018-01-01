@@ -14,9 +14,19 @@ function TechnologyResearcher
 }
 
 {
-	TechnologyResearcher.prototype.buildablesAvailable = function()
+	TechnologyResearcher.prototype.buildablesAvailable = function(world)
 	{
 		var returnValues = [];
+
+		var technologiesAll = world.technologyTree.technologies;
+
+		for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++)
+		{
+			var technologyName = this.namesOfTechnologiesKnown[i];
+			var technology = technologiesAll[technologyName];
+			var technologyBuildables = technology.buildablesEnabled(world);
+			returnValues.append(technologyBuildables);
+		}
 
 		return returnValues;
 	}

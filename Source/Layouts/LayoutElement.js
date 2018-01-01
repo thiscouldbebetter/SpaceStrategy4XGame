@@ -1,6 +1,12 @@
 
-function LayoutElement(defn, pos)
+function LayoutElement(defnName, pos)
 {
-	this.defn = defn;
+	this.defnName = defnName;
 	this.loc = new Location(pos);
+}
+{
+	LayoutElement.prototype.defn = function(world)
+	{
+		return world.buildables[this.defnName];
+	}
 }

@@ -137,7 +137,8 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 				var cellBody = cell.body;
 				if (cellBody != null)
 				{
-					var cellBodyVisual = cellBody.defn.visual;
+					var cellBodyDefn = cellBody.defn(world);
+					var cellBodyVisual = cellBodyDefn.visual;
 					cellBodyVisual.draw(universe, world, display, drawable);
 				}
 			}

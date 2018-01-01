@@ -241,12 +241,12 @@ function Network(name, nodes, links)
 
 	// turns
 
-	Network.prototype.updateForTurn = function(universe)
+	Network.prototype.updateForTurn = function(universe, world)
 	{
 		for (var i = 0; i < this.links.length; i++)
 		{
 			var link = this.links[i];
-			link.updateForTurn(universe, this);
+			link.updateForTurn(universe, world, this);
 		}
 	}
 

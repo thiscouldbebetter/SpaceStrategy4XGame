@@ -412,7 +412,7 @@ function Ship(name, defn, pos, factionName, devices)
 
 	// turns
 
-	Ship.prototype.updateForTurn = function(universe, faction)
+	Ship.prototype.updateForTurn = function(universe, world, faction)
 	{
 		this.energyThisTurn = 0;
 		this.distancePerMove = 0;

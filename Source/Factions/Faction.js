@@ -9,11 +9,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 	this.ships = ships;
 	this.knowledge = knowledge;
 
-	this.notifications = 
-	[
-		new Notification("Default", 0, "Nothing being built.", this.planets[0]),
-		new Notification("Default", 0, "Nothing being researched.", this.technology),
-	];
+	this.notificationSession = new NotificationSession(this.name, []);
 }
 
 {
@@ -234,7 +230,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					true, // hasBorder
 					true, // isEnabled
 					// click
-					this.notificationSessionInitialize.bind(this)
+					this.notificationSessionInitialize.bind(this, universe)
 				),
 			]
 		);
@@ -348,7 +344,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	Faction.prototype.notificationSessionInitialize = function(universe)
 	{
-		var notificationSession = new NotificationSession(this.notifications);
+		var notificationSession = this.notificationSession;
 		var notificationSessionAsControl = notificationSession.controlBuild(universe);
 		var venueNext = new VenueControls(notificationSessionAsControl);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
@@ -357,34 +353,34 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	// turns
 
-	Faction.prototype.researchPerTurn = function(universe)
+	Faction.prototype.researchPerTurn = function(universe, world)
 	{
 		var returnValue = 0;
 
 		for (var i = 0; i < this.planets.length; i++)
 		{
 			var planet = this.planets[i];
-			var planetResearchThisTurn = planet.researchPerTurn(universe, this);
+			var planetResearchThisTurn = planet.researchPerTurn(universe, world, this);
 			returnValue += planetResearchThisTurn;
 		}
 
 		return returnValue;
 	}
 
-	Faction.prototype.updateForTurn = function(universe)
+	Faction.prototype.updateForTurn = function(universe, world)
 	{
 		for (var i = 0; i < this.planets.length; i++)
 		{
 			var planet = this.planets[i];
-			planet.updateForTurn(universe, this);
+			planet.updateForTurn(universe, world, this);
 		}
 
 		for (var i = 0; i < this.ships.length; i++)
 		{
 			var ship = this.ships[i];
-			ship.updateForTurn(universe, this);
+			ship.updateForTurn(universe, world, this);
 		}
 
-		this.technology.updateForTurn(universe, this);
+		this.technology.updateForTurn(universe, world, this);
 	}
 }

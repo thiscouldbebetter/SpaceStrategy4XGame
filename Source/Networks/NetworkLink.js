@@ -45,11 +45,10 @@ function NetworkLink(namesOfNodesLinked)
 
 	// turns
 
-	NetworkLink.prototype.updateForTurn = function(universe)
+	NetworkLink.prototype.updateForTurn = function(universe, world)
 	{
 		if (this.ships.length > 0)
 		{
-			var world = universe.world;
 			var cluster = world.network;
 
 			var nodesLinked = this.nodesLinked(cluster);

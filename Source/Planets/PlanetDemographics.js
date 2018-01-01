@@ -5,9 +5,9 @@ function PlanetDemographics(population)
 }
 
 {
-	PlanetDemographics.prototype.updateForTurn = function(universe, faction, planet)
+	PlanetDemographics.prototype.updateForTurn = function(universe, world, faction, planet)
 	{
-		var prosperityThisTurn = planet.prosperityPerTurn(universe, faction);
+		var prosperityThisTurn = planet.prosperityPerTurn(universe, world, faction);
 		this.prosperityAccumulated += prosperityThisTurn;
 		var prosperityRequiredForGrowth = this.population * 2;
 		if (this.prosperityAccumulated >= prosperityRequiredForGrowth)

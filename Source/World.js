@@ -31,7 +31,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 		var buildables =
 		[
-			new LayoutElementDefn
+			new BuildableDefn
 			(
 				"Hub", 100, ["Surface"], 1, 1, 1,
 				new VisualGroup
@@ -40,7 +40,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 					new VisualText("H", "White", "Gray")
 				])
 			),
-			new LayoutElementDefn
+			new BuildableDefn
 			(
 				"Factory", 30, ["Surface"], 0, 1, 0,
 				new VisualGroup
@@ -49,7 +49,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 					new VisualText("F", "White", "Gray")
 				])
 			),
-			new LayoutElementDefn
+			new BuildableDefn
 			(
 				"Plantation", 30, ["Surface"], 1, 0, 0,
 				new VisualGroup
@@ -58,7 +58,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 					new VisualText("P", "White", "Gray")
 				])
 			),
-			new LayoutElementDefn
+			new BuildableDefn
 			(
 				"Laboratory", 30, ["Surface"], 0, 0, 1,
 				new VisualGroup
@@ -68,7 +68,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				])
 			),
 
-			new LayoutElementDefn
+			new BuildableDefn
 			(
 				"Shipyard", 30, ["Orbit"], 0, 0, 1,
 				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")])
@@ -365,12 +365,19 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 	World.prototype.updateForTurn = function(universe)
 	{
-		this.network.updateForTurn(universe);
+		this.network.updateForTurn(universe, this);
 
 		for (var i = 0; i < this.factions.length; i++)
 		{
 			var faction = this.factions[i];
-			faction.updateForTurn(universe);
+			faction.updateForTurn(universe, this);
+		}
+
+		var factionForPlayer = this.factions[0];
+		var notifications = factionForPlayer.notificationSession.notifications;
+		if (notifications.length > 0)
+		{
+			//factionForPlayer.notificationSessionInitialize(universe);
 		}
 
 		this.turnsSoFar++;

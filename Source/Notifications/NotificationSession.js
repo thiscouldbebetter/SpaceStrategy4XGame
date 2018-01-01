@@ -1,11 +1,27 @@
 
-function NotificationSession(notifications)
+function NotificationSession(factionName, notifications)
 {
+	this.factionName = factionName;
 	this.notifications = notifications;
+
 	this.notificationSelected = null;
 }
 
 {
+	NotificationSession.prototype.notificationDismiss = function(notification)
+	{
+		var notificationIndex = this.notifications.indexOf(notification);
+		this.notifications.remove(notification);
+		this.notificationSelected = this.notifications[notificationIndex];
+	}
+
+	NotificationSession.prototype.notificationGoTo = function(notification)
+	{
+		// todo
+	}
+
+	// controls
+
 	NotificationSession.prototype.controlBuild = function(universe)
 	{
 		var display = universe.display;
@@ -13,7 +29,7 @@ function NotificationSession(notifications)
 		var controlHeight = containerSize.y / 12;
 		var margin = 10;
 		var columnWidth = containerSize.x - margin * 2;
-		var buttonWidth = (containerSize.x - margin * 3) / 2;
+		var buttonWidth = (containerSize.x - margin * 4) / 3;
 		var fontHeightInPixels = display.fontHeightInPixels;
 
 		var returnValue = new ControlContainer
@@ -77,7 +93,11 @@ function NotificationSession(notifications)
 					true, // isEnabled
 					function click(universe)
 					{
-						// todo
+						var world = universe.world;
+						var faction = world.factions[this.factionName];
+						var notificationSession = faction.notificationSession;
+						var notification = notificationSession.notificationSelected;
+						notificationSession.notificationGoTo(notification);
 					}
 				),
 
@@ -92,9 +112,30 @@ function NotificationSession(notifications)
 					true, // isEnabled
 					function click(universe)
 					{
-						var session = universe.venueCurrent;
-						var notification = session.notificationSelected;
-						notification.hasBeenRead = true;
+						var world = universe.world;
+						var faction = world.factions[0]; // hack
+						var notificationSession = faction.notificationSession;
+						var notification = notificationSession.notificationSelected;
+						notificationSession.notificationDismiss(notification);
+					}
+				),
+
+				new ControlButton
+				(
+					"buttonDismissAll",
+					new Coords(margin * 3 + buttonWidth * 2, margin * 2 + controlHeight * 7), // pos
+					new Coords(buttonWidth, controlHeight), // size
+					"Dismiss All",
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					function click(universe)
+					{
+						var world = universe.world;
+						var faction = world.factions[0]; // hack
+						var notificationSession = faction.notificationSession;
+						var notifications = notificationSession.notifications;
+						notifications.length = 0;
 					}
 				),
 

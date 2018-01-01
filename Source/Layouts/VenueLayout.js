@@ -3,7 +3,6 @@ function VenueLayout(venueParent, layout)
 {
 	this.venueParent = venueParent;
 	this.layout = layout;
-	this.layoutElementInProgress = null;
 }
 
 {
@@ -11,6 +10,8 @@ function VenueLayout(venueParent, layout)
 	{
 		var controlRoot = this.controlBuild(universe);
 		this.venueControls = new VenueControls(controlRoot);
+
+		this.layout.initialize(universe);
 	}
 
 	VenueLayout.prototype.model = function()
@@ -46,38 +47,26 @@ function VenueLayout(venueParent, layout)
 			{
 				inputHelper.isMouseClicked(false);
 
-				var cursorBodyDefn = cursor.bodyDefn;
+				var buildableDefn = cursor.bodyDefn;
 				var cellAtCursor = map.cellAtPos(cursorPos);
 
-				if (cursorBodyDefn == null)
+				if (buildableDefn == null)
 				{
 					var bodyToRemove = cellAtCursor.body;
 					if (bodyToRemove != null)
 					{
 						layout.elementRemove(bodyToRemove);
 
-						if (bodyToRemove == this.layoutElementInProgress)
-						{
-							this.layoutElementInProgress = null;
-						}
+						// todo
 					}
 				}
 				else
 				{
-					if (this.layoutElementInProgress != null)
-					{
-						layout.elementRemove
-						(
-							this.layoutElementInProgress
-						);
-					}
-
-					this.layoutElementInProgress = new LayoutElement
+					var buildable = new Buildable
 					(
-						cursorBodyDefn.name, 
-						cursorPos.clone()
+						buildableDefn.name, cursorPos.clone(), 0
 					);
-					layout.elementAdd(this.layoutElementInProgress);
+					layout.elementAdd(buildable);
 				}
 			}
 			else
@@ -252,22 +241,13 @@ function VenueLayout(venueParent, layout)
 
 				new ControlSelect
 				(
-					"selectBuilding",
+					"selectBuildable",
 					new Coords(margin, controlHeight + margin), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size, 
-					new DataBinding(planet,  "industry.buildableInProgress()" ), // dataBindingForValueSelected,
+					new DataBinding(planet.layout.map.cursor, "bodyDefn"), // dataBindingForValueSelected,
 					new DataBinding(buildablesAvailable), // dataBindingForOptions,
 					null, // bindingExpressionForOptionValues,
 					"name", // bindingExpressionForOptionText,
-				),
-
-				new ControlLabel
-				(
-					"labelProgress", 
-					new Coords(margin, controlHeight * 2 + margin), // pos
-					new Coords(50, controlHeight), // size
-					false, // isTextCentered
-					new DataBinding(planet.industry, "industryAccumulated") 
 				),
 
 				new ControlLabel
@@ -276,7 +256,7 @@ function VenueLayout(venueParent, layout)
 					new Coords(margin + 50, controlHeight * 2 + margin), // pos
 					new Coords(50, controlHeight), // size
 					false, // isTextCentered
-					new DataBinding(planet.industry, "buildableInProgress().industryToBuild") 
+					new DataBinding(planet.layout.map.cursor, "bodyDefn.industryToBuild") 
 				),
 			]
 		);
@@ -341,7 +321,7 @@ function VenueLayout(venueParent, layout)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					new DataBinding(this.layout, "industryPerTurn()")
+					this.layout._industryPerTurnRef
 				),
 
 				new ControlLabel
@@ -363,7 +343,7 @@ function VenueLayout(venueParent, layout)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					new DataBinding(this.layout, "prosperityPerTurn()")
+					this.layout._prosperityPerTurnRef
 				),
 
 				new ControlLabel
@@ -385,7 +365,7 @@ function VenueLayout(venueParent, layout)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					new DataBinding(this.layout, "researchPerTurn()")
+					this.layout._researchPerTurnRef
 				),
 
 

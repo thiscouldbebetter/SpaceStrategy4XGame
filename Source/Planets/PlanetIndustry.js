@@ -1,38 +1,25 @@
 
-function PlanetIndustry(industryAccumulated, buildableInProgress)
-{
-	this.industryAccumulated = industryAccumulated;
-	this._buildableInProgress = buildableInProgress;
-}
+function PlanetIndustry()
+{}
 
 {
-	PlanetIndustry.prototype.buildableInProgress = function(planet, universe, valueToSet)
+	PlanetIndustry.prototype.updateForTurn = function(universe, world, faction, planet)
 	{
-		if (valueToSet == null)
+		var industryThisTurn = planet.industryPerTurn(universe, world, faction);
+		var layout = planet.layout;
+		var buildableInProgress = layout.buildableInProgress();
+		if (buildableInProgress == null)
 		{
-			return this._buildableInProgress;
+			var notification = new Notification("Default", 0, "Nothing being built.", planet);
+			faction.notificationSession.notifications.push(notification);
 		}
 		else
 		{
-			this._buildableInProgress = valueToSet;
-			planet.layout.map.cursor.bodyDefn = valueToSet; // hack
-		}
-
-		return this._buildableInProgress;
-	}
-
-	PlanetIndustry.prototype.updateForTurn = function(universe, faction, planet)
-	{
-		var industryThisTurn = planet.industryPerTurn(universe, faction);
-		this.industryAccumulated += industryThisTurn;
-		var buildableInProgress = this.buildableInProgress();
-		if (buildableInProgress != null)
-		{
-			var buildableDefn = buildableInProgress.defn;
-			var industryToComplete = buildableDefn.industryToComplete;
-			if (this.industryAccumulated >= industryToComplete)
+			var buildableDefn = buildableInProgress.defn(world);
+			buildableInProgress.industrySoFar += industryThisTurn;
+			if (buildableInProgress.industrySoFar >= buildableDefn.industryToBuild)
 			{
-				this.industryAccumulated -= industryToComplete;
+				buildableInProgress.industrySoFar = null;
 			}
 		}
 	}

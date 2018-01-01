@@ -15,6 +15,10 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 		var cell = this.map.cellAtPos(bodyPosInCells);
 		cell.body = body;
 	}
+
+	this._industryPerTurnRef = new Reference(0);
+	this._prosperityPerTurnRef = new Reference(0);
+	this._researchPerTurnRef = new Reference(0);
 }
 
 {
@@ -69,7 +73,7 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 			map,
 			// bodies
 			[
-				new LayoutElement("Hub", new Coords(4, 4))
+				new Buildable("Hub", new Coords(4, 4))
 			] 
 		);
 
@@ -77,6 +81,24 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 	}
 
 	// instance methods
+
+	Layout.prototype.buildableInProgress = function()
+	{
+		var returnValue = null;
+
+		var buildables = this.bodies;
+		for (var i = 0; i < buildables.length; i++)
+		{
+			var buildable = buildables[i];
+			if (buildable.isComplete() == false)
+			{
+				returnValue = buildable;
+				break;
+			}
+		}
+
+		return returnValue;
+	}
 
 	Layout.prototype.elementAdd = function(elementToAdd)
 	{
@@ -94,8 +116,7 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 
 	// turnable
 
-
-	Layout.prototype.facilities = function(universe, faction, planet)
+	Layout.prototype.facilities = function()
 	{
 		var returnValues = [];
 
@@ -113,58 +134,78 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 		return returnValues;
 	}
 
-	Layout.prototype.industryPerTurn = function(layout, universe)
+	Layout.prototype.initialize = function(universe)
 	{
-		var returnValue = 0;
-
 		var world = universe.world;
-
-		var facilities = this.facilities(universe);
-		for (var i = 0; i < facilities.length; i++)
-		{
-			var facility = facilities[i];
-			var facilityDefn = facility.defn(universe.world);
-			var producedThisTurn = facilityDefn.industryPerTurn;
-			returnValue += producedThisTurn;
-		}
-
-		return returnValue;
+		this.industryPerTurn(universe, world);
+		this.prosperityPerTurn(universe, world);
+		this.researchPerTurn(universe, world);
 	}
 
-	Layout.prototype.prosperityPerTurn = function(layout, universe)
+	Layout.prototype.industryPerTurn = function(universe, world, faction, planet)
 	{
-		var returnValue = 0;
+		var sumSoFar = 0;
 
-		var facilities = this.facilities(universe);
+		var facilities = this.facilities();
 		for (var i = 0; i < facilities.length; i++)
 		{
 			var facility = facilities[i];
-			var facilityDefn = facility.defn(universe.world);
-			var producedThisTurn = facilityDefn.prosperityPerTurn;
-			returnValue += producedThisTurn;
+			if (facility.isComplete() != null)
+			{
+				var facilityDefn = facility.defn(world);
+				var producedThisTurn = facilityDefn.industryPerTurn;
+				sumSoFar += producedThisTurn;
+			}
 		}
 
-		return returnValue;
+		this._industryPerTurnRef.set(sumSoFar);
+
+		return sumSoFar;
 	}
 
-	Layout.prototype.researchPerTurn = function(layout, universe)
+	Layout.prototype.prosperityPerTurn = function(universe, world, faction, planet)
 	{
-		var returnValue = 0;
+		var sumSoFar = 0;
 
-		var facilities = this.facilities(universe);
+		var facilities = this.facilities();
 		for (var i = 0; i < facilities.length; i++)
 		{
 			var facility = facilities[i];
-			var facilityDefn = facility.defn(universe.world);
-			var producedThisTurn = facilityDefn.researchPerTurn;
-			returnValue += producedThisTurn;
+			if (facility.isComplete() == true)
+			{
+				var facilityDefn = facility.defn(world);
+				var producedThisTurn = facilityDefn.prosperityPerTurn;
+				sumSoFar += producedThisTurn;
+			}
 		}
 
-		return returnValue;
+		this._prosperityPerTurnRef.set(sumSoFar);
+
+		return sumSoFar;
 	}
 
+	Layout.prototype.researchPerTurn = function(universe, world, faction, planet)
+	{
+		var sumSoFar = 0;
 
-	Layout.prototype.updateForTurn = function(universe, parent)
+		var facilities = this.facilities();
+		for (var i = 0; i < facilities.length; i++)
+		{
+			var facility = facilities[i];
+			if (facility.isComplete() == true)
+			{
+				var facilityDefn = facility.defn(world);
+				var producedThisTurn = facilityDefn.researchPerTurn;
+				sumSoFar += producedThisTurn;
+			}
+		}
+
+		this._researchPerTurnRef.set(sumSoFar);
+
+		return sumSoFar;
+	}
+
+	Layout.prototype.updateForTurn = function(universe, world, faction, parentModel)
 	{
 		var cells = this.map.cells;
 		for (var i = 0; i < cells.length; i++)
@@ -175,7 +216,7 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 			{
 				if (cellBody.updateForTurn != null)
 				{
-					cellBody.updateForTurn(universe);
+					cellBody.updateForTurn(universe, world, faction, parentModel, this);
 				}
 			}
 		}

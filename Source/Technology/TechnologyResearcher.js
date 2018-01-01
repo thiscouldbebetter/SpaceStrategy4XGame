@@ -31,14 +31,14 @@ function TechnologyResearcher
 		return returnValues;
 	}
 
-	TechnologyResearcher.prototype.researchAccumulatedIncrement = function(universe, amountToIncrement)
+	TechnologyResearcher.prototype.researchAccumulatedIncrement = function(world, faction, amountToIncrement)
 	{
-		var technologyBeingResearched = this.technologyBeingResearched(universe);
+		var technologyBeingResearched = this.technologyBeingResearched(world);
 
 		if (technologyBeingResearched == null)
 		{
-			var notification = new Notification("Default", universe.world.turnsSoFar, "Nothing being researched.");
-			// todo
+			var notification = new Notification("Default", world.turnsSoFar, "Nothing being researched.", this);
+			faction.notificationSession.notifications.push(notification);
 		}
 		else
 		{
@@ -141,9 +141,9 @@ function TechnologyResearcher
 		return returnValues;
 	}
 
-	TechnologyResearcher.prototype.technologyBeingResearched = function(universe)
+	TechnologyResearcher.prototype.technologyBeingResearched = function(world)
 	{
-		var technologyTree = universe.world.technologyTree;
+		var technologyTree = world.technologyTree;
 
 		var returnValue = technologyTree.technologies[this.nameOfTechnologyBeingResearched];
 
@@ -152,9 +152,9 @@ function TechnologyResearcher
 
 	// turns
 
-	TechnologyResearcher.prototype.updateForTurn = function(universe, faction)
+	TechnologyResearcher.prototype.updateForTurn = function(universe, world, faction)
 	{
-		var researchThisTurn = faction.researchPerTurn(universe);
-		this.researchAccumulatedIncrement(universe, researchThisTurn);
+		var researchThisTurn = faction.researchPerTurn(universe, world);
+		this.researchAccumulatedIncrement(world, faction, researchThisTurn);
 	}
 }

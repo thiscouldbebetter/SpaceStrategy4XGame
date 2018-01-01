@@ -186,7 +186,7 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 
 	Layout.prototype.draw = function(universe, display)
 	{
-		display.clear();
+		display.drawBackground();
 		this.map.draw(universe, display);
 	}
 }

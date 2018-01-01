@@ -188,7 +188,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.draw = function(universe)
 	{
-		universe.display.clear();
+		universe.display.drawBackground();
 		//this.world.network.draw(universe, this.world.camera);
 		var playerFaction = this.world.factions[0];
 		var playerKnowledge = playerFaction.knowledge;

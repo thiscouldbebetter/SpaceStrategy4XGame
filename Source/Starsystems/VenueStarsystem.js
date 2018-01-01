@@ -27,7 +27,7 @@ function VenueStarsystem(venueParent, starsystem)
 		var world = universe.world;
 		var display = universe.display;
 
-		display.clear();
+		display.drawBackground();
 		this.starsystem.draw
 		(
 			universe,

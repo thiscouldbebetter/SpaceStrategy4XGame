@@ -360,8 +360,12 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		for (var i = 0; i < this.planets.length; i++)
 		{
 			var planet = this.planets[i];
-			var planetResearchThisTurn = planet.researchPerTurn(universe, world, this);
-			returnValue += planetResearchThisTurn;
+			var planetResourcesThisTurn = planet.resourcesPerTurn(universe, world, this);
+			var planetResearchThisTurn = planetResourcesThisTurn["Research"];
+			if (planetResearchThisTurn != null)
+			{
+				returnValue += planetResearchThisTurn.quantity;
+			}
 		}
 
 		return returnValue;

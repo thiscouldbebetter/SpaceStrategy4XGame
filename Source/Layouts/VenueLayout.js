@@ -64,7 +64,7 @@ function VenueLayout(venueParent, layout)
 				{
 					var buildable = new Buildable
 					(
-						buildableDefn.name, cursorPos.clone(), 0
+						buildableDefn.name, cursorPos.clone(), false
 					);
 					layout.elementAdd(buildable);
 				}
@@ -256,7 +256,7 @@ function VenueLayout(venueParent, layout)
 					new Coords(margin + 50, controlHeight * 2 + margin), // pos
 					new Coords(50, controlHeight), // size
 					false, // isTextCentered
-					new DataBinding(planet.layout.map.cursor, "bodyDefn.industryToBuild") 
+					new DataBinding(planet.layout.map.cursor, "bodyDefn.resourcesToBuild.toString()") 
 				),
 			]
 		);
@@ -321,7 +321,7 @@ function VenueLayout(venueParent, layout)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					this.layout._industryPerTurnRef
+					"todo"
 				),
 
 				new ControlLabel
@@ -343,7 +343,7 @@ function VenueLayout(venueParent, layout)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					this.layout._prosperityPerTurnRef
+					"todo"
 				),
 
 				new ControlLabel
@@ -365,7 +365,7 @@ function VenueLayout(venueParent, layout)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					this.layout._researchPerTurnRef
+					"todo"
 				),
 
 

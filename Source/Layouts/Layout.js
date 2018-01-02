@@ -16,9 +16,7 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 		cell.body = body;
 	}
 
-	this._industryPerTurnRef = new Reference(0);
-	this._prosperityPerTurnRef = new Reference(0);
-	this._researchPerTurnRef = new Reference(0);
+	this.resourcesAccumulated = [];
 }
 
 {
@@ -73,7 +71,7 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 			map,
 			// bodies
 			[
-				new Buildable("Hub", new Coords(4, 4))
+				new Buildable("Hub", new Coords(4, 4), true)
 			] 
 		);
 
@@ -90,7 +88,7 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 		for (var i = 0; i < buildables.length; i++)
 		{
 			var buildable = buildables[i];
-			if (buildable.isComplete() == false)
+			if (buildable.isComplete == false)
 			{
 				returnValue = buildable;
 				break;
@@ -137,72 +135,25 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 	Layout.prototype.initialize = function(universe)
 	{
 		var world = universe.world;
-		this.industryPerTurn(universe, world);
-		this.prosperityPerTurn(universe, world);
-		this.researchPerTurn(universe, world);
 	}
 
-	Layout.prototype.industryPerTurn = function(universe, world, faction, planet)
+	Layout.prototype.resourcesPerTurn = function(universe, world, faction, planet)
 	{
-		var sumSoFar = 0;
-
+		var resourcesSoFar = [];
+		
 		var facilities = this.facilities();
-		for (var i = 0; i < facilities.length; i++)
+		for (var f = 0; f < facilities.length; f++)
 		{
-			var facility = facilities[i];
-			if (facility.isComplete() != null)
+			var facility = facilities[f];
+			if (facility.isComplete == true)
 			{
 				var facilityDefn = facility.defn(world);
-				var producedThisTurn = facilityDefn.industryPerTurn;
-				sumSoFar += producedThisTurn;
+				var facilityResources = facilityDefn.resourcesPerTurn;
+				Resource.add(resourcesSoFar, facilityResources);
 			}
 		}
 
-		this._industryPerTurnRef.set(sumSoFar);
-
-		return sumSoFar;
-	}
-
-	Layout.prototype.prosperityPerTurn = function(universe, world, faction, planet)
-	{
-		var sumSoFar = 0;
-
-		var facilities = this.facilities();
-		for (var i = 0; i < facilities.length; i++)
-		{
-			var facility = facilities[i];
-			if (facility.isComplete() == true)
-			{
-				var facilityDefn = facility.defn(world);
-				var producedThisTurn = facilityDefn.prosperityPerTurn;
-				sumSoFar += producedThisTurn;
-			}
-		}
-
-		this._prosperityPerTurnRef.set(sumSoFar);
-
-		return sumSoFar;
-	}
-
-	Layout.prototype.researchPerTurn = function(universe, world, faction, planet)
-	{
-		var sumSoFar = 0;
-
-		var facilities = this.facilities();
-		for (var i = 0; i < facilities.length; i++)
-		{
-			var facility = facilities[i];
-			if (facility.isComplete() == true)
-			{
-				var facilityDefn = facility.defn(world);
-				var producedThisTurn = facilityDefn.researchPerTurn;
-				sumSoFar += producedThisTurn;
-			}
-		}
-
-		this._researchPerTurnRef.set(sumSoFar);
-
-		return sumSoFar;
+		return resourcesSoFar;
 	}
 
 	Layout.prototype.updateForTurn = function(universe, world, faction, parentModel)

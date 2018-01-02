@@ -1,14 +1,16 @@
 
 function BuildableDefn
 (
-	name, industryToBuild, terrainNamesAllowed, prosperityPerTurn, industryPerTurn, researchPerTurn, visual
+	name, 
+	terrainNamesAllowed, 
+	visual, 
+	resourcesToBuild, 
+	resourcesPerTurn
 )
 {
 	this.name = name;
-	this.industryToBuild = industryToBuild;
 	this.terrainNamesAllowed = terrainNamesAllowed;
-	this.prosperityPerTurn = prosperityPerTurn;
-	this.industryPerTurn = industryPerTurn;
-	this.researchPerTurn = researchPerTurn;
 	this.visual = visual;
+	this.resourcesToBuild = resourcesToBuild;
+	this.resourcesPerTurn = resourcesPerTurn;
 }

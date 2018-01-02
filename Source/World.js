@@ -28,50 +28,72 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		var worldName = NameGenerator.generateName() + " Cluster";
 
 		var mapCellSizeInPixels = new Coords(20, 20); // hack
+		
+		var terrainNamesOrbit = [ "Orbit" ];
+		var terrainNamesSurface = [ "Surface" ];
 
 		var buildables =
 		[
 			new BuildableDefn
 			(
-				"Hub", 100, ["Surface"], 1, 1, 1,
+				"Hub", 
+				terrainNamesSurface,
 				new VisualGroup
 				([
 					new VisualRectangle(mapCellSizeInPixels, "Gray"),
 					new VisualText("H", "White", "Gray")
-				])
+				]),
+				[ new Resource("Industry", 100) ], // resourcesToBuild
+				// resourcesProducedPerTurn
+				[ 
+					new Resource("Industry", 1), 
+					new Resource("Prosperity", 1)
+				]
 			),
 			new BuildableDefn
 			(
-				"Factory", 30, ["Surface"], 0, 1, 0,
+				"Factory", 
+				terrainNamesSurface,
 				new VisualGroup
 				([
 					new VisualRectangle(mapCellSizeInPixels, "Red"),
 					new VisualText("F", "White", "Gray")
-				])
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[ new Resource("Industry", 1) ] // resourcesPerTurn
 			),
 			new BuildableDefn
 			(
-				"Plantation", 30, ["Surface"], 1, 0, 0,
+				"Plantation", 
+				terrainNamesSurface,
 				new VisualGroup
 				([
 					new VisualRectangle(mapCellSizeInPixels, "Green"),
 					new VisualText("P", "White", "Gray")
-				])
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[ new Resource("Prosperity", 1) ] // resourcesPerTurn
 			),
 			new BuildableDefn
 			(
-				"Laboratory", 30, ["Surface"], 0, 0, 1,
+				"Laboratory", 
+				terrainNamesSurface,
 				new VisualGroup
 				([
 					new VisualRectangle(mapCellSizeInPixels, "Blue"),
 					new VisualText("L", "White", "Gray")
-				])
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[ new Resource("Research", 1) ] // resourcesPerTurn
 			),
 
 			new BuildableDefn
 			(
-				"Shipyard", 30, ["Orbit"], 0, 0, 1,
-				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")])
+				"Shipyard",  
+				terrainNamesOrbit, 
+				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")]),
+				[ new Resource("Industry", 120) ], // resourcesToBuild
+				[ ] // resourcesPerTurn
 			),
 		].addLookups("name");
 

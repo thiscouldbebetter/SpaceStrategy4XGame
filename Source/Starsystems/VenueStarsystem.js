@@ -3,6 +3,8 @@ function VenueStarsystem(venueParent, starsystem)
 {
 	this.venueParent = venueParent;
 	this.starsystem = starsystem;
+
+	this._mouseClickPos = new Coords();
 }
 
 {
@@ -155,6 +157,8 @@ function VenueStarsystem(venueParent, starsystem)
 
 	VenueStarsystem.prototype.updateForTimerTick_Input = function(universe)
 	{
+		var cameraSpeed = 10;
+
 		var inputHelper = universe.inputHelper;
 
 		var inputsActive = inputHelper.inputsActive;
@@ -163,27 +167,27 @@ function VenueStarsystem(venueParent, starsystem)
 			var inputActive = inputsActive[i];
 			if (inputActive == "_a")
 			{
-				this.cameraLeft(.01);
+				this.cameraLeft(cameraSpeed);
 			}
 			else if (inputActive == "_d")
 			{
-				this.cameraRight(.01);
+				this.cameraRight(cameraSpeed);
 			}
 			else if (inputActive == "_f")
 			{
-				this.cameraDown(10);
+				this.cameraDown(cameraSpeed);
 			}
 			else if (inputActive == "_r")
 			{
-				this.cameraUp(10);
+				this.cameraUp(cameraSpeed);
 			}
 			else if (inputActive == "_s")
 			{
-				this.cameraOut(10);
+				this.cameraOut(cameraSpeed);
 			}
 			else if (inputActive == "_w")
 			{
-				this.cameraIn(10);
+				this.cameraIn(cameraSpeed);
 			}
 			else if (inputHelper.isMouseClicked() == true)
 			{
@@ -194,11 +198,13 @@ function VenueStarsystem(venueParent, starsystem)
 
 	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse = function(universe)
 	{
-		var inputHelper = universe.inputHelper;
-		inputHelper.isMouseClicked(false);
-
 		universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
-		var mouseClickPos = inputHelper.mouseClickPos.clone();
+
+		var inputHelper = universe.inputHelper;
+		var mouseClickPos = this._mouseClickPos.overwriteWith
+		(
+			inputHelper.mouseClickPos
+		);
 
 		var camera = this.camera;
 
@@ -358,7 +364,7 @@ function VenueStarsystem(venueParent, starsystem)
 				if (selectionDefnName == "Planet")
 				{
 					var layout = bodyClicked.layout;
-					var venueNext = new VenueLayout(this, layout);
+					var venueNext = new VenueLayout(this, bodyClicked, layout);
 					venueNext = new VenueFader(venueNext, universe.venueCurrent);
 					universe.venueNext = venueNext;
 				}
@@ -395,7 +401,7 @@ function VenueStarsystem(venueParent, starsystem)
 
 	VenueStarsystem.prototype.cameraLeft = function(cameraSpeed)
 	{
-		new Action_CylinderMove_Yaw(0 - cameraSpeed).perform(this.camera);
+		new Action_CylinderMove_Yaw(cameraSpeed / 1000).perform(this.camera);
 	}
 
 	VenueStarsystem.prototype.cameraOut = function(cameraSpeed)
@@ -410,7 +416,7 @@ function VenueStarsystem(venueParent, starsystem)
 
 	VenueStarsystem.prototype.cameraRight = function(cameraSpeed)
 	{
-		new Action_CylinderMove_Yaw(cameraSpeed).perform(this.camera);
+		new Action_CylinderMove_Yaw(0 - cameraSpeed / 1000).perform(this.camera);
 	}
 
 	VenueStarsystem.prototype.cameraUp = function(cameraSpeed)
@@ -459,7 +465,8 @@ function VenueStarsystem(venueParent, starsystem)
 						var venueNext = universe.venueCurrent.venueParent;
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
-					}
+					},
+					universe // context
 				),
 
 				controlBuilder.timeAndPlace

@@ -19,18 +19,18 @@ function Resource(defnName, quantity)
 				resourcesToAddTo[resourceDefnName] = resourceExisting;
 			}
 			resourceExisting.quantity += resourceToBeAdded.quantity;
-		}		
+		}
 	}
-	
-	Resource.greaterThanOrEqualTo = function(resourcesThis, resourcesOther)
+
+	Resource.isSupersetOf = function(resourcesThis, resourcesOther)
 	{
 		var returnValue = true;
-		
+
 		for (var i = 0; i < resourcesOther.length; i++)
 		{
 			var resourceOther = resourcesOther[i];
 			var resourceOtherDefnName = resourceOther.defnName;
-			
+
 			var resourceThisFound = null;
 			for (var j = 0; j < resourcesThis.length; j++)
 			{
@@ -48,12 +48,12 @@ function Resource(defnName, quantity)
 			{
 				returnValue = false;
 				break;
-			}			
+			}
 		}
 
 		return returnValue;
 	}
-		
+
 	Resource.subtract = function(resourcesToSubtractFrom, resourcesToBeSubtracted)
 	{
 		for (var r = 0; r < resourcesToBeSubtracted.length; r++)
@@ -68,14 +68,15 @@ function Resource(defnName, quantity)
 				resourcesToSubtractFrom[resourceDefnName] = resourceExisting;
 			}
 			resourceExisting.quantity -= resourceToBeSubtracted.quantity;
-		}		
+		}
 	}
-	
-	
+
+
 	// instance methods
-	
-	Resource.prototype.clone = function()
+
+	Resource.prototype.toString = function()
 	{
-		return new Resource(this.defnName, this.quantity);
+		return this.defnName + ": " + this.quantity;
 	}
+
 }

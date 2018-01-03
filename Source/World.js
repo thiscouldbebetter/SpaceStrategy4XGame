@@ -28,7 +28,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		var worldName = NameGenerator.generateName() + " Cluster";
 
 		var mapCellSizeInPixels = new Coords(20, 20); // hack
-		
+
 		var terrainNamesOrbit = [ "Orbit" ];
 		var terrainNamesSurface = [ "Surface" ];
 

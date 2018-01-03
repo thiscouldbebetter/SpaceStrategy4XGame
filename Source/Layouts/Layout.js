@@ -1,12 +1,9 @@
 
-function Layout(modelParent, sizeInPixels, map, bodies)
+function Layout(sizeInPixels, map, bodies)
 {
-	this.modelParent = modelParent;
 	this.sizeInPixels = sizeInPixels;
 	this.map = map;
 	this.bodies = bodies;
-
-	this.name = this.modelParent.name;
 
 	for (var i = 0; i < this.bodies.length; i++)
 	{
@@ -15,8 +12,6 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 		var cell = this.map.cellAtPos(bodyPosInCells);
 		cell.body = body;
 	}
-
-	this.resourcesAccumulated = [];
 }
 
 {
@@ -66,7 +61,6 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 
 		var layout = new Layout
 		(
-			planet,
 			viewSize.clone(), // sizeInPixels
 			map,
 			// bodies
@@ -79,24 +73,6 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 	}
 
 	// instance methods
-
-	Layout.prototype.buildableInProgress = function()
-	{
-		var returnValue = null;
-
-		var buildables = this.bodies;
-		for (var i = 0; i < buildables.length; i++)
-		{
-			var buildable = buildables[i];
-			if (buildable.isComplete == false)
-			{
-				returnValue = buildable;
-				break;
-			}
-		}
-
-		return returnValue;
-	}
 
 	Layout.prototype.elementAdd = function(elementToAdd)
 	{
@@ -134,26 +110,7 @@ function Layout(modelParent, sizeInPixels, map, bodies)
 
 	Layout.prototype.initialize = function(universe)
 	{
-		var world = universe.world;
-	}
-
-	Layout.prototype.resourcesPerTurn = function(universe, world, faction, planet)
-	{
-		var resourcesSoFar = [];
-		
-		var facilities = this.facilities();
-		for (var f = 0; f < facilities.length; f++)
-		{
-			var facility = facilities[f];
-			if (facility.isComplete == true)
-			{
-				var facilityDefn = facility.defn(world);
-				var facilityResources = facilityDefn.resourcesPerTurn;
-				Resource.add(resourcesSoFar, facilityResources);
-			}
-		}
-
-		return resourcesSoFar;
+		// todo
 	}
 
 	Layout.prototype.updateForTurn = function(universe, world, faction, parentModel)

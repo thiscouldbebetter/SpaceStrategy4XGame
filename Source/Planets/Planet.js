@@ -11,6 +11,8 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 	this.defn = Planet.BodyDefn();
 
 	this.ships = [];
+
+	this.resourcesAccumulated = [];
 }
 
 {
@@ -106,15 +108,70 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 
 	// turns
 
-	Planet.prototype.resourcesPerTurn = function(universe, world, faction)
-	{
-		return this.layout.resourcesPerTurn(universe, world, faction, this);
-	}
-
 	Planet.prototype.updateForTurn = function(universe, world, faction)
 	{
 		this.layout.updateForTurn(universe, world, faction, this);
 		this.industry.updateForTurn(universe, world, faction, this);
 		this.demographics.updateForTurn(universe, world, faction, this);
+	}
+
+	// resources
+
+	Planet.prototype.buildableInProgress = function()
+	{
+		var returnValue = null;
+
+		var buildables = this.layout.bodies;
+		for (var i = 0; i < buildables.length; i++)
+		{
+			var buildable = buildables[i];
+			if (buildable.isComplete == false)
+			{
+				returnValue = buildable;
+				break;
+			}
+		}
+
+		return returnValue;
+	}
+
+	Planet.prototype.industryPerTurn = function(universe, world, faction)
+	{
+		return this.resourcesPerTurn(universe, world, faction)["Industry"];
+	}
+
+	Planet.prototype.prosperityPerTurn = function(universe, world, faction)
+	{
+		return this.resourcesPerTurn(universe, world, faction)["Prosperity"];
+	}
+
+	Planet.prototype.researchPerTurn = function(universe, world, faction)
+	{
+		return this.resourcesPerTurn(universe, world, faction)["Research"];
+	}
+
+	Planet.prototype.resourcesPerTurn = function(universe, world, faction)
+	{
+		if (this._resourcesPerTurn == null)
+		{
+			var resourcesSoFar = [];
+
+			var layout = this.layout;
+			var facilities = layout.facilities();
+			for (var f = 0; f < facilities.length; f++)
+			{
+				var facility = facilities[f];
+				if (facility.isComplete == true)
+				{
+					var facilityDefn = facility.defn(world);
+					var facilityResources = facilityDefn.resourcesPerTurn;
+					Resource.add(resourcesSoFar, facilityResources);
+				}
+			}
+
+			this._resourcesPerTurn = resourcesSoFar;
+		}
+
+		return this._resourcesPerTurn;
 	}
 }

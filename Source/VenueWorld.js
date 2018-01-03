@@ -30,14 +30,14 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraDown = function(cameraSpeed)
 	{
-		var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
+		var cameraAction = new Action_CameraMove([0, cameraSpeed]);
 		cameraAction.perform(this.camera);
 	}
 
 	VenueWorld.prototype.cameraIn = function(cameraSpeed)
 	{
 		var constraint = this.camera.constraints["HoldDistanceFromTarget"];
-		constraint.distanceToHold -= cameraSpeed;
+		constraint.distanceToHold -= cameraSpeed / 2;
 		if (constraint.distanceToHold < 1)
 		{
 			constraint.distanceToHold = 1;
@@ -46,14 +46,14 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraLeft = function(cameraSpeed)
 	{
-		var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
+		var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
 		cameraAction.perform(this.camera);
 	}
 
 	VenueWorld.prototype.cameraOut = function(cameraSpeed)
 	{
 		var constraint = this.camera.constraints["HoldDistanceFromTarget"];
-		constraint.distanceToHold += cameraSpeed;
+		constraint.distanceToHold += cameraSpeed / 2;
 		if (constraint.distanceToHold < 0)
 		{
 			constraint.distanceToHold = 0;
@@ -75,13 +75,13 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraRight = function(cameraSpeed)
 	{
-		var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
+		var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
 		cameraAction.perform(this.camera);
 	}
 
 	VenueWorld.prototype.cameraUp = function(cameraSpeed)
 	{
-		var cameraAction = new Action_CameraMove([0, cameraSpeed]);
+		var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
 		cameraAction.perform(this.camera);
 	}
 
@@ -133,7 +133,8 @@ function VenueWorld(world)
 						);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
-					}
+					},
+					universe // context
 				),
 
 				controlBuilder.timeAndPlace
@@ -246,7 +247,6 @@ function VenueWorld(world)
 		var inputHelper = universe.inputHelper;
 		if (inputHelper.isMouseClicked() == true)
 		{
-			inputHelper.isMouseClicked(false);
 			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 
 			var mouseClickPos = inputHelper.mouseClickPos.clone();

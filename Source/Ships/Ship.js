@@ -73,7 +73,7 @@ function Ship(name, defn, pos, factionName, devices)
 		var linkStarsystem1 = linkNode1.starsystem;
 		var isLinkForward = (starsystemTo == linkStarsystem1);
 
-		var shipLoc = this.loc;	
+		var shipLoc = this.loc;
 
 		var nodeFrom = (isLinkForward == true ? linkNode0 : linkNode1);
 		shipLoc.pos.overwriteWith(nodeFrom.loc.pos);

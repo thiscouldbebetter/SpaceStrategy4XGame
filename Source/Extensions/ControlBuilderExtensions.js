@@ -64,7 +64,8 @@ function ControlBuilderExtensions()
 					function click(universe) 
 					{ 
 						universe.venueCurrent.cameraCenterOnSelection();
-					}
+					},
+					universe // context
 				),
 
 				new ControlButton
@@ -98,7 +99,7 @@ function ControlBuilderExtensions()
 							}
 							else if (selectionTypeName == "Planet")
 							{
-								venueNext = new VenueLayout(venueCurrent, selection.layout);
+								venueNext = new VenueLayout(venueCurrent, selection, selection.layout);
 							}
 
 							if (venueNext != null)
@@ -107,7 +108,8 @@ function ControlBuilderExtensions()
 								universe.venueNext = venueNext;
 							}
 						}
-					}
+					},
+					universe // context
 				),
 
 			]
@@ -188,7 +190,8 @@ function ControlBuilderExtensions()
 					function click(universe) 
 					{ 
 						universe.world.updateForTurn(universe);
-					}
+					},
+					universe // context
 				),
 
 				new ControlButton
@@ -203,7 +206,8 @@ function ControlBuilderExtensions()
 					function click(universe) 
 					{ 
 						alert("todo - fast forward");
-					}
+					},
+					universe // context
 				)
 
 			]
@@ -262,7 +266,9 @@ function ControlBuilderExtensions()
 					function click(universe)
 					{
 						universe.venueCurrent.cameraUp(cameraSpeed);
-					}
+					},
+					universe, // context
+					true // canBeHeldDown
 				),
 
 				new ControlButton
@@ -281,7 +287,9 @@ function ControlBuilderExtensions()
 					function click(universe)
 					{
 						universe.venueCurrent.cameraDown(cameraSpeed);
-					}
+					},
+					universe, // context,
+					true // canBeHeldDown
 				),
 
 				new ControlButton
@@ -300,7 +308,9 @@ function ControlBuilderExtensions()
 					function click(universe)
 					{
 						universe.venueCurrent.cameraLeft(cameraSpeed);
-					}
+					},
+					universe, // context
+					true // canBeHeldDown
 				),
 
 				new ControlButton
@@ -319,7 +329,9 @@ function ControlBuilderExtensions()
 					function click(universe)
 					{
 						universe.venueCurrent.cameraRight(cameraSpeed);
-					}
+					},
+					universe, // context
+					true // canBeHeldDown
 				),
 
 				new ControlButton
@@ -338,7 +350,9 @@ function ControlBuilderExtensions()
 					function click(universe)
 					{
 						universe.venueCurrent.cameraIn(cameraSpeed);
-					}
+					},
+					universe, // context,
+					true // canBeHeldDown
 				),
 
 				new ControlButton
@@ -357,7 +371,9 @@ function ControlBuilderExtensions()
 					function click(universe)
 					{
 						universe.venueCurrent.cameraOut(cameraSpeed);
-					}
+					},
+					universe, // context
+					true // canBeHeldDown
 				),
 
 				new ControlButton
@@ -376,7 +392,8 @@ function ControlBuilderExtensions()
 					function click(universe)
 					{
 						universe.venueCurrent.cameraReset();
-					}
+					},
+					universe // context
 				),
 			]
 		);

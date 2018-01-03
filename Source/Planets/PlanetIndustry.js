@@ -5,13 +5,13 @@ function PlanetIndustry()
 {
 	PlanetIndustry.prototype.updateForTurn = function(universe, world, faction, planet)
 	{
-		var layout = planet.layout;
+		planet._resourcesPerTurn = null;
 
-		var resourcesAccumulated = layout.resourcesAccumulated;		
+		var resourcesAccumulated = planet.resourcesAccumulated;
 		var resourcesProduced = planet.resourcesPerTurn(universe, world, faction);
 		Resource.add(resourcesAccumulated, resourcesProduced);
-		
-		var buildableInProgress = layout.buildableInProgress();
+
+		var buildableInProgress = planet.buildableInProgress();
 		if (buildableInProgress == null)
 		{
 			var notification = new Notification("Default", 0, "Nothing being built.", planet);
@@ -21,7 +21,7 @@ function PlanetIndustry()
 		{
 			var buildableDefn = buildableInProgress.defn(world);
 			var resourcesToBuild = buildableDefn.resourcesToBuild;
-			if (Resource.greaterThanOrEqualTo(resourcesAccumulated, resourcesToBuild) == true)
+			if (Resource.isSupersetOf(resourcesAccumulated, resourcesToBuild) == true)
 			{
 				Resource.subtract(resourcesAccumulated, resourcesToBuild);
 				buildableInProgress.isComplete = true;

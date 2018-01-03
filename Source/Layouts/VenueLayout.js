@@ -1,7 +1,8 @@
 
-function VenueLayout(venueParent, layout)
+function VenueLayout(venueParent, modelParent, layout)
 {
 	this.venueParent = venueParent;
+	this.modelParent = modelParent;
 	this.layout = layout;
 }
 
@@ -122,7 +123,8 @@ function VenueLayout(venueParent, layout)
 						var venueNext = universe.venueCurrent.venueParent;
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
-					}
+					},
+					universe // context
 				),
 
 				this.controlBuild_Vitals
@@ -187,7 +189,7 @@ function VenueLayout(venueParent, layout)
 	)
 	{
 		var world = universe.world;
-		var planet = this.layout.modelParent;
+		var planet = this.modelParent;
 		var faction = planet.faction(world);
 		var buildablesAvailable = faction.technology.buildablesAvailable(world);
 
@@ -275,6 +277,14 @@ function VenueLayout(venueParent, layout)
 	{
 		var fontHeightInPixels = universe.display.fontHeightInPixels;
 
+		var universeAndWorldAsLookup = 
+		{ 
+			"universe" : universe, 
+			"world" : universe.world 
+		};
+
+		var planet = this.modelParent;
+
 		var returnValue = new ControlContainer
 		(
 			"containerTimeAndPlace",
@@ -304,46 +314,30 @@ function VenueLayout(venueParent, layout)
 
 				new ControlLabel
 				(
-					"labelIndustry",
+					"textIndustry",
 					new Coords(margin, margin + controlHeight), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
-					"Industry:"
-				),
-
-				new ControlLabel
-				(
-					"textIndustry",
-					new Coords(margin * 8, margin + controlHeight), // pos
-					new Coords
+					new DataBinding
 					(
-						containerInnerSize.x - margin * 3, 
-						controlHeight
-					), // size
-					false, // isTextCentered
-					"todo"
-				),
-
-				new ControlLabel
-				(
-					"labelProsperity",
-					new Coords(margin, margin + controlHeight * 2), // pos
-					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
-					"Prosperity:"
+						planet, 
+						"industryPerTurn(universe, world, faction)",
+						universeAndWorldAsLookup
+					)
 				),
 
 				new ControlLabel
 				(
 					"textProsperity",
-					new Coords(margin * 8, margin + controlHeight * 2), // pos
-					new Coords
-					(
-						containerInnerSize.x - margin * 3, 
-						controlHeight
-					), // size
+					new Coords(margin, margin + controlHeight * 2), // pos
+					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
-					"todo"
+					new DataBinding
+					(
+						planet, 
+						"prosperityPerTurn(universe, world, faction)",
+						universeAndWorldAsLookup
+					)
 				),
 
 				new ControlLabel
@@ -352,24 +346,13 @@ function VenueLayout(venueParent, layout)
 					new Coords(margin, margin + controlHeight * 3), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
-					"Research:"
-				),
-
-				new ControlLabel
-				(
-					"textResearch",
-					new Coords(margin * 8, margin + controlHeight * 3), // pos
-					new Coords
+					new DataBinding
 					(
-						containerInnerSize.x - margin * 3, 
-						controlHeight
-					), // size
-					false, // isTextCentered
-					"todo"
+						planet, 
+						"researchPerTurn(universe, world, faction)",
+						universeAndWorldAsLookup
+					)
 				),
-
-
-
 			]
 		);
 

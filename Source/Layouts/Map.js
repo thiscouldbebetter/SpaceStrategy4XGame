@@ -1,11 +1,18 @@
 
-function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
+function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 {
 	this.sizeInPixels = sizeInPixels;
-	this.sizeInCells = sizeInCells;
 	this.pos = pos;
 	this.terrains = terrains;
-	this.cells = cells;
+	this.cellsAsStrings = cellsAsStrings;
+	this.bodies = bodies;
+
+	this.sizeInCells = new Coords
+	(
+		this.cellsAsStrings[0].length,
+		this.cellsAsStrings.length,
+		1
+	);
 
 	this.sizeInCellsMinusOnes = 
 		this.sizeInCells.clone().subtract
@@ -27,70 +34,29 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 }
 
 {
-	// static methods
-
-	Map.fromCellsAsStrings = function
-	(
-		sizeInPixels, pos, terrains, cellsAsStrings
-	)
-	{
-		var sizeInCells = new Coords
-		(
-			cellsAsStrings[0].length,
-			cellsAsStrings.length,
-			1
-		);
-
-		var cells = [];
-
-		var cellPos = new Coords(0, 0, 0);
-
-		for (var y = 0; y < sizeInCells.y; y++)
-		{
-			cellPos.y = y;
-			cellRowAsString = cellsAsStrings[y];
-
-			for (var x = 0; x < sizeInCells.x; x++)
-			{
-				cellPos.x = x;
-				var cellAsChar = cellRowAsString[x];
-				var cellTerrain = terrains[cellAsChar];
-
-				var cell = new MapCell
-				(
-					cellPos.clone(),
-					cellTerrain,
-					null // body
-				);
-
-				cells.push(cell);
-			}
-		}
-
-		var returnValue = new Map
-		(
-			sizeInPixels,
-			sizeInCells,
-			pos,
-			terrains,
-			cells
-		);
-
-		return returnValue;
-	}
-
 	// instance methods
 
-	Map.prototype.cellAtPos = function(cellPos)
+	Map.prototype.bodyAtCellPosInCells = function(cellPos)
 	{
-		var cellIndex = this.indexOfCellAtPos(cellPos);
-		var returnValue = this.cells[cellIndex];
+		var returnValue = null;
+		for (var i = 0; i < this.bodies.length; i++)
+		{
+			var body = this.bodies[i];
+			var bodyPos = body.loc.pos;
+			if (bodyPos.equals(cellPos) == true)
+			{
+				returnValue = body;
+				break;
+			}
+		}
 		return returnValue;
 	}
 
-	Map.prototype.indexOfCellAtPos = function(cellPos)
+	Map.prototype.terrainAtCellPosInCells = function(cellPos)
 	{
-		return cellPos.y * this.sizeInCells.x + cellPos.x;
+		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
+		return this.terrains[terrainCode];
+		return returnValue;
 	}
 
 	// drawable
@@ -129,12 +95,12 @@ function Map(sizeInPixels, sizeInCells, pos, terrains, cells)
 					mapPos
 				);
 
-				var cell = map.cellAtPos(cellPos);
+				var cellTerrain = map.terrainAtCellPosInCells(cellPos);
 
-				var terrainVisual = cell.terrain.visual;
+				var terrainVisual = cellTerrain.visual;
 				terrainVisual.draw(universe, world, display, drawable);
 
-				var cellBody = cell.body;
+				var cellBody = map.bodyAtCellPosInCells(cellPos);
 				if (cellBody != null)
 				{
 					var cellBodyVisual = cellBody.visual(world);

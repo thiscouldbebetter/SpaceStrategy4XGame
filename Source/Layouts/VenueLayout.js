@@ -96,8 +96,6 @@ function VenueLayout(venueParent, modelParent, layout)
 
 		var containerInnerSize = new Coords(100, 60);
 
-		var faction = universe.world.factionCurrent();
-
 		var returnValue = new ControlContainer
 		(
 			"containerMain",
@@ -135,8 +133,19 @@ function VenueLayout(venueParent, modelParent, layout)
 					margin,
 					controlHeight
 				),
+			]
+		);
 
-				faction.controlBuild
+		var planet = this.modelParent;
+		if (planet.factionName != null)
+		{
+			var factionCurrent = universe.world.factionCurrent();
+
+			if (factionCurrent.name == planet.factionName)
+			{
+				var faction = factionCurrent;
+
+				var controlFaction = faction.controlBuild
 				(
 					universe,
 					containerMainSize,
@@ -144,9 +153,11 @@ function VenueLayout(venueParent, modelParent, layout)
 					margin, 
 					controlHeight,
 					buttonWidth
-				),
+				);
 
-				this.controlBuild_Industry
+				returnValue.children.push(controlFaction);
+
+				var controlIndustry = this.controlBuild_Industry
 				(
 					universe,
 					containerMainSize,
@@ -154,9 +165,11 @@ function VenueLayout(venueParent, modelParent, layout)
 					margin, 
 					controlHeight,
 					buttonWidth
-				),
+				);
 
-				controlBuilder.selection
+				returnValue.children.push(controlIndustry);
+
+				var controlSelection = controlBuilder.selection
 				(
 					universe,
 					new Coords
@@ -167,11 +180,12 @@ function VenueLayout(venueParent, modelParent, layout)
 					containerInnerSize,
 					margin,
 					controlHeight
-				),
+				);
 
+				returnValue.children.push(controlSelection);
 
-			]
-		);
+			}
+		}
 
 		returnValue = new ControlContainerTransparent(returnValue);
 
@@ -308,7 +322,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					false, // isTextCentered
 					new DataBinding
 					(
-						universe, "venueCurrent.model().name"
+						planet, "name"
 					)
 				),
 

@@ -21,11 +21,12 @@ function TechnologyResearchSession(technologyTree, researcher)
 
 	TechnologyResearchSession.prototype.researchAccumulatedIncrement = function
 	(
-		universe,
+		world,
+		faction,
 		amountToIncrement
 	)
 	{
-		this.researcher.researchAccumulatedIncrement(universe, amountToIncrement);
+		this.researcher.researchAccumulatedIncrement(world, faction, amountToIncrement);
 	}
 
 	TechnologyResearchSession.prototype.researchRequired = function()
@@ -124,7 +125,9 @@ function TechnologyResearchSession(technologyTree, researcher)
 					// items,
 					new DataBinding
 					(
-						this, "researcher.technologiesAvailable()" 
+						this, 
+						"researcher.technologiesAvailable(session)",
+						{ "session": this }
 					),
 					"name", // bindingExpressionForItemText
 					labelHeight, // fontHeightInPixels
@@ -201,9 +204,12 @@ function TechnologyResearchSession(technologyTree, researcher)
 					true, // isEnabled
 					function click(universe) 
 					{ 
+						var world = universe.world;
 						var session = universe.venueCurrent.researchSession;
-						session.researchAccumulatedIncrement(universe, 1);
-					}
+						var faction = world.factions[session.researcher.factionName];
+						session.researchAccumulatedIncrement(universe.world, faction, 1);
+					},
+					universe // context
 				),
 
 				new ControlButton
@@ -220,7 +226,8 @@ function TechnologyResearchSession(technologyTree, researcher)
 						var venueNext = new VenueWorld(universe.world);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
-					}
+					},
+					universe // context
 				)
 
 			]

@@ -1,16 +1,18 @@
 
 function TechnologyResearcher
 (
-	name, 
+	factionName, 
 	nameOfTechnologyBeingResearched,
 	researchAccumulated,
 	namesOfTechnologiesKnown
 )
 {
-	this.name = name;
+	this.factionName = factionName;
 	this.nameOfTechnologyBeingResearched = nameOfTechnologyBeingResearched;
 	this.researchAccumulated = researchAccumulated;
 	this.namesOfTechnologiesKnown = namesOfTechnologiesKnown;
+
+	this.name = this.factionName + " Research";
 }
 
 {

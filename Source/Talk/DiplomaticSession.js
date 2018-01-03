@@ -90,7 +90,8 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 						var venueNext = new VenueWorld(universe.world);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
-					}
+					},
+					universe // context
 				),
 
 				new ControlLabel

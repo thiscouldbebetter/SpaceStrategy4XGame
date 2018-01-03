@@ -121,7 +121,7 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 	{
 		var returnValue = null;
 
-		var buildables = this.layout.bodies;
+		var buildables = this.layout.map.bodies;
 		for (var i = 0; i < buildables.length; i++)
 		{
 			var buildable = buildables[i];

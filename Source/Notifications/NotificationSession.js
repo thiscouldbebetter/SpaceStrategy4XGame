@@ -98,7 +98,8 @@ function NotificationSession(factionName, notifications)
 						var notificationSession = faction.notificationSession;
 						var notification = notificationSession.notificationSelected;
 						notificationSession.notificationGoTo(notification);
-					}
+					},
+					universe // context
 				),
 
 				new ControlButton
@@ -117,7 +118,8 @@ function NotificationSession(factionName, notifications)
 						var notificationSession = faction.notificationSession;
 						var notification = notificationSession.notificationSelected;
 						notificationSession.notificationDismiss(notification);
-					}
+					},
+					universe // context
 				),
 
 				new ControlButton
@@ -136,7 +138,8 @@ function NotificationSession(factionName, notifications)
 						var notificationSession = faction.notificationSession;
 						var notifications = notificationSession.notifications;
 						notifications.length = 0;
-					}
+					},
+					universe // context
 				),
 
 				new ControlButton
@@ -154,7 +157,8 @@ function NotificationSession(factionName, notifications)
 						var venueNext = new VenueWorld(world);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
-					}
+					},
+					universe // context
 				),
 			]
 		);

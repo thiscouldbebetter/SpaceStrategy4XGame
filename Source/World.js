@@ -274,6 +274,11 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 			var factionHomePlanet = planets[planetIndexRandom];
 			factionHomePlanet.factionName = factionName;
 
+			factionHomePlanet.layout.map.bodies.push
+			(
+				new Buildable("Hub", new Coords(4, 4), true)
+			);
+
 			var ship = new Ship
 			(
 				factionName + " Ship0",
@@ -306,7 +311,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				[], // relationships 
 				new TechnologyResearcher
 				(
-					factionName + " Research",
+					factionName, 
 					null, // nameOfTechnologyBeingResearched,
 					0, // researchAccumulated
 					// namesOfTechnologiesKnown

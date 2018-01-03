@@ -1,17 +1,8 @@
 
-function Layout(sizeInPixels, map, bodies)
+function Layout(sizeInPixels, map)
 {
 	this.sizeInPixels = sizeInPixels;
 	this.map = map;
-	this.bodies = bodies;
-
-	for (var i = 0; i < this.bodies.length; i++)
-	{
-		var body = this.bodies[i];
-		var bodyPosInCells = body.loc.pos;
-		var cell = this.map.cellAtPos(bodyPosInCells);
-		cell.body = body;
-	}
 }
 
 {
@@ -42,7 +33,7 @@ function Layout(sizeInPixels, map, bodies)
 		];
 		terrains.addLookups("codeChar");
 
-		var map = Map.fromCellsAsStrings
+		var map = new Map
 		(
 			mapSizeInPixels,
 			mapPosInPixels,
@@ -56,17 +47,14 @@ function Layout(sizeInPixels, map, bodies)
 				".........",
 				".........",
 				".........",
-			]
+			],
+			[] // bodies
 		);
 
 		var layout = new Layout
 		(
 			viewSize.clone(), // sizeInPixels
-			map,
-			// bodies
-			[
-				new Buildable("Hub", new Coords(4, 4), true)
-			] 
+			map
 		);
 
 		return layout;
@@ -76,36 +64,19 @@ function Layout(sizeInPixels, map, bodies)
 
 	Layout.prototype.elementAdd = function(elementToAdd)
 	{
-		this.bodies.push(elementToAdd);
-		this.map.cellAtPos(elementToAdd.loc.pos).body = elementToAdd;
+		this.map.bodies.push(elementToAdd);
 	}
 
 	Layout.prototype.elementRemove = function(elementToRemove)
 	{
-		this.bodies.remove(elementToRemove);
-		var elementPos = elementToRemove.loc.pos;
-		var cell = this.map.cellAtPos(elementPos);
-		cell.body = null;
+		this.map.bodies.remove(elementToRemove);
 	}
 
 	// turnable
 
 	Layout.prototype.facilities = function()
 	{
-		var returnValues = [];
-
-		var cells = this.map.cells;
-		for (var i = 0; i < cells.length; i++)
-		{
-			var cell = cells[i];
-			var facility = cell.body;
-			if (facility != null)
-			{
-				returnValues.push(facility);
-			}
-		}
-
-		return returnValues;
+		return this.map.bodies;
 	}
 
 	Layout.prototype.initialize = function(universe)
@@ -115,17 +86,13 @@ function Layout(sizeInPixels, map, bodies)
 
 	Layout.prototype.updateForTurn = function(universe, world, faction, parentModel)
 	{
-		var cells = this.map.cells;
-		for (var i = 0; i < cells.length; i++)
+		var bodies = this.map.bodies;
+		for (var i = 0; i < bodies.length; i++)
 		{
-			var cell = cells[i];
-			var cellBody = cell.body;
-			if (cellBody != null)
+			var body = bodies[i];
+			if (body.updateForTurn != null)
 			{
-				if (cellBody.updateForTurn != null)
-				{
-					cellBody.updateForTurn(universe, world, faction, parentModel, this);
-				}
+				cellBody.updateForTurn(universe, world, faction, parentModel, this);
 			}
 		}
 

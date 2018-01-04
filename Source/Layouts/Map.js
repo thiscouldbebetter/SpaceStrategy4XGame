@@ -118,6 +118,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 
 		if (cursorIsWithinMap == true)
 		{
+
 			var cursorVisual = new VisualRectangle(new Coords(10, 10), null, "Cyan"); // hack
 
 			drawPos.overwriteWith
@@ -131,13 +132,28 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 				mapPos
 			);
 
-			if (cursor.bodyDefn != null)
+			var cellTerrain = this.terrainAtCellPosInCells(cursorPos);
+			var terrainName = cellTerrain.name;
+			if (terrainName != "None")
 			{
-				var bodyVisual = cursor.bodyDefn.visual;
-				bodyVisual.draw(universe, world, display, drawable);
-			}
+				var buildableDefn = cursor.bodyDefn;
 
-			cursorVisual.draw(universe, world, display, drawable);
+				if (buildableDefn != null)
+				{
+					var bodyVisual = buildableDefn.visual;
+					bodyVisual.draw(universe, world, display, drawable);
+
+					var isBuildableAllowedOnTerrain = 
+						buildableDefn.terrainNamesAllowed.contains(terrainName);
+					if (isBuildableAllowedOnTerrain == false)
+					{
+						var visualNotAllowed = new VisualText("X", "Red", "White");
+						visualNotAllowed.draw(universe, world, display, drawable);
+					}
+				}
+
+				cursorVisual.draw(universe, world, display, drawable);
+			}
 		}
 	}
 

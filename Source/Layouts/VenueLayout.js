@@ -49,7 +49,6 @@ function VenueLayout(venueParent, modelParent, layout)
 				inputHelper.isMouseClicked(false);
 
 				var buildableDefn = cursor.bodyDefn;
-				var cellAtCursor = map.cellAtPos(cursorPos);
 
 				if (buildableDefn == null)
 				{
@@ -63,11 +62,17 @@ function VenueLayout(venueParent, modelParent, layout)
 				}
 				else
 				{
-					var buildable = new Buildable
-					(
-						buildableDefn.name, cursorPos.clone(), false
-					);
-					layout.elementAdd(buildable);
+					var terrainAtCursor = map.terrainAtCellPosInCells(cursorPos);
+					var isBuildableAllowedOnTerrain = 
+						buildableDefn.terrainNamesAllowed.contains(terrainAtCursor.name);
+					if (isBuildableAllowedOnTerrain == true)
+					{
+						var buildable = new Buildable
+						(
+							buildableDefn.name, cursorPos.clone(), false
+						);
+						layout.elementAdd(buildable);
+					}
 				}
 			}
 			else
@@ -269,8 +274,8 @@ function VenueLayout(venueParent, modelParent, layout)
 				new ControlLabel
 				(
 					"labelRequired", 
-					new Coords(margin + 50, controlHeight * 2 + margin), // pos
-					new Coords(50, controlHeight), // size
+					new Coords(margin, controlHeight * 2 + margin), // pos
+					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
 					new DataBinding(planet.layout.map.cursor, "bodyDefn.resourcesToBuild.toString()") 
 				),

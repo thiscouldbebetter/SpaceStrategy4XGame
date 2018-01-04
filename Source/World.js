@@ -62,18 +62,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Industry", 1) ] // resourcesPerTurn
 			),
-			new BuildableDefn
-			(
-				"Plantation", 
-				terrainNamesSurface,
-				new VisualGroup
-				([
-					new VisualRectangle(mapCellSizeInPixels, "Green"),
-					new VisualText("P", "White", "Gray")
-				]),
-				[ new Resource("Industry", 30) ], // resourcesToBuild
-				[ new Resource("Prosperity", 1) ] // resourcesPerTurn
-			),
+
 			new BuildableDefn
 			(
 				"Laboratory", 
@@ -89,10 +78,36 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 			new BuildableDefn
 			(
+				"Plantation", 
+				terrainNamesSurface,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, "Green"),
+					new VisualText("P", "White", "Gray")
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[ new Resource("Prosperity", 1) ] // resourcesPerTurn
+			),
+
+			new BuildableDefn
+			(
+				"Ship", 
+				terrainNamesOrbit,
+				new VisualGroup
+				([
+					Ship.visual("Gray"),
+					new VisualText("Ship", "White", "Gray")
+				]),
+				[ new Resource("Industry", 1) ], // resourcesToBuild
+				[ ] // resourcesPerTurn
+			),
+
+			new BuildableDefn
+			(
 				"Shipyard",  
 				terrainNamesOrbit, 
 				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")]),
-				[ new Resource("Industry", 120) ], // resourcesToBuild
+				[ new Resource("Industry", 1) ], // resourcesToBuild
 				[ ] // resourcesPerTurn
 			),
 		].addLookups("name");

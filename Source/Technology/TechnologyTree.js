@@ -13,7 +13,13 @@ function TechnologyTree(name, technologies)
 			"All Technologies",
 			// technologies
 			[
-				new Technology("A", 	5, [], [ "Factory", "Laboratory", "Plantation" ]),
+				new Technology
+				(
+					"A", 
+					5, // research
+					[], // prerequisites
+					[ "Factory", "Hub", "Laboratory", "Plantation", "Shipyard", "Ship" ]
+				),
 				new Technology("A.1", 	8, ["A"]),
 				new Technology("A.2", 	8, ["A"]),
 				new Technology("A.3", 	8, ["A"]),

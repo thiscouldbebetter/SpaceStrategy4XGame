@@ -56,6 +56,28 @@ function Ship(name, defn, pos, factionName, devices)
 		return this.factionName + this.name;
 	}
 
+	// devices
+
+	Ship.prototype.devicesUsable = function(world)
+	{
+		if (this._devicesUsable == null)
+		{
+			this._devicesUsable = [];
+
+			for (var i = 0; i < this.devices.length; i++)
+			{
+				var device = this.devices[i];
+				var deviceDefn = device.defn;
+				if (deviceDefn.isActive == true)
+				{
+					this._devicesUsable.push(device);
+				}
+			}
+		}
+
+		return this._devicesUsable;
+	}
+
 	// movement
 
 	Ship.prototype.linkPortalEnter = function(cluster, linkPortal)
@@ -306,7 +328,8 @@ function Ship(name, defn, pos, factionName, devices)
 					function click(universe)
 					{
 						alert("todo - view")
-					}
+					},
+					universe // context
 				),
 
 				new ControlButton
@@ -323,7 +346,8 @@ function Ship(name, defn, pos, factionName, devices)
 						var venue = universe.venueCurrent;
 						var ship = venue.selection;
 						venue.cursorBuild(ship);
-					}
+					},
+					universe // context
 				),
 				new ControlButton
 				(
@@ -342,7 +366,8 @@ function Ship(name, defn, pos, factionName, devices)
 						{
 							ship.order.obey(ship);
 						}
-					}
+					},
+					universe // context
 				),
 
 				new ControlLabel
@@ -360,7 +385,7 @@ function Ship(name, defn, pos, factionName, devices)
 					new Coords(margin, margin + controlSpacing * 6), // pos
 					new Coords(buttonSize.x, controlSpacing * 2), // size
 					// dataBindingForItems
-					new DataBinding(this.devices, null),
+					new DataBinding(this, "devicesUsable()"),
 					"defn.name", // bindingExpressionForOptionText
 					fontHeightInPixels,
 					new DataBinding(this, "deviceSelected"), // dataBindingForItemSelected
@@ -382,18 +407,9 @@ function Ship(name, defn, pos, factionName, devices)
 						var starsystem = venue.starsystem;
 						var ship = venue.selection;
 						var device = ship.deviceSelected;
-						var deviceDefn = device.defn;
-						if (deviceDefn.needsTarget == true)
-						{
-							var projectile = new Projectile(ship);
-							var cursor = new Cursor(projectile);
-							venue.selection = cursor;
-						}
-						else
-						{
-							device.use(universe, starsystem, ship);
-						}
-					}
+						device.use(universe, starsystem, ship);
+					},
+					universe // context
 				),
 
 
@@ -444,18 +460,35 @@ function Ship(name, defn, pos, factionName, devices)
 			)
 		);
 
-		var shipColor = ship.faction(world).color;
+		var visual = this.visual(world);
+		visual.draw(universe, display, ship, new Location(drawPos));
+	}
+
+	Ship.prototype.visual = function(world)
+	{
+		if (this._visual == null)
+		{
+			var shipColor = ship.faction(world).color;
+			this._visual = Ship.visual(shipColor);
+		}
+
+		return this._visual;
+	}
+
+	Ship.visual = function(color)
+	{
 		var shipSizeMultiplier = 4; // hack
-		var shipVisual = new VisualPolygon
+
+		return new VisualPolygon
 		(
 			[
 				new Coords(0, 0).multiplyScalar(shipSizeMultiplier),
 				new Coords(.5, -1).multiplyScalar(shipSizeMultiplier),
 				new Coords(-.5, -1).multiplyScalar(shipSizeMultiplier)
 			],
-			shipColor.systemColor,
+			color.systemColor,
 			null // colorBorder
 		);
-		shipVisual.draw(universe, display, ship, new Location(drawPos));
 	}
+
 }

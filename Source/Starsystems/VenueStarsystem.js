@@ -287,6 +287,8 @@ function VenueStarsystem(venueParent, starsystem)
 		}
 
 		this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
+
+		inputHelper.isMouseClicked(false);
 	}
 
 	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse_Selection = function(universe, bodyClicked)

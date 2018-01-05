@@ -116,7 +116,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	// instance methods
 
-	Faction.prototype.researchInitialize = function(universe)
+	Faction.prototype.researchSessionStart = function(universe)
 	{
 		var researchSession = new TechnologyResearchSession
 		(
@@ -196,7 +196,8 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					this.researchInitialize.bind(this, universe) // click
+					this.researchSessionStart.bind(this), // click
+					universe // context
 				),
 
 				new ControlButton
@@ -230,7 +231,8 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					true, // hasBorder
 					true, // isEnabled
 					// click
-					this.notificationSessionInitialize.bind(this, universe)
+					this.notificationSessionStart.bind(this),
+					universe // context
 				),
 			]
 		);
@@ -342,7 +344,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	// notifications
 
-	Faction.prototype.notificationSessionInitialize = function(universe)
+	Faction.prototype.notificationSessionStart = function(universe)
 	{
 		var notificationSession = this.notificationSession;
 		var notificationSessionAsControl = notificationSession.controlBuild(universe);

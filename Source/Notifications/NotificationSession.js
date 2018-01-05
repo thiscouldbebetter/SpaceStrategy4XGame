@@ -15,9 +15,32 @@ function NotificationSession(factionName, notifications)
 		this.notificationSelected = this.notifications[notificationIndex];
 	}
 
-	NotificationSession.prototype.notificationGoTo = function(notification)
+	NotificationSession.prototype.notificationGoTo = function(universe, notification)
 	{
-		// todo
+		var notificationLoc = notification.loc;
+		var notificationLocType = notificationLoc.constructor.name;
+		if (notificationLocType == "TechnologyResearcher")
+		{
+			var factionName = notificationLoc.factionName;
+			var faction = universe.world.factions[factionName];
+			faction.researchSessionStart(universe);
+		}
+		else if (notificationLocType == "Starsystem")
+		{
+			alert("todo - Go to Starsystem");
+		}
+		else if (notificationLocType == "Planet")
+		{
+			var planet = notificationLoc;
+			var venueCurrent = universe.venueCurrent;
+			var venueNext = new VenueLayout(venueCurrent, planet, planet.layout);
+			venueNext = new VenueFader(venueNext, venueCurrent);
+			universe.venueNext = venueNext;
+		}
+		else
+		{
+			throw "Unrecognized notification type."
+		}
 	}
 
 	// controls
@@ -94,10 +117,10 @@ function NotificationSession(factionName, notifications)
 					function click(universe)
 					{
 						var world = universe.world;
-						var faction = world.factions[this.factionName];
+						var faction = world.factions[0]; // hack
 						var notificationSession = faction.notificationSession;
 						var notification = notificationSession.notificationSelected;
-						notificationSession.notificationGoTo(notification);
+						notificationSession.notificationGoTo(universe, notification);
 					},
 					universe // context
 				),
@@ -140,6 +163,16 @@ function NotificationSession(factionName, notifications)
 						notifications.length = 0;
 					},
 					universe // context
+				),
+
+				new ControlLabel
+				(
+					"textMessage",
+					new Coords(margin, containerSize.y - margin * 2 - controlHeight * 2), // pos
+					new Coords(columnWidth, controlHeight), // size
+					false, // isTextCentered
+					"All notifications must be dismissed before turn can be ended.",
+					fontHeightInPixels
 				),
 
 				new ControlButton

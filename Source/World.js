@@ -407,21 +407,30 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 	World.prototype.updateForTurn = function(universe)
 	{
-		this.network.updateForTurn(universe, this);
-
-		for (var i = 0; i < this.factions.length; i++)
-		{
-			var faction = this.factions[i];
-			faction.updateForTurn(universe, this);
-		}
-
 		var factionForPlayer = this.factions[0];
 		var notifications = factionForPlayer.notificationSession.notifications;
-		if (notifications.length > 0)
+		if (this.turnsSoFar > 0 && notifications.length > 0)
 		{
-			//factionForPlayer.notificationSessionInitialize(universe);
+			factionForPlayer.notificationSessionStart(universe);
+		}
+		else
+		{
+			this.network.updateForTurn(universe, this);
+
+			for (var i = 0; i < this.factions.length; i++)
+			{
+				var faction = this.factions[i];
+				faction.updateForTurn(universe, this);
+			}
+
+			if (this.turnsSoFar > 1 && notifications.length > 0)
+			{
+				factionForPlayer.notificationSessionStart(universe);
+			}
+
+			this.turnsSoFar++;
 		}
 
-		this.turnsSoFar++;
+
 	}
 }

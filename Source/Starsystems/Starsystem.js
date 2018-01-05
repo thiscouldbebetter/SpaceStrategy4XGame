@@ -14,7 +14,8 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 	// Helper variables
 	this.posSaved = new Coords();
 	this.visualElevationStem = new VisualElevationStem(null);
-	this.visualGrid = new VisualGrid(null, 40, 10, Color.Instances().CyanHalfTranslucent.systemColor);
+	var gridColor = Color.Instances.Cyan.clone().alphaSet(.5).systemColor();
+	this.visualGrid = new VisualGrid(null, 40, 10, gridColor);
 }
 
 {
@@ -30,7 +31,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var size = Starsystem.SizeStandard;
 
 		var starRadius = 30;
-		var starColor = Color.Instances().Yellow.systemColor;
+		var starColor = Color.Instances.Yellow.systemColor();
 		var star = new Body
 		(
 			"Star", 
@@ -236,8 +237,8 @@ function VisualElevationStem(camera)
 			this.drawPosPlane.overwriteWith(drawablePosWorld).clearZ()
 		);
 		var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
-		var colors = Color.Instances();
-		display.drawLine(drawPosTip, drawPosPlane, colors[colorName].systemColor);
+		var colors = Color.Instances;
+		display.drawLine(drawPosTip, drawPosPlane, colors[colorName].systemColor());
 	}
 }
 

@@ -127,7 +127,7 @@ function Network(name, nodes, links)
 		var nodesLinked = [ nodesNotYetLinked[0] ];
 		nodesNotYetLinked.removeAt(0);
 		var links = [];
-		var colors = Color.Instances();
+		var colors = Color.Instances;
 
 		var bodyDefnLinkPortal = new BodyDefn
 		(

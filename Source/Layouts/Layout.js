@@ -62,16 +62,6 @@ function Layout(sizeInPixels, map)
 
 	// instance methods
 
-	Layout.prototype.elementAdd = function(elementToAdd)
-	{
-		this.map.bodies.push(elementToAdd);
-	}
-
-	Layout.prototype.elementRemove = function(elementToRemove)
-	{
-		this.map.bodies.remove(elementToRemove);
-	}
-
 	// turnable
 
 	Layout.prototype.facilities = function()

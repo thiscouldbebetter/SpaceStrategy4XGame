@@ -137,7 +137,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		var factions = [];
 		var ships = [];
 
-		var colors = Color.Instances();
+		var colors = Color.Instances;
 		var colorsForFactions = 
 		[
 			colors.Red,

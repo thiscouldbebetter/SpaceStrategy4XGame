@@ -5,8 +5,6 @@ function Notification(typeName, turnCreated, message, loc)
 	this.turnCreated = turnCreated;
 	this.message = message;
 	this.loc = loc;
-
-	this.hasBeenRead = false;
 }
 
 {
@@ -18,8 +16,7 @@ function Notification(typeName, turnCreated, message, loc)
 	Notification.prototype.toString = function()
 	{
 		var returnValue = 
-			(this.hasBeenRead == false ? "*" : "") 
-			+ this.turnCreated + " - "
+			this.turnCreated + " - "
 			+ this.loc.name + " - "
 			+ this.message;
 		return returnValue;

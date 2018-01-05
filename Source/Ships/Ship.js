@@ -36,7 +36,7 @@ function Ship(name, defn, pos, factionName, devices)
 						new Coords(-.5, .5).multiplyScalar(scaleFactor),
 						new Coords(-.5, -.5).multiplyScalar(scaleFactor),
 					], 
-					color.systemColor
+					color.systemColor()
 				),
 			])
 		);

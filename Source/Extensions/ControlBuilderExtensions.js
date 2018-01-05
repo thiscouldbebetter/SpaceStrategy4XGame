@@ -205,7 +205,21 @@ function ControlBuilderExtensions()
 					true, // isEnabled
 					function click(universe) 
 					{ 
-						alert("todo - fast forward");
+						var world = universe.world;
+						var faction = world.factions[0];
+						var notificationSession = faction.notificationSession;
+						var notifications = notificationSession.notifications;
+						if (notifications.length > 0)
+						{
+							world.updateForTurn(universe);
+						}
+						else
+						{
+							while (notifications.length == 0)
+							{
+								world.updateForTurn(universe);
+							}
+						}
 					},
 					universe // context
 				)

@@ -14,7 +14,7 @@ function PlanetIndustry()
 		var buildableInProgress = planet.buildableInProgress();
 		if (buildableInProgress == null)
 		{
-			var notification = new Notification("Default", 0, "Nothing being built.", planet);
+			var notification = new Notification("Default", world.turnsSoFar, "Nothing being built.", planet);
 			faction.notificationSession.notifications.push(notification);
 		}
 		else

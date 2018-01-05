@@ -29,14 +29,48 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 
 	// Helper variables.
 
-	this.drawable = {};
-	this.drawable.loc = new Location(new Coords());
+	this._cellPos = new Coords();
+	this._drawable = {};
+	this._drawable.loc = new Location(new Coords());
+	this._neighborOffsets = 
+	[
+		new Coords(1, 0),
+		new Coords(0, 1),
+		new Coords(-1, 0),
+		new Coords(0, -1),
+	];
 }
 
 {
 	// instance methods
 
-	Map.prototype.bodyAtCellPosInCells = function(cellPos)
+	Map.prototype.bodiesNeighboringCursor = function()
+	{
+		return this.bodiesNeighboringPosInCells(this.cursor.pos);
+	}
+
+	Map.prototype.bodiesNeighboringPosInCells = function(centerPosInCells)
+	{
+		var returnValues = [];
+
+		var neighborPos = this._cellPos;
+
+		for (var n = 0; n < this._neighborOffsets.length; n++)
+		{
+			var neighborOffset = this._neighborOffsets[n];
+			neighborPos.overwriteWith(neighborOffset).add(centerPosInCells);
+			var bodyAtNeighborPos = this.bodyAtPosInCells(neighborPos);
+			if (bodyAtNeighborPos != null)
+			{
+				returnValues.push(bodyAtNeighborPos);
+			}
+		}
+
+		return returnValues;
+	}
+
+
+	Map.prototype.bodyAtPosInCells = function(cellPos)
 	{
 		var returnValue = null;
 		for (var i = 0; i < this.bodies.length; i++)
@@ -52,11 +86,21 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		return returnValue;
 	}
 
-	Map.prototype.terrainAtCellPosInCells = function(cellPos)
+	Map.prototype.bodyAtCursor = function()
+	{
+		return this.bodyAtPosInCells(this.cursor.pos);
+	}
+
+	Map.prototype.terrainAtPosInCells = function(cellPos)
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
 		return this.terrains[terrainCode];
 		return returnValue;
+	}
+
+	Map.prototype.terrainAtCursor = function()
+	{
+		return this.terrainAtPosInCells(this.cursor.pos);
 	}
 
 	// drawable
@@ -69,8 +113,8 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		var mapPos = map.pos;
 		var mapSizeInCells = map.sizeInCells;
 
-		var cellPos = new Coords(0, 0);
-		var drawable = this.drawable;
+		var cellPos = this._cellPos;
+		var drawable = this._drawable;
 		var drawPos = drawable.loc.pos;
 		var cellSizeInPixels = map.cellSizeInPixels;
 		var cellSizeInPixelsHalf = 
@@ -95,12 +139,12 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 					mapPos
 				);
 
-				var cellTerrain = map.terrainAtCellPosInCells(cellPos);
+				var cellTerrain = map.terrainAtPosInCells(cellPos);
 
 				var terrainVisual = cellTerrain.visual;
 				terrainVisual.draw(universe, world, display, drawable);
 
-				var cellBody = map.bodyAtCellPosInCells(cellPos);
+				var cellBody = map.bodyAtPosInCells(cellPos);
 				if (cellBody != null)
 				{
 					var cellBodyVisual = cellBody.visual(world);
@@ -132,7 +176,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 				mapPos
 			);
 
-			var cellTerrain = this.terrainAtCellPosInCells(cursorPos);
+			var cellTerrain = this.terrainAtCursor();
 			var terrainName = cellTerrain.name;
 			if (terrainName != "None")
 			{

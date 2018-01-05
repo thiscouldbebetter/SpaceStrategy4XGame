@@ -160,7 +160,7 @@ function NetworkNode(name, defn, pos, starsystem)
 			var ringRadius = radiusApparent + (ringThickness * (i + 5));
 			var visualRing = new VisualCircle
 			(
-				ringRadius, null, factionColor.systemColor
+				ringRadius, null, factionColor.systemColor()
 			);
 			visualRing.draw(universe, world, display, drawableTransformed);
 		}
@@ -188,7 +188,7 @@ function NetworkNode(name, defn, pos, starsystem)
 					new Coords(.5, -1).multiplyScalar(radiusApparent), 
 					new Coords(-.5, -1).multiplyScalar(radiusApparent), 
 				],
-				shipColor.systemColor
+				shipColor.systemColor()
 			);
 			visualShip.draw(universe, world, display, drawableTransformed);
 		}

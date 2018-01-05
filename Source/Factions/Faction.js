@@ -157,13 +157,13 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					- containerInnerSize.x, 
 				margin
 			),
-			containerInnerSize,
+			containerInnerSize.clone().multiply(new Coords(1, 1.25)),
 			// children
 			[
 
 				new ControlLabel
 				(
-					"Faction:",
+					"labelFaction",
 					new Coords(margin, 0),// pos
 					new Coords
 					(
@@ -177,7 +177,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 				new ControlLabel
 				(
 					"textBoxFaction",
-					new Coords(margin * 3 + containerInnerSize.x / 4, 0),// pos
+					new Coords(margin * 2 + containerInnerSize.x * .3, 0), // pos
 					new Coords
 					(
 						containerInnerSize.x - margin * 3, 
@@ -202,23 +202,6 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 				new ControlButton
 				(
-					"buttonRelations",
-					new Coords
-					(
-						margin * 2 + buttonWidth, 
-						controlHeight
-					), // pos
-					new Coords(buttonWidth, controlHeight), // size
-					"Others",
-					fontHeightInPixels,
-					true, // hasBorder
-					true, // isEnabled
-					// click
-					this.relationsInitialize.bind(this, universe)
-				),
-
-				new ControlButton
-				(
 					"buttonNotifications",
 					new Coords
 					(
@@ -233,6 +216,57 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					// click
 					this.notificationSessionStart.bind(this),
 					universe // context
+				),
+
+				new ControlButton
+				(
+					"buttonRelations",
+					new Coords
+					(
+						margin, 
+						controlHeight * 3
+					), // pos
+					new Coords(buttonWidth, controlHeight), // size
+					"Others",
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					// click
+					this.relationsInitialize.bind(this, universe)
+				),
+
+				new ControlButton
+				(
+					"buttonPlanets",
+					new Coords
+					(
+						margin * 2 + buttonWidth, 
+						controlHeight
+					), // pos
+					new Coords(buttonWidth, controlHeight), // size
+					"Planets",
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					// click
+					function click(universe) { alert("todo"); }
+				),
+
+				new ControlButton
+				(
+					"buttonShips",
+					new Coords
+					(
+						margin * 2 + buttonWidth, 
+						controlHeight * 2
+					), // pos
+					new Coords(buttonWidth, controlHeight), // size
+					"Ships",
+					fontHeightInPixels,
+					true, // hasBorder
+					true, // isEnabled
+					// click
+					function click(universe) { alert("todo"); }
 				),
 			]
 		);

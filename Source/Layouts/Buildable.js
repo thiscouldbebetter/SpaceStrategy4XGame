@@ -3,7 +3,7 @@ function Buildable(defnName, pos, isComplete)
 {
 	this.defnName = defnName;
 	this.loc = new Location(pos);
-	this.isComplete = isComplete;
+	this.isComplete = (isComplete || false);
 }
 {
 	Buildable.prototype.defn = function(world)

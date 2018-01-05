@@ -25,7 +25,7 @@ function Cursor(bodyParent)
 		if (Cursor._bodyDefn == null)
 		{
 			var radius = 5;
-			var color = Color.Instances().White.systemColor;
+			var color = Color.Instances.White.systemColor();
 
 			Cursor._bodyDefn = new BodyDefn
 			(

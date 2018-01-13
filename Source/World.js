@@ -99,7 +99,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 					new VisualText("Ship", "White", "Gray")
 				]),
 				[ new Resource("Industry", 1) ], // resourcesToBuild
-				[ ] // resourcesPerTurn
+				[] // resourcesPerTurn
 			),
 
 			new BuildableDefn
@@ -108,7 +108,18 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				terrainNamesOrbit, 
 				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")]),
 				[ new Resource("Industry", 1) ], // resourcesToBuild
-				[ ] // resourcesPerTurn
+				[], // resourcesPerTurn
+				function use(universe, world, starsystem, planet, buildable)
+				{
+					universe.venueNext = new VenueMessage
+					(
+						"todo - shipyard",
+						function acknowledge(universe)
+						{
+							universe.venueNext = new VenueLayout(planet.layout);
+						}
+					);
+				}
 			),
 		].addLookups("name");
 

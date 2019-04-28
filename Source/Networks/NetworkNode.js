@@ -12,7 +12,7 @@ function NetworkNode(name, defn, pos, starsystem)
 }
 
 {
-	// constants 
+	// constants
 
 	NetworkNode.RadiusActual = 4;
 }
@@ -71,7 +71,7 @@ function NetworkNode(name, defn, pos, starsystem)
 						var starsystemToView = venueCurrent.selection.starsystem;
 						if (starsystemToView != null)
 						{
-							universe.venueNext = new VenueStarsystem(venueCurrent, starsystemToView); 
+							universe.venueNext = new VenueStarsystem(venueCurrent, starsystemToView);
 						}
 					}
 				),
@@ -102,18 +102,18 @@ function NetworkNode(name, defn, pos, starsystem)
 		}
 
 		var nodeIntensity = Math.floor(128 * alpha);
-		var nodeColor = 
-			"rgb(" 
-			+ nodeIntensity + "," 
-			+ nodeIntensity + "," 
-			+ nodeIntensity 
+		var nodeColor =
+			"rgb("
+			+ nodeIntensity + ","
+			+ nodeIntensity + ","
+			+ nodeIntensity
 			+ ")";
 
 		var display = universe.display;
 		var gradient = new Gradient
 		([
 			new GradientStop(0, "White"),
-			new GradientStop(1, nodeColor), 
+			new GradientStop(1, nodeColor),
 		]);
 		var visual = new VisualCircleGradient(radiusApparent, gradient);
 		var drawableTransformed = {};
@@ -183,11 +183,12 @@ function NetworkNode(name, defn, pos, starsystem)
 
 			var visualShip = new VisualPolygon
 			(
-				[ 
-					new Coords(0, 0), 
-					new Coords(.5, -1).multiplyScalar(radiusApparent), 
-					new Coords(-.5, -1).multiplyScalar(radiusApparent), 
-				],
+				new Path
+				([
+					new Coords(0, 0),
+					new Coords(.5, -1).multiplyScalar(radiusApparent),
+					new Coords(-.5, -1).multiplyScalar(radiusApparent),
+				]),
 				shipColor.systemColor()
 			);
 			visualShip.draw(universe, world, display, drawableTransformed);
@@ -200,7 +201,6 @@ function NetworkNode(name, defn, pos, starsystem)
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;
 		visualText.draw(universe, world, display, drawableTransformed);
-
 	}
 }
 

@@ -31,6 +31,8 @@ function main()
 		[
 			new Font("Font", "../Media/Font.ttf")
 		],
+		// textStrings
+		[]
 	);
 
 	var universe = Universe.new

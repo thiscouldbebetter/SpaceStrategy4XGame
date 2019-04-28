@@ -12,7 +12,7 @@ function TalkDefn(name, talkNodes)
 		if (talkNode.defn.name == "label")
 		{
 			var label = talkNode.parameters[0];
-			this.talkNodes[TalkNode.Underscore + label] = talkNode; 
+			this.talkNodes[TalkNode.Underscore + label] = talkNode;
 		}
 	}
 }

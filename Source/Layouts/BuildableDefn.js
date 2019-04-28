@@ -1,10 +1,10 @@
 
 function BuildableDefn
 (
-	name, 
-	terrainNamesAllowed, 
-	visual, 
-	resourcesToBuild, 
+	name,
+	terrainNamesAllowed,
+	visual,
+	resourcesToBuild,
 	resourcesPerTurn
 )
 {

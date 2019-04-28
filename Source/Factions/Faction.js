@@ -137,10 +137,10 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 
 	Faction.prototype.controlBuild = function
 	(
-		universe, 
+		universe,
 		containerMainSize,
-		containerInnerSize, 
-		margin, 
+		containerInnerSize,
+		margin,
 		controlHeight,
 		buttonWidth
 	)
@@ -152,9 +152,9 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 			"containerFaction",
 			new Coords
 			(
-				containerMainSize.x 
-					- margin 
-					- containerInnerSize.x, 
+				containerMainSize.x
+					- margin
+					- containerInnerSize.x,
 				margin
 			),
 			containerInnerSize.clone().multiply(new Coords(1, 1.25)),
@@ -167,7 +167,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					new Coords(margin, 0),// pos
 					new Coords
 					(
-						containerInnerSize.x - margin * 3, 
+						containerInnerSize.x - margin * 3,
 						controlHeight
 					), // size
 					false, // isTextCentered
@@ -180,7 +180,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					new Coords(margin * 2 + containerInnerSize.x * .3, 0), // pos
 					new Coords
 					(
-						containerInnerSize.x - margin * 3, 
+						containerInnerSize.x - margin * 3,
 						controlHeight
 					), // size
 					false, // isTextCentered
@@ -205,7 +205,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					"buttonNotifications",
 					new Coords
 					(
-						margin, 
+						margin,
 						controlHeight * 2
 					), // pos
 					new Coords(buttonWidth, controlHeight), // size
@@ -223,7 +223,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					"buttonRelations",
 					new Coords
 					(
-						margin, 
+						margin,
 						controlHeight * 3
 					), // pos
 					new Coords(buttonWidth, controlHeight), // size
@@ -240,7 +240,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					"buttonPlanets",
 					new Coords
 					(
-						margin * 2 + buttonWidth, 
+						margin * 2 + buttonWidth,
 						controlHeight
 					), // pos
 					new Coords(buttonWidth, controlHeight), // size
@@ -257,7 +257,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					"buttonShips",
 					new Coords
 					(
-						margin * 2 + buttonWidth, 
+						margin * 2 + buttonWidth,
 						controlHeight * 2
 					), // pos
 					new Coords(buttonWidth, controlHeight), // size

@@ -15,7 +15,7 @@ function Notification(typeName, turnCreated, message, loc)
 
 	Notification.prototype.toString = function()
 	{
-		var returnValue = 
+		var returnValue =
 			this.turnCreated + " - "
 			+ this.loc.name + " - "
 			+ this.message;

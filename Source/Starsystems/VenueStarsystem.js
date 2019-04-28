@@ -33,7 +33,7 @@ function VenueStarsystem(venueParent, starsystem)
 		this.starsystem.draw
 		(
 			universe,
-			world, 
+			world,
 			display,
 			this.camera
 		);
@@ -69,11 +69,11 @@ function VenueStarsystem(venueParent, starsystem)
 
 		this.camera = new Camera
 		(
-			viewSize, 
-			focalLength, 
+			viewSize,
+			focalLength,
 			new Location
 			(
-				new Coords(0 - focalLength, 0, 0), //pos, 
+				new Coords(0 - focalLength, 0, 0), //pos,
 				new Orientation
 				(
 					new Coords(1, 0, 0), // forward
@@ -84,23 +84,25 @@ function VenueStarsystem(venueParent, starsystem)
 
 		var targetForCamera = new Coords(0, 0, 0);
 
-		this.camera.constraints = 
-		[
-			new Constraint_PositionOnCylinder
-			(
-				targetForCamera, // center
-				new Orientation
+		this.camera.Constrainable = new Constrainable
+		(
+			[
+				new Constraint_PositionOnCylinder
 				(
-					new Coords(1, 0, 0), 
-					new Coords(0, 0, 1) // axis
+					targetForCamera, // center
+					new Orientation
+					(
+						new Coords(1, 0, 0),
+						new Coords(0, 0, 1) // axis
+					),
+					0, // yaw
+					this.camera.focalLength, // radius
+					0 - this.camera.focalLength / 2 // distanceFromCenterAlongAxisMax
 				),
-				0, // yaw
-				this.camera.focalLength, // radius
-				0 - this.camera.focalLength / 2 // distanceFromCenterAlongAxisMax
-			),
 
-			new Constraint_LookAt(targetForCamera),
-		].addLookups("name");
+				new Constraint_LookAt(targetForCamera),
+			].addLookups("name")
+		);
 
 		Constrainable.constrain(universe, universe.world, this, this.camera);
 
@@ -161,11 +163,16 @@ function VenueStarsystem(venueParent, starsystem)
 
 		var inputHelper = universe.inputHelper;
 
-		var inputsActive = inputHelper.inputsActive;
+		var inputsActive = inputHelper.inputsPressed;
 		for (var i = 0; i < inputsActive.length; i++)
 		{
-			var inputActive = inputsActive[i];
-			if (inputActive == "_a")
+			var inputActive = inputsActive[i].name;
+
+			if (inputActive.startsWith("Mouse"))
+			{
+				// Do nothing.
+			}
+			else if (inputActive == "a")
 			{
 				this.cameraLeft(cameraSpeed);
 			}
@@ -255,7 +262,7 @@ function VenueStarsystem(venueParent, starsystem)
 
 				bodiesClickedAsCollisionsSorted.insertElementAt
 				(
-					collisionToSort, j 
+					collisionToSort, j
 				);
 			}
 
@@ -336,14 +343,14 @@ function VenueStarsystem(venueParent, starsystem)
 					{
 						var targetBody = new Body
 						(
-							"Target", 
+							"Target",
 							new BodyDefn
 							(
-								"MoveTarget", 
+								"MoveTarget",
 								new Coords(0, 0, 0)
-							), 
+							),
 							cursor.loc.pos.clone()
-						); 
+						);
 
 						var ship = cursor.bodyParent;
 
@@ -386,7 +393,7 @@ function VenueStarsystem(venueParent, starsystem)
 	{
 		if (this.selection != null)
 		{
-			var cameraConstraint = this.camera.constraints["PositionOnCylinder"];
+			var cameraConstraint = this.camera.Constrainable.constraints["PositionOnCylinder"];
 			cameraConstraint.center.overwriteWith(this.selection.loc.pos);
 		}
 	}
@@ -454,7 +461,7 @@ function VenueStarsystem(venueParent, starsystem)
 					"buttonBack",
 					new Coords
 					(
-						(containerMainSize.x - buttonWidth) / 2, 
+						(containerMainSize.x - buttonWidth) / 2,
 						containerMainSize.y - margin - controlHeight
 					), // pos
 					new Coords(buttonWidth, controlHeight), // size
@@ -474,8 +481,8 @@ function VenueStarsystem(venueParent, starsystem)
 				controlBuilder.timeAndPlace
 				(
 					universe,
-					containerMainSize, 
-					containerInnerSize, 
+					containerMainSize,
+					containerInnerSize,
 					margin,
 					controlHeight
 				),
@@ -483,8 +490,8 @@ function VenueStarsystem(venueParent, starsystem)
 				controlBuilder.view
 				(
 					universe,
-					containerMainSize, 
-					containerInnerSize, 
+					containerMainSize,
+					containerInnerSize,
 					margin,
 					controlHeight
 				),
@@ -499,9 +506,9 @@ function VenueStarsystem(venueParent, starsystem)
 					),
 					new Coords
 					(
-						containerInnerSize.x, 
+						containerInnerSize.x,
 						containerMainSize.y - margin * 2
-					), 
+					),
 					margin,
 					controlHeight
 				),

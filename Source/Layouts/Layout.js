@@ -25,7 +25,7 @@ function Layout(sizeInPixels, map)
 		var mapSizeInCells = new Coords(9, 7);
 		var mapCellSizeInPixels = mapSizeInPixels.clone().divide(mapSizeInCells);
 
-		var terrains = 
+		var terrains =
 		[
 			new MapTerrain("None", " ", new VisualRectangle(mapCellSizeInPixels, null, "rgba(0, 0, 0, 0)"), false),
 			new MapTerrain("Orbit", "-", new VisualRectangle(mapCellSizeInPixels, null, "Violet"), false),

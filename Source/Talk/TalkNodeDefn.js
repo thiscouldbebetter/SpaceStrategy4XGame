@@ -16,8 +16,8 @@ function TalkNodeDefn(name, execute)
 		(
 			"display",
 			// execute
-			function(talkSession, scope, talkNode) 
-			{ 
+			function(talkSession, scope, talkNode)
+			{
 				scope.areOptionsVisible = false;
 				var textToDisplay = talkNode.parameters[0];
 
@@ -40,10 +40,10 @@ function TalkNodeDefn(name, execute)
 
 		this.Goto = new TalkNodeDefn
 		(
-			"goto", 
+			"goto",
 			// execute
-			function(talkSession, scope, talkNode) 
-			{ 
+			function(talkSession, scope, talkNode)
+			{
 				scope.talkNodeCurrent = talkSession.defn.talkNodeByLabel
 				(
 					talkNode.parameters[0]
@@ -55,10 +55,10 @@ function TalkNodeDefn(name, execute)
 
 		this.IfGoto = new TalkNodeDefn
 		(
-			"ifGoto", 
+			"ifGoto",
 			// execute
-			function(talkSession, scope, talkNode) 
-			{ 
+			function(talkSession, scope, talkNode)
+			{
 				var parameters = talkNode.parameters;
 				var variableName = parameters[0];
 				var variableValueToMatch = parameters[1];
@@ -93,10 +93,10 @@ function TalkNodeDefn(name, execute)
 
 		this.Label = new TalkNodeDefn
 		(
-			"label", 
+			"label",
 			// execute
-			function(talkSession, scope, talkNode) 
-			{ 
+			function(talkSession, scope, talkNode)
+			{
 				// do nothing
 				scope.talkNodeAdvance(talkSession);
 				talkSession.update();
@@ -105,10 +105,10 @@ function TalkNodeDefn(name, execute)
 
 		this.Option = new TalkNodeDefn
 		(
-			"option", 
+			"option",
 			// execute
-			function(talkSession, scope, talkNode) 
-			{ 
+			function(talkSession, scope, talkNode)
+			{
 				scope.talkNodesForOptions.push
 				(
 					talkNode
@@ -122,10 +122,10 @@ function TalkNodeDefn(name, execute)
 
 		this.OptionsClear = new TalkNodeDefn
 		(
-			"optionsClear", 
+			"optionsClear",
 			// execute
-			function(talkSession, scope, talkNode) 
-			{ 
+			function(talkSession, scope, talkNode)
+			{
 				scope.talkNodesForOptions.clear();
 
 				scope.talkNodeAdvance(talkSession);
@@ -136,9 +136,9 @@ function TalkNodeDefn(name, execute)
 
 		this.Pop = new TalkNodeDefn
 		(
-			"pop", 
-			function(talkSession, scope, talkNode) 
-			{ 
+			"pop",
+			function(talkSession, scope, talkNode)
+			{
 				var scope = scope.parent;
 				talkSession.scopeCurrent = scope;
 
@@ -153,9 +153,9 @@ function TalkNodeDefn(name, execute)
 
 		this.Program = new TalkNodeDefn
 		(
-			"program", 
-			function(talkSession, scope, talkNode) 
-			{ 
+			"program",
+			function(talkSession, scope, talkNode)
+			{
 				var parameters = talkNode.parameters;
 				var variableNameForReturnValue = parameters[0];
 				var programAsText = parameters[1];
@@ -175,9 +175,9 @@ function TalkNodeDefn(name, execute)
 
 		this.Prompt = new TalkNodeDefn
 		(
-			"prompt", 
-			function(talkSession, scope, talkNode) 
-			{ 
+			"prompt",
+			function(talkSession, scope, talkNode)
+			{
 				var optionSelected = talkSession.optionSelected;
 				if (optionSelected == null)
 				{
@@ -197,9 +197,9 @@ function TalkNodeDefn(name, execute)
 
 		this.Push = new TalkNodeDefn
 		(
-			"push", 
-			function(talkSession, scope, talkNode) 
-			{ 
+			"push",
+			function(talkSession, scope, talkNode)
+			{
 				var runDefn = talkSession.defn;
 				var talkNodeIndex = runDefn.talkNodes.indexOf(talkNode);
 				var talkNodeNext = runDefn.talkNodes[talkNodeIndex + 1];
@@ -217,9 +217,9 @@ function TalkNodeDefn(name, execute)
 
 		this.Quit = new TalkNodeDefn
 		(
-			"quit", 
-			function(talkSession, scope, talkNode) 
-			{ 
+			"quit",
+			function(talkSession, scope, talkNode)
+			{
 				talkSession.isTerminated = true;
 				// todo
 			}
@@ -228,9 +228,9 @@ function TalkNodeDefn(name, execute)
 
 		this.Set = new TalkNodeDefn
 		(
-			"set", 
-			function(talkSession, scope, talkNode) 
-			{ 
+			"set",
+			function(talkSession, scope, talkNode)
+			{
 				var parameters = talkNode.parameters;
 				var variableName = parameters[0];
 				var variableValueToSet = parameters[1];
@@ -246,7 +246,7 @@ function TalkNodeDefn(name, execute)
 			}
 		);
 
-		this._All = 
+		this._All =
 		[
 			this.Display,
 			this.Goto,

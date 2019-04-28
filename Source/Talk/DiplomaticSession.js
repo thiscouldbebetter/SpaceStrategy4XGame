@@ -122,7 +122,7 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 					new Coords(margin, margin * 3 + controlHeight * 6), // pos
 					new Coords(listWidth, controlHeight), // size
 					"Talk",
-					fontHeightInPixels, 
+					fontHeightInPixels,
 					true, // hasBorder
 					new DataBinding(this, "isFactionSelected()"), // isEnabled
 					this.talkSessionInitialize.bind(this, universe) // click
@@ -134,14 +134,14 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 					new Coords(margin * 2 + listWidth, 0), // pos
 					new Coords
 					(
-						containerSize.x - listWidth - margin * 2, 
+						containerSize.x - listWidth - margin * 2,
 						containerSize.y
 					)
 				),
 
 
-			] 
-		); 
+			]
+		);
 
 		return returnValue;
 	}

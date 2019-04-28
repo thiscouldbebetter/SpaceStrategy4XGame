@@ -27,23 +27,23 @@ function TalkSession(defn, factions)
 	{
 		var factions = [factionActing, factionReceiving];
 
-		var talkNodesAsStrings = 
+		var talkNodesAsStrings =
 		[
 			"program 	'RelationsState'	' return talkSession.factions[0].relationships[talkSession.factions[1].name].state; ' ",
 			"set FactionName '" + factionReceiving.name + "' ",
-		 	"display 	'Greetings.  We are the $FactionName$.' ", 
+		 	"display 	'Greetings.  We are the $FactionName$.' ",
 
 			"label Subject",
 			"display 	'What do you want to talk about?' ",
 			"label SubjectOptions",
 			"optionsClear",
-			"ifGoto 	RelationsState	Peace 		SubjectOptions.PeaceOrAlliance ", 
+			"ifGoto 	RelationsState	Peace 		SubjectOptions.PeaceOrAlliance ",
 			"ifGoto 	RelationsState	Alliance 	SubjectOptions.PeaceOrAlliance ",
 			"option		OfferPeace	'War is waste of everyone\"s resources.  Let there be peace between us.' ",
 			"goto SubjectOptions.End",
 			"label SubjectOptions.PeaceOrAlliance",
 			"ifGoto		RelationsState	Alliance SubjectOptions.Alliance",
-			"option 	DeclareWar 		'Your abuses have become intolerable.  We hereby declare war on you.' ", 
+			"option 	DeclareWar 		'Your abuses have become intolerable.  We hereby declare war on you.' ",
 			"option 	ProposeAlliance 	'Would you consider joining an alliance against our common enemies?' ",
 			"goto SubjectOptions.End",
 			"label SubjectOptions.Alliance",
@@ -85,7 +85,7 @@ function TalkSession(defn, factions)
 			"prompt",
 
 			"label DeclareWar.Bargain.Tech",
-			"display 'Our secrets are our own, and shall remain so.' ", 
+			"display 'Our secrets are our own, and shall remain so.' ",
 			"prompt",
 
 			"label DeclareWar.Bargain.Territory",
@@ -190,7 +190,7 @@ function TalkSession(defn, factions)
 
 	TalkSession.prototype.hasResponseBeenSpecified = function()
 	{
-		var returnValue = 
+		var returnValue =
 		(
 			(this.optionsAvailable().length == 0)
 			|| (this.optionSelected != null)

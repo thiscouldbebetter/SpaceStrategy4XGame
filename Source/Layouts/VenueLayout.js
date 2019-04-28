@@ -111,7 +111,7 @@ function VenueLayout(venueParent, modelParent, layout)
 				new ControlLabel
 				(
 					"labelBuildableName",
-					new Coords(1, 1).multiply(margin), 
+					new Coords(1, 1).multiply(margin),
 					listSize,
 					false, // isTextCentered
 					buildableAtCursor.defnName // text
@@ -120,33 +120,33 @@ function VenueLayout(venueParent, modelParent, layout)
 				new ControlButton
 				(
 					"buttonDemolish",
-					new Coords(margin.x, containerSize.y - margin.y * 2 - buttonSize.y * 2), //pos, 
-					buttonSize, 
-					"Demolish", // text, 
-					fontHeightInPixels, 
-					true, // hasBorder, 
-					true, // isEnabled, 
+					new Coords(margin.x, containerSize.y - margin.y * 2 - buttonSize.y * 2), //pos,
+					buttonSize,
+					"Demolish", // text,
+					fontHeightInPixels,
+					true, // hasBorder,
+					true, // isEnabled,
 					function click(universe)
 					{
 						layout.map.bodies.remove(buildableAtCursor);
 						universe.venueNext = venueThis;
-					}, 
+					},
 					universe // context
 				),
 
 				new ControlButton
 				(
 					"buttonDone",
-					new Coords(margin.x, containerSize.y - margin.y - buttonSize.y), //pos, 
-					buttonSize, 
-					"Done", // text, 
-					fontHeightInPixels, 
-					true, // hasBorder, 
-					true, // isEnabled, 
+					new Coords(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
+					buttonSize,
+					"Done", // text,
+					fontHeightInPixels,
+					true, // hasBorder,
+					true, // isEnabled,
 					function click(universe)
 					{
 						universe.venueNext = venueThis;
-					}, 
+					},
 					universe // context
 				),
 			]
@@ -170,7 +170,7 @@ function VenueLayout(venueParent, modelParent, layout)
 		for (var i = 0; i < buildableDefnsAvailable.length; i++)
 		{
 			var buildableDefn = buildableDefnsAvailable[i];
-			var isBuildableDefnAllowedOnTerrain = 
+			var isBuildableDefnAllowedOnTerrain =
 				buildableDefn.terrainNamesAllowed.contains(terrainName);
 			if (isBuildableDefnAllowedOnTerrain == true)
 			{
@@ -202,7 +202,7 @@ function VenueLayout(venueParent, modelParent, layout)
 				new ControlLabel
 				(
 					"labelFacilityToBuild",
-					margin, 
+					margin,
 					listSize,
 					false, // isTextCentered
 					"Facility to Build:" // text
@@ -213,22 +213,22 @@ function VenueLayout(venueParent, modelParent, layout)
 					"listBuildables",
 					new Coords(margin.x, margin.y * 2 + buttonSize.y),
 					listSize,
-					buildableDefnsAllowedOnTerrain, 
-					"name", //bindingExpressionForItemText, 
-					fontHeightInPixels, 
-					null, // bindingForItemSelected, 
+					buildableDefnsAllowedOnTerrain,
+					"name", //bindingExpressionForItemText,
+					fontHeightInPixels,
+					null, // bindingForItemSelected,
 					null, // bindingExpressionForItemValue
 				),
 
 				new ControlButton
 				(
 					"buttonBuild",
-					new Coords(margin.x, containerSize.y - margin.y - buttonSize.y), //pos, 
-					buttonSize, 
-					"Build", // text, 
-					fontHeightInPixels, 
-					true, // hasBorder, 
-					true, // isEnabled, 
+					new Coords(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
+					buttonSize,
+					"Build", // text,
+					fontHeightInPixels,
+					true, // hasBorder,
+					true, // isEnabled,
 					function click(universe)
 					{
 						var venueCurrent = universe.venueCurrent;
@@ -243,7 +243,7 @@ function VenueLayout(venueParent, modelParent, layout)
 							layout.map.bodies.push(buildable);
 						}
 						universe.venueNext = venueThis;
-					}, 
+					},
 					universe // context
 				)
 			]
@@ -277,7 +277,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					"buttonBack",
 					new Coords
 					(
-						(containerMainSize.x - buttonWidth) / 2, 
+						(containerMainSize.x - buttonWidth) / 2,
 						containerMainSize.y - margin - controlHeight
 					), // pos
 					new Coords(buttonWidth, controlHeight), // size
@@ -297,8 +297,8 @@ function VenueLayout(venueParent, modelParent, layout)
 				this.controlBuild_Vitals
 				(
 					universe,
-					containerMainSize, 
-					containerInnerSize, 
+					containerMainSize,
+					containerInnerSize,
 					margin,
 					controlHeight
 				),
@@ -318,8 +318,8 @@ function VenueLayout(venueParent, modelParent, layout)
 				(
 					universe,
 					containerMainSize,
-					containerInnerSize, 
-					margin, 
+					containerInnerSize,
+					margin,
 					controlHeight,
 					buttonWidth
 				);
@@ -330,8 +330,8 @@ function VenueLayout(venueParent, modelParent, layout)
 				(
 					universe,
 					containerMainSize,
-					containerInnerSize, 
-					margin, 
+					containerInnerSize,
+					margin,
 					controlHeight,
 					buttonWidth
 				);
@@ -365,8 +365,8 @@ function VenueLayout(venueParent, modelParent, layout)
 	(
 		universe,
 		containerMainSize,
-		containerInnerSize, 
-		margin, 
+		containerInnerSize,
+		margin,
 		controlHeight,
 		buttonWidth
 	)
@@ -384,7 +384,7 @@ function VenueLayout(venueParent, modelParent, layout)
 			new Coords
 			(
 				margin,
-				containerMainSize.y 
+				containerMainSize.y
 					- margin
 					- containerInnerSize.y
 			),
@@ -393,11 +393,11 @@ function VenueLayout(venueParent, modelParent, layout)
 			[
 				new ControlLabel
 				(
-					"labelBuilding", 
+					"labelBuilding",
 					new Coords(margin, margin), // pos
 					new Coords
 					(
-						containerInnerSize.x - margin * 2, 
+						containerInnerSize.x - margin * 2,
 						controlHeight
 					), // size
 					false, // isTextCentered
@@ -408,14 +408,14 @@ function VenueLayout(venueParent, modelParent, layout)
 				(
 					"labelBuildable",
 					new Coords(margin, controlHeight + margin), // pos
-					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size, 
+					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size,
 					false, // isTextCentered
 					new DataBinding(planet, "buildableInProgress(world).defnName", { "world" : world } )
 				),
 
 				new ControlLabel
 				(
-					"labelResourcesRequired", 
+					"labelResourcesRequired",
 					new Coords(margin, controlHeight * 2 + margin), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
@@ -430,18 +430,18 @@ function VenueLayout(venueParent, modelParent, layout)
 	VenueLayout.prototype.controlBuild_Vitals = function
 	(
 		universe,
-		containerMainSize, 
-		containerInnerSize, 
+		containerMainSize,
+		containerInnerSize,
 		margin,
 		controlHeight
 	)
 	{
 		var fontHeightInPixels = universe.display.fontHeightInPixels;
 
-		var universeAndWorldAsLookup = 
-		{ 
-			"universe" : universe, 
-			"world" : universe.world 
+		var universeAndWorldAsLookup =
+		{
+			"universe" : universe,
+			"world" : universe.world
 		};
 
 		var planet = this.modelParent;
@@ -463,7 +463,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					new Coords(margin,  margin), // pos
 					new Coords
 					(
-						containerInnerSize.x - margin * 2, 
+						containerInnerSize.x - margin * 2,
 						controlHeight
 					), // size
 					false, // isTextCentered
@@ -481,7 +481,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					false, // isTextCentered
 					new DataBinding
 					(
-						planet, 
+						planet,
 						"industryPerTurn(universe, world, faction)",
 						universeAndWorldAsLookup
 					)
@@ -495,7 +495,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					false, // isTextCentered
 					new DataBinding
 					(
-						planet, 
+						planet,
 						"prosperityPerTurn(universe, world, faction)",
 						universeAndWorldAsLookup
 					)
@@ -509,7 +509,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					false, // isTextCentered
 					new DataBinding
 					(
-						planet, 
+						planet,
 						"researchPerTurn(universe, world, faction)",
 						universeAndWorldAsLookup
 					)

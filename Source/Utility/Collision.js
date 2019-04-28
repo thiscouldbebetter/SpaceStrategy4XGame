@@ -79,9 +79,9 @@ function Collision()
 
 	Collision.prototype.rayAndPlane = function(ray, plane)
 	{
-		this.distanceToCollision = 
+		this.distanceToCollision =
 			(
-				plane.distanceFromOrigin 
+				plane.distanceFromOrigin
 				- plane.normal.dotProduct(ray.vertex)
 			)
 			/ plane.normal.dotProduct(ray.direction);
@@ -133,19 +133,19 @@ function Collision()
 		{
 			var rootOfDiscriminant = Math.sqrt(discriminant);
 
-			var distanceToCollision1 = 
-				(rootOfDiscriminant - b) 
+			var distanceToCollision1 =
+				(rootOfDiscriminant - b)
 				/ (2 * a);
 
-			var distanceToCollision2 = 
-				(0 - rootOfDiscriminant - b) 
+			var distanceToCollision2 =
+				(0 - rootOfDiscriminant - b)
 				/ (2 * a);
 
 			if (distanceToCollision1 >= 0)
 			{
-				if 
+				if
 				(
-					distanceToCollision2 >= 0 
+					distanceToCollision2 >= 0
 					&& distanceToCollision2 < distanceToCollision1
 				)
 				{

@@ -55,15 +55,15 @@ function Constraint_Cursor()
 		{
 			this.boundsToRestrictToMin.overwriteWithDimensions
 			(
-				Number.NEGATIVE_INFINITY, 
-				Number.NEGATIVE_INFINITY, 
+				Number.NEGATIVE_INFINITY,
+				Number.NEGATIVE_INFINITY,
 				0
 			);
 
 			this.boundsToRestrictToMax.overwriteWithDimensions
 			(
-				Number.POSITIVE_INFINITY, 
-				Number.POSITIVE_INFINITY, 
+				Number.POSITIVE_INFINITY,
+				Number.POSITIVE_INFINITY,
 				0
 			);
 
@@ -88,14 +88,14 @@ function Constraint_Cursor()
 		{
 			this.boundsToRestrictToMin.overwriteWithDimensions
 			(
-				cursorPos.x, 
-				cursorPos.y, 
+				cursorPos.x,
+				cursorPos.y,
 				Number.NEGATIVE_INFINITY
 			);
 			this.boundsToRestrictToMax.overwriteWithDimensions
 			(
-				cursorPos.x, 
-				cursorPos.y, 
+				cursorPos.x,
+				cursorPos.y,
 				Number.POSITIVE_INFINITY
 			);
 

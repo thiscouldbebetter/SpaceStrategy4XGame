@@ -86,7 +86,7 @@ function VenueTalkSession(venueParent, talkSession)
 					new Coords(margin, controlHeight + margin * 2), // pos
 					new Coords
 					(
-						containerSize.x - margin * 2, 
+						containerSize.x - margin * 2,
 						controlHeight
 					), // size
 					false, // isTextCentered
@@ -103,7 +103,7 @@ function VenueTalkSession(venueParent, talkSession)
 					), // pos
 					new Coords
 					(
-						containerSize.x - margin * 2, 
+						containerSize.x - margin * 2,
 						controlHeight * 4
 					), // size
 					// options
@@ -115,7 +115,7 @@ function VenueTalkSession(venueParent, talkSession)
 					fontHeightInPixels,
 					// dataBindingForValueSelected
 					new DataBinding(this.talkSession, "optionSelected"),
-					null 
+					null
 				),
 
 				new ControlButton
@@ -127,7 +127,7 @@ function VenueTalkSession(venueParent, talkSession)
 					), // pos
 					new Coords
 					(
-						containerSize.x - margin * 2, 
+						containerSize.x - margin * 2,
 						controlHeight
 					), // size
 					"Continue",

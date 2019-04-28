@@ -30,7 +30,7 @@ function DiplomaticRelationship(factionNameOther, state)
 				(
 					new DiplomaticRelationship
 					(
-						factionThis.name, 
+						factionThis.name,
 						DiplomaticRelationship.States.Peace
 					)
 				);

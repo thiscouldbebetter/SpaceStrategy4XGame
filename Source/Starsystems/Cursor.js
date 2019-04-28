@@ -13,7 +13,7 @@ function Cursor(bodyParent)
 		this.loc.overwriteWith(this.bodyParent.loc);
 	}
 
-	this.constraints = 
+	this.constraints =
 	[
 		new Constraint_Cursor()
 	];
@@ -25,11 +25,11 @@ function Cursor(bodyParent)
 		if (Cursor._bodyDefn == null)
 		{
 			var radius = 5;
-			var color = Color.Instances.White.systemColor();
+			var color = Color.Instances().White.systemColor();
 
 			Cursor._bodyDefn = new BodyDefn
 			(
-				"Cursor", 
+				"Cursor",
 				new Coords(10, 10), // size
 				new VisualGroup
 				([
@@ -56,8 +56,8 @@ function Cursor(bodyParent)
 		var starsystem = venueStarsystem.starsystem;
 		starsystem.draw_Body
 		(
-			universe, 
-			world, 
+			universe,
+			world,
 			display,
 			venueStarsystem.camera,
 			this

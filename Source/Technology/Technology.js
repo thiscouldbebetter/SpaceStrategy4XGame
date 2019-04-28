@@ -1,9 +1,9 @@
 
 function Technology
 (
-	name, 
-	researchRequired, 
-	namesOfPrerequisiteTechnologies, 
+	name,
+	researchRequired,
+	namesOfPrerequisiteTechnologies,
 	namesOfBuildablesEnabled
 )
 {

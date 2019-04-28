@@ -1,7 +1,7 @@
 
 function TechnologyResearcher
 (
-	factionName, 
+	factionName,
 	nameOfTechnologyBeingResearched,
 	researchAccumulated,
 	namesOfTechnologiesKnown
@@ -105,7 +105,7 @@ function TechnologyResearcher
 			for (var p = 0; p < prerequisites.length; p++)
 			{
 				var prerequisite = prerequisites[p];
-				var isPrerequisiteKnown = 
+				var isPrerequisiteKnown =
 				(
 					technologiesKnown.indexOf(prerequisite) >= 0
 				);

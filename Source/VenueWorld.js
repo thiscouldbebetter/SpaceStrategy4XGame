@@ -10,7 +10,7 @@ function VenueWorld(world)
 	VenueWorld.prototype.model = function()
 	{
 		return this.world.network;
-	}
+	};
 
 	// camera
 
@@ -20,70 +20,73 @@ function VenueWorld(world)
 		{
 			var targetPosNew = this.selection.loc.pos;
 
-			var constraintDistance = this.camera.constraints["HoldDistanceFromTarget"];
+			var cameraConstraints = camera.Constrainable.constraints;
+			var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
 			constraintDistance.targetPos = targetPosNew;
 
-			var constraintLookAt = this.camera.constraints["LookAt"];
+			var constraintLookAt = cameraConstraints["LookAt"];
 			constraintLookAt.targetPos = targetPosNew;
 		}
-	}
+	};
 
 	VenueWorld.prototype.cameraDown = function(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([0, cameraSpeed]);
 		cameraAction.perform(this.camera);
-	}
+	};
 
 	VenueWorld.prototype.cameraIn = function(cameraSpeed)
 	{
-		var constraint = this.camera.constraints["HoldDistanceFromTarget"];
+		var constraint = this.camera.Constrainable.constraints["HoldDistanceFromTarget"];
 		constraint.distanceToHold -= cameraSpeed / 2;
 		if (constraint.distanceToHold < 1)
 		{
 			constraint.distanceToHold = 1;
 		}
-	}
+	};
 
 	VenueWorld.prototype.cameraLeft = function(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
 		cameraAction.perform(this.camera);
-	}
+	};
 
 	VenueWorld.prototype.cameraOut = function(cameraSpeed)
 	{
-		var constraint = this.camera.constraints["HoldDistanceFromTarget"];
+		var constraint = this.camera.Constrainable.constraints["HoldDistanceFromTarget"];
 		constraint.distanceToHold += cameraSpeed / 2;
 		if (constraint.distanceToHold < 0)
 		{
 			constraint.distanceToHold = 0;
 		}
-	}
+	};
 
 	VenueWorld.prototype.cameraReset = function()
 	{
+		var cameraConstraints = this.camera.Constrainable.constraints;
+
 		var origin = new Coords(0, 0, 0);
-		var constraintDistance = this.camera.constraints["HoldDistanceFromTarget"];
+		var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
 		constraintDistance.distanceToHold = this.camera.focalLength;
 		constraintDistance.targetPos = origin;
 
-		constraintLookAt = this.camera.constraints["LookAt"];
+		constraintLookAt = cameraConstraints["LookAt"];
 		constraintLookAt.targetPos = origin;
 
 		this.camera.loc.pos.clear().x = 0 - this.camera.focalLength;
-	}
+	};
 
 	VenueWorld.prototype.cameraRight = function(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
 		cameraAction.perform(this.camera);
-	}
+	};
 
 	VenueWorld.prototype.cameraUp = function(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
 		cameraAction.perform(this.camera);
-	}
+	};
 
 	// controls
 
@@ -117,12 +120,12 @@ function VenueWorld(world)
 					"buttonMenu",
 					new Coords
 					(
-						(containerMainSize.x - buttonWidth) / 2, 
+						(containerMainSize.x - buttonWidth) / 2,
 						containerMainSize.y - margin - controlHeight
 					), // pos
 					new Coords(buttonWidth, controlHeight), // size
 					"Menu",
-					fontHeightInPixels, 
+					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
 					function click(universe)
@@ -140,18 +143,18 @@ function VenueWorld(world)
 				controlBuilder.timeAndPlace
 				(
 					universe,
-					containerMainSize, 
-					containerInnerSize, 
+					containerMainSize,
+					containerInnerSize,
 					margin,
 					controlHeight
 				),
 
 				faction.controlBuild
 				(
-					universe, 
+					universe,
 					containerMainSize,
-					containerInnerSize, 
-					margin, 
+					containerInnerSize,
+					margin,
 					controlHeight,
 					buttonWidth
 				),
@@ -159,8 +162,8 @@ function VenueWorld(world)
 				controlBuilder.view
 				(
 					universe,
-					containerMainSize, 
-					containerInnerSize, 
+					containerMainSize,
+					containerInnerSize,
 					margin,
 					controlHeight
 				),
@@ -173,7 +176,7 @@ function VenueWorld(world)
 						containerMainSize.x - margin - containerInnerSize.x,
 						containerMainSize.y - margin - containerInnerSize.y
 					),
-					containerInnerSize, 
+					containerInnerSize,
 					margin,
 					controlHeight
 				),
@@ -183,9 +186,9 @@ function VenueWorld(world)
 		returnValue = new ControlContainerTransparent(returnValue);
 
 		return returnValue;
-	}
+	};
 
-	// venue 
+	// venue
 
 	VenueWorld.prototype.draw = function(universe)
 	{
@@ -196,12 +199,12 @@ function VenueWorld(world)
 		var worldKnown = playerKnowledge.worldKnown(universe, this.world);
 		worldKnown.network.draw(universe, worldKnown.camera);
 		this.venueControls.draw(universe);
-	}
+	};
 
 	VenueWorld.prototype.finalize = function(universe)
 	{
 		universe.soundHelper.soundForMusic.pause(universe);
-	}
+	};
 
 	VenueWorld.prototype.initialize = function(universe)
 	{
@@ -216,21 +219,23 @@ function VenueWorld(world)
 
 		var origin = new Coords(0, 0, 0);
 
-		this.camera.constraints = 
-		[
-			new Constraint_HoldDistanceFromTarget
-			(
-				this.camera.focalLength, // distanceToHold
-				origin
-			),
-			new Constraint_LookAt(origin),
-		].addLookups("name");
-	}
+		this.camera.Constrainable = new Constrainable
+		(
+			[
+				new Constraint_HoldDistanceFromTarget
+				(
+					this.camera.focalLength, // distanceToHold
+					origin
+				),
+				new Constraint_LookAt(origin),
+			].addLookups("name")
+		);
+	};
 
 	VenueWorld.prototype.selectionName = function()
 	{
 		return (this.selection == null ? "[none]" : this.selection.name);
-	}
+	};
 
 	VenueWorld.prototype.updateForTimerTick = function(universe)
 	{
@@ -304,10 +309,10 @@ function VenueWorld(world)
 			}
 		}
 
-		var inputsActive = inputHelper.inputsActive;
+		var inputsActive = inputHelper.inputsPressed;
 		for (var i = 0; i < inputsActive.length; i++)
 		{
-			var inputActive = inputsActive[i];
+			var inputActive = inputsActive[i].name;
 
 			if (inputActive == "Escape")
 			{
@@ -321,31 +326,34 @@ function VenueWorld(world)
 
 			var cameraSpeed = 20;
 
-			if (inputActive == "_a")
+			if (inputActive.startsWith("Mouse"))
+			{
+				// Do nothing.
+			}
+			else if (inputActive == "a")
 			{
 				this.cameraLeft(cameraSpeed);
 			}
-			else if (inputActive == "_d")
+			else if (inputActive == "d")
 			{
 				this.cameraRight(cameraSpeed);
 			}
-			else if (inputActive == "_s")
+			else if (inputActive == "s")
 			{
 				this.cameraDown(cameraSpeed);
 			}
-			else if (inputActive == "_w")
+			else if (inputActive == "w")
 			{
 				this.cameraUp(cameraSpeed);
 			}
-			else if (inputActive == "_f")
+			else if (inputActive == "f")
 			{
 				this.cameraOut(cameraSpeed);
 			}
-			else if (inputActive == "_r")
+			else if (inputActive == "r")
 			{
 				this.cameraIn(cameraSpeed);
 			}
 		}
-	}
-
+	};
 }

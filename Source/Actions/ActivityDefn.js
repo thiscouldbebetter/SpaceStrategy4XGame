@@ -28,7 +28,7 @@ function ActivityDefn(name, perform)
 			}
 		);
 
-		this._All = 
+		this._All =
 		[
 			this.DoNothing,
 			this.MoveToTarget,

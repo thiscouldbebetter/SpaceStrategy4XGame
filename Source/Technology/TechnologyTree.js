@@ -15,7 +15,7 @@ function TechnologyTree(name, technologies)
 			[
 				new Technology
 				(
-					"A", 
+					"A",
 					5, // research
 					[], // prerequisites
 					[ "Factory", "Hub", "Laboratory", "Plantation", "Shipyard", "Ship" ]

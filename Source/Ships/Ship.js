@@ -25,17 +25,18 @@ function Ship(name, defn, pos, factionName, devices)
 
 		var returnValue = new BodyDefn
 		(
-			"Ship", 
+			"Ship",
 			new Coords(1, 1).multiplyScalar(scaleFactor), // size
 			new VisualGroup
 			([
 				new VisualPolygon
 				(
-					[
+					new Path
+					([
 						new Coords(.5, 0).multiplyScalar(scaleFactor),
 						new Coords(-.5, .5).multiplyScalar(scaleFactor),
 						new Coords(-.5, -.5).multiplyScalar(scaleFactor),
-					], 
+					]),
 					color.systemColor()
 				),
 			])
@@ -481,11 +482,12 @@ function Ship(name, defn, pos, factionName, devices)
 
 		return new VisualPolygon
 		(
-			[
+			new Path
+			([
 				new Coords(0, 0).multiplyScalar(shipSizeMultiplier),
 				new Coords(.5, -1).multiplyScalar(shipSizeMultiplier),
 				new Coords(-.5, -1).multiplyScalar(shipSizeMultiplier)
-			],
+			]),
 			color.systemColor,
 			null // colorBorder
 		);

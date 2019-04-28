@@ -7,8 +7,8 @@ function ControlBuilderExtensions()
 	ControlBuilder.prototype.selection = function
 	(
 		universe,
-		pos, 
-		size, 
+		pos,
+		size,
 		margin,
 		controlHeight
 	)
@@ -46,7 +46,7 @@ function ControlBuilderExtensions()
 
 				new ControlDynamic
 				(
-					"dynamicSelection", 
+					"dynamicSelection",
 					new Coords(margin, margin * 2 + controlHeight * 2), // pos
 					new Coords(size.x - margin * 2, size.y - margin * 4 - controlHeight * 3), // size
 					new DataBinding(universe, "venueCurrent.selection")
@@ -54,15 +54,15 @@ function ControlBuilderExtensions()
 
 				new ControlButton
 				(
-					"buttonCenter", // name, 
+					"buttonCenter", // name,
 					new Coords(margin, size.y - margin - controlHeight), // pos
-					new Coords((size.x - margin * 3) / 2, controlHeight), // size, 
-					"Center", // text, 
+					new Coords((size.x - margin * 3) / 2, controlHeight), // size,
+					"Center", // text,
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe) 
-					{ 
+					function click(universe)
+					{
 						universe.venueCurrent.cameraCenterOnSelection();
 					},
 					universe // context
@@ -70,19 +70,19 @@ function ControlBuilderExtensions()
 
 				new ControlButton
 				(
-					"buttonDetails", // name, 
+					"buttonDetails", // name,
 					new Coords
 					(
-						margin * 2 + ((size.x - margin * 3) / 2), 
+						margin * 2 + ((size.x - margin * 3) / 2),
 						size.y - margin - controlHeight
 					), // pos
-					new Coords((size.x - margin * 3) / 2, controlHeight), // size, 
-					"Details", // text, 
+					new Coords((size.x - margin * 3) / 2, controlHeight), // size,
+					"Details", // text,
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe) 
-					{ 
+					function click(universe)
+					{
 						var venueCurrent = universe.venueCurrent;
 						var selection = venueCurrent.selection;
 						if (selection != null)
@@ -121,8 +121,8 @@ function ControlBuilderExtensions()
 	ControlBuilder.prototype.timeAndPlace = function
 	(
 		universe,
-		containerMainSize, 
-		containerInnerSize, 
+		containerMainSize,
+		containerInnerSize,
 		margin,
 		controlHeight
 	)
@@ -146,7 +146,7 @@ function ControlBuilderExtensions()
 					new Coords(margin,  margin), // pos
 					new Coords
 					(
-						containerInnerSize.x - margin * 2, 
+						containerInnerSize.x - margin * 2,
 						controlHeight
 					), // size
 					false, // isTextCentered
@@ -171,7 +171,7 @@ function ControlBuilderExtensions()
 					new Coords(margin + 25, margin + controlHeight), // pos
 					new Coords
 					(
-						containerInnerSize.x - margin * 3, 
+						containerInnerSize.x - margin * 3,
 						controlHeight
 					), // size
 					false, // isTextCentered
@@ -180,15 +180,15 @@ function ControlBuilderExtensions()
 
 				new ControlButton
 				(
-					"buttonTurnNext", // name, 
+					"buttonTurnNext", // name,
 					new Coords(margin + 50, margin + controlHeight), // pos
-					new Coords(controlHeight, controlHeight), // size, 
-					">", // text, 
+					new Coords(controlHeight, controlHeight), // size,
+					">", // text,
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe) 
-					{ 
+					function click(universe)
+					{
 						universe.world.updateForTurn(universe);
 					},
 					universe // context
@@ -196,15 +196,15 @@ function ControlBuilderExtensions()
 
 				new ControlButton
 				(
-					"buttonTurnFastForward", // name, 
+					"buttonTurnFastForward", // name,
 					new Coords(margin + 50 + controlHeight, margin + controlHeight), // pos
-					new Coords(controlHeight, controlHeight), // size, 
-					">>", // text, 
+					new Coords(controlHeight, controlHeight), // size,
+					">>", // text,
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe) 
-					{ 
+					function click(universe)
+					{
 						var world = universe.world;
 						var faction = world.factions[0];
 						var notificationSession = faction.notificationSession;
@@ -233,8 +233,8 @@ function ControlBuilderExtensions()
 	ControlBuilder.prototype.view = function
 	(
 		universe,
-		containerMainSize, 
-		containerInnerSize, 
+		containerMainSize,
+		containerInnerSize,
 		margin,
 		controlHeight
 	)
@@ -248,7 +248,7 @@ function ControlBuilderExtensions()
 			new Coords
 			(
 				margin,
-				containerMainSize.y 
+				containerMainSize.y
 					- margin
 					- containerInnerSize.y
 			),

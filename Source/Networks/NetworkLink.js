@@ -34,7 +34,7 @@ function NetworkLink(namesOfNodesLinked)
 
 	NetworkLink.prototype.nodesLinked = function(cluster)
 	{
-		var returnValue = 
+		var returnValue =
 		[
 			cluster.nodes[this.namesOfNodesLinked[0]],
 			cluster.nodes[this.namesOfNodesLinked[1]],
@@ -96,9 +96,9 @@ function NetworkLink(namesOfNodesLinked)
 	NetworkLink.prototype.draw = function
 	(
 		universe,
-		camera, 
-		nodeRadiusActual, 
-		drawPosFrom, 
+		camera,
+		nodeRadiusActual,
+		drawPosFrom,
 		drawPosTo
 	)
 	{
@@ -129,14 +129,14 @@ function NetworkLink(namesOfNodesLinked)
 
 		var perpendicular = directionFromNode0To1InView.clone().right().half();
 
-		var perspectiveFactorFrom = 
+		var perspectiveFactorFrom =
 			camera.focalLength / drawPosFrom.z;
-		var perspectiveFactorTo = 
+		var perspectiveFactorTo =
 			camera.focalLength / drawPosTo.z;
 
-		var radiusApparentFrom = 
+		var radiusApparentFrom =
 			nodeRadiusActual * perspectiveFactorFrom;
-		var radiusApparentTo = 
+		var radiusApparentTo =
 			nodeRadiusActual * perspectiveFactorTo;
 
 		var display = universe.display;

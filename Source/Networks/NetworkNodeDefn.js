@@ -14,7 +14,7 @@ function NetworkNodeDefn(name, colorName)
 		this.Green = new NetworkNodeDefn("Green", "GrayLight");
 		this.Red = new NetworkNodeDefn("Red", "GrayLight");
 
-		this._All = 
+		this._All =
 		[
 			this.Blue,
 			this.Green,

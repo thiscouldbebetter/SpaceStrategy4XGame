@@ -14,12 +14,12 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		1
 	);
 
-	this.sizeInCellsMinusOnes = 
+	this.sizeInCellsMinusOnes =
 		this.sizeInCells.clone().subtract
 		(
 			new Coords(1, 1, 1)
 		);
-	this.cellSizeInPixels = 
+	this.cellSizeInPixels =
 		this.sizeInPixels.clone().divide
 		(
 			this.sizeInCells
@@ -32,7 +32,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 	this._cellPos = new Coords();
 	this._drawable = {};
 	this._drawable.loc = new Location(new Coords());
-	this._neighborOffsets = 
+	this._neighborOffsets =
 	[
 		new Coords(1, 0),
 		new Coords(0, 1),
@@ -117,7 +117,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		var drawable = this._drawable;
 		var drawPos = drawable.loc.pos;
 		var cellSizeInPixels = map.cellSizeInPixels;
-		var cellSizeInPixelsHalf = 
+		var cellSizeInPixelsHalf =
 			cellSizeInPixels.clone().divideScalar(2);
 
 		for (var y = 0; y < mapSizeInCells.y; y++)
@@ -187,7 +187,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 					var bodyVisual = buildableDefn.visual;
 					bodyVisual.draw(universe, world, display, drawable);
 
-					var isBuildableAllowedOnTerrain = 
+					var isBuildableAllowedOnTerrain =
 						buildableDefn.terrainNamesAllowed.contains(terrainName);
 					if (isBuildableAllowedOnTerrain == false)
 					{

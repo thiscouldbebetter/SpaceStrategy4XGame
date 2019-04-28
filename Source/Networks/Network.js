@@ -38,19 +38,19 @@ function Network(name, nodes, links)
 	Network.generateRandom = function
 	(
 		universe,
-		name, 
-		nodeDefns, 
-		numberOfNodes, 
-		minAndMaxDistanceOfNodesFromOrigin, 
+		name,
+		nodeDefns,
+		numberOfNodes,
+		minAndMaxDistanceOfNodesFromOrigin,
 		distanceBetweenNodesMin
 	)
 	{
 		var nodesNotYetLinked = [];
 
 		var radiusMinAndMax = minAndMaxDistanceOfNodesFromOrigin;
-		var radiusMin = radiusMinAndMax[0]; 
+		var radiusMin = radiusMinAndMax[0];
 		var radiusMax = radiusMinAndMax[1];
-		var radiusRange = radiusMax - radiusMin; 
+		var radiusRange = radiusMax - radiusMin;
 
 		var nodePos = new Coords(0, 0, 0);
 		var displacementOfNodeNewFromOther = new Coords(0, 0, 0);
@@ -75,7 +75,7 @@ function Network(name, nodes, links)
 				for (var j = 0; j < i; j++)
 				{
 					var nodeOtherPos = nodesNotYetLinked[j].loc.pos;
-					 
+
 					displacementOfNodeNewFromOther.overwriteWith
 					(
 						nodePos
@@ -84,7 +84,7 @@ function Network(name, nodes, links)
 						nodeOtherPos
 					);
 
-					var distanceOfNodeNewFromOther = 
+					var distanceOfNodeNewFromOther =
 						displacementOfNodeNewFromOther.magnitude();
 
 					if (distanceOfNodeNewFromOther < distanceBetweenNodesMin)
@@ -127,11 +127,11 @@ function Network(name, nodes, links)
 		var nodesLinked = [ nodesNotYetLinked[0] ];
 		nodesNotYetLinked.removeAt(0);
 		var links = [];
-		var colors = Color.Instances;
+		var colors = Color.Instances();
 
 		var bodyDefnLinkPortal = new BodyDefn
 		(
-			"LinkPortal", 
+			"LinkPortal",
 			new Coords(10, 10), // size
 			new VisualGroup
 			([
@@ -185,7 +185,7 @@ function Network(name, nodes, links)
 			var nodeLinked = nodePairClosestSoFar[1];
 
 			var link = new NetworkLink
-			([ 
+			([
 				nodeToLink.name,
 				nodeLinked.name
 			]);
@@ -270,9 +270,9 @@ function Network(name, nodes, links)
 			link.draw
 			(
 				universe,
-				camera, 
-				nodeRadiusActual, 
-				drawPosFrom, 
+				camera,
+				nodeRadiusActual,
+				drawPosFrom,
 				drawPosTo
 			);
 			shipsInLinks = shipsInLinks.concat(link.ships);

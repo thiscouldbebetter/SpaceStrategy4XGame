@@ -36,7 +36,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		[
 			new BuildableDefn
 			(
-				"Hub", 
+				"Hub",
 				terrainNamesSurface,
 				new VisualGroup
 				([
@@ -45,14 +45,14 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				]),
 				[ new Resource("Industry", 100) ], // resourcesToBuild
 				// resourcesProducedPerTurn
-				[ 
-					new Resource("Industry", 1), 
+				[
+					new Resource("Industry", 1),
 					new Resource("Prosperity", 1)
 				]
 			),
 			new BuildableDefn
 			(
-				"Factory", 
+				"Factory",
 				terrainNamesSurface,
 				new VisualGroup
 				([
@@ -65,7 +65,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 			new BuildableDefn
 			(
-				"Laboratory", 
+				"Laboratory",
 				terrainNamesSurface,
 				new VisualGroup
 				([
@@ -78,7 +78,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 			new BuildableDefn
 			(
-				"Plantation", 
+				"Plantation",
 				terrainNamesSurface,
 				new VisualGroup
 				([
@@ -91,7 +91,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 			new BuildableDefn
 			(
-				"Ship", 
+				"Ship",
 				terrainNamesOrbit,
 				new VisualGroup
 				([
@@ -104,8 +104,8 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 			new BuildableDefn
 			(
-				"Shipyard",  
-				terrainNamesOrbit, 
+				"Shipyard",
+				terrainNamesOrbit,
 				new VisualGroup([new VisualRectangle(mapCellSizeInPixels, "Orange")]),
 				[ new Resource("Industry", 1) ], // resourcesToBuild
 				[], // resourcesPerTurn
@@ -132,7 +132,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		var numberOfNetworkNodes = 12;
 		var network = Network.generateRandom
 		(
-			universe, 
+			universe,
 			worldName,
 			NetworkNodeDefn.Instances._All,
 			numberOfNetworkNodes,
@@ -148,8 +148,8 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		var factions = [];
 		var ships = [];
 
-		var colors = Color.Instances;
-		var colorsForFactions = 
+		var colors = Color.Instances();
+		var colorsForFactions =
 		[
 			colors.Red,
 			colors.Orange,
@@ -159,7 +159,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 			colors.Violet,
 		];
 
-		var deviceDefns = 
+		var deviceDefns =
 		[
 			new DeviceDefn
 			(
@@ -334,18 +334,18 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 			(
 				factionName,
 				factionColor,
-				[], // relationships 
+				[], // relationships
 				new TechnologyResearcher
 				(
-					factionName, 
+					factionName,
 					null, // nameOfTechnologyBeingResearched,
 					0, // researchAccumulated
 					// namesOfTechnologiesKnown
 					[ "A" ]
-				), 
+				),
 				[
 					factionHomeStarsystem.planets[0]
-				], 
+				],
 				[
 					ship
 				],
@@ -364,11 +364,11 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 		var camera = new Camera
 		(
-			viewSize, 
-			focalLength, 
+			viewSize,
+			focalLength,
 			new Location
 			(
-				new Coords(-viewDimension, 0, 0), //pos, 
+				new Coords(-viewDimension, 0, 0), //pos,
 				new Orientation
 				(
 					new Coords(1, 0, 0), // forward
@@ -391,14 +391,14 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		);
 
 		return returnValue;
-	}
+	};
 
 	// instance methods
 
 	World.prototype.factionCurrent = function()
 	{
 		return this.factions[this.factionIndexCurrent];
-	}
+	};
 
 	World.prototype.factionsOtherThanCurrent = function()
 	{
@@ -406,7 +406,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		var returnValues = this.factions.slice();
 		returnValues.removeAt(this.factionIndexCurrent);
 		return returnValues;
-	}
+	};
 
 	World.prototype.initialize = function(universe)
 	{
@@ -414,7 +414,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		{
 			this.updateForTurn(universe);
 		}
-	}
+	};
 
 	World.prototype.updateForTurn = function(universe)
 	{
@@ -441,7 +441,5 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 			this.turnsSoFar++;
 		}
-
-
-	}
+	};
 }

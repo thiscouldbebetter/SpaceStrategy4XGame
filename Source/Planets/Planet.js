@@ -24,7 +24,7 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		{
 			Planet._bodyDefn = new BodyDefn
 			(
-				"Planet", 
+				"Planet",
 				new Coords(10, 10), // size
 				new VisualGroup
 				([
@@ -37,7 +37,7 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 							new GradientStop(.2, "White"),
 							new GradientStop(.3, "Cyan"),
 							new GradientStop(.75, "Cyan"),
-							new GradientStop(1, "Black"), 
+							new GradientStop(1, "Black"),
 						])
 					),
 					new VisualDynamic

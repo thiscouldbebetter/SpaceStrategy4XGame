@@ -7,7 +7,7 @@ function Action_CylinderMove_DistanceAlongAxis(distanceToMove)
 {
 	Action_CylinderMove_DistanceAlongAxis.prototype.perform = function(actor)
 	{
-		var constraintCylinder = actor.constraints["PositionOnCylinder"];
+		var constraintCylinder = actor.Constrainable.constraints["PositionOnCylinder"];
 
 		constraintCylinder.distanceFromCenterAlongAxis += this.distanceToMove;
 	}

@@ -10,7 +10,7 @@ function Order(defnName, target)
 	Order.prototype.defn = function()
 	{
 		return OrderDefn.Instances._All[this.defnName];
-	}
+	};
 
 	Order.prototype.obey = function(actor)
 	{
@@ -22,5 +22,5 @@ function Order(defnName, target)
 		{
 			this.defn().obey(actor, this);
 		}
-	}
+	};
 }

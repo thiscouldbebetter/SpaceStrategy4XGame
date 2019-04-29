@@ -13,7 +13,7 @@ function NotificationSession(factionName, notifications)
 		var notificationIndex = this.notifications.indexOf(notification);
 		this.notifications.remove(notification);
 		this.notificationSelected = this.notifications[notificationIndex];
-	}
+	};
 
 	NotificationSession.prototype.notificationGoTo = function(universe, notification)
 	{
@@ -41,7 +41,7 @@ function NotificationSession(factionName, notifications)
 		{
 			throw "Unrecognized notification type."
 		}
-	}
+	};
 
 	// controls
 
@@ -197,5 +197,5 @@ function NotificationSession(factionName, notifications)
 		);
 
 		return returnValue;
-	}
+	};
 }

@@ -15,14 +15,14 @@ function VenueStarsystem(venueParent, starsystem)
 		this.cursor = cursor;
 		this.bodies.push(cursor);
 		this.selection = cursor;
-	}
+	};
 
 	VenueStarsystem.prototype.cursorClear = function()
 	{
 		this.selection = this.cursor.bodyParent;
 		this.bodies.remove(this.cursor);
 		this.cursor = null;
-	}
+	};
 
 	VenueStarsystem.prototype.draw = function(universe)
 	{
@@ -44,12 +44,12 @@ function VenueStarsystem(venueParent, starsystem)
 		}
 
 		this.venueControls.draw(universe, world);
-	}
+	};
 
 	VenueStarsystem.prototype.finalize = function(universe)
 	{
 		universe.soundHelper.soundForMusic.pause(universe);
-	}
+	};
 
 	VenueStarsystem.prototype.initialize = function(universe)
 	{
@@ -111,17 +111,17 @@ function VenueStarsystem(venueParent, starsystem)
 		this.bodies = this.bodies.concat(starsystem.linkPortals);
 		this.bodies = this.bodies.concat(starsystem.planets);
 		this.bodies = this.bodies.concat(starsystem.ships);
-	}
+	};
 
 	VenueStarsystem.prototype.model = function()
 	{
 		return this.starsystem;
-	}
+	};
 
 	VenueStarsystem.prototype.selectionName = function()
 	{
 		return (this.selection == null ? "[none]" : this.selection.name);
-	}
+	};
 
 	VenueStarsystem.prototype.updateForTimerTick = function(universe)
 	{
@@ -155,7 +155,7 @@ function VenueStarsystem(venueParent, starsystem)
 		this.draw(universe);
 
 		this.updateForTimerTick_Input(universe);
-	}
+	};
 
 	VenueStarsystem.prototype.updateForTimerTick_Input = function(universe)
 	{
@@ -201,7 +201,7 @@ function VenueStarsystem(venueParent, starsystem)
 				this.updateForTimerTick_Input_Mouse(universe);
 			}
 		}
-	}
+	};
 
 	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse = function(universe)
 	{
@@ -296,7 +296,7 @@ function VenueStarsystem(venueParent, starsystem)
 		this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
 
 		inputHelper.isMouseClicked(false);
-	}
+	};
 
 	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse_Selection = function(universe, bodyClicked)
 	{
@@ -383,9 +383,7 @@ function VenueStarsystem(venueParent, starsystem)
 				this.selection = bodyClicked;
 			}
 		}
-
-
-	}
+	};
 
 	// camera
 
@@ -396,42 +394,42 @@ function VenueStarsystem(venueParent, starsystem)
 			var cameraConstraint = this.camera.Constrainable.constraints["PositionOnCylinder"];
 			cameraConstraint.center.overwriteWith(this.selection.loc.pos);
 		}
-	}
+	};
 
 	VenueStarsystem.prototype.cameraDown = function(cameraSpeed)
 	{
 		new Action_CylinderMove_DistanceAlongAxis(cameraSpeed).perform(this.camera);
-	}
+	};
 
 	VenueStarsystem.prototype.cameraIn = function(cameraSpeed)
 	{
 		new Action_CylinderMove_Radius(0 - cameraSpeed).perform(this.camera);
-	}
+	};
 
 	VenueStarsystem.prototype.cameraLeft = function(cameraSpeed)
 	{
 		new Action_CylinderMove_Yaw(cameraSpeed / 1000).perform(this.camera);
-	}
+	};
 
 	VenueStarsystem.prototype.cameraOut = function(cameraSpeed)
 	{
 		new Action_CylinderMove_Radius(cameraSpeed).perform(this.camera);
-	}
+	};
 
 	VenueStarsystem.prototype.cameraReset = function()
 	{
 		new Action_CylinderMove_Reset().perform(this.camera);
-	}
+	};
 
 	VenueStarsystem.prototype.cameraRight = function(cameraSpeed)
 	{
 		new Action_CylinderMove_Yaw(0 - cameraSpeed / 1000).perform(this.camera);
-	}
+	};
 
 	VenueStarsystem.prototype.cameraUp = function(cameraSpeed)
 	{
 		new Action_CylinderMove_DistanceAlongAxis(0 - cameraSpeed).perform(this.camera);
-	}
+	};
 
 	// controls
 
@@ -519,5 +517,5 @@ function VenueStarsystem(venueParent, starsystem)
 		returnValue = new ControlContainerTransparent(returnValue);
 
 		return returnValue;
-	}
+	};
 }

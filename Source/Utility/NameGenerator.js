@@ -37,5 +37,5 @@ function NameGenerator()
 		returnValue = returnValue[0].toUpperCase() + returnValue.substr(1);
 
 		return returnValue;
-	}
+	};
 }

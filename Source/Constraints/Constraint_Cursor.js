@@ -129,5 +129,5 @@ function Constraint_Cursor()
 			this.boundsToRestrictToMin,
 			this.boundsToRestrictToMax
 		);
-	}
+	};
 }

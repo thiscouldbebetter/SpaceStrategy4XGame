@@ -52,5 +52,5 @@ function Constraint_PositionOnCylinder
 		)
 
 		bodyOrientation.overwriteWith(this.orientation);
-	}
+	};
 }

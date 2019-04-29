@@ -43,19 +43,19 @@ function Ship(name, defn, pos, factionName, devices)
 		);
 
 		return returnValue;
-	}
+	};
 
 	// instance methods
 
 	Ship.prototype.faction = function(world)
 	{
 		return (this.factionName == null ? null : world.factions[this.factionName]);
-	}
+	};
 
 	Ship.prototype.id = function()
 	{
 		return this.factionName + this.name;
-	}
+	};
 
 	// devices
 
@@ -77,7 +77,7 @@ function Ship(name, defn, pos, factionName, devices)
 		}
 
 		return this._devicesUsable;
-	}
+	};
 
 	// movement
 
@@ -107,7 +107,7 @@ function Ship(name, defn, pos, factionName, devices)
 			linkDirection.multiplyScalar(-1)
 		}
 		shipLoc.vel.overwriteWith(linkDirection);
-	}
+	};
 
 	Ship.prototype.linkExit = function(world, link)
 	{
@@ -155,7 +155,7 @@ function Ship(name, defn, pos, factionName, devices)
 
 			factionKnowledge.worldKnownUpdate();
 		}
-	}
+	};
 
 	Ship.prototype.moveTowardTarget = function(universe, target)
 	{
@@ -238,18 +238,18 @@ function Ship(name, defn, pos, factionName, devices)
 				}
 			}
 		}
-	}
+	};
 
 	Ship.prototype.movementThroughLinkPerTurn = function(link)
 	{
 		return 8; // todo
-	}
+	};
 
 	Ship.prototype.planetOrbitEnter = function(universe, starsystem, planet)
 	{
 		starsystem.ships.remove(this);
 		starsystem.ships.push(this);
-	}
+	};
 
 	// controls
 
@@ -418,14 +418,14 @@ function Ship(name, defn, pos, factionName, devices)
 		);
 
 		return returnValue;
-	}
+	};
 
 	// diplomacy
 
 	Ship.prototype.strength = function()
 	{
 		return 1;
-	}
+	};
 
 	// turns
 
@@ -441,7 +441,7 @@ function Ship(name, defn, pos, factionName, devices)
 			var device = this.devices[i];
 			device.updateForTurn(universe, this);
 		}
-	}
+	};
 
 	// drawable
 
@@ -463,7 +463,7 @@ function Ship(name, defn, pos, factionName, devices)
 
 		var visual = this.visual(world);
 		visual.draw(universe, display, ship, new Location(drawPos));
-	}
+	};
 
 	Ship.prototype.visual = function(world)
 	{
@@ -474,7 +474,7 @@ function Ship(name, defn, pos, factionName, devices)
 		}
 
 		return this._visual;
-	}
+	};
 
 	Ship.visual = function(color)
 	{
@@ -491,6 +491,5 @@ function Ship(name, defn, pos, factionName, devices)
 			color.systemColor,
 			null // colorBorder
 		);
-	}
-
+	};
 }

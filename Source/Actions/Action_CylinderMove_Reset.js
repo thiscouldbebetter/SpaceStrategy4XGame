@@ -18,5 +18,5 @@ function Action_CylinderMove_Reset()
 		constraint.radius = camera.focalLength;
 		constraint.distanceFromCenterAlongAxis =
 			0 - camera.focalLength / 2 ;
-	}
+	};
 }

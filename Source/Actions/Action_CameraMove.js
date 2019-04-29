@@ -37,5 +37,5 @@ function Action_CameraMove(displacementAmountsRightAndDown)
 		var cameraOrientationForward = cameraPos.clone().multiplyScalar(-1).normalize();
 		cameraOrientation.forwardSet(cameraOrientationForward);
 		*/
-	}
+	};
 }

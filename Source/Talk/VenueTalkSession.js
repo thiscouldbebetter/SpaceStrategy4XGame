@@ -9,19 +9,19 @@ function VenueTalkSession(venueParent, talkSession)
 	VenueTalkSession.prototype.draw = function(universe)
 	{
 		this.venueControls.draw(universe);
-	}
+	};
 
 	VenueTalkSession.prototype.initialize = function(universe)
 	{
 		var controlRoot = this.controlBuild(universe);
 		this.venueControls = new VenueControls(controlRoot);
 		this.talkSession.update();
-	}
+	};
 
 	VenueTalkSession.prototype.updateForTimerTick = function(universe)
 	{
 		this.venueControls.updateForTimerTick(universe);
-	}
+	};
 
 	// controls
 
@@ -140,5 +140,5 @@ function VenueTalkSession(venueParent, talkSession)
 		);
 
 		return returnValue;
-	}
+	};
 }

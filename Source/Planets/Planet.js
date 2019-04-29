@@ -65,14 +65,14 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		}
 
 		return Planet._bodyDefn;
-	}
+	};
 
 	// instance methods
 
 	Planet.prototype.faction = function(world)
 	{
 		return (this.factionName == null ? null : world.factions[this.factionName]);
-	}
+	};
 
 	// controls
 
@@ -97,14 +97,14 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		);
 
 		return returnValue;
-	}
+	};
 
 	// diplomacy
 
 	Planet.prototype.strength = function()
 	{
 		return 1;
-	}
+	};
 
 	// turns
 
@@ -113,7 +113,7 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		this.layout.updateForTurn(universe, world, faction, this);
 		this.industry.updateForTurn(universe, world, faction, this);
 		this.demographics.updateForTurn(universe, world, faction, this);
-	}
+	};
 
 	// resources
 
@@ -133,22 +133,22 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		}
 
 		return returnValue;
-	}
+	};
 
 	Planet.prototype.industryPerTurn = function(universe, world, faction)
 	{
 		return this.resourcesPerTurn(universe, world, faction)["Industry"];
-	}
+	};
 
 	Planet.prototype.prosperityPerTurn = function(universe, world, faction)
 	{
 		return this.resourcesPerTurn(universe, world, faction)["Prosperity"];
-	}
+	};
 
 	Planet.prototype.researchPerTurn = function(universe, world, faction)
 	{
 		return this.resourcesPerTurn(universe, world, faction)["Research"];
-	}
+	};
 
 	Planet.prototype.resourcesPerTurn = function(universe, world, faction)
 	{
@@ -173,5 +173,5 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		}
 
 		return this._resourcesPerTurn;
-	}
+	};
 }

@@ -116,7 +116,7 @@ function ControlBuilderExtensions()
 		);
 
 		return returnValue;
-	}
+	};
 
 	ControlBuilder.prototype.timeAndPlace = function
 	(
@@ -228,7 +228,7 @@ function ControlBuilderExtensions()
 		);
 
 		return returnValue;
-	}
+	};
 
 	ControlBuilder.prototype.view = function
 	(
@@ -413,5 +413,5 @@ function ControlBuilderExtensions()
 		);
 
 		return returnValue;
-	}
+	};
 }

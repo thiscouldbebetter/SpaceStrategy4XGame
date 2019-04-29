@@ -13,7 +13,7 @@ function NetworkLink(namesOfNodesLinked)
 	NetworkLink.prototype.direction = function(cluster)
 	{
 		return this.displacement(cluster).normalize();
-	}
+	};
 
 	NetworkLink.prototype.displacement = function(cluster)
 	{
@@ -25,12 +25,12 @@ function NetworkLink(namesOfNodesLinked)
 		);
 
 		return returnValue;
-	}
+	};
 
 	NetworkLink.prototype.length = function(cluster)
 	{
 		return this.displacement(cluster).magnitude();
-	}
+	};
 
 	NetworkLink.prototype.nodesLinked = function(cluster)
 	{
@@ -41,7 +41,7 @@ function NetworkLink(namesOfNodesLinked)
 		];
 
 		return returnValue;
-	}
+	};
 
 	// turns
 
@@ -89,7 +89,7 @@ function NetworkLink(namesOfNodesLinked)
 				ship.linkExit(world, this);
 			}
 		}
-	}
+	};
 
 	// drawable
 
@@ -151,5 +151,5 @@ function NetworkLink(namesOfNodesLinked)
 			],
 			this.color // hack
 		);
-	}
+	};
 }

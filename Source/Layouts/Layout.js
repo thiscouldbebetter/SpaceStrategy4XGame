@@ -58,7 +58,7 @@ function Layout(sizeInPixels, map)
 		);
 
 		return layout;
-	}
+	};
 
 	// instance methods
 
@@ -67,12 +67,12 @@ function Layout(sizeInPixels, map)
 	Layout.prototype.facilities = function()
 	{
 		return this.map.bodies;
-	}
+	};
 
 	Layout.prototype.initialize = function(universe)
 	{
 		// todo
-	}
+	};
 
 	Layout.prototype.updateForTurn = function(universe, world, faction, parentModel)
 	{
@@ -85,8 +85,7 @@ function Layout(sizeInPixels, map)
 				cellBody.updateForTurn(universe, world, faction, parentModel, this);
 			}
 		}
-
-	}
+	};
 
 	// drawable
 
@@ -94,5 +93,5 @@ function Layout(sizeInPixels, map)
 	{
 		display.drawBackground();
 		this.map.draw(universe, display);
-	}
+	};
 }

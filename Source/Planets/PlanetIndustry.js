@@ -28,5 +28,5 @@ function PlanetIndustry()
 				buildableInProgress._visual = null;
 			}
 		}
-	}
+	};
 }

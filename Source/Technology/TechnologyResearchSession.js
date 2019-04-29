@@ -12,12 +12,12 @@ function TechnologyResearchSession(technologyTree, researcher)
 	{
 		var returnValue = (this.researcher.researchAccumulated == 0);
 		return returnValue;
-	}
+	};
 
 	TechnologyResearchSession.prototype.isTechnologyBeingResearched = function()
 	{
 		return (this.researcher.nameOfTechnologyBeingResearched != null);
-	}
+	};
 
 	TechnologyResearchSession.prototype.researchAccumulatedIncrement = function
 	(
@@ -27,7 +27,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 	)
 	{
 		this.researcher.researchAccumulatedIncrement(world, faction, amountToIncrement);
-	}
+	};
 
 	TechnologyResearchSession.prototype.researchRequired = function()
 	{
@@ -39,7 +39,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 			: technologyBeingResearched.researchRequired
 		);
 		return returnValue;
-	}
+	};
 
 	TechnologyResearchSession.prototype.technologyBeingResearched = function()
 	{
@@ -47,7 +47,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 		var returnValue = this.technologyTree.technologies[techName];
 
 		return returnValue;
-	}
+	};
 
 	// controls
 
@@ -236,5 +236,5 @@ function TechnologyResearchSession(technologyTree, researcher)
 		this.control = returnValue;
 
 		return returnValue;
-	}
+	};
 }

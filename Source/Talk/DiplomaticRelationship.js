@@ -42,7 +42,7 @@ function DiplomaticRelationship(factionNameOther, state)
 			var faction = factions[f];
 			faction.relationships.addLookups("factionNameOther");
 		}
-	}
+	};
 
 	DiplomaticRelationship.setStateForFactions = function(factions, state)
 	{
@@ -55,7 +55,7 @@ function DiplomaticRelationship(factionNameOther, state)
 		}
 
 		return state;
-	}
+	};
 
 	DiplomaticRelationship.strengthOfFactions = function(factions)
 	{
@@ -68,7 +68,7 @@ function DiplomaticRelationship(factionNameOther, state)
 		}
 
 		return returnValue;
-	}
+	};
 
 	// instances
 
@@ -77,7 +77,7 @@ function DiplomaticRelationship(factionNameOther, state)
 		this.Alliance = "Alliance";
 		this.Peace = "Peace";
 		this.War = "War";
-	}
+	};
 
 	DiplomaticRelationship.States = new DiplomaticRelationship_States();
 
@@ -86,11 +86,11 @@ function DiplomaticRelationship(factionNameOther, state)
 	DiplomaticRelationship.prototype.factionOther = function(universe)
 	{
 		return universe.factions[this.factionNameOther];
-	}
+	};
 
 	DiplomaticRelationship.prototype.toString = function()
 	{
 		var returnValue = this.factionNameOther + ":" + this.state;
 		return returnValue;
-	}
+	};
 }

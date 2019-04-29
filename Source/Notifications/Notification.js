@@ -11,7 +11,7 @@ function Notification(typeName, turnCreated, message, loc)
 	Notification.prototype.defn = function()
 	{
 		return NotificationType.Instances._All[this.defnName];
-	}
+	};
 
 	Notification.prototype.toString = function()
 	{
@@ -20,5 +20,5 @@ function Notification(typeName, turnCreated, message, loc)
 			+ this.loc.name + " - "
 			+ this.message;
 		return returnValue;
-	}
+	};
 }

@@ -11,5 +11,5 @@ function Action_CylinderMove_Yaw(turnsToMove)
 
 		constraintCylinder.yawInTurns += this.turnsToMove;
 		constraintCylinder.yawInTurns.wrapToRangeMinMax(0, 1);
-	}
+	};
 }

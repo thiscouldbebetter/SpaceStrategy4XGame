@@ -99,14 +99,14 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		);
 
 		return returnValue;
-	}
+	};
 
 	// instance methods
 
 	Starsystem.prototype.faction = function(world)
 	{
 		return (this.factionName == null ? null : world.factions[this.factionName]);
-	}
+	};
 
 	Starsystem.prototype.links = function(cluster)
 	{
@@ -120,14 +120,14 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		}
 
 		return returnValues;
-	}
+	};
 
 	// moves
 
 	Starsystem.prototype.updateForMove = function()
 	{
 		alert("todo");
-	}
+	};
 
 	// turns
 
@@ -141,7 +141,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				body.updateForTurn(universe, world, this);
 			}
 		}
-	}
+	};
 
 	// drawing
 
@@ -198,7 +198,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 			var body = bodiesToDrawSorted[i];
 			this.draw_Body(universe, world, display, camera, body);
 		}
-	}
+	};
 
 	Starsystem.prototype.draw_Body = function(universe, world, display, camera, body)
 	{
@@ -213,7 +213,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		bodyPos.overwriteWith(this.posSaved);
 
 		this.visualElevationStem.draw(universe, world, display, body);
-	}
+	};
 }
 
 // Visuals.
@@ -239,7 +239,7 @@ function VisualElevationStem(camera)
 		var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
 		var colors = Color.Instances();
 		display.drawLine(drawPosTip, drawPosPlane, colors[colorName].systemColor());
-	}
+	};
 }
 
 function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, color)
@@ -297,8 +297,7 @@ function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, col
 					// todo - Real clipping.
 					display.drawLine(drawPosFrom, drawPosTo, this.color);
 				}
-
 			}
 		}
-	}
+	};
 }

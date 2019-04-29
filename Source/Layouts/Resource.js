@@ -20,7 +20,7 @@ function Resource(defnName, quantity)
 			}
 			resourceExisting.quantity += resourceToBeAdded.quantity;
 		}
-	}
+	};
 
 	Resource.isSupersetOf = function(resourcesThis, resourcesOther)
 	{
@@ -52,7 +52,7 @@ function Resource(defnName, quantity)
 		}
 
 		return returnValue;
-	}
+	};
 
 	Resource.subtract = function(resourcesToSubtractFrom, resourcesToBeSubtracted)
 	{
@@ -69,14 +69,12 @@ function Resource(defnName, quantity)
 			}
 			resourceExisting.quantity -= resourceToBeSubtracted.quantity;
 		}
-	}
-
+	};
 
 	// instance methods
 
 	Resource.prototype.toString = function()
 	{
 		return this.defnName + ": " + this.quantity;
-	}
-
+	};
 }

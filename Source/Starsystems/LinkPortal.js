@@ -13,31 +13,31 @@ function LinkPortal(name, defn, pos, starsystemNamesFromAndTo)
 	{
 		var returnValue = cluster.links[this.starsystemNameFrom()][this.starsystemNameTo()];
 		return returnValue;
-	}
+	};
 
 	LinkPortal.prototype.starsystemFrom = function(cluster)
 	{
 		var starsystemName = this.starsystemNameFrom();
 		var returnValue = cluster.nodes[starsystemName].starsystem;
 		return returnValue;
-	}
+	};
 
 	LinkPortal.prototype.starsystemNameFrom = function()
 	{
 		return this.starsystemNamesFromAndTo[0];
-	}
+	};
 
 	LinkPortal.prototype.starsystemNameTo = function()
 	{
 		return this.starsystemNamesFromAndTo[1];
-	}
+	};
 
 	LinkPortal.prototype.starsystemTo = function(cluster)
 	{
 		var starsystemName = this.starsystemNameTo();
 		var returnValue = cluster.nodes[starsystemName].starsystem;
 		return returnValue;
-	}
+	};
 
 	// controls
 
@@ -53,5 +53,5 @@ function LinkPortal(name, defn, pos, starsystemNamesFromAndTo)
 		);
 
 		return returnValue;
-	}
+	};
 }

@@ -10,5 +10,5 @@ function Action_CylinderMove_Radius(distanceToMove)
 		var constraintCylinder = actor.Constrainable.constraints["PositionOnCylinder"];
 
 		constraintCylinder.radius += this.distanceToMove;
-	}
+	};
 }

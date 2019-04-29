@@ -8,5 +8,5 @@ function PlanetDemographics(population)
 	PlanetDemographics.prototype.updateForTurn = function(universe, world, faction, planet)
 	{
 		// todo
-	}
+	};
 }

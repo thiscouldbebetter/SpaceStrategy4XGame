@@ -76,11 +76,10 @@ function FactionKnowledge(factionNames, starsystemNames, linkNames)
 		}
 
 		return this._worldKnown;
-	}
+	};
 
 	FactionKnowledge.prototype.worldKnownUpdate = function()
 	{
 		this._worldKnown = null;
-	}
-
+	};
 }

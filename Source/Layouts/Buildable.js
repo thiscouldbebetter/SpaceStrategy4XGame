@@ -9,7 +9,7 @@ function Buildable(defnName, pos, isComplete)
 	Buildable.prototype.defn = function(world)
 	{
 		return world.buildables[this.defnName];
-	}
+	};
 
 	Buildable.prototype.visual = function(world)
 	{
@@ -31,5 +31,5 @@ function Buildable(defnName, pos, isComplete)
 		}
 
 		return this._visual;
-	}
+	};
 }

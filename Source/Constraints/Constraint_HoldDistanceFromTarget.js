@@ -31,5 +31,5 @@ function Constraint_HoldDistanceFromTarget(distanceToHold, targetPos)
 		(
 			this.targetPos
 		).round();
-	}
+	};
 }

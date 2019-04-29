@@ -29,14 +29,14 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 		);
 
 		return session;
-	}
+	};
 
 	// instance methods
 
 	DiplomaticSession.prototype.isFactionSelected = function()
 	{
 		return (this.factionSelected != null);
-	}
+	};
 
 	DiplomaticSession.prototype.talkSessionInitialize = function(universe)
 	{
@@ -51,7 +51,7 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 		);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
-	}
+	};
 
 	// controls
 
@@ -144,5 +144,5 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 		);
 
 		return returnValue;
-	}
+	};
 }

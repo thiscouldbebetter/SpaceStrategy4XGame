@@ -13,12 +13,12 @@ function VenueLayout(venueParent, modelParent, layout)
 		this.venueControls = new VenueControls(controlRoot);
 
 		this.layout.initialize(universe);
-	}
+	};
 
 	VenueLayout.prototype.model = function()
 	{
 		return this.layout;
-	}
+	};
 
 	VenueLayout.prototype.updateForTimerTick = function(universe)
 	{
@@ -81,7 +81,7 @@ function VenueLayout(venueParent, modelParent, layout)
 		}
 
 		this.draw(universe);
-	}
+	};
 
 	// controls
 
@@ -153,8 +153,7 @@ function VenueLayout(venueParent, modelParent, layout)
 		);
 
 		return returnValue;
-
-	}
+	};
 
 	VenueLayout.prototype.controlBuildableSelectBuild = function(universe, cursorPos)
 	{
@@ -250,7 +249,7 @@ function VenueLayout(venueParent, modelParent, layout)
 		);
 
 		return returnValue;
-	}
+	};
 
 	VenueLayout.prototype.controlBuild = function(universe)
 	{
@@ -359,7 +358,7 @@ function VenueLayout(venueParent, modelParent, layout)
 		returnValue = new ControlContainerTransparent(returnValue);
 
 		return returnValue;
-	}
+	};
 
 	VenueLayout.prototype.controlBuild_Industry = function
 	(
@@ -425,7 +424,7 @@ function VenueLayout(venueParent, modelParent, layout)
 		);
 
 		return returnValue;
-	}
+	};
 
 	VenueLayout.prototype.controlBuild_Vitals = function
 	(
@@ -518,8 +517,7 @@ function VenueLayout(venueParent, modelParent, layout)
 		);
 
 		return returnValue;
-	}
-
+	};
 
 	// drawable
 
@@ -527,5 +525,5 @@ function VenueLayout(venueParent, modelParent, layout)
 	{
 		this.layout.draw(universe, universe.display);
 		this.venueControls.draw(universe);
-	}
+	};
 }

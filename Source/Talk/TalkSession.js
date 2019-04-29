@@ -152,7 +152,7 @@ function TalkSession(defn, factions)
 		);
 
 		return returnValue;
-	}
+	};
 
 	TalkSession.fromStrings = function(factions, talkNodesAsStrings)
 	{
@@ -179,14 +179,14 @@ function TalkSession(defn, factions)
 		);
 
 		return talkSession;
-	}
+	};
 
 	// instance methods
 
 	TalkSession.prototype.displayTextCurrent = function()
 	{
 		return this.scopeCurrent.displayTextCurrent;
-	}
+	};
 
 	TalkSession.prototype.hasResponseBeenSpecified = function()
 	{
@@ -196,29 +196,29 @@ function TalkSession(defn, factions)
 			|| (this.optionSelected != null)
 		);
 		return returnValue;
-	}
+	};
 
 	TalkSession.prototype.optionsAvailable = function()
 	{
 		var returnValues = (this.scopeCurrent.areOptionsVisible ? this.scopeCurrent.talkNodesForOptions : []);
 
 		return returnValues;
-	}
+	};
 
 	TalkSession.prototype.respond = function()
 	{
 		this.update();
-	}
+	};
 
 	TalkSession.prototype.start = function()
 	{
 		document.body.appendChild(this.htmlElementBuild());
 
 		//this.update();
-	}
+	};
 
 	TalkSession.prototype.update = function()
 	{
 		this.scopeCurrent.update(this);
-	}
+	};
 }

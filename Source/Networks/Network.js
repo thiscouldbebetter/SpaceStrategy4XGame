@@ -237,7 +237,7 @@ function Network(name, nodes, links)
 		);
 
 		return returnValue;
-	}
+	};
 
 	// turns
 
@@ -248,7 +248,7 @@ function Network(name, nodes, links)
 			var link = this.links[i];
 			link.updateForTurn(universe, world, this);
 		}
-	}
+	};
 
 	// drawing
 
@@ -313,5 +313,5 @@ function Network(name, nodes, links)
 			var drawable = drawablesSortedByZ[i];
 			drawable.draw(universe, nodeRadiusActual, camera, drawPos);
 		}
-	}
+	};
 }

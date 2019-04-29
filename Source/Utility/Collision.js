@@ -38,7 +38,7 @@ function Collision()
 		}
 
 		return listToAddTo;
-	}
+	};
 
 	// instance methods
 
@@ -75,7 +75,7 @@ function Collision()
 		}
 
 		return this;
-	}
+	};
 
 	Collision.prototype.rayAndPlane = function(ray, plane)
 	{
@@ -103,7 +103,7 @@ function Collision()
 		}
 
 		return this;
-	}
+	};
 
 	Collision.prototype.rayAndSphere = function(ray, sphere)
 	{
@@ -176,7 +176,7 @@ function Collision()
 		}
 
 		return this;
-	}
+	};
 
 	Collision.prototype.isPosWithinFace = function(face)
 	{
@@ -213,6 +213,5 @@ function Collision()
 		}
 
 		return isPosWithinAllEdgesOfFaceSoFar;
-	}
-
+	};
 }

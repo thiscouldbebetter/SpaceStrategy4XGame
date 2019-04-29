@@ -40,14 +40,14 @@ function Cursor(bodyParent)
 			);
 		}
 		return Cursor._bodyDefn;
-	}
+	};
 
 	// controls
 
 	Cursor.prototype.controlBuild = function(universe, controlSize)
 	{
 		return this.bodyParent.controlBuild(universe, controlSize);
-	}
+	};
 
 	// drawable
 
@@ -62,5 +62,5 @@ function Cursor(bodyParent)
 			venueStarsystem.camera,
 			this
 		);
-	}
+	};
 }

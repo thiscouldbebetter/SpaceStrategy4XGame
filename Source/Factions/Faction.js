@@ -112,7 +112,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		);
 
 		return returnValue;
-	}
+	};
 
 	// instance methods
 
@@ -126,12 +126,12 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		var venueNext = new VenueTechnologyResearchSession(researchSession);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
-	}
+	};
 
 	Faction.prototype.toString = function()
 	{
 		return this.name;
-	}
+	};
 
 	// controls
 
@@ -272,14 +272,14 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		);
 
 		return returnValue;
-	}
+	};
 
 	// diplomacy
 
 	Faction.prototype.allianceProposalAcceptFrom = function(factionOther)
 	{
 		return true;
-	}
+	};
 
 	Faction.prototype.allies = function()
 	{
@@ -287,7 +287,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		(
 			Relationship.States.Alliance
 		);
-	}
+	};
 
 	Faction.prototype.enemies = function()
 	{
@@ -295,7 +295,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		(
 			Relationship.States.War
 		);
-	}
+	};
 
 	Faction.prototype.factionsMatchingRelationshipState = function(stateToMatch)
 	{
@@ -312,12 +312,12 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		}
 
 		return returnValues;
-	}
+	};
 
 	Faction.prototype.peaceOfferAcceptFrom = function(factionOther)
 	{
 		return true;
-	}
+	};
 
 	Faction.prototype.relationsInitialize = function(universe)
 	{
@@ -334,7 +334,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		var venueNext = new VenueControls(diplomaticSessionAsControl, universe.venueCurrent);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
-	}
+	};
 
 	Faction.prototype.selfAndAllies = function()
 	{
@@ -346,7 +346,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		returnValues.push(this);
 
 		return returnValues;
-	}
+	};
 
 	Faction.prototype.strength = function()
 	{
@@ -369,12 +369,12 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		this.technologyResearcher.strength();
 
 		return returnValue;
-	}
+	};
 
 	Faction.prototype.warThreatOfferConcessionsTo = function(factionOther)
 	{
 		return true;
-	}
+	};
 
 	// notifications
 
@@ -385,7 +385,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		var venueNext = new VenueControls(notificationSessionAsControl);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
-	}
+	};
 
 	// turns
 
@@ -407,7 +407,7 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		}
 
 		return returnValue;
-	}
+	};
 
 	Faction.prototype.updateForTurn = function(universe, world)
 	{
@@ -424,5 +424,5 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 		}
 
 		this.technology.updateForTurn(universe, world, this);
-	}
+	};
 }

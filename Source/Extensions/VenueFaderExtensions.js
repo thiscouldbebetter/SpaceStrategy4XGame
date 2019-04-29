@@ -7,5 +7,5 @@ function VenueFaderExtensions()
 	VenueFader.prototype.model = function()
 	{
 		return this.venueCurrent().model();
-	}
+	};
 }

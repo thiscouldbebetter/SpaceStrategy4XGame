@@ -37,5 +37,5 @@ function TechnologyTree(name, technologies)
 		);
 
 		return returnValue;
-	}
+	};
 }

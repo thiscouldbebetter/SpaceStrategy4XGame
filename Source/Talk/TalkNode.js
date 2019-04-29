@@ -66,7 +66,7 @@ function TalkNode(defn, parameters)
 		}
 
 		return returnValue;
-	}
+	};
 
 	// instance methods
 
@@ -76,12 +76,12 @@ function TalkNode(defn, parameters)
 		{
 			this.defn.click(talkSession, scope, this);
 		}
-	}
+	};
 
 	TalkNode.prototype.execute = function(talkSession, scope)
 	{
 		this.defn.execute(talkSession, scope, this);
-	}
+	};
 
 	TalkNode.prototype.htmlElementBuild = function(talkSession)
 	{
@@ -94,11 +94,10 @@ function TalkNode(defn, parameters)
 		this.htmlElement = returnValue;
 
 		return returnValue;
-	}
+	};
 
 	TalkNode.prototype.text = function()
 	{
 		return this.parameters[1]; // hack
-	}
-
+	};
 }

@@ -18,5 +18,5 @@ function Constraint_LookAt(targetPos)
 		).normalize();
 
 		bodyOrientation.forwardSet(bodyOrientationForwardNew);
-	}
+	};
 }

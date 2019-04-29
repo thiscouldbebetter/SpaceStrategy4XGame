@@ -10,5 +10,5 @@ function Action_CylinderMove_DistanceAlongAxis(distanceToMove)
 		var constraintCylinder = actor.Constrainable.constraints["PositionOnCylinder"];
 
 		constraintCylinder.distanceFromCenterAlongAxis += this.distanceToMove;
-	}
+	};
 }

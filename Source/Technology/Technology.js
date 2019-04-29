@@ -25,5 +25,5 @@ function Technology
 		}
 
 		return returnValues;
-	}
+	};
 }

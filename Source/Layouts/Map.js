@@ -47,7 +47,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 	Map.prototype.bodiesNeighboringCursor = function()
 	{
 		return this.bodiesNeighboringPosInCells(this.cursor.pos);
-	}
+	};
 
 	Map.prototype.bodiesNeighboringPosInCells = function(centerPosInCells)
 	{
@@ -67,8 +67,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		}
 
 		return returnValues;
-	}
-
+	};
 
 	Map.prototype.bodyAtPosInCells = function(cellPos)
 	{
@@ -84,24 +83,24 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 			}
 		}
 		return returnValue;
-	}
+	};
 
 	Map.prototype.bodyAtCursor = function()
 	{
 		return this.bodyAtPosInCells(this.cursor.pos);
-	}
+	};
 
 	Map.prototype.terrainAtPosInCells = function(cellPos)
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
 		return this.terrains[terrainCode];
 		return returnValue;
-	}
+	};
 
 	Map.prototype.terrainAtCursor = function()
 	{
 		return this.terrainAtPosInCells(this.cursor.pos);
-	}
+	};
 
 	// drawable
 
@@ -199,6 +198,5 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 				cursorVisual.draw(universe, world, display, drawable);
 			}
 		}
-	}
-
+	};
 }

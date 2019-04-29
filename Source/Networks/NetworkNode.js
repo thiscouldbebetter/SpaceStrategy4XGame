@@ -79,7 +79,7 @@ function NetworkNode(name, defn, pos, starsystem)
 		);
 
 		return returnValue;
-	}
+	};
 
 	// drawable
 
@@ -129,7 +129,7 @@ function NetworkNode(name, defn, pos, starsystem)
 				universe, radiusApparent, drawPos, nodeColor, starsystem
 			);
 		}
-	}
+	};
 
 	NetworkNode.prototype.draw_Starsystem = function(universe, radiusApparent, starsystemDrawPos, nodeColor, starsystem)
 	{
@@ -201,7 +201,7 @@ function NetworkNode(name, defn, pos, starsystem)
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;
 		visualText.draw(universe, world, display, drawableTransformed);
-	}
+	};
 }
 
 function VisualCircleGradient(radius, gradient)
@@ -213,5 +213,5 @@ function VisualCircleGradient(radius, gradient)
 	VisualCircleGradient.prototype.draw = function(universe, world, display, drawable)
 	{
 		display.drawCircleWithGradient(drawable.loc.pos, this.radius, this.gradient);
-	}
+	};
 }

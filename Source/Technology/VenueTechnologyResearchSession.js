@@ -8,7 +8,7 @@ function VenueTechnologyResearchSession(researchSession)
 	VenueTechnologyResearchSession.prototype.draw = function(universe)
 	{
 		this.venueControls.draw(universe);
-	}
+	};
 
 	VenueTechnologyResearchSession.prototype.initialize = function(universe)
 	{
@@ -16,10 +16,10 @@ function VenueTechnologyResearchSession(researchSession)
 		(
 			this.researchSession.controlBuild(universe)
 		);
-	}
+	};
 
 	VenueTechnologyResearchSession.prototype.updateForTimerTick = function(universe)
 	{
 		this.venueControls.updateForTimerTick(universe);
-	}
+	};
 }

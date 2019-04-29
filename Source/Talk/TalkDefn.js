@@ -21,5 +21,5 @@ function TalkDefn(name, talkNodes)
 	TalkDefn.prototype.talkNodeByLabel = function(nameOfTalkNodeToGet)
 	{
 		return this.talkNodes[TalkNode.Underscore + nameOfTalkNodeToGet];
-	}
+	};
 }

@@ -49,7 +49,7 @@ function Constraint_PositionOnCylinder
 				this.radius
 			)
 
-		)
+		);
 
 		bodyOrientation.overwriteWith(this.orientation);
 	};

@@ -52,7 +52,7 @@ function FactionKnowledge(factionNames, starsystemNames, linkNames)
 				networkActual.name,
 				nodesKnown,
 				linksKnown
-			)
+			);
 
 			var factionsActual = worldActual.factions;
 			var factionsKnown = [];

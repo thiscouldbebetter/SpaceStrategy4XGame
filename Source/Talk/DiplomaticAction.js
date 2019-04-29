@@ -196,7 +196,7 @@ function DiplomaticAction(name, effect)
 						}
 						else
 						{
-							var relationship = factionActing.relationships[factionReceiving.name]
+							var relationship = factionActing.relationships[factionReceiving.name];
 							relationship.state = Relationship.States.Alliance;
 							relationship = factionReceiving.relationships[factionActing.name];
 							relationship.state = Relationship.States.Alliance;

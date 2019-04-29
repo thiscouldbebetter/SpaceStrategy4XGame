@@ -116,7 +116,8 @@ function Network(name, nodes, links)
 		(
 			new Coords(0, 0, 0), // center
 			new Coords(1, 1, 1).multiplyScalar(2 * radiusMax) // size
-		)
+		);
+
 		for (var i = 0; i  < nodePositions.length; i++)
 		{
 			var nodePos = nodePositions[i];

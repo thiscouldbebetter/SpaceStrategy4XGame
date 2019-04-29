@@ -69,7 +69,7 @@ function NetworkLink(namesOfNodesLinked)
 					shipVel.clone().multiplyScalar(shipSpeed)
 				);
 
-				var isShipMovingForward = (shipVel.dotProduct(direction) > 0)
+				var isShipMovingForward = (shipVel.dotProduct(direction) > 0);
 				var nodeIndexFrom = (isShipMovingForward ? 0 : 1);
 				var nodeFrom = nodesLinked[nodeIndexFrom];
 				var distanceAlongLink = shipPos.clone().subtract

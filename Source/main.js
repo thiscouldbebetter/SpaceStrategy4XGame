@@ -11,25 +11,31 @@ function main()
 		10, // fontHeightInPixels
 		"Blue", "rgb(16, 0, 32)" // colorFore, colorBack
 	);
+	
+	var contentPath = "../Content/";
+	var contentPathImages = contentPath + "Images/";
+	var contentPathAudio = contentPath + "Audio/";
+	var contentPathVideo = contentPath + "Video/";
+	var contentPathFonts = contentPath + "Fonts/";
 
 	var mediaLibrary = new MediaLibrary
 	(
 		// images
 		[
-			new Image("Title", "../Media/Title.png"),
+			new Image("Title", contentPathImages + "Title.png"),
 		],
 		// sounds
 		[
-			new Sound("Sound", "../Media/Sound.wav", false),
-			new Sound("Music", "../Media/Music.mp3", true),
+			new Sound("Sound", contentPathAudio + "Effects/Sound.wav", false),
+			new Sound("Music", contentPathAudio + "Music/Music.mp3", true),
 		],
 		// videos
 		[
-			new Video("Movie", "../Media/Movie.webm"),
+			new Video("Movie", contentPathVideo + "Movie.webm"),
 		],
 		// fonts
 		[
-			new Font("Font", "../Media/Font.ttf")
+			new Font("Font", contentPathFonts + "Font.ttf")
 		],
 		// textStrings
 		[]

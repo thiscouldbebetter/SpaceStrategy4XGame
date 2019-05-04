@@ -261,6 +261,6 @@ function TalkNodeDefn(name, execute)
 			this.Set,
 			this.Quit,
 		];
-		this._All.addLookups("name");
+		this._All.addLookupsByName();
 	}
 }

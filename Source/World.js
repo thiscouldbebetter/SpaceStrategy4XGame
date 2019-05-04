@@ -4,8 +4,8 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 	this.name = name;
 	this.dateCreated = dateCreated;
 
-	this.activityDefns = activityDefns.addLookups("name");
-	this.buildables = buildables.addLookups("name");
+	this.activityDefns = activityDefns.addLookupsByName();
+	this.buildables = buildables.addLookupsByName();
 	this.technologyTree = technologyTree;
 	this.network = network;
 	this.factions = factions;
@@ -14,8 +14,8 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 	this.dateSaved = this.dateCreated;
 
-	this.factions.addLookups("name");
-	this.ships.addLookups("name");
+	this.factions.addLookupsByName();
+	this.ships.addLookupsByName();
 
 	this.turnsSoFar = 0;
 	this.factionIndexCurrent = 0;
@@ -121,7 +121,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 					);
 				}
 			),
-		].addLookups("name");
+		].addLookupsByName();
 
 		var technologyTree = TechnologyTree.demo();
 
@@ -253,7 +253,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 					}
 				}
 			),
-		].addLookups("name");
+		].addLookupsByName();
 
 		for (var i = 0; i < numberOfFactions; i++)
 		{
@@ -353,7 +353,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				(
 					[ factionName ],
 					[ factionHomeStarsystem.name ],
-					factionHomeStarsystem.links(network).elementProperties("name")
+					factionHomeStarsystem.links(network).select(function(x) { return x.name; } )
 				)
 			);
 			factions.push(faction);

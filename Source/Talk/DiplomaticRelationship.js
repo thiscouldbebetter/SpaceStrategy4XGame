@@ -40,7 +40,7 @@ function DiplomaticRelationship(factionNameOther, state)
 		for (var f = 0; f < factions.length; f++)
 		{
 			var faction = factions[f];
-			faction.relationships.addLookups("factionNameOther");
+			faction.relationships.addLookups( function(x) { return x.factionNameOther; } );
 		}
 	};
 

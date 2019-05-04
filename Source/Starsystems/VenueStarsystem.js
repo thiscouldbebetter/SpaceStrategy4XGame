@@ -101,7 +101,7 @@ function VenueStarsystem(venueParent, starsystem)
 				),
 
 				new Constraint_LookAt(targetForCamera),
-			].addLookups("name")
+			].addLookupsByName()
 		);
 
 		Constrainable.constrain(universe, universe.world, this, this.camera);

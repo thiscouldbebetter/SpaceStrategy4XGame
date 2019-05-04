@@ -5,7 +5,7 @@ function Network(name, nodes, links)
 	this.nodes = nodes;
 	this.links = links;
 
-	this.nodes.addLookups("name");
+	this.nodes.addLookupsByName();
 
 	for (var i = 0; i < this.links.length; i++)
 	{
@@ -110,7 +110,10 @@ function Network(name, nodes, links)
 			nodesNotYetLinked.push(node);
 		}
 
-		var nodePositions = nodesNotYetLinked.elementProperties("loc").elementProperties("pos");
+		var nodePositions = nodesNotYetLinked.select
+		(
+			function(x) { return x.loc.pos; }
+		);
 		var boundsActual = new Bounds(new Coords(), new Coords()).ofPoints(nodePositions);
 		var boundsDesired = new Bounds
 		(

@@ -45,7 +45,7 @@ function OrderDefn(name, obey)
 			this.Go,
 		];
 
-		this._All.addLookups("name");
+		this._All.addLookupsByName();
 	}
 
 	OrderDefn.Instances = new OrderDefn_Instances();

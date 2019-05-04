@@ -2,11 +2,11 @@
 function DiplomaticSession(diplomaticActions, factionActing, factions, venueParent)
 {
 	this.diplomaticActions = diplomaticActions;
-	this.diplomaticActions.addLookups("name");
+	this.diplomaticActions.addLookupsByName();
 
 	this.factionActing = factionActing;
 	this.factions = factions;
-	this.factions.addLookups("name");
+	this.factions.addLookupsByName();
 
 	this.venueParent = venueParent;
 

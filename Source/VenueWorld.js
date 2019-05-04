@@ -228,7 +228,7 @@ function VenueWorld(world)
 					origin
 				),
 				new Constraint_LookAt(origin),
-			].addLookups("name")
+			].addLookupsByName()
 		);
 	};
 

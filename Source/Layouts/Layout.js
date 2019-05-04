@@ -31,7 +31,7 @@ function Layout(sizeInPixels, map)
 			new MapTerrain("Orbit", "-", new VisualRectangle(mapCellSizeInPixels, null, "Violet"), false),
 			new MapTerrain("Surface", ".", new VisualRectangle(mapCellSizeInPixels, null, "LightGray"), false),
 		];
-		terrains.addLookups("codeChar");
+		terrains.addLookups( function(x) { return x.codeChar; } );
 
 		var map = new Map
 		(

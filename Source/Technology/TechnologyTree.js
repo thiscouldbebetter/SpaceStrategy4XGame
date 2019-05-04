@@ -2,7 +2,7 @@
 function TechnologyTree(name, technologies)
 {
 	this.name = name;
-	this.technologies = technologies.addLookups("name");
+	this.technologies = technologies.addLookupsByName();
 }
 
 {

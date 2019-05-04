@@ -21,6 +21,6 @@ function DeviceCategory(name)
 			this.Shield,
 			this.Special,
 			this.Weapon,
-		].addLookups("name");
+		].addLookupsByName();
 	}
 }

@@ -168,7 +168,7 @@ function VenueStarsystem(venueParent, starsystem)
 		{
 			var inputActive = inputsActive[i].name;
 
-			if (inputActive.startsWith("Mouse"))
+			if (inputActive.startsWith("MouseMove"))
 			{
 				// Do nothing.
 			}
@@ -176,23 +176,23 @@ function VenueStarsystem(venueParent, starsystem)
 			{
 				this.cameraLeft(cameraSpeed);
 			}
-			else if (inputActive == "_d")
+			else if (inputActive == "d")
 			{
 				this.cameraRight(cameraSpeed);
 			}
-			else if (inputActive == "_f")
+			else if (inputActive == "f")
 			{
 				this.cameraDown(cameraSpeed);
 			}
-			else if (inputActive == "_r")
+			else if (inputActive == "r")
 			{
 				this.cameraUp(cameraSpeed);
 			}
-			else if (inputActive == "_s")
+			else if (inputActive == "s")
 			{
 				this.cameraOut(cameraSpeed);
 			}
-			else if (inputActive == "_w")
+			else if (inputActive == "w")
 			{
 				this.cameraIn(cameraSpeed);
 			}

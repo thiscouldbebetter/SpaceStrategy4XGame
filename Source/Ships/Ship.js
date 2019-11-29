@@ -387,10 +387,10 @@ function Ship(name, defn, pos, factionName, devices)
 					new Coords(buttonSize.x, controlSpacing * 2), // size
 					// dataBindingForItems
 					new DataBinding(this, "devicesUsable()"),
-					"defn.name", // bindingExpressionForOptionText
+					new DataBinding(null, "defn.name"), // bindingForOptionText
 					fontHeightInPixels,
 					new DataBinding(this, "deviceSelected"), // dataBindingForItemSelected
-					null // bindingExpressionForItemValue
+					new DataBinding() // bindingForItemValue
 				),
 
 				new ControlButton

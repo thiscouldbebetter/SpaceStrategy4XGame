@@ -78,7 +78,7 @@ function NotificationSession(factionName, notifications)
 					new Coords(margin, margin + controlHeight), // pos
 					new Coords(columnWidth, controlHeight * 4), // size
 					new DataBinding(this.notifications),
-					"toString()", // bindingExpressionForItemText
+					new DataBinding(null, "toString()"), // bindingForItemText
 					fontHeightInPixels,
 					// bindingForItemSelected
 					new DataBinding(this, "notificationSelected"),

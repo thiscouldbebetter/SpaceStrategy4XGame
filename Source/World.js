@@ -244,11 +244,19 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				{
 					if (device.usesThisTurn > 0)
 					{
-						device.usesThisTurn--;
-						target.integrity -= 1;
-						if (target.integrity <= 0)
+						if (target == null)
 						{
-							alert("todo - ship destroyed");
+							var mustTargetBody = true;
+							universe.venueCurrent.cursorSet(actor, mustTargetBody);
+						}
+						else // if (target != null)
+						{
+							device.usesThisTurn--;
+							target.integrity -= 1;
+							if (target.integrity <= 0)
+							{
+								alert("todo - ship destroyed");
+							}
 						}
 					}
 				}
@@ -305,34 +313,42 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				new Buildable("Hub", new Coords(4, 4), true)
 			);
 
-			var ship = new Ship
-			(
-				factionName + " Ship0",
-				Ship.bodyDefnBuild(factionColor),
-				new Coords().randomize().multiply
+			var factionShips = [];
+			var shipDefn = Ship.bodyDefnBuild(factionColor);
+			var shipCount = 2;
+			for (var s = 0; s < shipCount; s++)
+			{
+				var ship = new Ship
 				(
-					factionHomeStarsystem.size
-				).multiplyScalar
-				(
-					2
-				).subtract
-				(
-					factionHomeStarsystem.size
-				),
-				factionName,
-				[
-					new Device(deviceDefns["Generator"]),
-					new Device(deviceDefns["Drive"]),
-					new Device(deviceDefns["Shield"]),
-					new Device(deviceDefns["Weapon"]),
-				]
-			);
-			ships.push(ship);
-			factionHomeStarsystem.ships.push(ship);
+					factionName + " Ship0",
+					shipDefn,
+					new Coords().randomize().multiply
+					(
+						factionHomeStarsystem.size
+					).multiplyScalar
+					(
+						2
+					).subtract
+					(
+						factionHomeStarsystem.size
+					),
+					factionName,
+					[
+						new Device(deviceDefns["Generator"]),
+						new Device(deviceDefns["Drive"]),
+						new Device(deviceDefns["Shield"]),
+						new Device(deviceDefns["Weapon"]),
+					]
+				);
+				ships.push(ship);
+				factionShips.push(ship);
+				factionHomeStarsystem.ships.push(ship);
+			}
 
 			var faction = new Faction
 			(
 				factionName,
+				factionHomeStarsystem.name,
 				factionColor,
 				[], // relationships
 				new TechnologyResearcher
@@ -346,9 +362,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				[
 					factionHomeStarsystem.planets[0]
 				],
-				[
-					ship
-				],
+				factionShips,
 				new FactionKnowledge
 				(
 					[ factionName ],
@@ -357,7 +371,6 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				)
 			);
 			factions.push(faction);
-
 		}
 
 		DiplomaticRelationship.initializeForFactions(factions);

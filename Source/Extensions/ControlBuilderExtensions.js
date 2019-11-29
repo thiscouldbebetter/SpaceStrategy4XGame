@@ -40,7 +40,7 @@ function ControlBuilderExtensions()
 					new DataBinding
 					(
 						universe,
-						function get(c) 
+						function get(c)
 						{
 							var returnValue = c.venueCurrent.selectionName;
 							if (returnValue != null)

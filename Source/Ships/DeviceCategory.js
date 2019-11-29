@@ -14,7 +14,7 @@ function DeviceCategory(name)
 		this.Special = new DeviceCategory("Special");
 		this.Weapon = new DeviceCategory("Weapon");
 
-		this._All = 
+		this._All =
 		[
 			this.Drive,
 			this.Generator,

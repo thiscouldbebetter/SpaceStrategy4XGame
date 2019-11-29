@@ -4,24 +4,23 @@ function VenueStarsystem(venueParent, starsystem)
 	this.venueParent = venueParent;
 	this.starsystem = starsystem;
 
+	this.cursor = new Cursor();
+
 	this._mouseClickPos = new Coords();
 }
 
 {
-	VenueStarsystem.prototype.cursorBuild = function()
+	VenueStarsystem.prototype.cursorSet = function(actor, mustTargetBody)
 	{
-		var ship = this.selection;
-		var cursor = new Cursor(ship);
-		this.cursor = cursor;
-		this.bodies.push(cursor);
-		this.selection = cursor;
+		this.cursor.bodyParent = actor;
+		this.cursor.mustTargetBody = mustTargetBody;
+		this.selection = this.cursor;
 	};
 
 	VenueStarsystem.prototype.cursorClear = function()
 	{
 		this.selection = this.cursor.bodyParent;
-		this.bodies.remove(this.cursor);
-		this.cursor = null;
+		this.cursor.clear();
 	};
 
 	VenueStarsystem.prototype.draw = function(universe)
@@ -38,10 +37,7 @@ function VenueStarsystem(venueParent, starsystem)
 			this.camera
 		);
 
-		if (this.cursor != null)
-		{
-			this.cursor.draw(universe, world, display, this);
-		}
+		this.cursor.draw(universe, world, display, this);
 
 		this.venueControls.draw(universe, world);
 	};

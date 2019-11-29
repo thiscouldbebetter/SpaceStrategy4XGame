@@ -1,7 +1,8 @@
 
-function Faction(name, color, relationships, technology, planets, ships, knowledge)
+function Faction(name, homestarsystemName, color, relationships, technology, planets, ships, knowledge)
 {
 	this.name = name;
+	this.homestarsystemName = homestarsystemName;
 	this.color = color;
 	this.relationships = relationships;
 	this.technology = technology;

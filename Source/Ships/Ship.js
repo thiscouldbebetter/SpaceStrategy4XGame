@@ -207,7 +207,8 @@ function Ship(name, defn, pos, factionName, devices)
 				else if (targetDefnName == "Planet")
 				{
 					var planet = target;
-					this.planetOrbitEnter(universe.world.network, "todo", planet);
+					var starsystem = universe.venueCurrent.starsystem;
+					this.planetOrbitEnter(universe, starsystem, planet);
 				}
 			}
 			else
@@ -248,7 +249,7 @@ function Ship(name, defn, pos, factionName, devices)
 	Ship.prototype.planetOrbitEnter = function(universe, starsystem, planet)
 	{
 		starsystem.ships.remove(this);
-		starsystem.ships.push(this);
+		planet.ships.push(this);
 	};
 
 	// controls
@@ -346,7 +347,8 @@ function Ship(name, defn, pos, factionName, devices)
 					{
 						var venue = universe.venueCurrent;
 						var ship = venue.selection;
-						venue.cursorBuild(ship);
+						var mustTargetBodyFalse = false;
+						venue.cursorSet(ship, mustTargetBodyFalse);
 					},
 					universe // context
 				),
@@ -389,7 +391,12 @@ function Ship(name, defn, pos, factionName, devices)
 					new DataBinding(this, function get(c) { return c.devicesUsable(); } ),
 					new DataBinding(null, function get(c) { return c.defn.name; } ), // bindingForOptionText
 					fontHeightInPixels,
-					new DataBinding(this, function get(c) { return c.deviceSelected; } ), // dataBindingForItemSelected
+					new DataBinding
+					(
+						this,
+						function get(c) { return c.deviceSelected; },
+						function set(c, v) { c.deviceSelected = v; },
+					), // dataBindingForItemSelected
 					new DataBinding() // bindingForItemValue
 				),
 
@@ -401,7 +408,11 @@ function Ship(name, defn, pos, factionName, devices)
 					"Use Device",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
+					new DataBinding
+					(
+						this,
+						function get(c) { return (c.deviceSelected != null); }
+					),
 					function click(universe)
 					{
 						var venue = universe.venueCurrent;

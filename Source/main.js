@@ -11,7 +11,7 @@ function main()
 		10, // fontHeightInPixels
 		"Blue", "rgb(16, 0, 32)" // colorFore, colorBack
 	);
-	
+
 	var contentPath = "../Content/";
 	var contentPathImages = contentPath + "Images/";
 	var contentPathAudio = contentPath + "Audio/";

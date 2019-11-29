@@ -1,22 +1,19 @@
 
-function Cursor(bodyParent)
+function Cursor(bodyParent, mustTargetBody)
 {
 	this.bodyParent = bodyParent;
+	this.mustTargetBody = mustTargetBody;
 	this.hasXYPositionBeenSpecified = false;
 	this.hasZPositionBeenSpecified = false;
 
 	this.defn = Cursor.BodyDefn();
 
 	this.loc = new Location(new Coords(0, 0, 0));
-	if (this.bodyParent.loc != null)
-	{
-		this.loc.overwriteWith(this.bodyParent.loc);
-	}
 
-	this.constraints =
-	[
+	this.Constrainable = new Constrainable
+	([
 		new Constraint_Cursor()
-	];
+	]);
 }
 
 {
@@ -27,19 +24,54 @@ function Cursor(bodyParent)
 			var radius = 5;
 			var color = Color.Instances().White.systemColor();
 
-			Cursor._bodyDefn = new BodyDefn
+			var bodyDefn = new BodyDefn
 			(
 				"Cursor",
-				new Coords(10, 10), // size
-				new VisualGroup
-				([
-					new VisualCircle(radius, null, color),
-					new VisualLine(new Coords(-radius, 0), new Coords(radius, 0), color),
-					new VisualLine(new Coords(0, -radius), new Coords(0, radius), color),
-				])
+				new Coords(1, 1).multiplyScalar(radius * 2), // size
+				new VisualSelect
+				(
+					function selectChildName(universe, world, display, drawable, entity, visual)
+					{
+						var returnValue;
+						var cursor = drawable;
+						if (cursor.bodyParent == null)
+						{
+							returnValue = "_0";
+						}
+						else if (cursor.mustTargetBody)
+						{
+							returnValue = "_1";
+						}
+						else
+						{
+							returnValue = "_1";
+						}
+						return returnValue;
+					},
+					[ "_0", "_1" ], // childNames
+					// children
+					[
+						new VisualNone(),
+						new VisualGroup
+						([
+							new VisualCircle(radius, null, color),
+							new VisualLine(new Coords(-radius, 0), new Coords(radius, 0), color),
+							new VisualLine(new Coords(0, -radius), new Coords(0, radius), color),
+						])
+					]
+				)
 			);
+
+			Cursor._bodyDefn = bodyDefn;
 		}
 		return Cursor._bodyDefn;
+	};
+
+	Cursor.prototype.clear = function()
+	{
+		this.bodyParent = null;
+		this.hasXYPositionBeenSpecified = false;
+		this.hasZPositionBeenSpecified = false;
 	};
 
 	// controls

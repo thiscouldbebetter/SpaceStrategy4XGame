@@ -78,11 +78,11 @@ function NotificationSession(factionName, notifications)
 					new Coords(margin, margin + controlHeight), // pos
 					new Coords(columnWidth, controlHeight * 4), // size
 					new DataBinding(this.notifications),
-					new DataBinding(null, "toString()"), // bindingForItemText
+					new DataBinding(null, function get(c) { return c.toString(); } ), // bindingForItemText
 					fontHeightInPixels,
 					// bindingForItemSelected
-					new DataBinding(this, "notificationSelected"),
-					null // bindingExpressionForItemValue
+					new DataBinding(this, function get(c) { return notificationSelected; } ),
+					new DataBinding() // bindingForItemValue
 				),
 
 				new ControlLabel
@@ -101,7 +101,14 @@ function NotificationSession(factionName, notifications)
 					new Coords(margin, margin * 2 + controlHeight * 6), // pos
 					new Coords(columnWidth, controlHeight), // size
 					false, // isTextCentered
-					new DataBinding(this, "notificationSelected.message"),
+					new DataBinding
+					(
+						this,
+						function get(c)
+						{
+							return (c.notificationSelected == null ? "[none]" : c.notificationSelected.message);
+						}
+					),
 					fontHeightInPixels
 				),
 

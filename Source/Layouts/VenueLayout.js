@@ -213,10 +213,10 @@ function VenueLayout(venueParent, modelParent, layout)
 					new Coords(margin.x, margin.y * 2 + buttonSize.y),
 					listSize,
 					buildableDefnsAllowedOnTerrain,
-					"name", //bindingExpressionForItemText,
+					new DataBinding(null, function get(c) { return c.name; } ), //bindingForItemText,
 					fontHeightInPixels,
-					null, // bindingForItemSelected,
-					null, // bindingExpressionForItemValue
+					new DataBinding(), // bindingForItemSelected,
+					new DataBinding(), // bindingForItemValue
 				),
 
 				new ControlButton
@@ -409,7 +409,11 @@ function VenueLayout(venueParent, modelParent, layout)
 					new Coords(margin, controlHeight + margin), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size,
 					false, // isTextCentered
-					new DataBinding(planet, "buildableInProgress(world).defnName", { "world" : world } )
+					new DataBinding
+					(
+						planet,
+						function get(c) { return c.buildableInProgress(world).defnName; }
+					)
 				),
 
 				new ControlLabel
@@ -418,7 +422,11 @@ function VenueLayout(venueParent, modelParent, layout)
 					new Coords(margin, controlHeight * 2 + margin), // pos
 					new Coords(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
-					new DataBinding(planet, "buildableInProgress(world).defn(world).resourcesToBuild.toString()", { "world" : world } )
+					new DataBinding
+					(
+						planet,
+						function get(c) { return c.buildableInProgress(world).defn(world).resourcesToBuild.toString(); }
+					)
 				),
 			]
 		);
@@ -437,13 +445,9 @@ function VenueLayout(venueParent, modelParent, layout)
 	{
 		var fontHeightInPixels = universe.display.fontHeightInPixels;
 
-		var universeAndWorldAsLookup =
-		{
-			"universe" : universe,
-			"world" : universe.world
-		};
-
 		var planet = this.modelParent;
+		var faction = planet.faction(world);
+		var world  = universe.world;
 
 		var returnValue = new ControlContainer
 		(
@@ -468,7 +472,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					false, // isTextCentered
 					new DataBinding
 					(
-						planet, "name"
+						planet, function get(c) { return c.name; }
 					)
 				),
 
@@ -481,8 +485,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					new DataBinding
 					(
 						planet,
-						"industryPerTurn(universe, world, faction)",
-						universeAndWorldAsLookup
+						function get(c) { return c.industryPerTurn(universe, world, faction); }
 					)
 				),
 
@@ -495,8 +498,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					new DataBinding
 					(
 						planet,
-						"prosperityPerTurn(universe, world, faction)",
-						universeAndWorldAsLookup
+						function get(c) { return c.prosperityPerTurn(universe, world, faction); }
 					)
 				),
 
@@ -509,8 +511,7 @@ function VenueLayout(venueParent, modelParent, layout)
 					new DataBinding
 					(
 						planet,
-						"researchPerTurn(universe, world, faction)",
-						universeAndWorldAsLookup
+						function get(c) { return c.researchPerTurn(universe, world, faction); }
 					)
 				),
 			]
@@ -524,6 +525,9 @@ function VenueLayout(venueParent, modelParent, layout)
 	VenueLayout.prototype.draw = function(universe)
 	{
 		this.layout.draw(universe, universe.display);
-		this.venueControls.draw(universe);
+		if (this.venueControls != null)
+		{
+			this.venueControls.draw(universe);
+		}
 	};
 }

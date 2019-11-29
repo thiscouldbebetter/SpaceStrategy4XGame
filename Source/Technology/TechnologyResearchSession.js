@@ -59,6 +59,8 @@ function TechnologyResearchSession(technologyTree, researcher)
 		var labelHeight = display.fontHeightInPixels;
 		var buttonHeight = labelHeight * 2.5;
 
+		var session = this;
+
 		var returnValue = new ControlContainer
 		(
 			"containerResearchSession", // name,
@@ -101,10 +103,9 @@ function TechnologyResearchSession(technologyTree, researcher)
 					// items
 					new DataBinding
 					(
-						this.researcher.namesOfTechnologiesKnown,
-						null
+						this.researcher.namesOfTechnologiesKnown
 					),
-					null, // bindingExpressionForItemText
+					new DataBinding(), // bindingForItemText
 					labelHeight // fontHeightInPixels
 				),
 
@@ -126,13 +127,12 @@ function TechnologyResearchSession(technologyTree, researcher)
 					new DataBinding
 					(
 						this,
-						"researcher.technologiesAvailable(session)",
-						{ "session": this }
+						function get(c) { return c.researcher.technologiesAvailable(session); }
 					),
-					"name", // bindingExpressionForItemText
+					new DataBinding(null, function get(c) { return c.name; } ), // bindingForItemText
 					labelHeight, // fontHeightInPixels
-					new DataBinding(this.researcher, "nameOfTechnologyBeingResearched"), // bindingForItemSelected
-					"name" // bindingExpressionForItemValue
+					new DataBinding(this.researcher, function get(c) { return c.nameOfTechnologyBeingResearched; } ), // bindingForItemSelected
+					new DataBinding(null, function get(c) { return c.name; } ) // bindingForItemValue
 				),
 
 				new ControlLabel
@@ -153,7 +153,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 					new DataBinding
 					(
 						this.researcher,
-						"nameOfTechnologyBeingResearched"
+						function get(c) { return c.nameOfTechnologyBeingResearched; }
 					)
 				),
 
@@ -172,7 +172,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 					new Coords(120, 140), // pos,
 					new Coords(30, labelHeight), // size,
 					true, // isTextCentered,
-					new DataBinding(this.researcher, "researchAccumulated") // text
+					new DataBinding(this.researcher, function get(c) { return c.researchAccumulated; } ) // text
 				),
 
 				new ControlLabel
@@ -190,7 +190,7 @@ function TechnologyResearchSession(technologyTree, researcher)
 					new Coords(140, 140), // pos,
 					new Coords(30, labelHeight), // size,
 					true, // isTextCentered,
-					new DataBinding(this, "researchRequired()") // text
+					new DataBinding(this, function get(c) { return c.researchRequired(); } ) // text
 				),
 
 				new ControlButton

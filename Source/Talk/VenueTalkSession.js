@@ -90,7 +90,7 @@ function VenueTalkSession(venueParent, talkSession)
 						controlHeight
 					), // size
 					false, // isTextCentered
-					new DataBinding(this.talkSession, "displayTextCurrent()"),
+					new DataBinding(this.talkSession, function get(c) { return c.displayTextCurrent(); } ),
 					fontHeightInPixels
 				),
 
@@ -109,12 +109,12 @@ function VenueTalkSession(venueParent, talkSession)
 					// options
 					new DataBinding
 					(
-						this.talkSession, "optionsAvailable()"
+						this.talkSession, function get(c) { return c.optionsAvailable(); }
 					),
-					"text()", // bindingExpressionForOptionText
+					new DataBinding(null, function get(c) { return c.text(); } ), // bindingForOptionText
 					fontHeightInPixels,
 					// dataBindingForValueSelected
-					new DataBinding(this.talkSession, "optionSelected"),
+					new DataBinding(this.talkSession, function get(c) { return c.optionSelected; } ),
 					null
 				),
 

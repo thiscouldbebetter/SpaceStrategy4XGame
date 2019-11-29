@@ -295,7 +295,7 @@ function Ship(name, defn, pos, factionName, devices)
 					new Coords(containerSize.x / 4, margin + controlSpacing),
 					new Coords(containerSize.x, controlSpacing), // this.size
 					false, // isTextCentered
-					new DataBinding(this, "integrity")
+					new DataBinding(this, function get(c) { return c.integrity; } )
 				),
 
 				new ControlLabel
@@ -313,7 +313,7 @@ function Ship(name, defn, pos, factionName, devices)
 					new Coords(3 * containerSize.x / 4, margin + controlSpacing),
 					new Coords(containerSize.x, controlSpacing), // this.size
 					false, // isTextCentered
-					new DataBinding(this, "energyThisTurn")
+					new DataBinding(this, function get(c) { return c.energyThisTurn; } )
 				),
 
 
@@ -386,10 +386,10 @@ function Ship(name, defn, pos, factionName, devices)
 					new Coords(margin, margin + controlSpacing * 6), // pos
 					new Coords(buttonSize.x, controlSpacing * 2), // size
 					// dataBindingForItems
-					new DataBinding(this, "devicesUsable()"),
-					new DataBinding(null, "defn.name"), // bindingForOptionText
+					new DataBinding(this, function get(c) { return c.devicesUsable(); } ),
+					new DataBinding(null, function get(c) { return c.defn.name; } ), // bindingForOptionText
 					fontHeightInPixels,
-					new DataBinding(this, "deviceSelected"), // dataBindingForItemSelected
+					new DataBinding(this, function get(c) { return c.deviceSelected; } ), // dataBindingForItemSelected
 					new DataBinding() // bindingForItemValue
 				),
 

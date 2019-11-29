@@ -53,7 +53,7 @@ function NetworkNode(name, defn, pos, starsystem)
 					new Coords(margin, margin + controlSpacing),
 					new Coords(0, 0), // this.size
 					false, // isTextCentered
-					new DataBinding(this.starsystem, "faction.name")
+					new DataBinding(this.starsystem, function(c) { return c.faction.name; })
 				),
 
 				new ControlButton

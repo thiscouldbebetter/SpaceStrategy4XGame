@@ -43,7 +43,12 @@ function main()
 
 	var universe = Universe.new
 	(
-		"Space_Strategy_4X", new TimerHelper(20), display, mediaLibrary, null
+		"Space_Strategy_4X",
+		"0.0.0-20191129-1200",
+		new TimerHelper(20),
+		display,
+		mediaLibrary,
+		null // world
 	);
 	universe.initialize();
 

@@ -40,7 +40,14 @@ function ControlBuilderExtensions()
 					new DataBinding
 					(
 						universe,
-						"venueCurrent.selectionName()"
+						function get(c) 
+						{
+							var returnValue = c.venueCurrent.selectionName;
+							if (returnValue != null)
+							{
+								returnValue = returnValue();
+							}
+						}
 					)
 				),
 
@@ -49,7 +56,7 @@ function ControlBuilderExtensions()
 					"dynamicSelection",
 					new Coords(margin, margin * 2 + controlHeight * 2), // pos
 					new Coords(size.x - margin * 2, size.y - margin * 4 - controlHeight * 3), // size
-					new DataBinding(universe, "venueCurrent.selection")
+					new DataBinding(universe, function get(c) { return c.venueCurrent.selection; } )
 				),
 
 				new ControlButton
@@ -152,7 +159,7 @@ function ControlBuilderExtensions()
 					false, // isTextCentered
 					new DataBinding
 					(
-						universe, "venueCurrent.model().name"
+						universe, function get(c) { return c.venueCurrent.model().name; }
 					)
 				),
 
@@ -175,7 +182,7 @@ function ControlBuilderExtensions()
 						controlHeight
 					), // size
 					false, // isTextCentered
-					new DataBinding(universe.world, "turnsSoFar")
+					new DataBinding(universe.world, function get(c) { return c.turnsSoFar; } )
 				),
 
 				new ControlButton

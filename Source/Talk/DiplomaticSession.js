@@ -109,11 +109,16 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 					new Coords(margin, margin * 2 + controlHeight * 2), // pos
 					new Coords(listWidth, controlHeight * 4), // size
 					new DataBinding(this.factions), // items
-					"name", // bindingExpressionForItemText,
+					new DataBinding(null, function get(c) { return c.name; } ), // bindingForItemText,
 					fontHeightInPixels,
 					// bindingForItemSelected
-					new DataBinding(this, "factionSelected"),
-					null // bindingExpressionForItemValue
+					new DataBinding
+					(
+						this,
+						function get(c) { return c.factionSelected; },
+						function set(c, v) { c.factionSelected = v; }
+					),
+					new DataBinding() // bindingForItemValue
 				),
 
 				new ControlButton
@@ -124,7 +129,7 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 					"Talk",
 					fontHeightInPixels,
 					true, // hasBorder
-					new DataBinding(this, "isFactionSelected()"), // isEnabled
+					new DataBinding(this, function get(c) { return c.isFactionSelected(); } ), // isEnabled
 					this.talkSessionInitialize.bind(this, universe) // click
 				),
 

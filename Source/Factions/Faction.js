@@ -47,7 +47,14 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					new Coords(margin * 2 + columnWidth, margin), // pos
 					new Coords(columnWidth, controlSpacing), // size,
 					false, // isTextCentered
-					new DataBinding(diplomaticSession, "factionSelected.name")
+					new DataBinding
+					(
+						diplomaticSession,
+						function get(c)
+						{
+							return (c.factionSelected == null ? "[none]" : c.factionSelected.name);
+						}
+					)
 				),
 
 				new ControlLabel
@@ -82,11 +89,21 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					"listPlanets",
 					new Coords(margin, margin + controlSpacing * 3), // pos
 					new Coords(listWidth, controlSpacing * 4), // size
-					new DataBinding(diplomaticSession, "factionSelected.planets"), // items
-					"name", // bindingExpressionForItemText,
+					new DataBinding
+					(
+						diplomaticSession,
+						function get(c) { return (c.factionSelected == null ? [] : c.factionSelected.planets); }
+					), // items
+					new DataBinding(null, function get(c) { return c.name; } ), // bindingForItemText,
 					fontHeightInPixels,
-					// dataBindingForItemValue
-					new DataBinding(diplomaticSession, "factionSelected.planetSelected")
+					// dataBindingForItemSelected
+					new DataBinding
+					(
+						diplomaticSession,
+						function get(c) { return c.factionSelected.planetSelected; },
+						function set(c, v) { c.factionSelected.planetSelected = v; }
+					),
+					new DataBinding() // bindingForItemValue
 				),
 
 				new ControlLabel
@@ -103,10 +120,19 @@ function Faction(name, color, relationships, technology, planets, ships, knowled
 					"listShips",
 					new Coords(margin, margin + controlSpacing * 8), // pos
 					new Coords(listWidth, controlSpacing * 4), // size
-					new DataBinding(diplomaticSession, "factionSelected.ships"), // options
-					"name", // bindingExpressionForOptionText,
+					new DataBinding
+					(
+						diplomaticSession,
+						function get(c) { return (c.factionSelected == null ? [] : c.factionSelected.ships); }
+					), // options
+					new DataBinding(null, function get(c) { return c.name; } ), // bindingForOptionText,
 					// dataBindingForValueSelected
-					new DataBinding(diplomaticSession, "factionSelected.shipSelected")
+					new DataBinding
+					(
+						diplomaticSession,
+						function get(c) { return c.factionSelected.shipSelected; },
+						function set(c, v) { c.factionSelected.shipSelected = v; }
+					)
 				),
 			]
 		);

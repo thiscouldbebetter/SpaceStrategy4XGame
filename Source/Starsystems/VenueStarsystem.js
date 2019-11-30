@@ -164,9 +164,9 @@ function VenueStarsystem(venueParent, starsystem)
 		{
 			var inputActive = inputsActive[i].name;
 
-			if (inputActive.startsWith("MouseMove"))
+			if (inputActive == "MouseMove")
 			{
-				// Do nothing.
+				this.updateForTimerTick_Input_MouseMove(universe);
 			}
 			else if (inputActive == "a")
 			{
@@ -379,6 +379,57 @@ function VenueStarsystem(venueParent, starsystem)
 				this.selection = bodyClicked;
 			}
 		}
+	};
+
+	VenueStarsystem.prototype.updateForTimerTick_Input_MouseMove = function(universe)
+	{
+		var inputHelper = universe.inputHelper;
+		var mouseMovePos = this._mouseClickPos.overwriteWith
+		(
+			inputHelper.mouseMovePos
+		);
+
+		var camera = this.camera;
+
+		var rayFromCameraThroughMouse = new Ray
+		(
+			camera.loc.pos,
+			camera.coordsTransformViewToWorld
+			(
+				mouseMovePos, true // ignoreZ
+			).subtract
+			(
+				camera.loc.pos
+			)
+		);
+
+		var bodiesUnderMouseAsCollisions = Collision.rayAndBodies
+		(
+			rayFromCameraThroughMouse,
+			this.bodies,
+			10, // bodyRadius
+			[]
+		);
+
+		var bodyUnderMouse;
+
+		var bodiesCount = bodiesUnderMouseAsCollisions.length;
+
+		if (bodiesUnderMouseAsCollisions.length == 0)
+		{
+			bodyUnderMouse = null;
+		}
+		else
+		{
+			bodiesUnderMouseAsCollisions = bodiesUnderMouseAsCollisions.sort
+			(
+				(x) => x.distanceToCollision
+			);
+
+			bodyUnderMouse = bodiesUnderMouseAsCollisions[0].colliders[0];
+		}
+
+		this.cursor.bodyUnderneath = bodyUnderMouse;
 	};
 
 	// camera

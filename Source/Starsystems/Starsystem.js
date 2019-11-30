@@ -42,7 +42,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				new VisualGroup
 				([
 					new VisualCircle(starRadius, starColor, starColor),
-					new VisualText(name, "Gray"),
+					new VisualText(name, "Gray")
 				])
 			),
 			new Coords(0, 0, -10)

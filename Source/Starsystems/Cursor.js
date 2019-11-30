@@ -1,12 +1,14 @@
 
-function Cursor(bodyParent, mustTargetBody)
+function Cursor()
 {
-	this.bodyParent = bodyParent;
-	this.mustTargetBody = mustTargetBody;
+	this.bodyUnderneath = null;
+
+	this.bodyParent = null;
+	this.mustTargetBody = null;
 	this.hasXYPositionBeenSpecified = false;
 	this.hasZPositionBeenSpecified = false;
 
-	this.defn = Cursor.BodyDefn();
+	this.defn = this.bodyDefn();
 
 	this.loc = new Location(new Coords(0, 0, 0));
 
@@ -17,54 +19,79 @@ function Cursor(bodyParent, mustTargetBody)
 }
 
 {
-	Cursor.BodyDefn = function()
+	Cursor.prototype.bodyDefn = function()
 	{
-		if (Cursor._bodyDefn == null)
-		{
-			var radius = 5;
-			var color = Color.Instances().White.systemColor();
+		var radius = 5;
+		var color = Color.Instances().White.systemColor();
+		var visualReticle = new VisualSelect
+		(
+			function selectChildName(universe, world, display, drawable, entity, visual)
+			{
+				var returnValue;
+				var cursor = drawable;
+				if (cursor.bodyParent == null)
+				{
+					returnValue = "_0";
+				}
+				else if (cursor.mustTargetBody)
+				{
+					returnValue = "_1";
+				}
+				else
+				{
+					returnValue = "_1";
+				}
+				return returnValue;
+			},
+			[ "_0", "_1" ], // childNames
+			// children
+			[
+				new VisualNone(),
+				new VisualGroup
+				([
+					new VisualCircle(radius, null, color),
+					new VisualLine(new Coords(-radius, 0), new Coords(radius, 0), color),
+					new VisualLine(new Coords(0, -radius), new Coords(0, radius), color),
+				])
+			]
+		);
 
-			var bodyDefn = new BodyDefn
+		var visualHover = new VisualText
+		(
+			new DataBinding
 			(
-				"Cursor",
-				new Coords(1, 1).multiplyScalar(radius * 2), // size
-				new VisualSelect
-				(
-					function selectChildName(universe, world, display, drawable, entity, visual)
+				this,
+				function get(c)
+				{
+					var returnValue;
+					if (c.bodyUnderneath == null)
 					{
-						var returnValue;
-						var cursor = drawable;
-						if (cursor.bodyParent == null)
-						{
-							returnValue = "_0";
-						}
-						else if (cursor.mustTargetBody)
-						{
-							returnValue = "_1";
-						}
-						else
-						{
-							returnValue = "_1";
-						}
-						return returnValue;
-					},
-					[ "_0", "_1" ], // childNames
-					// children
-					[
-						new VisualNone(),
-						new VisualGroup
-						([
-							new VisualCircle(radius, null, color),
-							new VisualLine(new Coords(-radius, 0), new Coords(radius, 0), color),
-							new VisualLine(new Coords(0, -radius), new Coords(0, radius), color),
-						])
-					]
-				)
-			);
+						returnValue = "";
+					}
+					else
+					{
+						returnValue = c.bodyUnderneath.name;
+					}
+					return returnValue;
+				} 
+			),
+			"Gray", "White"
+		);
 
-			Cursor._bodyDefn = bodyDefn;
-		}
-		return Cursor._bodyDefn;
+		var visual = new VisualGroup
+		([
+			visualHover,
+			visualReticle
+		]);
+
+		var bodyDefn = new BodyDefn
+		(
+			"Cursor",
+			new Coords(1, 1).multiplyScalar(radius * 2), // size
+			visual
+		);
+
+		return bodyDefn;
 	};
 
 	Cursor.prototype.clear = function()

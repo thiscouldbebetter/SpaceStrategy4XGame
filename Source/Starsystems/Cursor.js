@@ -4,6 +4,7 @@ function Cursor()
 	this.bodyUnderneath = null;
 
 	this.bodyParent = null;
+	this.orderName = null;
 	this.mustTargetBody = null;
 	this.hasXYPositionBeenSpecified = false;
 	this.hasZPositionBeenSpecified = false;
@@ -97,8 +98,16 @@ function Cursor()
 	Cursor.prototype.clear = function()
 	{
 		this.bodyParent = null;
+		this.orderName = null;
 		this.hasXYPositionBeenSpecified = false;
 		this.hasZPositionBeenSpecified = false;
+	};
+
+	Cursor.prototype.set = function(actor, orderName, mustTargetBody)
+	{
+		this.bodyParent = actor;
+		this.orderName = orderName;
+		this.mustTargetBody = mustTargetBody;
 	};
 
 	// controls

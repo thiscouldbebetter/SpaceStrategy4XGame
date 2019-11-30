@@ -51,11 +51,7 @@ function Constraint_Cursor()
 			displacementFromCameraToMousePosProjected
 		);
 
-		if (cursor.mustTargetBody)
-		{
-			// todo
-		}
-		else if (cursor.hasXYPositionBeenSpecified == false)
+		if (cursor.hasXYPositionBeenSpecified == false)
 		{
 			this.boundsToRestrictToMin.overwriteWithDimensions
 			(

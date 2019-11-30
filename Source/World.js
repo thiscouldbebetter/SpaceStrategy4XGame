@@ -247,7 +247,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 						if (target == null)
 						{
 							var mustTargetBody = true;
-							universe.venueCurrent.cursorSet(actor, mustTargetBody);
+							universe.venueCurrent.cursor.set(actor, "UseDevice", mustTargetBody);
 						}
 						else // if (target != null)
 						{
@@ -320,7 +320,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 			{
 				var ship = new Ship
 				(
-					factionName + " Ship0",
+					factionName + " Ship" + s,
 					shipDefn,
 					new Coords().randomize().multiply
 					(

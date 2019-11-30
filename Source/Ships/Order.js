@@ -12,7 +12,7 @@ function Order(defnName, target)
 		return OrderDefn.Instances._All[this.defnName];
 	};
 
-	Order.prototype.obey = function(actor)
+	Order.prototype.obey = function(universe, actor)
 	{
 		if (this.isComplete == true)
 		{
@@ -20,7 +20,7 @@ function Order(defnName, target)
 		}
 		else
 		{
-			this.defn().obey(actor, this);
+			this.defn().obey(universe, actor, this);
 		}
 	};
 }

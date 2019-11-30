@@ -6,7 +6,7 @@ function NetworkLink(namesOfNodesLinked)
 
 	this.name = this.namesOfNodesLinked.join("-");
 
-	this.color = "rgba(128, 128, 128, .25)"; // hack
+	this.color = "rgba(128, 128, 128, .4)"; // hack
 }
 
 {

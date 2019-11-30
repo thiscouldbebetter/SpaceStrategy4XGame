@@ -13,7 +13,7 @@ function Ship(name, defn, pos, factionName, devices)
 	this.shieldingThisTurn = 0;
 
 	// Helper variables.
-	this.displacement = new Coords();
+	this._displacement = new Coords();
 }
 
 {
@@ -175,7 +175,7 @@ function Ship(name, defn, pos, factionName, devices)
 			var targetLoc = target.loc;
 			var targetPos = targetLoc.pos;
 
-			var displacementToTarget = this.displacement.overwriteWith
+			var displacementToTarget = this._displacement.overwriteWith
 			(
 				targetPos
 			).subtract
@@ -348,7 +348,8 @@ function Ship(name, defn, pos, factionName, devices)
 						var venue = universe.venueCurrent;
 						var ship = venue.selection;
 						var mustTargetBodyFalse = false;
-						venue.cursorSet(ship, mustTargetBodyFalse);
+						var orderDefns = OrderDefn.Instances;
+						venue.cursor.set(ship, orderDefns["Go"].name, mustTargetBodyFalse);
 					},
 					universe // context
 				),
@@ -367,7 +368,7 @@ function Ship(name, defn, pos, factionName, devices)
 						var ship = venue.selection;
 						if (ship.order != null)
 						{
-							ship.order.obey(ship);
+							ship.order.obey(universe, ship);
 						}
 					},
 					universe // context

@@ -47,6 +47,7 @@ function ControlBuilderExtensions()
 							{
 								returnValue = returnValue();
 							}
+							return returnValue;
 						}
 					)
 				),

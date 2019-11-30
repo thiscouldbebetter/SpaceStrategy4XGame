@@ -446,8 +446,8 @@ function VenueLayout(venueParent, modelParent, layout)
 		var fontHeightInPixels = universe.display.fontHeightInPixels;
 
 		var planet = this.modelParent;
-		var faction = planet.faction(world);
 		var world  = universe.world;
+		var faction = planet.faction(world);
 
 		var returnValue = new ControlContainer
 		(

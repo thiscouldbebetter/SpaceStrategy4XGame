@@ -255,6 +255,7 @@ function VenueWorld(world)
 			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 
 			var mouseClickPos = inputHelper.mouseClickPos.clone();
+
 			var rayFromCameraThroughClick = new Ray
 			(
 				camera.loc.pos,

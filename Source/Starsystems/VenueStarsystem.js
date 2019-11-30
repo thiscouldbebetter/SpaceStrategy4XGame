@@ -10,19 +10,6 @@ function VenueStarsystem(venueParent, starsystem)
 }
 
 {
-	VenueStarsystem.prototype.cursorSet = function(actor, mustTargetBody)
-	{
-		this.cursor.bodyParent = actor;
-		this.cursor.mustTargetBody = mustTargetBody;
-		this.selection = this.cursor;
-	};
-
-	VenueStarsystem.prototype.cursorClear = function()
-	{
-		this.selection = this.cursor.bodyParent;
-		this.cursor.clear();
-	};
-
 	VenueStarsystem.prototype.draw = function(universe)
 	{
 		var world = universe.world;
@@ -136,15 +123,10 @@ function VenueStarsystem(venueParent, starsystem)
 			var body = bodies[i];
 			var bodyDefnName = body.defn.name;
 
-			if (bodyDefnName == "Ship")
+			var bodyActivity = body.activity;
+			if (bodyActivity != null)
 			{
-				var ship = body;
-
-				var shipActivity = ship.activity;
-				if (shipActivity != null)
-				{
-					shipActivity.perform(universe, ship);
-				}
+				bodyActivity.perform(universe, body);
 			}
 		}
 
@@ -296,88 +278,60 @@ function VenueStarsystem(venueParent, starsystem)
 
 	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse_Selection = function(universe, bodyClicked)
 	{
-		var inputHelper = universe.inputHelper;
-
 		if (this.selection == null)
 		{
 			this.selection = bodyClicked;
 		}
+		else if (this.selection.defn.name == "Ship")
+		{
+			var ship = this.selection;
+
+			if (bodyClicked != null) // && bodyClicked.defn.name != "Cursor")
+			{
+				// Targeting an existing body, not an arbitrary point.
+				universe.inputHelper.isEnabled = false;
+
+				var targetBody = bodyClicked;
+				ship.order = new Order(this.cursor.orderName, targetBody);
+				ship.order.obey(universe, ship);
+
+				this.cursor.clear();
+			}
+			else if (this.cursor.hasXYPositionBeenSpecified == false)
+			{
+				this.cursor.hasXYPositionBeenSpecified = true;
+			}
+			else if (this.cursor.hasZPositionBeenSpecified == false)
+			{
+				universe.inputHelper.isEnabled = false;
+
+				var targetBody = new Body
+				(
+					"Target",
+					new BodyDefn
+					(
+						"MoveTarget",
+						new Coords(0, 0, 0)
+					),
+					this.cursor.loc.pos.clone()
+				);
+
+				ship.order = new Order(this.cursor.orderName, targetBody);
+				ship.order.obey(universe, ship);
+
+				this.cursor.clear();
+			}
+		}
+		else if (this.selection.defn.name == "Planet")
+		{
+			var layout = bodyClicked.layout;
+			var venueNext = new VenueLayout(this, bodyClicked, layout);
+			venueNext = new VenueFader(venueNext, universe.venueCurrent);
+			universe.venueNext = venueNext;
+		}
 		else
 		{
-			var selectionDefnName = this.selection.defn.name;
-			if (selectionDefnName == "Cursor")
-			{
-				var cursor = this.selection;
-
-				var cursorBodyParentName = cursor.bodyParent.constructor.name;
-
-				if (cursorBodyParentName == "Ship")
-				{
-					if (bodyClicked != null && bodyClicked.defn.name != "Cursor")
-					{
-						var targetBody = bodyClicked;
-
-						var ship = cursor.bodyParent;
-
-						ship.order = new Order
-						(
-							"Go",
-							targetBody
-						);
-
-						this.cursorClear();
-
-						inputHelper.isEnabled = false;
-
-						ship.order.obey(ship);
-					}
-					else if (cursor.hasXYPositionBeenSpecified == false)
-					{
-						cursor.hasXYPositionBeenSpecified = true;
-					}
-					else if (cursor.hasZPositionBeenSpecified == false)
-					{
-						var targetBody = new Body
-						(
-							"Target",
-							new BodyDefn
-							(
-								"MoveTarget",
-								new Coords(0, 0, 0)
-							),
-							cursor.loc.pos.clone()
-						);
-
-						var ship = cursor.bodyParent;
-
-						ship.order = new Order
-						(
-							"Go",
-							targetBody
-						);
-
-						this.cursorClear();
-
-						inputHelper.isEnabled = false;
-
-						ship.order.obey(ship);
-					}
-				}
-			}
-			else if (this.selection == bodyClicked)
-			{
-				if (selectionDefnName == "Planet")
-				{
-					var layout = bodyClicked.layout;
-					var venueNext = new VenueLayout(this, bodyClicked, layout);
-					venueNext = new VenueFader(venueNext, universe.venueCurrent);
-					universe.venueNext = venueNext;
-				}
-			}
-			else
-			{
-				this.selection = bodyClicked;
-			}
+			this.selection = bodyClicked;
 		}
 	};
 

@@ -17,19 +17,19 @@ function NotificationSession(factionName, notifications)
 
 	NotificationSession.prototype.notificationGoTo = function(universe, notification)
 	{
-		var notificationLoc = notification.loc;
+		var notificationLoc = notification.Locatable.loc;
 		var notificationLocType = notificationLoc.constructor.name;
-		if (notificationLocType == "TechnologyResearcher")
+		if (notificationLocType == TechnologyResearcher.name)
 		{
 			var factionName = notificationLoc.factionName;
 			var faction = universe.world.factions[factionName];
 			faction.researchSessionStart(universe);
 		}
-		else if (notificationLocType == "Starsystem")
+		else if (notificationLocType == Starsystem.name)
 		{
 			alert("todo - Go to Starsystem");
 		}
-		else if (notificationLocType == "Planet")
+		else if (notificationLocType == Planet.name)
 		{
 			var planet = notificationLoc;
 			var venueCurrent = universe.venueCurrent;

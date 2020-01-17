@@ -11,7 +11,7 @@ function Constraint_HoldDistanceFromTarget(distanceToHold, targetPos)
 {
 	Constraint_HoldDistanceFromTarget.prototype.constrain = function(universe, world, place, body)
 	{
-		var bodyPos = body.loc.pos;
+		var bodyPos = body.Locatable.loc.pos;
 
 		var directionOfBodyFromTarget = this.displacement.overwriteWith
 		(

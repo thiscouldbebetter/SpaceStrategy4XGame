@@ -2,7 +2,8 @@
 function Buildable(defnName, pos, isComplete)
 {
 	this.defnName = defnName;
-	this.loc = new Location(pos);
+	var loc = new Location(pos);
+	this.Locatable = new Locatable(loc);
 	this.isComplete = (isComplete || false);
 }
 {

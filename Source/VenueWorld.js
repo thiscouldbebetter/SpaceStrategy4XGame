@@ -18,7 +18,7 @@ function VenueWorld(world)
 	{
 		if (this.selection != null)
 		{
-			var targetPosNew = this.selection.loc.pos;
+			var targetPosNew = this.selection.Locatable.loc.pos;
 
 			var cameraConstraints = camera.Constrainable.constraints;
 			var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
@@ -219,6 +219,8 @@ function VenueWorld(world)
 
 		var origin = new Coords(0, 0, 0);
 
+		// hack
+		this.camera.Locatable = new Locatable(this.camera.loc);
 		this.camera.Constrainable = new Constrainable
 		(
 			[
@@ -256,15 +258,16 @@ function VenueWorld(world)
 
 			var mouseClickPos = inputHelper.mouseClickPos.clone();
 
+			var cameraPos = camera.loc.pos;
 			var rayFromCameraThroughClick = new Ray
 			(
-				camera.loc.pos,
+				cameraPos,
 				camera.coordsTransformViewToWorld
 				(
 					mouseClickPos, true // ignoreZ
 				).subtract
 				(
-					camera.loc.pos
+					cameraPos
 				)
 			);
 

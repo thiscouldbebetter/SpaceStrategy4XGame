@@ -11,7 +11,8 @@ function Cursor()
 
 	this.defn = this.bodyDefn();
 
-	this.loc = new Location(new Coords(0, 0, 0));
+	var loc = new Location(new Coords(0, 0, 0));
+	this.Locatable = new Locatable(loc);
 
 	this.Constrainable = new Constrainable
 	([
@@ -29,7 +30,7 @@ function Cursor()
 			function selectChildName(universe, world, display, drawable, entity, visual)
 			{
 				var returnValue;
-				var cursor = drawable;
+				var cursor = entity;
 				if (cursor.bodyParent == null)
 				{
 					returnValue = "_0";

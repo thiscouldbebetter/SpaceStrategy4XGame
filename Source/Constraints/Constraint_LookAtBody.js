@@ -8,7 +8,7 @@ function Constraint_LookAt(targetPos)
 {
 	Constraint_LookAt.prototype.constrain = function(universe, world, place, body)
 	{
-		var bodyLoc = body.loc;
+		var bodyLoc = body.Locatable.loc;
 		var bodyPos = bodyLoc.pos;
 		var bodyOrientation = bodyLoc.orientation;
 

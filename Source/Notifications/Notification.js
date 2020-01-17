@@ -4,7 +4,7 @@ function Notification(typeName, turnCreated, message, loc)
 	this.typeName = typeName;
 	this.turnCreated = turnCreated;
 	this.message = message;
-	this.loc = loc;
+	this.Locatable = new Locatable(loc);
 }
 
 {
@@ -17,7 +17,7 @@ function Notification(typeName, turnCreated, message, loc)
 	{
 		var returnValue =
 			this.turnCreated + " - "
-			+ this.loc.name + " - "
+			+ this.Locatable.loc.name + " - "
 			+ this.message;
 		return returnValue;
 	};

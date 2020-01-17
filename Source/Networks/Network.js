@@ -74,7 +74,8 @@ function Network(name, nodes, links)
 
 				for (var j = 0; j < i; j++)
 				{
-					var nodeOtherPos = nodesNotYetLinked[j].loc.pos;
+					var nodeOther = nodesNotYetLinked[j];
+					var nodeOtherPos = nodeOther.Locatable.loc.pos;
 
 					displacementOfNodeNewFromOther.overwriteWith
 					(
@@ -112,10 +113,10 @@ function Network(name, nodes, links)
 
 		var nodePositions = nodesNotYetLinked.select
 		(
-			function(x) { return x.loc.pos; }
+			function(x) { return x.Locatable.loc.pos; }
 		);
-		var boundsActual = new Bounds(new Coords(), new Coords()).ofPoints(nodePositions);
-		var boundsDesired = new Bounds
+		var boundsActual = new Box(new Coords(), new Coords()).ofPoints(nodePositions);
+		var boundsDesired = new Box
 		(
 			new Coords(0, 0, 0), // center
 			new Coords(1, 1, 1).multiplyScalar(2 * radiusMax) // size
@@ -163,7 +164,7 @@ function Network(name, nodes, links)
 			for (var i = 0; i < nodesLinked.length; i++)
 			{
 				var nodeLinked = nodesLinked[i];
-				var nodeLinkedPos = nodeLinked.loc.pos;
+				var nodeLinkedPos = nodeLinked.Locatable.loc.pos;
 
 				for (var j = 0; j < nodesNotYetLinked.length; j++)
 				{
@@ -174,7 +175,7 @@ function Network(name, nodes, links)
 						nodeLinkedPos
 					).subtract
 					(
-						nodeToLink.loc.pos
+						nodeToLink.Locatable.loc.pos
 					).magnitude();
 
 					if (distanceBetweenNodes <= distanceBetweenNodePairClosestSoFar)
@@ -289,7 +290,7 @@ function Network(name, nodes, links)
 			var drawableToSort = drawablesToSort[i];
 			camera.coordsTransformWorldToView
 			(
-				drawPos.overwriteWith(drawableToSort.loc.pos)
+				drawPos.overwriteWith(drawableToSort.Locatable.loc.pos)
 			);
 
 			if (drawPos.z > 0)
@@ -298,9 +299,10 @@ function Network(name, nodes, links)
 				for (j = 0; j < drawablesSortedByZ.length; j++)
 				{
 					var drawableSorted = drawablesSortedByZ[j];
+					var drawableSortedPos = drawableSorted.Locatable.loc.pos.clone();
 					var drawableSortedDrawPos = camera.coordsTransformWorldToView
 					(
-						drawableSorted.loc.pos.clone()
+						drawableSortedPos
 					);
 					if (drawPos.z >= drawableSortedDrawPos.z)
 					{

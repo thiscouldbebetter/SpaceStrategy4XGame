@@ -5,8 +5,9 @@ function Constraint_Cursor()
 
 	// Helper variables.
 
-	this.boundsToRestrictToMin = new Coords();
-	this.boundsToRestrictToMax = new Coords();
+	this._max = new Coords();
+	this._min = new Coords();
+	this._boundsToRestrictTo = new Box(this._min, this._max);
 }
 
 {
@@ -25,7 +26,7 @@ function Constraint_Cursor()
 
 		var xyPlaneNormal = new Coords(0, 0, 1);
 
-		var cursorPos = cursor.loc.pos;
+		var cursorPos = cursor.Locatable.loc.pos;
 
 		var cameraForward = cameraOrientation.forward;
 		var displacementFromCameraToMousePosProjected = cameraForward.clone().multiplyScalar
@@ -53,18 +54,20 @@ function Constraint_Cursor()
 
 		if (cursor.hasXYPositionBeenSpecified == false)
 		{
-			this.boundsToRestrictToMin.overwriteWithDimensions
+			this._boundsToRestrictTo.fromMinAndMax
 			(
-				Number.NEGATIVE_INFINITY,
-				Number.NEGATIVE_INFINITY,
-				0
-			);
-
-			this.boundsToRestrictToMax.overwriteWithDimensions
-			(
-				Number.POSITIVE_INFINITY,
-				Number.POSITIVE_INFINITY,
-				0
+				this._min.overwriteWithDimensions
+				(
+					Number.NEGATIVE_INFINITY,
+					Number.NEGATIVE_INFINITY,
+					0
+				),
+				this._max.overwriteWithDimensions
+				(
+					Number.POSITIVE_INFINITY,
+					Number.POSITIVE_INFINITY,
+					0
+				)
 			);
 
 			var planeToRestrictTo = new Plane
@@ -81,22 +84,25 @@ function Constraint_Cursor()
 
 			if (collisionPos != null)
 			{
-				body.loc.pos.overwriteWith(collisionPos);
+				body.Locatable.loc.pos.overwriteWith(collisionPos);
 			}
 		}
 		else // if (cursor.hasXYPositionBeenSpecified == true)
 		{
-			this.boundsToRestrictToMin.overwriteWithDimensions
+			this._boundsToRestrictTo.fromMinAndMax
 			(
-				cursorPos.x,
-				cursorPos.y,
-				Number.NEGATIVE_INFINITY
-			);
-			this.boundsToRestrictToMax.overwriteWithDimensions
-			(
-				cursorPos.x,
-				cursorPos.y,
-				Number.POSITIVE_INFINITY
+				this._pos.overwriteWithDimensions
+				(
+					cursorPos.x,
+					cursorPos.y,
+					Number.NEGATIVE_INFINITY
+				),
+				this._pos.overwriteWithDimensions
+				(
+					cursorPos.x,
+					cursorPos.y,
+					Number.POSITIVE_INFINITY
+				)
 			);
 
 			var planeNormal = xyPlaneNormal.clone().crossProduct
@@ -126,8 +132,8 @@ function Constraint_Cursor()
 
 		cursorPos.trimToRangeMinMax
 		(
-			this.boundsToRestrictToMin,
-			this.boundsToRestrictToMax
+			this._boundsToRestrictTo._min,
+			this._boundsToRestrictTo._max
 		);
 	};
 }

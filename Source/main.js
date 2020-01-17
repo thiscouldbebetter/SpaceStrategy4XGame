@@ -44,23 +44,12 @@ function main()
 	var universe = Universe.new
 	(
 		"Space_Strategy_4X",
-		"0.0.0-20191129-1200",
+		"0.0.0-20200114-2120",
 		new TimerHelper(20),
 		display,
 		mediaLibrary,
 		null // world
 	);
-	universe.initialize();
-
-	// hack
-	var controlStyle = new ControlStyle
-	(
-		"Default", // name
-		"rgb(60, 60, 240)", // colorBackground
-		"rgb(30, 30, 120)", // colorFill
-		"rgb(180, 180, 240)", // colorBorder
-		"LightGray" // colorDisabled
-	);
-	//universe.controlBuilder = new ControlBuilder([controlStyle]);
+	universe.initialize(x => { x.start() });
 
 }

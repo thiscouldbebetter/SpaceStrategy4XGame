@@ -67,6 +67,8 @@ function VenueStarsystem(venueParent, starsystem)
 
 		var targetForCamera = new Coords(0, 0, 0);
 
+		// hack
+		this.camera.Locatable = new Locatable(this.camera.loc);
 		this.camera.Constrainable = new Constrainable
 		(
 			[
@@ -313,7 +315,7 @@ function VenueStarsystem(venueParent, starsystem)
 						"MoveTarget",
 						new Coords(0, 0, 0)
 					),
-					this.cursor.loc.pos.clone()
+					this.cursor.Locatable.loc.pos.clone()
 				);
 
 				ship.order = new Order(this.cursor.orderName, targetBody);
@@ -344,16 +346,17 @@ function VenueStarsystem(venueParent, starsystem)
 		);
 
 		var camera = this.camera;
+		var cameraPos = camera.loc.pos;
 
 		var rayFromCameraThroughMouse = new Ray
 		(
-			camera.loc.pos,
+			cameraPos,
 			camera.coordsTransformViewToWorld
 			(
 				mouseMovePos, true // ignoreZ
 			).subtract
 			(
-				camera.loc.pos
+				cameraPos
 			)
 		);
 
@@ -393,7 +396,8 @@ function VenueStarsystem(venueParent, starsystem)
 		if (this.selection != null)
 		{
 			var cameraConstraint = this.camera.Constrainable.constraints["PositionOnCylinder"];
-			cameraConstraint.center.overwriteWith(this.selection.loc.pos);
+			var selectionPos = this.selection.Locatable.loc.pos;
+			cameraConstraint.center.overwriteWith(selectionPos);
 		}
 	};
 

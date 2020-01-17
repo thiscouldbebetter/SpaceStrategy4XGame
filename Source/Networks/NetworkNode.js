@@ -3,7 +3,8 @@ function NetworkNode(name, defn, pos, starsystem)
 {
 	this.name = name;
 	this.defn = defn;
-	this.loc = new Location(pos);
+	var loc = new Location(pos);
+	this.Locatable = new Locatable(loc);
 	this.starsystem = starsystem;
 
 	// Helper variables.
@@ -87,7 +88,7 @@ function NetworkNode(name, defn, pos, starsystem)
 	{
 		var world = universe.world;
 		var display = universe.display;
-		var nodePos = this.loc.pos;
+		var nodePos = this.Locatable.loc.pos;
 
 		var drawPos = this.drawPos.overwriteWith(nodePos);
 		camera.coordsTransformWorldToView(drawPos);
@@ -117,8 +118,8 @@ function NetworkNode(name, defn, pos, starsystem)
 		]);
 		var visual = new VisualCircleGradient(radiusApparent, gradient);
 		var drawableTransformed = {};
-		drawableTransformed.loc = new Location(drawPos);
-		visual.draw(universe, world, display, drawableTransformed);
+		drawableTransformed.Locatable = new Locatable(new Location(drawPos));
+		visual.draw(universe, world, display, null, drawableTransformed);
 
 		var starsystem = this.starsystem;
 
@@ -150,7 +151,7 @@ function NetworkNode(name, defn, pos, starsystem)
 
 		var drawableTransformed = {};
 		var drawablePosTransformed = starsystemDrawPos.clone();
-		drawableTransformed.loc = new Location(drawablePosTransformed);
+		drawableTransformed.Locatable = new Locatable(new Location(drawablePosTransformed));
 
 		var ringThickness = radiusApparent * .1;
 		for (var i = 0; i < factionsPresent.length; i++)
@@ -162,7 +163,7 @@ function NetworkNode(name, defn, pos, starsystem)
 			(
 				ringRadius, null, factionColor.systemColor()
 			);
-			visualRing.draw(universe, world, display, drawableTransformed);
+			visualRing.draw(universe, world, display, null, drawableTransformed);
 		}
 
 		var ships = starsystem.ships;
@@ -191,7 +192,7 @@ function NetworkNode(name, defn, pos, starsystem)
 				]),
 				shipColor.systemColor()
 			);
-			visualShip.draw(universe, world, display, drawableTransformed);
+			visualShip.draw(universe, world, display, null, drawableTransformed);
 		}
 
 		var visualText = new VisualText
@@ -200,7 +201,7 @@ function NetworkNode(name, defn, pos, starsystem)
 		);
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;
-		visualText.draw(universe, world, display, drawableTransformed);
+		visualText.draw(universe, world, display, null, drawableTransformed);
 	};
 }
 
@@ -210,8 +211,8 @@ function VisualCircleGradient(radius, gradient)
 	this.gradient = gradient;
 }
 {
-	VisualCircleGradient.prototype.draw = function(universe, world, display, drawable)
+	VisualCircleGradient.prototype.draw = function(universe, world, display, drawable, entity)
 	{
-		display.drawCircleWithGradient(drawable.loc.pos, this.radius, this.gradient);
+		display.drawCircleWithGradient(entity.Locatable.loc.pos, this.radius, this.gradient);
 	};
 }

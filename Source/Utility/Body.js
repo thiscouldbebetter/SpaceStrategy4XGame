@@ -3,5 +3,6 @@ function Body(name, defn, pos)
 {
 	this.name = name;
 	this.defn = defn;
-	this.loc = new Location(pos);
+	var loc = new Location(pos);
+	this.Locatable = new Locatable(loc);
 }

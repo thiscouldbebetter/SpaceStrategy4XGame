@@ -53,7 +53,7 @@ function VenueLayout(venueParent, modelParent, layout)
 
 				if (bodyAtCursor == null)
 				{
-					var buildableInProgress = planet.buildableInProgress(world);
+					var buildableInProgress = planet.buildableInProgress();
 					if (buildableInProgress == null)
 					{
 						var neighboringBodies = map.bodiesNeighboringCursor();
@@ -412,7 +412,11 @@ function VenueLayout(venueParent, modelParent, layout)
 					new DataBinding
 					(
 						planet,
-						function get(c) { return c.buildableInProgress(world).defnName; }
+						function get(c)
+						{
+							var buildable = c.buildableInProgress();
+							return (buildable == null ? "[none]" : buildable.defnName);
+						}
 					)
 				),
 
@@ -425,7 +429,11 @@ function VenueLayout(venueParent, modelParent, layout)
 					new DataBinding
 					(
 						planet,
-						function get(c) { return c.buildableInProgress(world).defn(world).resourcesToBuild.toString(); }
+						function get(c)
+						{
+							var buildable = c.buildableInProgress();
+							return (buildable == null ? "-" : buildable.defn(world).resourcesToBuild.toString() );
+						}
 					)
 				),
 			]

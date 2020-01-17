@@ -3,7 +3,8 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 {
 	this.name = name;
 	this.factionName = factionName;
-	this.loc = new Location(pos);
+	var loc = new Location(pos);
+	this.Locatable = new Locatable(loc);
 	this.demographics = demographics;
 	this.industry = industry;
 	this.layout = layout;

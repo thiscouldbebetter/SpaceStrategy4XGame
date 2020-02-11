@@ -4,7 +4,7 @@ function Ship(name, defn, pos, factionName, devices)
 	this.name = name;
 	this.defn = defn;
 	var loc = new Location(pos);
-	this.Locatable = new Locatable(loc);
+	this.locatable = new Locatable(loc);
 	this.factionName = factionName;
 	this.devices = devices;
 
@@ -97,10 +97,10 @@ function Ship(name, defn, pos, factionName, devices)
 		var linkStarsystem1 = linkNode1.starsystem;
 		var isLinkForward = (starsystemTo == linkStarsystem1);
 
-		var shipLoc = this.Locatable.loc;
+		var shipLoc = this.locatable.loc;
 
 		var nodeFrom = (isLinkForward == true ? linkNode0 : linkNode1);
-		shipLoc.pos.overwriteWith(nodeFrom.Locatable.loc.pos);
+		shipLoc.pos.overwriteWith(nodeFrom.locatable.loc.pos);
 
 		var linkDirection = link.displacement(cluster).normalize();
 		if (isLinkForward == false)
@@ -116,7 +116,7 @@ function Ship(name, defn, pos, factionName, devices)
 
 		var cluster = world.network;
 		var ship = this;
-		var shipLoc = ship.Locatable.loc;
+		var shipLoc = ship.locatable.loc;
 		var shipPos = shipLoc.pos;
 		var shipVel = shipLoc.vel;
 
@@ -133,7 +133,7 @@ function Ship(name, defn, pos, factionName, devices)
 		var starsystemSource = nodeSource.starsystem;
 
 		var portalToExitFrom = starsystemDestination.linkPortals[starsystemSource.name];
-		var exitPos = portalToExitFrom.Locatable.loc.pos;
+		var exitPos = portalToExitFrom.locatable.loc.pos;
 		shipPos.overwriteWith(exitPos).add(new Coords(1, 1, 1));
 
 		starsystemDestination.ships.push(ship);
@@ -171,9 +171,9 @@ function Ship(name, defn, pos, factionName, devices)
 
 		if (this.distanceLeftThisMove > 0)
 		{
-			var shipLoc = this.Locatable.loc;
+			var shipLoc = this.locatable.loc;
 			var shipPos = shipLoc.pos;
-			var targetLoc = target.Locatable.loc;
+			var targetLoc = target.locatable.loc;
 			var targetPos = targetLoc.pos;
 
 			var displacementToTarget = this._displacement.overwriteWith
@@ -464,7 +464,7 @@ function Ship(name, defn, pos, factionName, devices)
 		var world = universe.world;
 		var display = universe.display;
 
-		var shipPos = ship.Locatable.loc.pos;
+		var shipPos = ship.locatable.loc.pos;
 
 		camera.coordsTransformWorldToView
 		(

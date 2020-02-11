@@ -68,8 +68,8 @@ function VenueStarsystem(venueParent, starsystem)
 		var targetForCamera = new Coords(0, 0, 0);
 
 		// hack
-		this.camera.Locatable = new Locatable(this.camera.loc);
-		this.camera.Constrainable = new Constrainable
+		this.camera.locatable = new Locatable(this.camera.loc);
+		this.camera.constrainable = new Constrainable
 		(
 			[
 				new Constraint_PositionOnCylinder
@@ -315,7 +315,7 @@ function VenueStarsystem(venueParent, starsystem)
 						"MoveTarget",
 						new Coords(0, 0, 0)
 					),
-					this.cursor.Locatable.loc.pos.clone()
+					this.cursor.locatable.loc.pos.clone()
 				);
 
 				ship.order = new Order(this.cursor.orderName, targetBody);
@@ -395,8 +395,8 @@ function VenueStarsystem(venueParent, starsystem)
 	{
 		if (this.selection != null)
 		{
-			var cameraConstraint = this.camera.Constrainable.constraints["PositionOnCylinder"];
-			var selectionPos = this.selection.Locatable.loc.pos;
+			var cameraConstraint = this.camera.constrainable.constraints["PositionOnCylinder"];
+			var selectionPos = this.selection.locatable.loc.pos;
 			cameraConstraint.center.overwriteWith(selectionPos);
 		}
 	};

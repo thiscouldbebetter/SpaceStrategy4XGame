@@ -18,9 +18,9 @@ function VenueWorld(world)
 	{
 		if (this.selection != null)
 		{
-			var targetPosNew = this.selection.Locatable.loc.pos;
+			var targetPosNew = this.selection.locatable.loc.pos;
 
-			var cameraConstraints = camera.Constrainable.constraints;
+			var cameraConstraints = camera.constrainable.constraints;
 			var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
 			constraintDistance.targetPos = targetPosNew;
 
@@ -37,7 +37,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraIn = function(cameraSpeed)
 	{
-		var constraint = this.camera.Constrainable.constraints["HoldDistanceFromTarget"];
+		var constraint = this.camera.constrainable.constraints["HoldDistanceFromTarget"];
 		constraint.distanceToHold -= cameraSpeed / 2;
 		if (constraint.distanceToHold < 1)
 		{
@@ -53,7 +53,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraOut = function(cameraSpeed)
 	{
-		var constraint = this.camera.Constrainable.constraints["HoldDistanceFromTarget"];
+		var constraint = this.camera.constrainable.constraints["HoldDistanceFromTarget"];
 		constraint.distanceToHold += cameraSpeed / 2;
 		if (constraint.distanceToHold < 0)
 		{
@@ -63,7 +63,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraReset = function()
 	{
-		var cameraConstraints = this.camera.Constrainable.constraints;
+		var cameraConstraints = this.camera.constrainable.constraints;
 
 		var origin = new Coords(0, 0, 0);
 		var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
@@ -98,7 +98,7 @@ function VenueWorld(world)
 		var controlHeight = 16;
 
 		var margin = 10;
-		var fontHeightInPixels = universe.display.fontHeightInPixels;
+		var fontHeightInPixels = 10;//universe.display.fontHeightInPixels;
 
 		var containerInnerSize = new Coords(100, 60);
 
@@ -132,7 +132,7 @@ function VenueWorld(world)
 					{
 						var venueNext = new VenueControls
 						(
-							universe.controlBuilder.configure(universe)
+							universe.controlBuilder.gameAndSettings(universe)
 						);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
@@ -220,8 +220,8 @@ function VenueWorld(world)
 		var origin = new Coords(0, 0, 0);
 
 		// hack
-		this.camera.Locatable = new Locatable(this.camera.loc);
-		this.camera.Constrainable = new Constrainable
+		this.camera.locatable = new Locatable(this.camera.loc);
+		this.camera.constrainable = new Constrainable
 		(
 			[
 				new Constraint_HoldDistanceFromTarget
@@ -322,7 +322,7 @@ function VenueWorld(world)
 			{
 				var venueNext = new VenueControls
 				(
-					universe.controlBuilder.configure(universe)
+					universe.controlBuilder.gameAndSettings(universe)
 				);
 				venueNext = new VenueFader(venueNext, universe.venueCurrent);
 				universe.venueNext = venueNext;

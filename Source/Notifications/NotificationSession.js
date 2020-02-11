@@ -17,7 +17,7 @@ function NotificationSession(factionName, notifications)
 
 	NotificationSession.prototype.notificationGoTo = function(universe, notification)
 	{
-		var notificationLoc = notification.Locatable.loc;
+		var notificationLoc = notification.locatable.loc;
 		var notificationLocType = notificationLoc.constructor.name;
 		if (notificationLocType == TechnologyResearcher.name)
 		{

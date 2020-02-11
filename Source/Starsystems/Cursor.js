@@ -12,9 +12,9 @@ function Cursor()
 	this.defn = this.bodyDefn();
 
 	var loc = new Location(new Coords(0, 0, 0));
-	this.Locatable = new Locatable(loc);
+	this.locatable = new Locatable(loc);
 
-	this.Constrainable = new Constrainable
+	this.constrainable = new Constrainable
 	([
 		new Constraint_Cursor()
 	]);

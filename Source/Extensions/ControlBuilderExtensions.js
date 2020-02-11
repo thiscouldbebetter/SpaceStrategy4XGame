@@ -13,7 +13,7 @@ function ControlBuilderExtensions()
 		controlHeight
 	)
 	{
-		var fontHeightInPixels = universe.display.fontHeightInPixels;
+		var fontHeightInPixels = 10; // universe.display.fontHeightInPixels;
 
 		var returnValue = new ControlContainer
 		(
@@ -135,7 +135,7 @@ function ControlBuilderExtensions()
 		controlHeight
 	)
 	{
-		var fontHeightInPixels = universe.display.fontHeightInPixels;
+		var fontHeightInPixels = 10;//universe.display.fontHeightInPixels;
 
 		var returnValue = new ControlContainer
 		(
@@ -248,7 +248,7 @@ function ControlBuilderExtensions()
 	)
 	{
 		var cameraSpeed = 10;
-		var fontHeightInPixels = universe.display.fontHeightInPixels;
+		var fontHeightInPixels = 10; // universe.display.fontHeightInPixels;
 
 		var returnValue = new ControlContainer
 		(

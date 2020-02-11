@@ -4,7 +4,7 @@ function LinkPortal(name, defn, pos, starsystemNamesFromAndTo)
 	this.name = name;
 	this.defn = defn;
 	var loc = new Location(pos);
-	this.Locatable = new Locatable(loc);
+	this.locatable = new Locatable(loc);
 
 	this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
 }

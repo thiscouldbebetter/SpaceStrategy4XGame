@@ -28,7 +28,7 @@ function FactionKnowledge(factionNames, starsystemNames, linkNames)
 					(
 						"?", // name
 						node.defn,
-						node.Locatable.loc.pos,
+						node.locatable.loc.pos,
 						null // starsystem
 					);
 					nodesKnown.push(nodeDummy);

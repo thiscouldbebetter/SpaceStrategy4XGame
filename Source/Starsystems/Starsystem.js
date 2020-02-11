@@ -171,7 +171,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 			for (var i = 0; i < bodies.length; i++)
 			{
 				var bodyToSort = bodies[i];
-				var bodyToSortPos = bodyToSort.Locatable.loc.pos;
+				var bodyToSortPos = bodyToSort.locatable.loc.pos;
 				camera.coordsTransformWorldToView
 				(
 					bodyToSortDrawPos.overwriteWith(bodyToSortPos)
@@ -182,7 +182,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 					var bodySorted = bodiesToDrawSorted[j];
 					camera.coordsTransformWorldToView
 					(
-						bodySortedDrawPos.overwriteWith(bodySorted.Locatable.loc.pos)
+						bodySortedDrawPos.overwriteWith(bodySorted.locatable.loc.pos)
 					);
 					if (bodyToSortDrawPos.z >= bodySortedDrawPos.z)
 					{
@@ -203,14 +203,14 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	Starsystem.prototype.draw_Body = function(universe, world, display, camera, body)
 	{
-		var bodyPos = body.Locatable.loc.pos;
+		var bodyPos = body.locatable.loc.pos;
 		this.posSaved.overwriteWith(bodyPos);
 
 		camera.coordsTransformWorldToView(bodyPos);
 
 		var bodyDefn = body.defn;
 		var bodyVisual = bodyDefn.visual;
-		bodyVisual.draw(universe, world, display, null, body);
+		bodyVisual.draw(universe, world, display, body);
 		bodyPos.overwriteWith(this.posSaved);
 
 		this.visualElevationStem.draw(universe, world, display, body);
@@ -228,7 +228,7 @@ function VisualElevationStem(camera)
 {
 	VisualElevationStem.prototype.draw = function(universe, world, display, drawable, entity)
 	{
-		var drawablePosWorld = drawable.Locatable.loc.pos;
+		var drawablePosWorld = drawable.locatable.loc.pos;
 		var drawPosTip = this.camera.coordsTransformWorldToView
 		(
 			this.drawPosTip.overwriteWith(drawablePosWorld)

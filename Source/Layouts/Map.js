@@ -30,7 +30,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 	// Helper variables.
 
 	this._cellPos = new Coords();
-	this._drawable = {"Locatable": new Locatable(new Location(new Coords())) };
+	this._drawable = {"locatable": new Locatable(new Location(new Coords())) };
 	this._neighborOffsets =
 	[
 		new Coords(1, 0),
@@ -74,7 +74,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		for (var i = 0; i < this.bodies.length; i++)
 		{
 			var body = this.bodies[i];
-			var bodyPos = body.Locatable.loc.pos;
+			var bodyPos = body.locatable.loc.pos;
 			if (bodyPos.equals(cellPos))
 			{
 				returnValue = body;
@@ -113,7 +113,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 
 		var cellPos = this._cellPos;
 		var drawable = this._drawable;
-		var drawPos = drawable.Locatable.loc.pos;
+		var drawPos = drawable.locatable.loc.pos;
 		var cellSizeInPixels = map.cellSizeInPixels;
 		var cellSizeInPixelsHalf =
 			cellSizeInPixels.clone().divideScalar(2);
@@ -140,13 +140,13 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 				var cellTerrain = map.terrainAtPosInCells(cellPos);
 
 				var terrainVisual = cellTerrain.visual;
-				terrainVisual.draw(universe, world, display, null, drawable);
+				terrainVisual.draw(universe, world, display, drawable);
 
 				var cellBody = map.bodyAtPosInCells(cellPos);
 				if (cellBody != null)
 				{
 					var cellBodyVisual = cellBody.visual(world);
-					cellBodyVisual.draw(universe, world, display, null, drawable);
+					cellBodyVisual.draw(universe, world, display, drawable);
 				}
 			}
 		}
@@ -183,18 +183,18 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 				if (buildableDefn != null)
 				{
 					var bodyVisual = buildableDefn.visual;
-					bodyVisual.draw(universe, world, display, null, drawable);
+					bodyVisual.draw(universe, world, display, drawable);
 
 					var isBuildableAllowedOnTerrain =
 						buildableDefn.terrainNamesAllowed.contains(terrainName);
 					if (isBuildableAllowedOnTerrain == false)
 					{
 						var visualNotAllowed = new VisualText("X", "Red", "White");
-						visualNotAllowed.draw(universe, world, display, null, drawable);
+						visualNotAllowed.draw(universe, world, display, drawable);
 					}
 				}
 
-				cursorVisual.draw(universe, world, display, null, drawable);
+				cursorVisual.draw(universe, world, display, drawable);
 			}
 		}
 	};

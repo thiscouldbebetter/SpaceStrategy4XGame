@@ -11,7 +11,7 @@ function Projectile(shipParent)
 		(
 			"Projectile",
 			new Coords(1, 1).multiplyScalar(scaleFactor), // size
-			new VisualCircle(3, "Yellow")
+			new VisualCircle(3, Color.byName("Yellow"))
 		);
 
 		return bodyDefn;

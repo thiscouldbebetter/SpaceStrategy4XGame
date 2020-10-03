@@ -23,7 +23,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 {
 	// static methods
 
-	World.new = function(universe)
+	World.create = function(universe)
 	{
 		var worldName = NameGenerator.generateName() + " Cluster";
 
@@ -40,8 +40,15 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				terrainNamesSurface,
 				new VisualGroup
 				([
-					new VisualRectangle(mapCellSizeInPixels, "Gray"),
-					new VisualText("H", "White", "Gray")
+					new VisualRectangle(mapCellSizeInPixels, Color.byName("Gray")),
+					new VisualText
+					(
+						new DataBinding(null, (c) => "H", null),
+						null, // heightInPixels
+						Color.byName("White"),
+						Color.byName("Gray"),
+						null
+					)
 				]),
 				[ new Resource("Industry", 100) ], // resourcesToBuild
 				// resourcesProducedPerTurn
@@ -56,8 +63,15 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				terrainNamesSurface,
 				new VisualGroup
 				([
-					new VisualRectangle(mapCellSizeInPixels, "Red"),
-					new VisualText("F", "White", "Gray")
+					new VisualRectangle(mapCellSizeInPixels, Color.byName("Red")),
+					new VisualText
+					(
+						new DataBinding(null, (c) => "F", null),
+						null, // heightInPixels
+						Color.byName("White"),
+						Color.byName("Gray"),
+						null
+					)
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Industry", 1) ] // resourcesPerTurn
@@ -69,8 +83,16 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				terrainNamesSurface,
 				new VisualGroup
 				([
-					new VisualRectangle(mapCellSizeInPixels, "Blue"),
-					new VisualText("L", "White", "Gray")
+					new VisualRectangle(mapCellSizeInPixels, Color.byName("Blue")),
+					new VisualText
+					(
+						new DataBinding(null, (c) => "L", null),
+						null, // heightInPixels
+						Color.byName("White"),
+						Color.byName("Gray"),
+						null
+					)
+
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Research", 1) ] // resourcesPerTurn
@@ -82,8 +104,16 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				terrainNamesSurface,
 				new VisualGroup
 				([
-					new VisualRectangle(mapCellSizeInPixels, "Green"),
-					new VisualText("P", "White", "Gray")
+					new VisualRectangle(mapCellSizeInPixels, Color.byName("Green")),
+					new VisualText
+					(
+						new DataBinding(null, (c) => "P", null),
+						null, // heightInPixels
+						Color.byName("White"),
+						Color.byName("Gray"),
+						null
+					)
+
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Prosperity", 1) ] // resourcesPerTurn
@@ -367,7 +397,10 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 				(
 					[ factionName ],
 					[ factionHomeStarsystem.name ],
-					factionHomeStarsystem.links(network).select(function(x) { return x.name; } )
+					factionHomeStarsystem.links(network).map
+					(
+						x => x.name
+					)
 				)
 			);
 			factions.push(faction);
@@ -379,7 +412,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		(
 			viewSize,
 			focalLength,
-			new Location
+			new Disposition
 			(
 				new Coords(-viewDimension, 0, 0), //pos,
 				new Orientation

@@ -26,7 +26,7 @@ function Constraint_Cursor()
 
 		var xyPlaneNormal = new Coords(0, 0, 1);
 
-		var cursorPos = cursor.locatable.loc.pos;
+		var cursorPos = cursor.locatable().loc.pos;
 
 		var cameraForward = cameraOrientation.forward;
 		var displacementFromCameraToMousePosProjected = cameraForward.clone().multiplyScalar
@@ -84,7 +84,7 @@ function Constraint_Cursor()
 
 			if (collisionPos != null)
 			{
-				body.locatable.loc.pos.overwriteWith(collisionPos);
+				body.locatable().loc.pos.overwriteWith(collisionPos);
 			}
 		}
 		else // if (cursor.hasXYPositionBeenSpecified == true)

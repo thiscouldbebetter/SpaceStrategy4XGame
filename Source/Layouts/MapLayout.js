@@ -1,5 +1,5 @@
 
-function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
+function MapLayout(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 {
 	this.sizeInPixels = sizeInPixels;
 	this.pos = pos;
@@ -30,7 +30,9 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 	// Helper variables.
 
 	this._cellPos = new Coords();
-	this._drawable = {"locatable": new Locatable(new Location(new Coords())) };
+	this._drawable = {}
+	var locatable = new Locatable(null);
+	this._drawable.locatable = () => locatable;
 	this._neighborOffsets =
 	[
 		new Coords(1, 0),
@@ -43,12 +45,12 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 {
 	// instance methods
 
-	Map.prototype.bodiesNeighboringCursor = function()
+	MapLayout.prototype.bodiesNeighboringCursor = function()
 	{
 		return this.bodiesNeighboringPosInCells(this.cursor.pos);
 	};
 
-	Map.prototype.bodiesNeighboringPosInCells = function(centerPosInCells)
+	MapLayout.prototype.bodiesNeighboringPosInCells = function(centerPosInCells)
 	{
 		var returnValues = [];
 
@@ -68,13 +70,13 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		return returnValues;
 	};
 
-	Map.prototype.bodyAtPosInCells = function(cellPos)
+	MapLayout.prototype.bodyAtPosInCells = function(cellPos)
 	{
 		var returnValue = null;
 		for (var i = 0; i < this.bodies.length; i++)
 		{
 			var body = this.bodies[i];
-			var bodyPos = body.locatable.loc.pos;
+			var bodyPos = body.locatable().loc.pos;
 			if (bodyPos.equals(cellPos))
 			{
 				returnValue = body;
@@ -84,26 +86,26 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		return returnValue;
 	};
 
-	Map.prototype.bodyAtCursor = function()
+	MapLayout.prototype.bodyAtCursor = function()
 	{
 		return this.bodyAtPosInCells(this.cursor.pos);
 	};
 
-	Map.prototype.terrainAtPosInCells = function(cellPos)
+	MapLayout.prototype.terrainAtPosInCells = function(cellPos)
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
 		return this.terrains[terrainCode];
 		return returnValue;
 	};
 
-	Map.prototype.terrainAtCursor = function()
+	MapLayout.prototype.terrainAtCursor = function()
 	{
 		return this.terrainAtPosInCells(this.cursor.pos);
 	};
 
 	// drawable
 
-	Map.prototype.draw = function(universe, display)
+	MapLayout.prototype.draw = function(universe, display)
 	{
 		var world = universe.world;
 		var map = this;
@@ -113,7 +115,7 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 
 		var cellPos = this._cellPos;
 		var drawable = this._drawable;
-		var drawPos = drawable.locatable.loc.pos;
+		var drawPos = drawable.locatable().loc.pos;
 		var cellSizeInPixels = map.cellSizeInPixels;
 		var cellSizeInPixelsHalf =
 			cellSizeInPixels.clone().divideScalar(2);
@@ -140,13 +142,13 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 				var cellTerrain = map.terrainAtPosInCells(cellPos);
 
 				var terrainVisual = cellTerrain.visual;
-				terrainVisual.draw(universe, world, display, drawable);
+				terrainVisual.draw(universe, world, this, drawable, display);
 
 				var cellBody = map.bodyAtPosInCells(cellPos);
 				if (cellBody != null)
 				{
 					var cellBodyVisual = cellBody.visual(world);
-					cellBodyVisual.draw(universe, world, display, drawable);
+					cellBodyVisual.draw(universe, world, null, drawable, display);
 				}
 			}
 		}
@@ -161,7 +163,10 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		if (cursorIsWithinMap == true)
 		{
 
-			var cursorVisual = new VisualRectangle(new Coords(10, 10), null, "Cyan"); // hack
+			var cursorVisual = new VisualRectangle
+			(
+				new Coords(10, 10), null, Color.byName("Cyan")
+			); // hack
 
 			drawPos.overwriteWith
 			(
@@ -183,18 +188,24 @@ function Map(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 				if (buildableDefn != null)
 				{
 					var bodyVisual = buildableDefn.visual;
-					bodyVisual.draw(universe, world, display, drawable);
+					bodyVisual.draw(universe, world, null, drawable, display);
 
 					var isBuildableAllowedOnTerrain =
 						buildableDefn.terrainNamesAllowed.contains(terrainName);
 					if (isBuildableAllowedOnTerrain == false)
 					{
-						var visualNotAllowed = new VisualText("X", "Red", "White");
+						var visualNotAllowed = new VisualText
+						(
+							DataBinding.fromContext("X"),
+							null, // height
+							Color.byName("Red"),
+							Color.byName("White")
+						);
 						visualNotAllowed.draw(universe, world, display, drawable);
 					}
 				}
 
-				cursorVisual.draw(universe, world, display, drawable);
+				cursorVisual.draw(universe, world, this, drawable, display);
 			}
 		}
 	};

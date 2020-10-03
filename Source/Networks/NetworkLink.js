@@ -19,8 +19,8 @@ function NetworkLink(namesOfNodesLinked)
 	{
 		var nodesLinked = this.nodesLinked(cluster);
 
-		var node0Pos = nodesLinked[0].locatable.loc.pos;
-		var node1Pos = nodesLinked[1].locatable.loc.pos;
+		var node0Pos = nodesLinked[0].locatable().loc.pos;
+		var node1Pos = nodesLinked[1].locatable().loc.pos;
 
 		var returnValue = node1Pos.clone().subtract
 		(
@@ -77,7 +77,7 @@ function NetworkLink(namesOfNodesLinked)
 				var nodeFrom = nodesLinked[nodeIndexFrom];
 				var distanceAlongLink = shipPos.clone().subtract
 				(
-					nodeFrom.locatable.loc.pos
+					nodeFrom.locatable().loc.pos
 				).magnitude();
 
 				if (distanceAlongLink >= length)
@@ -107,8 +107,8 @@ function NetworkLink(namesOfNodesLinked)
 	{
 		var cluster = universe.world.network;
 		var nodesLinked = this.nodesLinked(cluster);
-		var nodeFromPos = nodesLinked[0].locatable.loc.pos;
-		var nodeToPos = nodesLinked[1].locatable.loc.pos;
+		var nodeFromPos = nodesLinked[0].locatable().loc.pos;
+		var nodeToPos = nodesLinked[1].locatable().loc.pos;
 
 		camera.coordsTransformWorldToView
 		(

@@ -57,7 +57,12 @@ function ControlBuilderExtensions()
 					"dynamicSelection",
 					new Coords(margin, margin * 2 + controlHeight * 2), // pos
 					new Coords(size.x - margin * 2, size.y - margin * 4 - controlHeight * 3), // size
-					new DataBinding(universe, function get(c) { return c.venueCurrent.selection; } )
+					new DataBinding
+					(
+						universe,
+						(c) => c.venueCurrent.selection, // get
+						null // set
+					)
 				),
 
 				new ControlButton

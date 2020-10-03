@@ -3,8 +3,8 @@ function Ship(name, defn, pos, factionName, devices)
 {
 	this.name = name;
 	this.defn = defn;
-	var loc = new Location(pos);
-	this.locatable = new Locatable(loc);
+	var loc = new Disposition(pos);
+	this._locatable = new Locatable(loc);
 	this.factionName = factionName;
 	this.devices = devices;
 
@@ -38,7 +38,7 @@ function Ship(name, defn, pos, factionName, devices)
 						new Coords(-.5, .5).multiplyScalar(scaleFactor),
 						new Coords(-.5, -.5).multiplyScalar(scaleFactor),
 					]),
-					color.systemColor()
+					color
 				),
 			])
 		);
@@ -56,6 +56,11 @@ function Ship(name, defn, pos, factionName, devices)
 	Ship.prototype.id = function()
 	{
 		return this.factionName + this.name;
+	};
+
+	Ship.prototype.locatable = function()
+	{
+		return this._locatable;
 	};
 
 	// devices
@@ -97,7 +102,7 @@ function Ship(name, defn, pos, factionName, devices)
 		var linkStarsystem1 = linkNode1.starsystem;
 		var isLinkForward = (starsystemTo == linkStarsystem1);
 
-		var shipLoc = this.locatable.loc;
+		var shipLoc = this.locatable().loc;
 
 		var nodeFrom = (isLinkForward == true ? linkNode0 : linkNode1);
 		shipLoc.pos.overwriteWith(nodeFrom.locatable.loc.pos);
@@ -133,7 +138,7 @@ function Ship(name, defn, pos, factionName, devices)
 		var starsystemSource = nodeSource.starsystem;
 
 		var portalToExitFrom = starsystemDestination.linkPortals[starsystemSource.name];
-		var exitPos = portalToExitFrom.locatable.loc.pos;
+		var exitPos = portalToExitFrom.locatable().loc.pos;
 		shipPos.overwriteWith(exitPos).add(new Coords(1, 1, 1));
 
 		starsystemDestination.ships.push(ship);
@@ -464,7 +469,7 @@ function Ship(name, defn, pos, factionName, devices)
 		var world = universe.world;
 		var display = universe.display;
 
-		var shipPos = ship.locatable.loc.pos;
+		var shipPos = ship.locatable().loc.pos;
 
 		camera.coordsTransformWorldToView
 		(
@@ -475,7 +480,8 @@ function Ship(name, defn, pos, factionName, devices)
 		);
 
 		var visual = this.visual(world);
-		visual.draw(universe, display, ship, new Location(drawPos), ship); // todo
+		//visual.draw(universe, display, ship, new Disposition(drawPos), ship); // todo
+		visual.draw(universe, world, null, ship, display); // todo
 	};
 
 	Ship.prototype.visual = function(world)
@@ -501,7 +507,7 @@ function Ship(name, defn, pos, factionName, devices)
 				new Coords(.5, -1).multiplyScalar(shipSizeMultiplier),
 				new Coords(-.5, -1).multiplyScalar(shipSizeMultiplier)
 			]),
-			color.systemColor,
+			color,
 			null // colorBorder
 		);
 	};

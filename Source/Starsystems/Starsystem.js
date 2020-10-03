@@ -14,8 +14,10 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 	// Helper variables
 	this.posSaved = new Coords();
 	this.visualElevationStem = new VisualElevationStem(null);
-	var gridColor = Color.Instances().Cyan.clone().alphaSet(.5).systemColor();
-	this.visualGrid = new VisualGrid(null, 40, 10, gridColor);
+	var gridColor = Color.Instances().Cyan.clone();
+	gridColor.alpha(.5);
+	var gridColorSystemColor = gridColor.systemColor();
+	this.visualGrid = new VisualGrid(null, 40, 10, gridColorSystemColor);
 }
 
 {
@@ -31,7 +33,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		var size = Starsystem.SizeStandard;
 
 		var starRadius = 30;
-		var starColor = Color.Instances().Yellow.systemColor();
+		var starColor = Color.Instances().Yellow;
 		var star = new Body
 		(
 			"Star",
@@ -42,7 +44,13 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				new VisualGroup
 				([
 					new VisualCircle(starRadius, starColor, starColor),
-					new VisualText(name, "Gray")
+					new VisualText
+					(
+						DataBinding.fromContext(name),
+						null, // heightInPixels
+						Color.byName("Gray"),
+						null
+					)
 				])
 			),
 			new Coords(0, 0, -10)
@@ -171,7 +179,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 			for (var i = 0; i < bodies.length; i++)
 			{
 				var bodyToSort = bodies[i];
-				var bodyToSortPos = bodyToSort.locatable.loc.pos;
+				var bodyToSortPos = bodyToSort.locatable().loc.pos;
 				camera.coordsTransformWorldToView
 				(
 					bodyToSortDrawPos.overwriteWith(bodyToSortPos)
@@ -182,7 +190,7 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 					var bodySorted = bodiesToDrawSorted[j];
 					camera.coordsTransformWorldToView
 					(
-						bodySortedDrawPos.overwriteWith(bodySorted.locatable.loc.pos)
+						bodySortedDrawPos.overwriteWith(bodySorted.locatable().loc.pos)
 					);
 					if (bodyToSortDrawPos.z >= bodySortedDrawPos.z)
 					{
@@ -203,14 +211,14 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 
 	Starsystem.prototype.draw_Body = function(universe, world, display, camera, body)
 	{
-		var bodyPos = body.locatable.loc.pos;
+		var bodyPos = body.locatable().loc.pos;
 		this.posSaved.overwriteWith(bodyPos);
 
 		camera.coordsTransformWorldToView(bodyPos);
 
 		var bodyDefn = body.defn;
 		var bodyVisual = bodyDefn.visual;
-		bodyVisual.draw(universe, world, display, body);
+		bodyVisual.draw(universe, world, this, body, display);
 		bodyPos.overwriteWith(this.posSaved);
 
 		this.visualElevationStem.draw(universe, world, display, body);
@@ -228,7 +236,7 @@ function VisualElevationStem(camera)
 {
 	VisualElevationStem.prototype.draw = function(universe, world, display, drawable, entity)
 	{
-		var drawablePosWorld = drawable.locatable.loc.pos;
+		var drawablePosWorld = drawable.locatable().loc.pos;
 		var drawPosTip = this.camera.coordsTransformWorldToView
 		(
 			this.drawPosTip.overwriteWith(drawablePosWorld)
@@ -270,7 +278,10 @@ function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, col
 		for (var d = 0; d < 2; d++)
 		{
 			multiplier.clear();
-			multiplier.dimension(d, this.gridCellSizeInPixels.dimension(d));
+			multiplier.dimensionSet
+			(
+				d, this.gridCellSizeInPixels.dimensionGet(d)
+			);
 
 			for (var i = 0 - this.gridSizeInCellsHalf.x; i <= this.gridSizeInCellsHalf.x; i++)
 			{
@@ -284,8 +295,8 @@ function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, col
 					this.gridSizeInPixelsHalf
 				);
 
-				drawPosFrom.dimension(d, 0);
-				drawPosTo.dimension(d, 0);
+				drawPosFrom.dimensionSet(d, 0);
+				drawPosTo.dimensionSet(d, 0);
 
 				drawPosFrom.add(multiplier.clone().multiplyScalar(i));
 				drawPosTo.add(multiplier.clone().multiplyScalar(i));

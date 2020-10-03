@@ -4,7 +4,7 @@ function main()
 
 	var displaySizeInPixels = new Coords(400, 300, 1);
 
-	var display = new Display
+	var display = new Display2D
 	(
 		[ displaySizeInPixels ],
 		"Font", // fontName
@@ -22,12 +22,13 @@ function main()
 	(
 		// images
 		[
-			new Image("Title", contentPathImages + "Title.png"),
+			new Image2("Opening", contentPathImages + "Opening.png"),
+			new Image2("Title", contentPathImages + "Title.png"),
 		],
 		// sounds
 		[
 			new Sound("Sound", contentPathAudio + "Effects/Sound.wav", false),
-			new Sound("Music", contentPathAudio + "Music/Music.mp3", true),
+			new Sound("Music_Title", contentPathAudio + "Music/Music.mp3", true),
 		],
 		// videos
 		[
@@ -41,13 +42,14 @@ function main()
 		[]
 	);
 
-	var universe = Universe.new
+	var universe = Universe.create
 	(
 		"Space_Strategy_4X",
-		"0.0.0-20200114-2120",
+		"0.0.0-20201003-2130",
 		new TimerHelper(20),
 		display,
 		mediaLibrary,
+		ControlStyle.Instances().Default,
 		null // world
 	);
 	universe.initialize(x => { x.start() });

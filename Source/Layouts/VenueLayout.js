@@ -231,7 +231,8 @@ function VenueLayout(venueParent, modelParent, layout)
 					function click(universe)
 					{
 						var venueCurrent = universe.venueCurrent;
-						var controlList = venueCurrent.controlRoot.children["listBuildables"];
+						var controlList =
+							venueCurrent.controlRoot.childrenByName.get("listBuildables");
 						var itemSelected = controlList.itemSelected();
 						if (itemSelected != null)
 						{

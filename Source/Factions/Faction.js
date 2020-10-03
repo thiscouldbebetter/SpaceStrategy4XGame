@@ -93,7 +93,8 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 					new DataBinding
 					(
 						diplomaticSession,
-						function get(c) { return (c.factionSelected == null ? [] : c.factionSelected.planets); }
+						(c) => (c.factionSelected == null ? [] : c.factionSelected.planets),
+						null
 					), // items
 					new DataBinding(null, function get(c) { return c.name; } ), // bindingForItemText,
 					fontHeightInPixels,
@@ -101,8 +102,14 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 					new DataBinding
 					(
 						diplomaticSession,
-						function get(c) { return c.factionSelected.planetSelected; },
-						function set(c, v) { c.factionSelected.planetSelected = v; }
+						(c) => (c.factionSelected == null ? null : c.factionSelected.planetSelected),
+						(c, v) =>
+						{
+							if (c.factionSelected != null)
+							{
+								c.factionSelected.planetSelected = v;
+							}
+						}
 					),
 					new DataBinding() // bindingForItemValue
 				),

@@ -2,14 +2,19 @@
 function Buildable(defnName, pos, isComplete)
 {
 	this.defnName = defnName;
-	var loc = new Location(pos);
-	this.locatable = new Locatable(loc);
+	var loc = new Disposition(pos);
+	this._locatable = new Locatable(loc);
 	this.isComplete = (isComplete || false);
 }
 {
 	Buildable.prototype.defn = function(world)
 	{
 		return world.buildables[this.defnName];
+	};
+
+	Buildable.prototype.locatable = function()
+	{
+		return this._locatable;
 	};
 
 	Buildable.prototype.visual = function(world)
@@ -26,7 +31,13 @@ function Buildable(defnName, pos, isComplete)
 				this._visual = new VisualGroup
 				([
 					defnVisual,
-					new VisualText("X", "White", "Black")
+					new VisualText
+					(
+						DataBinding.fromContext("X"),
+						null, // height
+						Color.byName("White"),
+						Color.byName("Black")
+					)
 				])
 			}
 		}

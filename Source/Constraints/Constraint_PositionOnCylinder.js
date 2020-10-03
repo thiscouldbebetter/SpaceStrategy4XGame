@@ -20,7 +20,7 @@ function Constraint_PositionOnCylinder
 		this.yawInTurns.wrapToRangeMinMax(0, 1);
 		var yawInRadians = this.yawInTurns * Polar.RadiansPerTurn;
 
-		var bodyLoc = body.locatable.loc;
+		var bodyLoc = body.locatable().loc;
 		var bodyPos = bodyLoc.pos;
 		var bodyOrientation = bodyLoc.orientation;
 

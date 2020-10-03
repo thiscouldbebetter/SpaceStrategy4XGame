@@ -3,8 +3,8 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 {
 	this.name = name;
 	this.factionName = factionName;
-	var loc = new Location(pos);
-	this.locatable = new Locatable(loc);
+	var loc = new Disposition(pos);
+	this._locatable = new Locatable(loc);
 	this.demographics = demographics;
 	this.industry = industry;
 	this.layout = layout;
@@ -34,11 +34,11 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 						10, // radius
 						new Gradient
 						([
-							new GradientStop(0, "White"),
-							new GradientStop(.2, "White"),
-							new GradientStop(.3, "Cyan"),
-							new GradientStop(.75, "Cyan"),
-							new GradientStop(1, "Black"),
+							new GradientStop(0, Color.byName("White")),
+							new GradientStop(.2, Color.byName("White")),
+							new GradientStop(.3, Color.byName("Cyan")),
+							new GradientStop(.75, Color.byName("Cyan")),
+							new GradientStop(1, Color.byName("Black")),
 						])
 					),
 					new VisualDynamic
@@ -54,7 +54,13 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 							{
 								returnValue = new VisualOffset
 								(
-									new VisualText(drawable.factionName, "White"),
+									new VisualText
+									(
+										DataBinding.fromContext(drawable.factionName),
+										null, // heightInPixels
+										Color.byName("White"),
+										null
+									),
 									new Coords(0, 16)
 								)
 							}
@@ -73,6 +79,11 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 	Planet.prototype.faction = function(world)
 	{
 		return (this.factionName == null ? null : world.factions[this.factionName]);
+	};
+
+	Planet.prototype.locatable = function()
+	{
+		return this._locatable;
 	};
 
 	// controls

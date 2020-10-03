@@ -16,7 +16,7 @@ function Collision()
 		for (var i = 0; i < bodies.length; i++)
 		{
 			var body = bodies[i];
-			bodyAsSphere.center = body.locatable.loc.pos;
+			bodyAsSphere.center = body.locatable().loc.pos;
 
 			var collisionOfRayWithBody = new Collision().rayAndSphere
 			(

@@ -18,9 +18,9 @@ function VenueWorld(world)
 	{
 		if (this.selection != null)
 		{
-			var targetPosNew = this.selection.locatable.loc.pos;
+			var targetPosNew = this.selection.locatable().loc.pos;
 
-			var cameraConstraints = camera.constrainable.constraints;
+			var cameraConstraints = camera.constrainable().constraints;
 			var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
 			constraintDistance.targetPos = targetPosNew;
 
@@ -37,7 +37,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraIn = function(cameraSpeed)
 	{
-		var constraint = this.camera.constrainable.constraints["HoldDistanceFromTarget"];
+		var constraint = this.camera.constrainable().constraints["HoldDistanceFromTarget"];
 		constraint.distanceToHold -= cameraSpeed / 2;
 		if (constraint.distanceToHold < 1)
 		{
@@ -53,7 +53,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraOut = function(cameraSpeed)
 	{
-		var constraint = this.camera.constrainable.constraints["HoldDistanceFromTarget"];
+		var constraint = this.camera.constrainable().constraints["HoldDistanceFromTarget"];
 		constraint.distanceToHold += cameraSpeed / 2;
 		if (constraint.distanceToHold < 0)
 		{
@@ -63,7 +63,7 @@ function VenueWorld(world)
 
 	VenueWorld.prototype.cameraReset = function()
 	{
-		var cameraConstraints = this.camera.constrainable.constraints;
+		var cameraConstraints = this.camera.constrainable().constraints;
 
 		var origin = new Coords(0, 0, 0);
 		var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
@@ -215,13 +215,14 @@ function VenueWorld(world)
 		);
 
 		var soundHelper = universe.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic(universe, "Music");
+		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
 
 		var origin = new Coords(0, 0, 0);
 
 		// hack
-		this.camera.locatable = new Locatable(this.camera.loc);
-		this.camera.constrainable = new Constrainable
+		var cameraLocatable = new Locatable(this.camera.loc);
+		this.camera.locatable = () => cameraLocatable;
+		var cameraConstrainable = new Constrainable
 		(
 			[
 				new Constraint_HoldDistanceFromTarget
@@ -232,6 +233,7 @@ function VenueWorld(world)
 				new Constraint_LookAt(origin),
 			].addLookupsByName()
 		);
+		this.camera.constrainable = () => cameraConstrainable;
 	};
 
 	VenueWorld.prototype.selectionName = function()

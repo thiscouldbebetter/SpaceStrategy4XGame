@@ -27,13 +27,31 @@ function Layout(sizeInPixels, map)
 
 		var terrains =
 		[
-			new MapTerrain("None", " ", new VisualRectangle(mapCellSizeInPixels, null, "rgba(0, 0, 0, 0)"), false),
-			new MapTerrain("Orbit", "-", new VisualRectangle(mapCellSizeInPixels, null, "Violet"), false),
-			new MapTerrain("Surface", ".", new VisualRectangle(mapCellSizeInPixels, null, "LightGray"), false),
+			new MapTerrain
+			(
+				"None",
+				" ",
+				new VisualRectangle(mapCellSizeInPixels, null, Color.byName("_Transparent")),
+				false
+			),
+			new MapTerrain
+			(
+				"Orbit",
+				"-",
+				new VisualRectangle(mapCellSizeInPixels, null, Color.byName("Violet")),
+				false
+			),
+			new MapTerrain
+			(
+				"Surface",
+				".",
+				new VisualRectangle(mapCellSizeInPixels, null, Color.byName("GrayLight")),
+				false
+			),
 		];
 		terrains.addLookups( function(x) { return x.codeChar; } );
 
-		var map = new Map
+		var map = new MapLayout
 		(
 			mapSizeInPixels,
 			mapPosInPixels,

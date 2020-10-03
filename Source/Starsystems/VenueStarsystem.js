@@ -44,7 +44,7 @@ function VenueStarsystem(venueParent, starsystem)
 		var starsystem = this.starsystem;
 
 		var soundHelper = universe.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic(universe, "Music");
+		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
 
 		var viewSize = universe.display.sizeInPixels.clone();
 		var focalLength = viewSize.y;
@@ -54,7 +54,7 @@ function VenueStarsystem(venueParent, starsystem)
 		(
 			viewSize,
 			focalLength,
-			new Location
+			new Disposition
 			(
 				new Coords(0 - focalLength, 0, 0), //pos,
 				new Orientation
@@ -68,8 +68,9 @@ function VenueStarsystem(venueParent, starsystem)
 		var targetForCamera = new Coords(0, 0, 0);
 
 		// hack
-		this.camera.locatable = new Locatable(this.camera.loc);
-		this.camera.constrainable = new Constrainable
+		var locatable = new Locatable(this.camera.loc);
+		this.camera.locatable = () => locatable;
+		var constrainable = new Constrainable
 		(
 			[
 				new Constraint_PositionOnCylinder
@@ -88,6 +89,7 @@ function VenueStarsystem(venueParent, starsystem)
 				new Constraint_LookAt(targetForCamera),
 			].addLookupsByName()
 		);
+		this.camera.constrainable = () => constrainable;
 
 		Constrainable.constrain(universe, universe.world, this, this.camera);
 
@@ -315,7 +317,7 @@ function VenueStarsystem(venueParent, starsystem)
 						"MoveTarget",
 						new Coords(0, 0, 0)
 					),
-					this.cursor.locatable.loc.pos.clone()
+					this.cursor.locatable().loc.pos.clone()
 				);
 
 				ship.order = new Order(this.cursor.orderName, targetBody);
@@ -395,8 +397,8 @@ function VenueStarsystem(venueParent, starsystem)
 	{
 		if (this.selection != null)
 		{
-			var cameraConstraint = this.camera.constrainable.constraints["PositionOnCylinder"];
-			var selectionPos = this.selection.locatable.loc.pos;
+			var cameraConstraint = this.camera.constrainable().constraints["PositionOnCylinder"];
+			var selectionPos = this.selection.locatable().loc.pos;
 			cameraConstraint.center.overwriteWith(selectionPos);
 		}
 	};

@@ -3,8 +3,8 @@ function LinkPortal(name, defn, pos, starsystemNamesFromAndTo)
 {
 	this.name = name;
 	this.defn = defn;
-	var loc = new Location(pos);
-	this.locatable = new Locatable(loc);
+	var loc = new Disposition(pos);
+	this._locatable = new Locatable(loc);
 
 	this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
 }
@@ -14,6 +14,11 @@ function LinkPortal(name, defn, pos, starsystemNamesFromAndTo)
 	{
 		var returnValue = cluster.links[this.starsystemNameFrom()][this.starsystemNameTo()];
 		return returnValue;
+	};
+
+	LinkPortal.prototype.locatable = function()
+	{
+		return this._locatable;
 	};
 
 	LinkPortal.prototype.starsystemFrom = function(cluster)

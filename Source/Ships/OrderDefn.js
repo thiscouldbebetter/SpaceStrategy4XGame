@@ -57,7 +57,7 @@ function OrderDefn(name, obey)
 						(
 							actor.name + "_projectile",
 							new Projectile().bodyDefnBuild(),
-							actor.locatable.loc.pos.clone(),
+							actor.locatable().loc.pos.clone(),
 							actor.factionName,
 							null // devices
 						);
@@ -78,8 +78,8 @@ function OrderDefn(name, obey)
 						starsystem.ships.remove(projectile);
 						device.projectile = null;
 
-						var projectilePos = projectile.locatable.loc.pos;
-						var targetPos = order.target.locatable.loc.pos;
+						var projectilePos = projectile.locatable().loc.pos;
+						var targetPos = order.target.locatable().loc.pos;
 
 						if (projectilePos.equals(targetPos))
 						{

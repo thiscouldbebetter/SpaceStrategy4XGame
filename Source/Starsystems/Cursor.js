@@ -11,23 +11,37 @@ function Cursor()
 
 	this.defn = this.bodyDefn();
 
-	var loc = new Location(new Coords(0, 0, 0));
-	this.locatable = new Locatable(loc);
+	var loc = new Disposition(new Coords(0, 0, 0));
+	this._locatable = new Locatable(loc);
 
-	this.constrainable = new Constrainable
+	var constrainable = new Constrainable
 	([
 		new Constraint_Cursor()
 	]);
+	this.constrainable = () => constrainable;
 }
 
 {
 	Cursor.prototype.bodyDefn = function()
 	{
 		var radius = 5;
-		var color = Color.Instances().White.systemColor();
+		var color = Color.Instances().White;
 		var visualReticle = new VisualSelect
 		(
-			function selectChildName(universe, world, display, drawable, entity, visual)
+			new Map
+			([
+				[ "_0", new VisualNone() ],
+				[
+					"_1",
+					new VisualGroup
+					([
+						new VisualCircle(radius, null, color),
+						new VisualLine(new Coords(-radius, 0), new Coords(radius, 0), color),
+						new VisualLine(new Coords(0, -radius), new Coords(0, radius), color),
+					])
+				]
+			]),
+			(universe, world, display, drawable, entity, visual) => // selectChildNames
 			{
 				var returnValue;
 				var cursor = entity;
@@ -43,19 +57,8 @@ function Cursor()
 				{
 					returnValue = "_1";
 				}
-				return returnValue;
-			},
-			[ "_0", "_1" ], // childNames
-			// children
-			[
-				new VisualNone(),
-				new VisualGroup
-				([
-					new VisualCircle(radius, null, color),
-					new VisualLine(new Coords(-radius, 0), new Coords(radius, 0), color),
-					new VisualLine(new Coords(0, -radius), new Coords(0, radius), color),
-				])
-			]
+				return [ returnValue ];
+			}
 		);
 
 		var visualHover = new VisualText
@@ -63,7 +66,7 @@ function Cursor()
 			new DataBinding
 			(
 				this,
-				function get(c)
+				(c) =>
 				{
 					var returnValue;
 					if (c.bodyUnderneath == null)
@@ -77,7 +80,8 @@ function Cursor()
 					return returnValue;
 				} 
 			),
-			"Gray", "White"
+			null, // heightInPixels
+			Color.byName("Gray"), Color.byName("White")
 		);
 
 		var visual = new VisualGroup
@@ -102,6 +106,11 @@ function Cursor()
 		this.orderName = null;
 		this.hasXYPositionBeenSpecified = false;
 		this.hasZPositionBeenSpecified = false;
+	};
+
+	Cursor.prototype.locatable = function()
+	{
+		return this._locatable;
 	};
 
 	Cursor.prototype.set = function(actor, orderName, mustTargetBody)

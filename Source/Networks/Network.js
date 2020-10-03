@@ -75,7 +75,7 @@ function Network(name, nodes, links)
 				for (var j = 0; j < i; j++)
 				{
 					var nodeOther = nodesNotYetLinked[j];
-					var nodeOtherPos = nodeOther.locatable.loc.pos;
+					var nodeOtherPos = nodeOther.locatable().loc.pos;
 
 					displacementOfNodeNewFromOther.overwriteWith
 					(
@@ -111,9 +111,9 @@ function Network(name, nodes, links)
 			nodesNotYetLinked.push(node);
 		}
 
-		var nodePositions = nodesNotYetLinked.select
+		var nodePositions = nodesNotYetLinked.map
 		(
-			function(x) { return x.locatable.loc.pos; }
+			x => x.locatable().loc.pos
 		);
 		var boundsActual = new Box(new Coords(), new Coords()).ofPoints(nodePositions);
 		var boundsDesired = new Box
@@ -145,10 +145,10 @@ function Network(name, nodes, links)
 					10, // radius
 					new Gradient
 					([
-						new GradientStop(0, "Black"),
-						new GradientStop(.5, "Black"),
-						new GradientStop(.75, "Violet"),
-						new GradientStop(1, "Blue"),
+						new GradientStop(0, Color.byName("Black") ),
+						new GradientStop(.5, Color.byName("Black") ),
+						new GradientStop(.75, Color.byName("Violet") ),
+						new GradientStop(1, Color.byName("Blue") )
 					])
 				)
 			])
@@ -164,7 +164,7 @@ function Network(name, nodes, links)
 			for (var i = 0; i < nodesLinked.length; i++)
 			{
 				var nodeLinked = nodesLinked[i];
-				var nodeLinkedPos = nodeLinked.locatable.loc.pos;
+				var nodeLinkedPos = nodeLinked.locatable().loc.pos;
 
 				for (var j = 0; j < nodesNotYetLinked.length; j++)
 				{
@@ -175,7 +175,7 @@ function Network(name, nodes, links)
 						nodeLinkedPos
 					).subtract
 					(
-						nodeToLink.locatable.loc.pos
+						nodeToLink.locatable().loc.pos
 					).magnitude();
 
 					if (distanceBetweenNodes <= distanceBetweenNodePairClosestSoFar)
@@ -290,7 +290,7 @@ function Network(name, nodes, links)
 			var drawableToSort = drawablesToSort[i];
 			camera.coordsTransformWorldToView
 			(
-				drawPos.overwriteWith(drawableToSort.locatable.loc.pos)
+				drawPos.overwriteWith(drawableToSort.locatable().loc.pos)
 			);
 
 			if (drawPos.z > 0)
@@ -299,7 +299,7 @@ function Network(name, nodes, links)
 				for (j = 0; j < drawablesSortedByZ.length; j++)
 				{
 					var drawableSorted = drawablesSortedByZ[j];
-					var drawableSortedPos = drawableSorted.locatable.loc.pos.clone();
+					var drawableSortedPos = drawableSorted.locatable().loc.pos.clone();
 					var drawableSortedDrawPos = camera.coordsTransformWorldToView
 					(
 						drawableSortedPos

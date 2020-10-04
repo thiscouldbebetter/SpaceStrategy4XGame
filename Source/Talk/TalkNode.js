@@ -1,18 +1,19 @@
 
-function TalkNode(defn, parameters)
+class TalkNode
 {
-	this.defn = defn;
-	this.parameters = parameters;
-}
+	constructor(defn, parameters)
+	{
+		this.defn = defn;
+		this.parameters = parameters;
+	}
 
-{
 	// constant
 
-	TalkNode.Underscore = "_"; // Prepended for array lookup in case name is numeric
+	static Underscore = "_"; // Prepended for array lookup in case name is numeric
 
 	// static methods
 
-	TalkNode.fromString = function(stringToParse)
+	static fromString(stringToParse)
 	{
 		var returnValue = null;
 
@@ -29,7 +30,7 @@ function TalkNode(defn, parameters)
 		stringToParse = stringSplitOnQuotes.join("'");
 		stringToParse = stringToParse.split("\t").join(" ");
 
-		var talkNodeDefns = TalkNodeDefn.Instances._All;
+		var talkNodeDefns = TalkNodeDefn.Instances()._All;
 
 		var stringAsTokens = stringToParse.trim().split(" ");
 		for (var i = 0; i < stringAsTokens.length; i++)
@@ -66,24 +67,24 @@ function TalkNode(defn, parameters)
 		}
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
-	TalkNode.prototype.click = function(talkSession, scope)
+	click(talkSession, scope)
 	{
 		if (this.defn.click != null)
 		{
 			this.defn.click(talkSession, scope, this);
 		}
-	};
+	}
 
-	TalkNode.prototype.execute = function(talkSession, scope)
+	execute(talkSession, scope)
 	{
 		this.defn.execute(talkSession, scope, this);
-	};
+	}
 
-	TalkNode.prototype.htmlElementBuild = function(talkSession)
+	htmlElementBuild(talkSession)
 	{
 		var returnValue = document.createElement("div");
 		returnValue.innerHTML = this.parameters;
@@ -94,10 +95,10 @@ function TalkNode(defn, parameters)
 		this.htmlElement = returnValue;
 
 		return returnValue;
-	};
+	}
 
-	TalkNode.prototype.text = function()
+	text()
 	{
 		return this.parameters[1]; // hack
-	};
+	}
 }

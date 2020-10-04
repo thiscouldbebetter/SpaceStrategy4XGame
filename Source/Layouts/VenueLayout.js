@@ -1,26 +1,27 @@
 
-function VenueLayout(venueParent, modelParent, layout)
+class VenueLayout
 {
-	this.venueParent = venueParent;
-	this.modelParent = modelParent;
-	this.layout = layout;
-}
+	constructor(venueParent, modelParent, layout)
+	{
+		this.venueParent = venueParent;
+		this.modelParent = modelParent;
+		this.layout = layout;
+	}
 
-{
-	VenueLayout.prototype.initialize = function(universe)
+	initialize(universe)
 	{
 		var controlRoot = this.controlBuild(universe);
 		this.venueControls = new VenueControls(controlRoot);
 
 		this.layout.initialize(universe);
-	};
+	}
 
-	VenueLayout.prototype.model = function()
+	model()
 	{
 		return this.layout;
-	};
+	}
 
-	VenueLayout.prototype.updateForTimerTick = function(universe)
+	updateForTimerTick(universe)
 	{
 		this.venueControls.updateForTimerTick(universe);
 
@@ -81,11 +82,11 @@ function VenueLayout(venueParent, modelParent, layout)
 		}
 
 		this.draw(universe);
-	};
+	}
 
 	// controls
 
-	VenueLayout.prototype.controlBuildableDetailsBuild = function(universe)
+	controlBuildableDetailsBuild(universe)
 	{
 		var planet = this.modelParent; // hack
 		var layout = this.layout;
@@ -153,9 +154,9 @@ function VenueLayout(venueParent, modelParent, layout)
 		);
 
 		return returnValue;
-	};
+	}
 
-	VenueLayout.prototype.controlBuildableSelectBuild = function(universe, cursorPos)
+	controlBuildableSelectBuild(universe, cursorPos)
 	{
 		var world = universe.world;
 		var layout = this.layout;
@@ -250,9 +251,9 @@ function VenueLayout(venueParent, modelParent, layout)
 		);
 
 		return returnValue;
-	};
+	}
 
-	VenueLayout.prototype.controlBuild = function(universe)
+	controlBuild(universe)
 	{
 		var controlBuilder = universe.controlBuilder;
 
@@ -359,9 +360,9 @@ function VenueLayout(venueParent, modelParent, layout)
 		returnValue = new ControlContainerTransparent(returnValue);
 
 		return returnValue;
-	};
+	}
 
-	VenueLayout.prototype.controlBuild_Industry = function
+	controlBuild_Industry
 	(
 		universe,
 		containerMainSize,
@@ -441,9 +442,9 @@ function VenueLayout(venueParent, modelParent, layout)
 		);
 
 		return returnValue;
-	};
+	}
 
-	VenueLayout.prototype.controlBuild_Vitals = function
+	controlBuild_Vitals
 	(
 		universe,
 		containerMainSize,
@@ -527,16 +528,16 @@ function VenueLayout(venueParent, modelParent, layout)
 		);
 
 		return returnValue;
-	};
+	}
 
 	// drawable
 
-	VenueLayout.prototype.draw = function(universe)
+	draw(universe)
 	{
 		this.layout.draw(universe, universe.display);
 		if (this.venueControls != null)
 		{
 			this.venueControls.draw(universe);
 		}
-	};
+	}
 }

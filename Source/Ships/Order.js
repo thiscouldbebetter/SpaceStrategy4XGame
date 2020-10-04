@@ -1,18 +1,19 @@
 
-function Order(defnName, target)
+class Order
 {
-	this.defnName = defnName;
-	this.target = target;
-	this.isComplete = false;
-}
-
-{
-	Order.prototype.defn = function()
+	constructor(defnName, target)
 	{
-		return OrderDefn.Instances._All[this.defnName];
-	};
+		this.defnName = defnName;
+		this.target = target;
+		this.isComplete = false;
+	}
 
-	Order.prototype.obey = function(universe, actor)
+	defn()
+	{
+		return OrderDefn.Instances()._All[this.defnName];
+	}
+
+	obey(universe, actor)
 	{
 		if (this.isComplete == true)
 		{
@@ -22,5 +23,5 @@ function Order(defnName, target)
 		{
 			this.defn().obey(universe, actor, this);
 		}
-	};
+	}
 }

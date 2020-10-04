@@ -1,17 +1,18 @@
 
-function Constraint_Cursor()
+class Constraint_Cursor
 {
-	this.name = "Cursor";
+	constructor()
+	{
+		this.name = "Cursor";
 
-	// Helper variables.
+		// Helper variables.
 
-	this._max = new Coords();
-	this._min = new Coords();
-	this._boundsToRestrictTo = new Box(this._min, this._max);
-}
+		this._max = new Coords();
+		this._min = new Coords();
+		this._boundsToRestrictTo = new Box(this._min, this._max);
+	}
 
-{
-	Constraint_Cursor.prototype.constrain = function(universe, world, place, body)
+	constrain(universe, world, place, body)
 	{
 		var cursor = body;
 		var venue = universe.venueCurrent;
@@ -135,5 +136,5 @@ function Constraint_Cursor()
 			this._boundsToRestrictTo._min,
 			this._boundsToRestrictTo._max
 		);
-	};
+	}
 }

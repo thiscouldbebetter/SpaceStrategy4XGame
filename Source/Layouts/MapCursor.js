@@ -1,6 +1,9 @@
 
-function MapCursor(bodyDefn, pos)
+class MapCursor
 {
-	this.bodyDefn = bodyDefn;
-	this.pos = pos;
+	constructor(bodyDefn, pos)
+	{
+		this.bodyDefn = bodyDefn;
+		this.pos = pos;
+	}
 }

@@ -1,16 +1,19 @@
 
-function BuildableDefn
-(
-	name,
-	terrainNamesAllowed,
-	visual,
-	resourcesToBuild,
-	resourcesPerTurn
-)
+class BuildableDefn
 {
-	this.name = name;
-	this.terrainNamesAllowed = terrainNamesAllowed;
-	this.visual = visual;
-	this.resourcesToBuild = resourcesToBuild;
-	this.resourcesPerTurn = resourcesPerTurn;
+	constructor
+	(
+		name,
+		terrainNamesAllowed,
+		visual,
+		resourcesToBuild,
+		resourcesPerTurn
+	)
+	{
+		this.name = name;
+		this.terrainNamesAllowed = terrainNamesAllowed;
+		this.visual = visual;
+		this.resourcesToBuild = resourcesToBuild;
+		this.resourcesPerTurn = resourcesPerTurn;
+	}
 }

@@ -1,56 +1,57 @@
 
-function MapLayout(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
+class MapLayout
 {
-	this.sizeInPixels = sizeInPixels;
-	this.pos = pos;
-	this.terrains = terrains;
-	this.cellsAsStrings = cellsAsStrings;
-	this.bodies = bodies;
+	constructor(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
+	{
+		this.sizeInPixels = sizeInPixels;
+		this.pos = pos;
+		this.terrains = terrains;
+		this.cellsAsStrings = cellsAsStrings;
+		this.bodies = bodies;
 
-	this.sizeInCells = new Coords
-	(
-		this.cellsAsStrings[0].length,
-		this.cellsAsStrings.length,
-		1
-	);
-
-	this.sizeInCellsMinusOnes =
-		this.sizeInCells.clone().subtract
+		this.sizeInCells = new Coords
 		(
-			new Coords(1, 1, 1)
-		);
-	this.cellSizeInPixels =
-		this.sizeInPixels.clone().divide
-		(
-			this.sizeInCells
+			this.cellsAsStrings[0].length,
+			this.cellsAsStrings.length,
+			1
 		);
 
-	this.cursor = new MapCursor(null, new Coords(0, 0, 0));
+		this.sizeInCellsMinusOnes =
+			this.sizeInCells.clone().subtract
+			(
+				new Coords(1, 1, 1)
+			);
+		this.cellSizeInPixels =
+			this.sizeInPixels.clone().divide
+			(
+				this.sizeInCells
+			);
 
-	// Helper variables.
+		this.cursor = new MapCursor(null, new Coords(0, 0, 0));
 
-	this._cellPos = new Coords();
-	this._drawable = {}
-	var locatable = new Locatable(null);
-	this._drawable.locatable = () => locatable;
-	this._neighborOffsets =
-	[
-		new Coords(1, 0),
-		new Coords(0, 1),
-		new Coords(-1, 0),
-		new Coords(0, -1),
-	];
-}
+		// Helper variables.
 
-{
+		this._cellPos = new Coords();
+		this._drawable = {}
+		var locatable = new Locatable(null);
+		this._drawable.locatable = () => locatable;
+		this._neighborOffsets =
+		[
+			new Coords(1, 0),
+			new Coords(0, 1),
+			new Coords(-1, 0),
+			new Coords(0, -1),
+		];
+	}
+
 	// instance methods
 
-	MapLayout.prototype.bodiesNeighboringCursor = function()
+	bodiesNeighboringCursor()
 	{
 		return this.bodiesNeighboringPosInCells(this.cursor.pos);
-	};
+	}
 
-	MapLayout.prototype.bodiesNeighboringPosInCells = function(centerPosInCells)
+	bodiesNeighboringPosInCells(centerPosInCells)
 	{
 		var returnValues = [];
 
@@ -68,9 +69,9 @@ function MapLayout(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 		}
 
 		return returnValues;
-	};
+	}
 
-	MapLayout.prototype.bodyAtPosInCells = function(cellPos)
+	bodyAtPosInCells(cellPos)
 	{
 		var returnValue = null;
 		for (var i = 0; i < this.bodies.length; i++)
@@ -84,28 +85,28 @@ function MapLayout(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 			}
 		}
 		return returnValue;
-	};
+	}
 
-	MapLayout.prototype.bodyAtCursor = function()
+	bodyAtCursor()
 	{
 		return this.bodyAtPosInCells(this.cursor.pos);
-	};
+	}
 
-	MapLayout.prototype.terrainAtPosInCells = function(cellPos)
+	terrainAtPosInCells(cellPos)
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
 		return this.terrains[terrainCode];
 		return returnValue;
-	};
+	}
 
-	MapLayout.prototype.terrainAtCursor = function()
+	terrainAtCursor()
 	{
 		return this.terrainAtPosInCells(this.cursor.pos);
-	};
+	}
 
 	// drawable
 
-	MapLayout.prototype.draw = function(universe, display)
+	draw(universe, display)
 	{
 		var world = universe.world;
 		var map = this;
@@ -208,5 +209,5 @@ function MapLayout(sizeInPixels, pos, terrains, cellsAsStrings, bodies)
 				cursorVisual.draw(universe, world, this, drawable, display);
 			}
 		}
-	};
+	}
 }

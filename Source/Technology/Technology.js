@@ -1,19 +1,21 @@
 
-function Technology
-(
-	name,
-	researchRequired,
-	namesOfPrerequisiteTechnologies,
-	namesOfBuildablesEnabled
-)
+class Technology
 {
-	this.name = name;
-	this.researchRequired = researchRequired;
-	this.namesOfPrerequisiteTechnologies = namesOfPrerequisiteTechnologies;
-	this.namesOfBuildablesEnabled = namesOfBuildablesEnabled;
-}
-{
-	Technology.prototype.buildablesEnabled = function(world)
+	constructor
+	(
+		name,
+		researchRequired,
+		namesOfPrerequisiteTechnologies,
+		namesOfBuildablesEnabled
+	)
+	{
+		this.name = name;
+		this.researchRequired = researchRequired;
+		this.namesOfPrerequisiteTechnologies = namesOfPrerequisiteTechnologies;
+		this.namesOfBuildablesEnabled = namesOfBuildablesEnabled;
+	}
+
+	buildablesEnabled(world)
 	{
 		var returnValues = [];
 
@@ -25,5 +27,5 @@ function Technology
 		}
 
 		return returnValues;
-	};
+	}
 }

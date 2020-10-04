@@ -1,33 +1,34 @@
 
-function Starsystem(name, size, star, linkPortals, planets, factionName)
+class Starsystem
 {
-	this.name = name;
-	this.size = size;
+	constructor(name, size, star, linkPortals, planets, factionName)
+	{
+		this.name = name;
+		this.size = size;
 
-	this.star = star;
-	this.linkPortals = linkPortals;
-	this.planets = planets;
-	this.factionName = factionName;
+		this.star = star;
+		this.linkPortals = linkPortals;
+		this.planets = planets;
+		this.factionName = factionName;
 
-	this.ships = [];
+		this.ships = [];
 
-	// Helper variables
-	this.posSaved = new Coords();
-	this.visualElevationStem = new VisualElevationStem(null);
-	var gridColor = Color.Instances().Cyan.clone();
-	gridColor.alpha(.5);
-	var gridColorSystemColor = gridColor.systemColor();
-	this.visualGrid = new VisualGrid(null, 40, 10, gridColorSystemColor);
-}
+		// Helper variables
+		this.posSaved = new Coords();
+		this.visualElevationStem = new VisualElevationStem(null);
+		var gridColor = Color.Instances().Cyan.clone();
+		gridColor.alpha(.5);
+		var gridColorSystemColor = gridColor.systemColor();
+		this.visualGrid = new VisualGrid(null, 40, 10, gridColorSystemColor);
+	}
 
-{
 	// constants
 
-	Starsystem.SizeStandard = new Coords(100, 100, 100);
+	static SizeStandard = new Coords(100, 100, 100);
 
 	// static methods
 
-	Starsystem.generateRandom = function(universe)
+	static generateRandom(universe)
 	{
 		var name = NameGenerator.generateName();
 		var size = Starsystem.SizeStandard;
@@ -107,16 +108,16 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		);
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
-	Starsystem.prototype.faction = function(world)
+	faction(world)
 	{
 		return (this.factionName == null ? null : world.factions[this.factionName]);
-	};
+	}
 
-	Starsystem.prototype.links = function(cluster)
+	links(cluster)
 	{
 		var returnValues = [];
 
@@ -128,18 +129,18 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		}
 
 		return returnValues;
-	};
+	}
 
 	// moves
 
-	Starsystem.prototype.updateForMove = function()
+	updateForMove()
 	{
 		alert("todo");
-	};
+	}
 
 	// turns
 
-	Starsystem.prototype.updateForTurn = function(universe, world)
+	updateForTurn(universe, world)
 	{
 		for (var i = 0; i < this.bodies.length; i++)
 		{
@@ -149,11 +150,11 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 				body.updateForTurn(universe, world, this);
 			}
 		}
-	};
+	}
 
 	// drawing
 
-	Starsystem.prototype.draw = function(universe, world, display, camera)
+	draw(universe, world, display, camera)
 	{
 		this.visualElevationStem.camera = camera;
 		this.visualGrid.camera = camera;
@@ -207,9 +208,9 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 			var body = bodiesToDrawSorted[i];
 			this.draw_Body(universe, world, display, camera, body);
 		}
-	};
+	}
 
-	Starsystem.prototype.draw_Body = function(universe, world, display, camera, body)
+	draw_Body(universe, world, display, camera, body)
 	{
 		var bodyPos = body.locatable().loc.pos;
 		this.posSaved.overwriteWith(bodyPos);
@@ -221,22 +222,24 @@ function Starsystem(name, size, star, linkPortals, planets, factionName)
 		bodyVisual.draw(universe, world, this, body, display);
 		bodyPos.overwriteWith(this.posSaved);
 
-		this.visualElevationStem.draw(universe, world, display, body);
-	};
+		this.visualElevationStem.draw(universe, world, null, body, display);
+	}
 }
 
 // Visuals.
 
-function VisualElevationStem(camera)
+class VisualElevationStem
 {
-	this.camera = camera;
-	this.drawPosTip = new Coords();
-	this.drawPosPlane = new Coords();
-}
-{
-	VisualElevationStem.prototype.draw = function(universe, world, display, drawable, entity)
+	constructor(camera)
 	{
-		var drawablePosWorld = drawable.locatable().loc.pos;
+		this.camera = camera;
+		this.drawPosTip = new Coords();
+		this.drawPosPlane = new Coords();
+	}
+
+	draw(universe, world, place, entity, display)
+	{
+		var drawablePosWorld = entity.locatable().loc.pos;
 		var drawPosTip = this.camera.coordsTransformWorldToView
 		(
 			this.drawPosTip.overwriteWith(drawablePosWorld)
@@ -248,28 +251,30 @@ function VisualElevationStem(camera)
 		var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
 		var colors = Color.Instances();
 		display.drawLine(drawPosTip, drawPosPlane, colors[colorName].systemColor());
-	};
+	}
 }
 
-function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, color)
+class VisualGrid
 {
-	this.camera = camera;
-	this.gridSizeInCells = new Coords(1, 1, 0).multiplyScalar(gridDimensionInCells);
-	this.gridCellSizeInPixels = new Coords(1, 1, 0).multiplyScalar(gridCellDimensionInPixels);
-	this.color = color;
+	constructor(camera, gridDimensionInCells, gridCellDimensionInPixels, color)
+	{
+		this.camera = camera;
+		this.gridSizeInCells = new Coords(1, 1, 0).multiplyScalar(gridDimensionInCells);
+		this.gridCellSizeInPixels = new Coords(1, 1, 0).multiplyScalar(gridCellDimensionInPixels);
+		this.color = color;
 
-	this.gridSizeInPixels = this.gridSizeInCells.clone().multiply(this.gridCellSizeInPixels);
-	this.gridSizeInCellsHalf = this.gridSizeInCells.clone().half();
-	this.gridSizeInPixelsHalf = this.gridSizeInPixels.clone().half();
+		this.gridSizeInPixels = this.gridSizeInCells.clone().multiply(this.gridCellSizeInPixels);
+		this.gridSizeInCellsHalf = this.gridSizeInCells.clone().half();
+		this.gridSizeInPixelsHalf = this.gridSizeInPixels.clone().half();
 
-	// Helper variables.
-	this.displacement = new Coords();
-	this.drawPosFrom = new Coords();
-	this.drawPosTo = new Coords();
-	this.multiplier = new Coords();
-}
-{
-	VisualGrid.prototype.draw = function(universe, display, drawable, drawLoc)
+		// Helper variables.
+		this.displacement = new Coords();
+		this.drawPosFrom = new Coords();
+		this.drawPosTo = new Coords();
+		this.multiplier = new Coords();
+	}
+
+	draw(universe, display, drawable, drawLoc)
 	{
 		var drawPosFrom = this.drawPosFrom;
 		var drawPosTo = this.drawPosTo;
@@ -311,5 +316,5 @@ function VisualGrid(camera, gridDimensionInCells, gridCellDimensionInPixels, col
 				}
 			}
 		}
-	};
+	}
 }

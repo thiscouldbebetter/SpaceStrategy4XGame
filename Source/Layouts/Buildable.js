@@ -1,23 +1,25 @@
 
-function Buildable(defnName, pos, isComplete)
+class Buildable
 {
-	this.defnName = defnName;
-	var loc = new Disposition(pos);
-	this._locatable = new Locatable(loc);
-	this.isComplete = (isComplete || false);
-}
-{
-	Buildable.prototype.defn = function(world)
+	constructor(defnName, pos, isComplete)
+	{
+		this.defnName = defnName;
+		var loc = new Disposition(pos);
+		this._locatable = new Locatable(loc);
+		this.isComplete = (isComplete || false);
+	}
+
+	defn(world)
 	{
 		return world.buildables[this.defnName];
-	};
+	}
 
-	Buildable.prototype.locatable = function()
+	locatable()
 	{
 		return this._locatable;
-	};
+	}
 
-	Buildable.prototype.visual = function(world)
+	visual(world)
 	{
 		if (this._visual == null)
 		{
@@ -38,10 +40,10 @@ function Buildable(defnName, pos, isComplete)
 						Color.byName("White"),
 						Color.byName("Black")
 					)
-				])
+				]);
 			}
 		}
 
 		return this._visual;
-	};
+	}
 }

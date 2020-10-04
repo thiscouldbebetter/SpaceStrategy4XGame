@@ -1,21 +1,22 @@
 
-function NetworkLink(namesOfNodesLinked)
+class NetworkLink
 {
-	this.namesOfNodesLinked = namesOfNodesLinked;
-	this.ships = [];
+	constructor(namesOfNodesLinked)
+	{
+		this.namesOfNodesLinked = namesOfNodesLinked;
+		this.ships = [];
 
-	this.name = this.namesOfNodesLinked.join("-");
+		this.name = this.namesOfNodesLinked.join("-");
 
-	this.color = "rgba(128, 128, 128, .4)"; // hack
-}
+		this.color = "rgba(128, 128, 128, .4)"; // hack
+	}
 
-{
-	NetworkLink.prototype.direction = function(cluster)
+	direction(cluster)
 	{
 		return this.displacement(cluster).normalize();
-	};
+	}
 
-	NetworkLink.prototype.displacement = function(cluster)
+	displacement(cluster)
 	{
 		var nodesLinked = this.nodesLinked(cluster);
 
@@ -28,14 +29,14 @@ function NetworkLink(namesOfNodesLinked)
 		);
 
 		return returnValue;
-	};
+	}
 
-	NetworkLink.prototype.length = function(cluster)
+	length(cluster)
 	{
 		return this.displacement(cluster).magnitude();
-	};
+	}
 
-	NetworkLink.prototype.nodesLinked = function(cluster)
+	nodesLinked(cluster)
 	{
 		var returnValue =
 		[
@@ -44,11 +45,11 @@ function NetworkLink(namesOfNodesLinked)
 		];
 
 		return returnValue;
-	};
+	}
 
 	// turns
 
-	NetworkLink.prototype.updateForTurn = function(universe, world)
+	updateForTurn(universe, world)
 	{
 		if (this.ships.length > 0)
 		{
@@ -92,11 +93,11 @@ function NetworkLink(namesOfNodesLinked)
 				ship.linkExit(world, this);
 			}
 		}
-	};
+	}
 
 	// drawable
 
-	NetworkLink.prototype.draw = function
+	draw
 	(
 		universe,
 		camera,
@@ -154,5 +155,5 @@ function NetworkLink(namesOfNodesLinked)
 			],
 			this.color // hack
 		);
-	};
+	}
 }

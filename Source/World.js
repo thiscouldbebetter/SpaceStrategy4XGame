@@ -1,29 +1,31 @@
 
-function World(name, dateCreated, activityDefns, buildables, technologyTree, network, factions, ships, camera)
+class World
 {
-	this.name = name;
-	this.dateCreated = dateCreated;
+	constructor(name, dateCreated, activityDefns, buildables, technologyTree, network, factions, ships, camera)
+	{
+		this.name = name;
+		this.dateCreated = dateCreated;
 
-	this.activityDefns = activityDefns.addLookupsByName();
-	this.buildables = buildables.addLookupsByName();
-	this.technologyTree = technologyTree;
-	this.network = network;
-	this.factions = factions;
-	this.ships = ships;
-	this.camera = camera;
+		this.activityDefns = activityDefns.addLookupsByName();
+		this.buildables = buildables.addLookupsByName();
+		this.technologyTree = technologyTree;
+		this.network = network;
+		this.factions = factions;
+		this.ships = ships;
+		this.camera = camera;
 
-	this.dateSaved = this.dateCreated;
+		this.dateSaved = this.dateCreated;
 
-	this.factions.addLookupsByName();
-	this.ships.addLookupsByName();
+		this.factions.addLookupsByName();
+		this.ships.addLookupsByName();
 
-	this.turnsSoFar = 0;
-	this.factionIndexCurrent = 0;
-}
-{
+		this.turnsSoFar = 0;
+		this.factionIndexCurrent = 0;
+	}
+
 	// static methods
 
-	World.create = function(universe)
+	static create(universe)
 	{
 		var worldName = NameGenerator.generateName() + " Cluster";
 
@@ -164,7 +166,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		(
 			universe,
 			worldName,
-			NetworkNodeDefn.Instances._All,
+			NetworkNodeDefn.Instances()._All,
 			numberOfNetworkNodes,
 			// minAndMaxDistanceOfNodesFromOrigin
 			[ networkRadius / 2, networkRadius ],
@@ -427,7 +429,7 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		(
 			worldName,
 			DateTime.now(),
-			ActivityDefn.Instances._All,
+			ActivityDefn.Instances()._All,
 			buildables,
 			technologyTree,
 			network,
@@ -437,32 +439,32 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 		);
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
-	World.prototype.factionCurrent = function()
+	factionCurrent()
 	{
 		return this.factions[this.factionIndexCurrent];
-	};
+	}
 
-	World.prototype.factionsOtherThanCurrent = function()
+	factionsOtherThanCurrent()
 	{
 		var factionCurrent = this.factionCurrent();
 		var returnValues = this.factions.slice();
 		returnValues.removeAt(this.factionIndexCurrent);
 		return returnValues;
-	};
+	}
 
-	World.prototype.initialize = function(universe)
+	initialize(universe)
 	{
 		if (this.turnsSoFar == 0)
 		{
 			this.updateForTurn(universe);
 		}
-	};
+	}
 
-	World.prototype.updateForTurn = function(universe)
+	updateForTurn(universe)
 	{
 		var factionForPlayer = this.factions[0];
 		var notifications = factionForPlayer.notificationSession.notifications;
@@ -487,5 +489,5 @@ function World(name, dateCreated, activityDefns, buildables, technologyTree, net
 
 			this.turnsSoFar++;
 		}
-	};
+	}
 }

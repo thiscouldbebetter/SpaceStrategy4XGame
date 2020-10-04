@@ -1,15 +1,16 @@
 
-function Constraint_HoldDistanceFromTarget(distanceToHold, targetPos)
+class Constraint_HoldDistanceFromTarget
 {
-	this.name = "HoldDistanceFromTarget";
-	this.distanceToHold = distanceToHold;
-	this.targetPos = targetPos;
+	constructor(distanceToHold, targetPos)
+	{
+		this.name = "HoldDistanceFromTarget";
+		this.distanceToHold = distanceToHold;
+		this.targetPos = targetPos;
 
-	this.displacement = new Coords();
-}
+		this.displacement = new Coords();
+	}
 
-{
-	Constraint_HoldDistanceFromTarget.prototype.constrain = function(universe, world, place, body)
+	constrain(universe, world, place, body)
 	{
 		var bodyPos = body.locatable().loc.pos;
 
@@ -31,5 +32,5 @@ function Constraint_HoldDistanceFromTarget(distanceToHold, targetPos)
 		(
 			this.targetPos
 		).round();
-	};
+	}
 }

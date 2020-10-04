@@ -1,12 +1,24 @@
 
-function DeviceCategory(name)
+class DeviceCategory
 {
-	this.name = name;
-}
-{
-	DeviceCategory.Instances = new DeviceCategory_Instances();
+	constructor(name)
+	{
+		this.name = name;
+	}
 
-	function DeviceCategory_Instances()
+	static Instances()
+	{
+		if (DeviceCategory._instances == null)
+		{
+			DeviceCategory._instances = new DeviceCategory_Instances();
+		}
+		return DeviceCategory._instances;
+	}
+}
+
+class DeviceCategory_Instances
+{
+	constructor()
 	{
 		this.Drive = new DeviceCategory("Drive");
 		this.Generator = new DeviceCategory("Generator");

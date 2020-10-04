@@ -1,29 +1,30 @@
 
-function TalkSession(defn, factions)
+class TalkSession
 {
-	this.defn = defn;
-	this.factions = factions;
+	constructor(defn, factions)
+	{
+		this.defn = defn;
+		this.factions = factions;
 
-	var talkNodeStart = this.defn.talkNodes[0];
+		var talkNodeStart = this.defn.talkNodes[0];
 
-	this.scopeCurrent = new TalkScope
-	(
-		null, // parent
-		talkNodeStart,
-		// talkNodesForOptions
-		[]
-	);
+		this.scopeCurrent = new TalkScope
+		(
+			null, // parent
+			talkNodeStart,
+			// talkNodesForOptions
+			[]
+		);
 
-	this.variableLookup = [];
-	this.isTerminated = false;
+		this.variableLookup = [];
+		this.isTerminated = false;
 
-	this.log = [];
-}
+		this.log = [];
+	}
 
-{
 	// static methods
 
-	TalkSession.buildExample = function(factionActing, factionReceiving)
+	static buildExample(factionActing, factionReceiving)
 	{
 		var factions = [factionActing, factionReceiving];
 
@@ -152,9 +153,9 @@ function TalkSession(defn, factions)
 		);
 
 		return returnValue;
-	};
+	}
 
-	TalkSession.fromStrings = function(factions, talkNodesAsStrings)
+	static fromStrings(factions, talkNodesAsStrings)
 	{
 		var talkNodes = [];
 
@@ -179,16 +180,16 @@ function TalkSession(defn, factions)
 		);
 
 		return talkSession;
-	};
+	}
 
 	// instance methods
 
-	TalkSession.prototype.displayTextCurrent = function()
+	displayTextCurrent()
 	{
 		return this.scopeCurrent.displayTextCurrent;
-	};
+	}
 
-	TalkSession.prototype.hasResponseBeenSpecified = function()
+	hasResponseBeenSpecified()
 	{
 		var returnValue =
 		(
@@ -196,29 +197,29 @@ function TalkSession(defn, factions)
 			|| (this.optionSelected != null)
 		);
 		return returnValue;
-	};
+	}
 
-	TalkSession.prototype.optionsAvailable = function()
+	optionsAvailable()
 	{
 		var returnValues = (this.scopeCurrent.areOptionsVisible ? this.scopeCurrent.talkNodesForOptions : []);
 
 		return returnValues;
-	};
+	}
 
-	TalkSession.prototype.respond = function()
+	respond()
 	{
 		this.update();
-	};
+	}
 
-	TalkSession.prototype.start = function()
+	start()
 	{
 		document.body.appendChild(this.htmlElementBuild());
 
 		//this.update();
-	};
+	}
 
-	TalkSession.prototype.update = function()
+	update()
 	{
 		this.scopeCurrent.update(this);
-	};
+	}
 }

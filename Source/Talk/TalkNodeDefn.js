@@ -1,16 +1,27 @@
 
-function TalkNodeDefn(name, execute)
+class TalkNodeDefn
 {
-	this.name = name;
-	this.execute = execute;
-}
+	constructor(name, execute)
+	{
+		this.name = name;
+		this.execute = execute;
+	}
 
-{
 	// instances
 
-	TalkNodeDefn.Instances = new TalkNodeDefn_Instances();
+	static Instances()
+	{
+		if (TalkNodeDefn._instances == null)
+		{
+			TalkNodeDefn._instances = new TalkNodeDefn_Instances();
+		}
+		return TalkNodeDefn._instances;
+	}
+}
 
-	function TalkNodeDefn_Instances()
+class TalkNodeDefn_Instances
+{
+	constructor()
 	{
 		this.Display = new TalkNodeDefn
 		(

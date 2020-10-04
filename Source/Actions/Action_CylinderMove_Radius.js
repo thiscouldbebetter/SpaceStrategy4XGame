@@ -1,14 +1,15 @@
 
-function Action_CylinderMove_Radius(distanceToMove)
+class Action_CylinderMove_Radius
 {
-	this.distanceToMove = distanceToMove;
-}
+	constructor(distanceToMove)
+	{
+		this.distanceToMove = distanceToMove;
+	}
 
-{
-	Action_CylinderMove_Radius.prototype.perform = function(actor)
+	perform(actor)
 	{
 		var constraintCylinder = actor.constrainable().constraints["PositionOnCylinder"];
 
 		constraintCylinder.radius += this.distanceToMove;
-	};
+	}
 }

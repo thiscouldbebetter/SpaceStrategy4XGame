@@ -1,10 +1,7 @@
 
-function Action_CylinderMove_Reset()
+class Action_CylinderMove_Reset
 {
-}
-
-{
-	Action_CylinderMove_Reset.prototype.perform = function(actor)
+	perform(actor)
 	{
 		var constraint = actor.constrainable().constraints["PositionOnCylinder"];
 		constraint.center.clear();
@@ -18,5 +15,5 @@ function Action_CylinderMove_Reset()
 		constraint.radius = camera.focalLength;
 		constraint.distanceFromCenterAlongAxis =
 			0 - camera.focalLength / 2 ;
-	};
+	}
 }

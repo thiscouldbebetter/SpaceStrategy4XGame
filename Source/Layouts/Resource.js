@@ -1,11 +1,13 @@
 
-function Resource(defnName, quantity)
+class Resource
 {
-	this.defnName = defnName;
-	this.quantity = quantity;
-}
-{
-	Resource.add = function(resourcesToAddTo, resourcesToBeAdded)
+	constructor(defnName, quantity)
+	{
+		this.defnName = defnName;
+		this.quantity = quantity;
+	}
+
+	static add(resourcesToAddTo, resourcesToBeAdded)
 	{
 		for (var r = 0; r < resourcesToBeAdded.length; r++)
 		{
@@ -20,9 +22,9 @@ function Resource(defnName, quantity)
 			}
 			resourceExisting.quantity += resourceToBeAdded.quantity;
 		}
-	};
+	}
 
-	Resource.isSupersetOf = function(resourcesThis, resourcesOther)
+	static isSupersetOf(resourcesThis, resourcesOther)
 	{
 		var returnValue = true;
 
@@ -52,9 +54,9 @@ function Resource(defnName, quantity)
 		}
 
 		return returnValue;
-	};
+	}
 
-	Resource.subtract = function(resourcesToSubtractFrom, resourcesToBeSubtracted)
+	static subtract(resourcesToSubtractFrom, resourcesToBeSubtracted)
 	{
 		for (var r = 0; r < resourcesToBeSubtracted.length; r++)
 		{
@@ -69,12 +71,12 @@ function Resource(defnName, quantity)
 			}
 			resourceExisting.quantity -= resourceToBeSubtracted.quantity;
 		}
-	};
+	}
 
 	// instance methods
 
-	Resource.prototype.toString = function()
+	toString()
 	{
 		return this.defnName + ": " + this.quantity;
-	};
+	}
 }

@@ -1,18 +1,19 @@
 
-function Activity(defnName, target)
+class Activity
 {
-	this.defnName = defnName;
-	this.target = target;
-}
+	constructor(defnName, target)
+	{
+		this.defnName = defnName;
+		this.target = target;
+	}
 
-{
-	Activity.prototype.defn = function(universe)
+	defn(universe)
 	{
 		return (universe.world.activityDefns[this.defnName]);
-	};
+	}
 
-	Activity.prototype.perform = function(universe, actor)
+	perform(universe, actor)
 	{
 		this.defn(universe).perform(universe, actor, this);
-	};
+	}
 }

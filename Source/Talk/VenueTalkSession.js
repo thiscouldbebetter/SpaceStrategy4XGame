@@ -1,31 +1,32 @@
 
-function VenueTalkSession(venueParent, talkSession)
+class VenueTalkSession
 {
-	this.venueParent = venueParent;
-	this.talkSession = talkSession;
-}
+	constructor(venueParent, talkSession)
+	{
+		this.venueParent = venueParent;
+		this.talkSession = talkSession;
+	}
 
-{
-	VenueTalkSession.prototype.draw = function(universe)
+	draw(universe)
 	{
 		this.venueControls.draw(universe);
-	};
+	}
 
-	VenueTalkSession.prototype.initialize = function(universe)
+	initialize(universe)
 	{
 		var controlRoot = this.controlBuild(universe);
 		this.venueControls = new VenueControls(controlRoot);
 		this.talkSession.update();
-	};
+	}
 
-	VenueTalkSession.prototype.updateForTimerTick = function(universe)
+	updateForTimerTick(universe)
 	{
 		this.venueControls.updateForTimerTick(universe);
-	};
+	}
 
 	// controls
 
-	VenueTalkSession.prototype.controlBuild = function(universe)
+	controlBuild(universe)
 	{
 		var containerSize = universe.display.sizeInPixels.clone();
 		var margin = 10;
@@ -140,5 +141,5 @@ function VenueTalkSession(venueParent, talkSession)
 		);
 
 		return returnValue;
-	};
+	}
 }

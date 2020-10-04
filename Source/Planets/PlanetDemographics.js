@@ -1,12 +1,13 @@
 
-function PlanetDemographics(population)
+class PlanetDemographics
 {
-	this.population = population;
-}
+	constructor(population)
+	{
+		this.population = population;
+	}
 
-{
-	PlanetDemographics.prototype.updateForTurn = function(universe, world, faction, planet)
+	updateForTurn(universe, world, faction, planet)
 	{
 		// todo
-	};
+	}
 }

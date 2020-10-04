@@ -1,5 +1,8 @@
 
-function ResourceDefn(name)
+class ResourceDefn
 {
-	this.name = name;
+	constructor(name)
+	{
+		this.name = name;
+	}
 }

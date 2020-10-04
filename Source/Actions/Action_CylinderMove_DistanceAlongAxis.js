@@ -1,14 +1,15 @@
 
-function Action_CylinderMove_DistanceAlongAxis(distanceToMove)
+class Action_CylinderMove_DistanceAlongAxis
 {
-	this.distanceToMove = distanceToMove;
-}
+	constructor(distanceToMove)
+	{
+		this.distanceToMove = distanceToMove;
+	}
 
-{
-	Action_CylinderMove_DistanceAlongAxis.prototype.perform = function(actor)
+	perform(actor)
 	{
 		var constraintCylinder = actor.constrainable().constraints["PositionOnCylinder"];
 
 		constraintCylinder.distanceFromCenterAlongAxis += this.distanceToMove;
-	};
+	}
 }

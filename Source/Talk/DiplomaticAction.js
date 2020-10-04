@@ -1,12 +1,25 @@
 
-function DiplomaticAction(name, effect)
+class DiplomaticAction
 {
-	this.name = name;
-	this.effect = effect;
+	constructor(name, effect)
+	{
+		this.name = name;
+		this.effect = effect;
+	}
+
+	static Instances()
+	{
+		if (DiplomaticAction._instances == null)
+		{
+			DiplomaticAction._instances = new DiplomaticAction_Instances();
+		}
+		return DiplomaticAction._instances;
+	}
 }
 
+class DiplomaticAction_Instances
 {
-	function DiplomaticAction_Instances()
+	constructor()
 	{
 		this.War = new DiplomaticAction
 		(
@@ -249,6 +262,4 @@ function DiplomaticAction(name, effect)
 			this.War,
 		];
 	}
-
-	DiplomaticAction.Instances = new DiplomaticAction_Instances();
 }

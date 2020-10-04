@@ -1,25 +1,24 @@
 
-// classes
-
-function TalkDefn(name, talkNodes)
+class TalkDefn
 {
-	this.name = name;
-	this.talkNodes = talkNodes;
-
-	for (var i = 0; i < this.talkNodes.length; i++)
+	constructor(name, talkNodes)
 	{
-		var talkNode = this.talkNodes[i];
-		if (talkNode.defn.name == "label")
+		this.name = name;
+		this.talkNodes = talkNodes;
+
+		for (var i = 0; i < this.talkNodes.length; i++)
 		{
-			var label = talkNode.parameters[0];
-			this.talkNodes[TalkNode.Underscore + label] = talkNode;
+			var talkNode = this.talkNodes[i];
+			if (talkNode.defn.name == "label")
+			{
+				var label = talkNode.parameters[0];
+				this.talkNodes[TalkNode.Underscore + label] = talkNode;
+			}
 		}
 	}
-}
 
-{
-	TalkDefn.prototype.talkNodeByLabel = function(nameOfTalkNodeToGet)
+	talkNodeByLabel(nameOfTalkNodeToGet)
 	{
 		return this.talkNodes[TalkNode.Underscore + nameOfTalkNodeToGet];
-	};
+	}
 }

@@ -1,14 +1,15 @@
 
-function Layout(sizeInPixels, map)
+class Layout
 {
-	this.sizeInPixels = sizeInPixels;
-	this.map = map;
-}
+	constructor(sizeInPixels, map)
+	{
+		this.sizeInPixels = sizeInPixels;
+		this.map = map;
+	}
 
-{
 	// static methods
 
-	Layout.planet = function(universe, planet)
+	static planet(universe, planet)
 	{
 		var world = universe.world;
 		var viewSize = universe.display.sizeInPixels;
@@ -76,23 +77,23 @@ function Layout(sizeInPixels, map)
 		);
 
 		return layout;
-	};
+	}
 
 	// instance methods
 
 	// turnable
 
-	Layout.prototype.facilities = function()
+	facilities()
 	{
 		return this.map.bodies;
-	};
+	}
 
-	Layout.prototype.initialize = function(universe)
+	initialize(universe)
 	{
 		// todo
-	};
+	}
 
-	Layout.prototype.updateForTurn = function(universe, world, faction, parentModel)
+	updateForTurn(universe, world, faction, parentModel)
 	{
 		var bodies = this.map.bodies;
 		for (var i = 0; i < bodies.length; i++)
@@ -103,13 +104,13 @@ function Layout(sizeInPixels, map)
 				cellBody.updateForTurn(universe, world, faction, parentModel, this);
 			}
 		}
-	};
+	}
 
 	// drawable
 
-	Layout.prototype.draw = function(universe, display)
+	draw(universe, display)
 	{
 		display.drawBackground();
 		this.map.draw(universe, display);
-	};
+	}
 }

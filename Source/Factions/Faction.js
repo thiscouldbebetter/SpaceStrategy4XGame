@@ -1,24 +1,25 @@
 
-function Faction(name, homestarsystemName, color, relationships, technology, planets, ships, knowledge)
+class Faction
 {
-	this.name = name;
-	this.homestarsystemName = homestarsystemName;
-	this.color = color;
-	this.relationships = relationships;
-	this.technology = technology;
-	this.planets = planets;
-	this.ships = ships;
-	this.knowledge = knowledge;
+	constructor(name, homestarsystemName, color, relationships, technology, planets, ships, knowledge)
+	{
+		this.name = name;
+		this.homestarsystemName = homestarsystemName;
+		this.color = color;
+		this.relationships = relationships;
+		this.technology = technology;
+		this.planets = planets;
+		this.ships = ships;
+		this.knowledge = knowledge;
 
-	this.notificationSession = new NotificationSession(this.name, []);
-}
+		this.notificationSession = new NotificationSession(this.name, []);
+	}
 
-{
 	// static methods
 
 	// controls
 
-	Faction.controlBuild_Intelligence = function(diplomaticSession, pos, containerSize)
+	static controlBuild_Intelligence(diplomaticSession, pos, containerSize)
 	{
 		var margin = 10;
 		var controlSpacing = 20;
@@ -146,11 +147,11 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		);
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
-	Faction.prototype.researchSessionStart = function(universe)
+	researchSessionStart(universe)
 	{
 		var researchSession = new TechnologyResearchSession
 		(
@@ -160,16 +161,16 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		var venueNext = new VenueTechnologyResearchSession(researchSession);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
-	};
+	}
 
-	Faction.prototype.toString = function()
+	toString()
 	{
 		return this.name;
-	};
+	}
 
 	// controls
 
-	Faction.prototype.controlBuild = function
+	controlBuild
 	(
 		universe,
 		containerMainSize,
@@ -306,32 +307,32 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		);
 
 		return returnValue;
-	};
+	}
 
 	// diplomacy
 
-	Faction.prototype.allianceProposalAcceptFrom = function(factionOther)
+	allianceProposalAcceptFrom(factionOther)
 	{
 		return true;
-	};
+	}
 
-	Faction.prototype.allies = function()
+	allies()
 	{
 		return this.factionsMatchingRelationshipState
 		(
 			Relationship.States.Alliance
 		);
-	};
+	}
 
-	Faction.prototype.enemies = function()
+	enemies()
 	{
 		return this.factionsMatchingRelationshipState
 		(
 			Relationship.States.War
 		);
-	};
+	}
 
-	Faction.prototype.factionsMatchingRelationshipState = function(stateToMatch)
+	factionsMatchingRelationshipState(stateToMatch)
 	{
 		var returnValues = [];
 
@@ -346,14 +347,14 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		}
 
 		return returnValues;
-	};
+	}
 
-	Faction.prototype.peaceOfferAcceptFrom = function(factionOther)
+	peaceOfferAcceptFrom(factionOther)
 	{
 		return true;
-	};
+	}
 
-	Faction.prototype.relationsInitialize = function(universe)
+	relationsInitialize(universe)
 	{
 		var world = universe.world;
 		var factionCurrent = world.factionCurrent();
@@ -368,9 +369,9 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		var venueNext = new VenueControls(diplomaticSessionAsControl, universe.venueCurrent);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
-	};
+	}
 
-	Faction.prototype.selfAndAllies = function()
+	selfAndAllies()
 	{
 		var returnValues = this.factionsMatchingRelationshipState
 		(
@@ -380,9 +381,9 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		returnValues.push(this);
 
 		return returnValues;
-	};
+	}
 
-	Faction.prototype.strength = function()
+	strength()
 	{
 		var returnValue = 0;
 
@@ -403,27 +404,27 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		this.technologyResearcher.strength();
 
 		return returnValue;
-	};
+	}
 
-	Faction.prototype.warThreatOfferConcessionsTo = function(factionOther)
+	warThreatOfferConcessionsTo(factionOther)
 	{
 		return true;
-	};
+	}
 
 	// notifications
 
-	Faction.prototype.notificationSessionStart = function(universe)
+	notificationSessionStart(universe)
 	{
 		var notificationSession = this.notificationSession;
 		var notificationSessionAsControl = notificationSession.controlBuild(universe);
 		var venueNext = new VenueControls(notificationSessionAsControl);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
-	};
+	}
 
 	// turns
 
-	Faction.prototype.researchPerTurn = function(universe, world)
+	researchPerTurn(universe, world)
 	{
 		var returnValue = 0;
 
@@ -441,9 +442,9 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		}
 
 		return returnValue;
-	};
+	}
 
-	Faction.prototype.updateForTurn = function(universe, world)
+	updateForTurn(universe, world)
 	{
 		for (var i = 0; i < this.planets.length; i++)
 		{
@@ -458,5 +459,5 @@ function Faction(name, homestarsystemName, color, relationships, technology, pla
 		}
 
 		this.technology.updateForTurn(universe, world, this);
-	};
+	}
 }

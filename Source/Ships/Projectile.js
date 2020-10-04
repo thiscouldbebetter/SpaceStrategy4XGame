@@ -1,10 +1,12 @@
 
-function Projectile(shipParent)
+class Projectile
 {
-	this.shipParent = shipParent;
-}
-{
-	Projectile.prototype.bodyDefnBuild = function()
+	constructor(shipParent)
+	{
+		this.shipParent = shipParent;
+	}
+
+	bodyDefnBuild()
 	{
 		var scaleFactor = 10;
 		var bodyDefn = new BodyDefn

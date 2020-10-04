@@ -1,15 +1,16 @@
 
-function Collision()
+class Collision
 {
-	this.pos = new Coords(0, 0, 0);
-	this.distanceToCollision = null;
-	this.colliders = [];
-}
+	constructor()
+	{
+		this.pos = new Coords(0, 0, 0);
+		this.distanceToCollision = null;
+		this.colliders = [];
+	}
 
-{
 	// static methods
 
-	Collision.rayAndBodies = function(ray, bodies, bodyRadius, listToAddTo)
+	static rayAndBodies(ray, bodies, bodyRadius, listToAddTo)
 	{
 		var bodyAsSphere = new Sphere(new Coords(), bodyRadius);
 
@@ -38,11 +39,11 @@ function Collision()
 		}
 
 		return listToAddTo;
-	};
+	}
 
 	// instance methods
 
-	Collision.prototype.rayAndFace = function(ray, face)
+	rayAndFace(ray, face)
 	{
 		this.rayAndPlane
 		(
@@ -75,9 +76,9 @@ function Collision()
 		}
 
 		return this;
-	};
+	}
 
-	Collision.prototype.rayAndPlane = function(ray, plane)
+	rayAndPlane(ray, plane)
 	{
 		this.distanceToCollision =
 			(
@@ -103,9 +104,9 @@ function Collision()
 		}
 
 		return this;
-	};
+	}
 
-	Collision.prototype.rayAndSphere = function(ray, sphere)
+	rayAndSphere(ray, sphere)
 	{
 		var rayDirection = ray.direction;
 		var displacementFromSphereCenterToCamera = ray.vertex.clone().subtract
@@ -176,9 +177,9 @@ function Collision()
 		}
 
 		return this;
-	};
+	}
 
-	Collision.prototype.isPosWithinFace = function(face)
+	isPosWithinFace(face)
 	{
 		var displacementFromVertex0ToCollision = new Coords(0, 0);
 
@@ -213,5 +214,5 @@ function Collision()
 		}
 
 		return isPosWithinAllEdgesOfFaceSoFar;
-	};
+	}
 }

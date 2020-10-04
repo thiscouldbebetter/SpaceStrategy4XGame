@@ -40,12 +40,13 @@ function ControlBuilderExtensions()
 					new DataBinding
 					(
 						universe,
-						function get(c)
+						(c) =>
 						{
-							var returnValue = c.venueCurrent.selectionName;
-							if (returnValue != null)
+							var returnValue = null;
+							var venue = c.venueCurrent;
+							if (venue.constructor.name == VenueStarsystem.name)
 							{
-								returnValue = returnValue();
+								returnValue = venue.selectionName();
 							}
 							return returnValue;
 						}

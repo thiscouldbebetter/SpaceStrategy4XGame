@@ -1,12 +1,13 @@
 
-function TechnologyTree(name, technologies)
+class TechnologyTree
 {
-	this.name = name;
-	this.technologies = technologies.addLookupsByName();
-}
+	constructor(name, technologies)
+	{
+		this.name = name;
+		this.technologies = technologies.addLookupsByName();
+	}
 
-{
-	TechnologyTree.demo = function()
+	static demo()
 	{
 		var returnValue = new TechnologyTree
 		(
@@ -37,5 +38,5 @@ function TechnologyTree(name, technologies)
 		);
 
 		return returnValue;
-	};
+	}
 }

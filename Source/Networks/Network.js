@@ -1,41 +1,42 @@
 
-function Network(name, nodes, links)
+class Network
 {
-	this.name = name;
-	this.nodes = nodes;
-	this.links = links;
-
-	this.nodes.addLookupsByName();
-
-	for (var i = 0; i < this.links.length; i++)
+	constructor(name, nodes, links)
 	{
-		var link = this.links[i];
-		var namesOfNodesLinked = link.namesOfNodesLinked;
+		this.name = name;
+		this.nodes = nodes;
+		this.links = links;
 
-		for (var n = 0; n < namesOfNodesLinked.length; n++)
+		this.nodes.addLookupsByName();
+
+		for (var i = 0; i < this.links.length; i++)
 		{
-			var nameOfNodeFrom = namesOfNodesLinked[n];
-			var nameOfNodeTo = namesOfNodesLinked[1 - n];
+			var link = this.links[i];
+			var namesOfNodesLinked = link.namesOfNodesLinked;
 
-			var linksOriginatingAtNodeFrom = this.links[nameOfNodeFrom];
-			if (linksOriginatingAtNodeFrom == null)
+			for (var n = 0; n < namesOfNodesLinked.length; n++)
 			{
-				linksOriginatingAtNodeFrom = [];
-				this.links[nameOfNodeFrom] = linksOriginatingAtNodeFrom;
-			}
+				var nameOfNodeFrom = namesOfNodesLinked[n];
+				var nameOfNodeTo = namesOfNodesLinked[1 - n];
 
-			linksOriginatingAtNodeFrom[nameOfNodeTo] = link;
+				var linksOriginatingAtNodeFrom = this.links[nameOfNodeFrom];
+				if (linksOriginatingAtNodeFrom == null)
+				{
+					linksOriginatingAtNodeFrom = [];
+					this.links[nameOfNodeFrom] = linksOriginatingAtNodeFrom;
+				}
+
+				linksOriginatingAtNodeFrom[nameOfNodeTo] = link;
+			}
 		}
+
+		// Helper variables.
+		this.drawPos = new Coords();
+		this.drawPosFrom = new Coords();
+		this.drawPosTo = new Coords();
 	}
 
-	// Helper variables.
-	this.drawPos = new Coords();
-	this.drawPosFrom = new Coords();
-	this.drawPosTo = new Coords();
-}
-
-{
-	Network.generateRandom = function
+	static generateRandom
 	(
 		universe,
 		name,
@@ -231,7 +232,7 @@ function Network(name, nodes, links)
 				var starsystemPortals = starsystem.linkPortals;
 				starsystemPortals.push(linkPortal);
 				starsystemPortals[starsystemOther.name] = linkPortal;
-			};
+			}
 		}
 
 		var returnValue = new Network
@@ -242,22 +243,22 @@ function Network(name, nodes, links)
 		);
 
 		return returnValue;
-	};
+	}
 
 	// turns
 
-	Network.prototype.updateForTurn = function(universe, world)
+	updateForTurn(universe, world)
 	{
 		for (var i = 0; i < this.links.length; i++)
 		{
 			var link = this.links[i];
 			link.updateForTurn(universe, world, this);
 		}
-	};
+	}
 
 	// drawing
 
-	Network.prototype.draw = function(universe, camera)
+	draw(universe, camera)
 	{
 		var display = universe.display;
 
@@ -319,5 +320,5 @@ function Network(name, nodes, links)
 			var drawable = drawablesSortedByZ[i];
 			drawable.draw(universe, nodeRadiusActual, camera, drawPos);
 		}
-	};
+	}
 }

@@ -1,14 +1,25 @@
 
-function ActivityDefn(name, perform)
+class ActivityDefn
 {
-	this.name = name;
-	this.perform = perform;
+	constructor(name, perform)
+	{
+		this.name = name;
+		this.perform = perform;
+	}
+
+	static Instances()
+	{
+		if (ActivityDefn._instances == null)
+		{
+			ActivityDefn._instances = new ActivityDefn_Instances();
+		}
+		return ActivityDefn._instances;
+	}
 }
 
+class ActivityDefn_Instances
 {
-	ActivityDefn.Instances = new ActivityDefn_Instances();
-
-	function ActivityDefn_Instances()
+	constructor()
 	{
 		this.DoNothing = new ActivityDefn
 		(

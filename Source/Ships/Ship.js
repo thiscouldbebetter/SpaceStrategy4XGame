@@ -1,26 +1,27 @@
 
-function Ship(name, defn, pos, factionName, devices)
+class Ship
 {
-	this.name = name;
-	this.defn = defn;
-	var loc = new Disposition(pos);
-	this._locatable = new Locatable(loc);
-	this.factionName = factionName;
-	this.devices = devices;
+	constructor(name, defn, pos, factionName, devices)
+	{
+		this.name = name;
+		this.defn = defn;
+		var loc = new Disposition(pos);
+		this._locatable = new Locatable(loc);
+		this.factionName = factionName;
+		this.devices = devices;
 
-	this.integrity = 10;
-	this.energyThisTurn = 0;
-	this.distancePerMove = 0;
-	this.shieldingThisTurn = 0;
+		this.integrity = 10;
+		this.energyThisTurn = 0;
+		this.distancePerMove = 0;
+		this.shieldingThisTurn = 0;
 
-	// Helper variables.
-	this._displacement = new Coords();
-}
+		// Helper variables.
+		this._displacement = new Coords();
+	}
 
-{
 	// static methods
 
-	Ship.bodyDefnBuild = function(color)
+	static bodyDefnBuild(color)
 	{
 		var scaleFactor = 10;
 
@@ -44,28 +45,28 @@ function Ship(name, defn, pos, factionName, devices)
 		);
 
 		return returnValue;
-	};
+	}
 
 	// instance methods
 
-	Ship.prototype.faction = function(world)
+	faction(world)
 	{
 		return (this.factionName == null ? null : world.factions[this.factionName]);
-	};
+	}
 
-	Ship.prototype.id = function()
+	id()
 	{
 		return this.factionName + this.name;
-	};
+	}
 
-	Ship.prototype.locatable = function()
+	locatable()
 	{
 		return this._locatable;
-	};
+	}
 
 	// devices
 
-	Ship.prototype.devicesUsable = function(world)
+	devicesUsable(world)
 	{
 		if (this._devicesUsable == null)
 		{
@@ -83,11 +84,11 @@ function Ship(name, defn, pos, factionName, devices)
 		}
 
 		return this._devicesUsable;
-	};
+	}
 
 	// movement
 
-	Ship.prototype.linkPortalEnter = function(cluster, linkPortal)
+	linkPortalEnter(cluster, linkPortal)
 	{
 		var starsystemFrom = linkPortal.starsystemFrom(cluster);
 		var starsystemTo = linkPortal.starsystemTo(cluster);
@@ -113,9 +114,9 @@ function Ship(name, defn, pos, factionName, devices)
 			linkDirection.multiplyScalar(-1)
 		}
 		shipLoc.vel.overwriteWith(linkDirection);
-	};
+	}
 
-	Ship.prototype.linkExit = function(world, link)
+	linkExit(world, link)
 	{
 		link.ships.remove(this);
 
@@ -161,9 +162,9 @@ function Ship(name, defn, pos, factionName, devices)
 
 			factionKnowledge.worldKnownUpdate();
 		}
-	};
+	}
 
-	Ship.prototype.moveTowardTarget = function(universe, target)
+	moveTowardTarget(universe, target)
 	{
 		if (this.distanceLeftThisMove == null)
 		{
@@ -245,22 +246,22 @@ function Ship(name, defn, pos, factionName, devices)
 				}
 			}
 		}
-	};
+	}
 
-	Ship.prototype.movementThroughLinkPerTurn = function(link)
+	movementThroughLinkPerTurn(link)
 	{
 		return 8; // todo
-	};
+	}
 
-	Ship.prototype.planetOrbitEnter = function(universe, starsystem, planet)
+	planetOrbitEnter(universe, starsystem, planet)
 	{
 		starsystem.ships.remove(this);
 		planet.ships.push(this);
-	};
+	}
 
 	// controls
 
-	Ship.prototype.controlBuild = function(universe, containerSize)
+	controlBuild(universe, containerSize)
 	{
 		var margin = 8;
 		var controlSpacing = 16;
@@ -436,18 +437,18 @@ function Ship(name, defn, pos, factionName, devices)
 		);
 
 		return returnValue;
-	};
+	}
 
 	// diplomacy
 
-	Ship.prototype.strength = function()
+	strength()
 	{
 		return 1;
-	};
+	}
 
 	// turns
 
-	Ship.prototype.updateForTurn = function(universe, world, faction)
+	updateForTurn(universe, world, faction)
 	{
 		this.energyThisTurn = 0;
 		this.distancePerMove = 0;
@@ -459,11 +460,11 @@ function Ship(name, defn, pos, factionName, devices)
 			var device = this.devices[i];
 			device.updateForTurn(universe, this);
 		}
-	};
+	}
 
 	// drawable
 
-	Ship.prototype.draw = function(universe, nodeRadiusActual, camera, drawPos)
+	draw(universe, nodeRadiusActual, camera, drawPos)
 	{
 		var ship = this;
 		var world = universe.world;
@@ -482,9 +483,9 @@ function Ship(name, defn, pos, factionName, devices)
 		var visual = this.visual(world);
 		//visual.draw(universe, display, ship, new Disposition(drawPos), ship); // todo
 		visual.draw(universe, world, null, ship, display); // todo
-	};
+	}
 
-	Ship.prototype.visual = function(world)
+	visual(world)
 	{
 		if (this._visual == null)
 		{
@@ -493,9 +494,9 @@ function Ship(name, defn, pos, factionName, devices)
 		}
 
 		return this._visual;
-	};
+	}
 
-	Ship.visual = function(color)
+	static visual(color)
 	{
 		var shipSizeMultiplier = 4; // hack
 
@@ -510,5 +511,5 @@ function Ship(name, defn, pos, factionName, devices)
 			color,
 			null // colorBorder
 		);
-	};
+	}
 }

@@ -1,15 +1,16 @@
 
-function Action_CylinderMove_Yaw(turnsToMove)
+class Action_CylinderMove_Yaw
 {
-	this.turnsToMove = turnsToMove;
-}
+	constructor(turnsToMove)
+	{
+		this.turnsToMove = turnsToMove;
+	}
 
-{
-	Action_CylinderMove_Yaw.prototype.perform = function(actor)
+	perform(actor)
 	{
 		var constraintCylinder = actor.constrainable().constraints["PositionOnCylinder"];
 
 		constraintCylinder.yawInTurns += this.turnsToMove;
 		constraintCylinder.yawInTurns.wrapToRangeMinMax(0, 1);
-	};
+	}
 }

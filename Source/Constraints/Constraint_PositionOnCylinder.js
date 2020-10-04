@@ -1,19 +1,20 @@
 
-function Constraint_PositionOnCylinder
-(
-	center, orientation, yawInTurns, radius, distanceFromCenterAlongAxis
-)
+class Constraint_PositionOnCylinder
 {
-	this.name = "PositionOnCylinder";
-	this.center = center;
-	this.orientation = orientation;
-	this.yawInTurns = yawInTurns;
-	this.radius = radius;
-	this.distanceFromCenterAlongAxis = distanceFromCenterAlongAxis;
-}
+	constructor
+	(
+		center, orientation, yawInTurns, radius, distanceFromCenterAlongAxis
+	)
+	{
+		this.name = "PositionOnCylinder";
+		this.center = center;
+		this.orientation = orientation;
+		this.yawInTurns = yawInTurns;
+		this.radius = radius;
+		this.distanceFromCenterAlongAxis = distanceFromCenterAlongAxis;
+	}
 
-{
-	Constraint_PositionOnCylinder.prototype.constrain = function(universe, world, place, constrainable)
+	constrain(universe, world, place, constrainable)
 	{
 		var body = constrainable;
 
@@ -52,5 +53,5 @@ function Constraint_PositionOnCylinder
 		);
 
 		bodyOrientation.overwriteWith(this.orientation);
-	};
+	}
 }

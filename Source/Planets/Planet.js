@@ -1,25 +1,26 @@
 
-function Planet(name, factionName, pos, demographics, industry, layout)
+class Planet
 {
-	this.name = name;
-	this.factionName = factionName;
-	var loc = new Disposition(pos);
-	this._locatable = new Locatable(loc);
-	this.demographics = demographics;
-	this.industry = industry;
-	this.layout = layout;
+	constructor(name, factionName, pos, demographics, industry, layout)
+	{
+		this.name = name;
+		this.factionName = factionName;
+		var loc = new Disposition(pos);
+		this._locatable = new Locatable(loc);
+		this.demographics = demographics;
+		this.industry = industry;
+		this.layout = layout;
 
-	this.defn = Planet.BodyDefn();
+		this.defn = Planet.BodyDefn();
 
-	this.ships = [];
+		this.ships = [];
 
-	this.resourcesAccumulated = [];
-}
+		this.resourcesAccumulated = [];
+	}
 
-{
 	// constants
 
-	Planet.BodyDefn = function()
+	static BodyDefn()
 	{
 		if (Planet._bodyDefn == null)
 		{
@@ -72,23 +73,23 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		}
 
 		return Planet._bodyDefn;
-	};
+	}
 
 	// instance methods
 
-	Planet.prototype.faction = function(world)
+	faction(world)
 	{
 		return (this.factionName == null ? null : world.factions[this.factionName]);
-	};
+	}
 
-	Planet.prototype.locatable = function()
+	locatable()
 	{
 		return this._locatable;
-	};
+	}
 
 	// controls
 
-	Planet.prototype.controlBuild = function(universe, size)
+	controlBuild(universe, size)
 	{
 		var returnValue = new ControlContainer
 		(
@@ -109,27 +110,27 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		);
 
 		return returnValue;
-	};
+	}
 
 	// diplomacy
 
-	Planet.prototype.strength = function()
+	strength()
 	{
 		return 1;
-	};
+	}
 
 	// turns
 
-	Planet.prototype.updateForTurn = function(universe, world, faction)
+	updateForTurn(universe, world, faction)
 	{
 		this.layout.updateForTurn(universe, world, faction, this);
 		this.industry.updateForTurn(universe, world, faction, this);
 		this.demographics.updateForTurn(universe, world, faction, this);
-	};
+	}
 
 	// resources
 
-	Planet.prototype.buildableInProgress = function()
+	buildableInProgress()
 	{
 		var returnValue = null;
 
@@ -145,24 +146,24 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		}
 
 		return returnValue;
-	};
+	}
 
-	Planet.prototype.industryPerTurn = function(universe, world, faction)
+	industryPerTurn(universe, world, faction)
 	{
 		return this.resourcesPerTurn(universe, world, faction)["Industry"];
-	};
+	}
 
-	Planet.prototype.prosperityPerTurn = function(universe, world, faction)
+	prosperityPerTurn(universe, world, faction)
 	{
 		return this.resourcesPerTurn(universe, world, faction)["Prosperity"];
-	};
+	}
 
-	Planet.prototype.researchPerTurn = function(universe, world, faction)
+	researchPerTurn(universe, world, faction)
 	{
 		return this.resourcesPerTurn(universe, world, faction)["Research"];
-	};
+	}
 
-	Planet.prototype.resourcesPerTurn = function(universe, world, faction)
+	resourcesPerTurn(universe, world, faction)
 	{
 		if (this._resourcesPerTurn == null)
 		{
@@ -185,5 +186,5 @@ function Planet(name, factionName, pos, demographics, industry, layout)
 		}
 
 		return this._resourcesPerTurn;
-	};
+	}
 }

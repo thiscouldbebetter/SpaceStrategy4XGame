@@ -1,17 +1,18 @@
 
-function Device(defn)
+class Device
 {
-	this.defn = defn;
-}
+	constructor(defn)
+	{
+		this.defn = defn;
+	}
 
-{
-	Device.prototype.updateForTurn = function(universe, actor)
+	updateForTurn(universe, actor)
 	{
 		this.defn.updateForTurn(universe, actor, this);
-	};
+	}
 
-	Device.prototype.use = function(universe, place, actor)
+	use(universe, place, actor)
 	{
 		this.defn.use(universe, place, actor, this);
-	};
+	}
 }

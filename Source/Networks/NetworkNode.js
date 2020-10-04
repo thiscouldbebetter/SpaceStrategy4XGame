@@ -1,30 +1,25 @@
 
-function NetworkNode(name, defn, pos, starsystem)
+class NetworkNode
 {
-	this.name = name;
-	this.defn = defn;
-	var loc = new Disposition(pos);
-	this._locatable = new Locatable(loc);
-	this.starsystem = starsystem;
+	constructor(name, defn, pos, starsystem)
+	{
+		this.name = name;
+		this.defn = defn;
+		var loc = new Disposition(pos);
+		this._locatable = new Locatable(loc);
+		this.starsystem = starsystem;
 
-	// Helper variables.
-	this.drawPos = new Coords();
-	this.drawLoc = new Disposition(this.drawPos);
-}
+		// Helper variables.
+		this.drawPos = new Coords();
+		this.drawLoc = new Disposition(this.drawPos);
+	}
 
-{
-	// constants
-
-	NetworkNode.RadiusActual = 4;
-}
-
-{
-	NetworkNode.prototype.locatable = function()
+	locatable()
 	{
 		return this._locatable;
-	};
+	}
 
-	NetworkNode.prototype.controlBuild = function(universe)
+	controlBuild(universe)
 	{
 		var world = universe.world;
 		var viewSize = universe.display.sizeInPixels;
@@ -91,11 +86,11 @@ function NetworkNode(name, defn, pos, starsystem)
 		);
 
 		return returnValue;
-	};
+	}
 
 	// drawable
 
-	NetworkNode.prototype.draw = function(universe, nodeRadiusActual, camera)
+	draw(universe, nodeRadiusActual, camera)
 	{
 		var world = universe.world;
 		var display = universe.display;
@@ -139,9 +134,9 @@ function NetworkNode(name, defn, pos, starsystem)
 				universe, radiusApparent, drawPos, nodeColor, starsystem
 			);
 		}
-	};
+	}
 
-	NetworkNode.prototype.draw_Starsystem = function
+	draw_Starsystem
 	(
 		universe, radiusApparent, starsystemDrawPos, nodeColor, starsystem
 	)
@@ -218,21 +213,29 @@ function NetworkNode(name, defn, pos, starsystem)
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;
 		visualText.draw(universe, world, null, drawableTransformed, display);
-	};
+	}
 }
 
-function VisualCircleGradient(radius, gradient)
+class VisualCircleGradient
 {
-	// todo - Use version from Framework.
-	this.radius = radius;
-	this.gradient = gradient;
-}
-{
-	VisualCircleGradient.prototype.draw = function(universe, world, place, entity, display)
+	constructor(radius, gradient)
+	{
+		// todo - Use version from Framework.
+		this.radius = radius;
+		this.gradient = gradient;
+	}
+
+	draw(universe, world, place, entity, display)
 	{
 		display.drawCircleWithGradient
 		(
 			entity.locatable().loc.pos, this.radius, this.gradient
 		);
-	};
+	}
+}
+
+{
+	// constants
+
+	NetworkNode.RadiusActual = 4;
 }

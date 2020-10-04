@@ -1,25 +1,26 @@
 
-function TechnologyResearchSession(technologyTree, researcher)
+class TechnologyResearchSession
 {
-	this.technologyTree = technologyTree;
-	this.researcher = researcher;
-}
+	constructor(technologyTree, researcher)
+	{
+		this.technologyTree = technologyTree;
+		this.researcher = researcher;
+	}
 
-{
 	// instance methods
 
-	TechnologyResearchSession.prototype.isResearchNotInProgress = function()
+	isResearchNotInProgress()
 	{
 		var returnValue = (this.researcher.researchAccumulated == 0);
 		return returnValue;
-	};
+	}
 
-	TechnologyResearchSession.prototype.isTechnologyBeingResearched = function()
+	isTechnologyBeingResearched()
 	{
 		return (this.researcher.nameOfTechnologyBeingResearched != null);
-	};
+	}
 
-	TechnologyResearchSession.prototype.researchAccumulatedIncrement = function
+	researchAccumulatedIncrement
 	(
 		world,
 		faction,
@@ -27,9 +28,9 @@ function TechnologyResearchSession(technologyTree, researcher)
 	)
 	{
 		this.researcher.researchAccumulatedIncrement(world, faction, amountToIncrement);
-	};
+	}
 
-	TechnologyResearchSession.prototype.researchRequired = function()
+	researchRequired()
 	{
 		var technologyBeingResearched = this.technologyBeingResearched();
 		var returnValue =
@@ -39,19 +40,19 @@ function TechnologyResearchSession(technologyTree, researcher)
 			: technologyBeingResearched.researchRequired
 		);
 		return returnValue;
-	};
+	}
 
-	TechnologyResearchSession.prototype.technologyBeingResearched = function()
+	technologyBeingResearched()
 	{
 		var techName = this.researcher.nameOfTechnologyBeingResearched;
 		var returnValue = this.technologyTree.technologies[techName];
 
 		return returnValue;
-	};
+	}
 
 	// controls
 
-	TechnologyResearchSession.prototype.controlBuild = function(universe)
+	controlBuild(universe)
 	{
 		var display = universe.display;
 		var size = display.sizeInPixels;
@@ -236,5 +237,5 @@ function TechnologyResearchSession(technologyTree, researcher)
 		this.control = returnValue;
 
 		return returnValue;
-	};
+	}
 }

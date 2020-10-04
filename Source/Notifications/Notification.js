@@ -1,29 +1,30 @@
 
-function Notification(typeName, turnCreated, message, loc)
+class Notification
 {
-	this.typeName = typeName;
-	this.turnCreated = turnCreated;
-	this.message = message;
-	this._locatable = new Locatable(loc);
-}
-
-{
-	Notification.prototype.defn = function()
+	constructor(typeName, turnCreated, message, loc)
 	{
-		return NotificationType.Instances._All[this.defnName];
-	};
+		this.typeName = typeName;
+		this.turnCreated = turnCreated;
+		this.message = message;
+		this._locatable = new Locatable(loc);
+	}
 
-	Notification.prototype._locatable = function()
+	defn()
+	{
+		return NotificationType.Instances()._All[this.defnName];
+	}
+
+	locatable()
 	{
 		return this._locatable;
-	};
+	}
 
-	Notification.prototype.toString = function()
+	toString()
 	{
 		var returnValue =
 			this.turnCreated + " - "
 			+ this.locatable.loc.name + " - "
 			+ this.message;
 		return returnValue;
-	};
+	}
 }

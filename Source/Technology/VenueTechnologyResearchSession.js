@@ -1,25 +1,26 @@
 
-function VenueTechnologyResearchSession(researchSession)
+class VenueTechnologyResearchSession
 {
-	this.researchSession = researchSession;
-}
+	constructor(researchSession)
+	{
+		this.researchSession = researchSession;
+	}
 
-{
-	VenueTechnologyResearchSession.prototype.draw = function(universe)
+	draw(universe)
 	{
 		this.venueControls.draw(universe);
-	};
+	}
 
-	VenueTechnologyResearchSession.prototype.initialize = function(universe)
+	initialize(universe)
 	{
 		this.venueControls = new VenueControls
 		(
 			this.researchSession.controlBuild(universe)
 		);
-	};
+	}
 
-	VenueTechnologyResearchSession.prototype.updateForTimerTick = function(universe)
+	updateForTimerTick(universe)
 	{
 		this.venueControls.updateForTimerTick(universe);
-	};
+	}
 }

@@ -1,12 +1,14 @@
 
-function FactionKnowledge(factionNames, starsystemNames, linkNames)
+class FactionKnowledge
 {
-	this.factionNames = factionNames;
-	this.starsystemNames = starsystemNames;
-	this.linkNames = linkNames;
-}
-{
-	FactionKnowledge.prototype.worldKnown = function(universe, worldActual)
+	constructor(factionNames, starsystemNames, linkNames)
+	{
+		this.factionNames = factionNames;
+		this.starsystemNames = starsystemNames;
+		this.linkNames = linkNames;
+	}
+
+	worldKnown(universe, worldActual)
 	{
 		if (this._worldKnown == null)
 		{
@@ -76,10 +78,10 @@ function FactionKnowledge(factionNames, starsystemNames, linkNames)
 		}
 
 		return this._worldKnown;
-	};
+	}
 
-	FactionKnowledge.prototype.worldKnownUpdate = function()
+	worldKnownUpdate()
 	{
 		this._worldKnown = null;
-	};
+	}
 }

@@ -1,9 +1,7 @@
 
-function PlanetIndustry()
-{}
-
+class PlanetIndustry
 {
-	PlanetIndustry.prototype.updateForTurn = function(universe, world, faction, planet)
+	updateForTurn(universe, world, faction, planet)
 	{
 		planet._resourcesPerTurn = null;
 
@@ -28,5 +26,5 @@ function PlanetIndustry()
 				buildableInProgress._visual = null;
 			}
 		}
-	};
+	}
 }

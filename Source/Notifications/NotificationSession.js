@@ -1,21 +1,22 @@
 
-function NotificationSession(factionName, notifications)
+class NotificationSession
 {
-	this.factionName = factionName;
-	this.notifications = notifications;
+	constructor(factionName, notifications)
+	{
+		this.factionName = factionName;
+		this.notifications = notifications;
 
-	this.notificationSelected = null;
-}
+		this.notificationSelected = null;
+	}
 
-{
-	NotificationSession.prototype.notificationDismiss = function(notification)
+	notificationDismiss(notification)
 	{
 		var notificationIndex = this.notifications.indexOf(notification);
 		this.notifications.remove(notification);
 		this.notificationSelected = this.notifications[notificationIndex];
-	};
+	}
 
-	NotificationSession.prototype.notificationGoTo = function(universe, notification)
+	notificationGoTo(universe, notification)
 	{
 		var notificationLoc = notification.locatable.loc;
 		var notificationLocType = notificationLoc.constructor.name;
@@ -41,11 +42,11 @@ function NotificationSession(factionName, notifications)
 		{
 			throw "Unrecognized notification type."
 		}
-	};
+	}
 
 	// controls
 
-	NotificationSession.prototype.controlBuild = function(universe)
+	controlBuild(universe)
 	{
 		var display = universe.display;
 		var containerSize = display.sizeInPixels.clone();
@@ -131,7 +132,7 @@ function NotificationSession(factionName, notifications)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var world = universe.world;
 						var faction = world.factions[0]; // hack
@@ -151,7 +152,7 @@ function NotificationSession(factionName, notifications)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var world = universe.world;
 						var faction = world.factions[0]; // hack
@@ -171,7 +172,7 @@ function NotificationSession(factionName, notifications)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var world = universe.world;
 						var faction = world.factions[0]; // hack
@@ -201,7 +202,7 @@ function NotificationSession(factionName, notifications)
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var world = universe.world;
 						var venueNext = new VenueWorld(world);
@@ -214,5 +215,5 @@ function NotificationSession(factionName, notifications)
 		);
 
 		return returnValue;
-	};
+	}
 }

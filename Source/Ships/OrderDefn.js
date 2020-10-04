@@ -1,12 +1,25 @@
 
-function OrderDefn(name, obey)
+class OrderDefn
 {
-	this.name = name;
-	this.obey = obey;
+	constructor(name, obey)
+	{
+		this.name = name;
+		this.obey = obey;
+	}
+
+	static Instances()
+	{
+		if (OrderDefn._instances == null)
+		{
+			OrderDefn._instances = new OrderDefn_Instances();
+		}
+		return OrderDefn._instances;
+	}
 }
 
+class OrderDefn_Instances
 {
-	function OrderDefn_Instances()
+	constructor()
 	{
 		this.Go = new OrderDefn
 		(
@@ -99,6 +112,4 @@ function OrderDefn(name, obey)
 
 		this._All.addLookupsByName();
 	}
-
-	OrderDefn.Instances = new OrderDefn_Instances();
 }

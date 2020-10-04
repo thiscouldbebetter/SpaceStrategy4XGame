@@ -1,53 +1,54 @@
 
-function LinkPortal(name, defn, pos, starsystemNamesFromAndTo)
+class LinkPortal
 {
-	this.name = name;
-	this.defn = defn;
-	var loc = new Disposition(pos);
-	this._locatable = new Locatable(loc);
+	constructor(name, defn, pos, starsystemNamesFromAndTo)
+	{
+		this.name = name;
+		this.defn = defn;
+		var loc = new Disposition(pos);
+		this._locatable = new Locatable(loc);
 
-	this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
-}
+		this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
+	}
 
-{
-	LinkPortal.prototype.link = function(cluster)
+	link(cluster)
 	{
 		var returnValue = cluster.links[this.starsystemNameFrom()][this.starsystemNameTo()];
 		return returnValue;
-	};
+	}
 
-	LinkPortal.prototype.locatable = function()
+	locatable()
 	{
 		return this._locatable;
-	};
+	}
 
-	LinkPortal.prototype.starsystemFrom = function(cluster)
+	starsystemFrom(cluster)
 	{
 		var starsystemName = this.starsystemNameFrom();
 		var returnValue = cluster.nodes[starsystemName].starsystem;
 		return returnValue;
-	};
+	}
 
-	LinkPortal.prototype.starsystemNameFrom = function()
+	starsystemNameFrom()
 	{
 		return this.starsystemNamesFromAndTo[0];
-	};
+	}
 
-	LinkPortal.prototype.starsystemNameTo = function()
+	starsystemNameTo()
 	{
 		return this.starsystemNamesFromAndTo[1];
-	};
+	}
 
-	LinkPortal.prototype.starsystemTo = function(cluster)
+	starsystemTo(cluster)
 	{
 		var starsystemName = this.starsystemNameTo();
 		var returnValue = cluster.nodes[starsystemName].starsystem;
 		return returnValue;
-	};
+	}
 
 	// controls
 
-	LinkPortal.prototype.controlBuild = function()
+	controlBuild()
 	{
 		var returnValue = new ControlLabel
 		(
@@ -59,5 +60,5 @@ function LinkPortal(name, defn, pos, starsystemNamesFromAndTo)
 		);
 
 		return returnValue;
-	};
+	}
 }

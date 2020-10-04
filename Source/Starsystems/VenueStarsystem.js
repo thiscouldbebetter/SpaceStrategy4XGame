@@ -1,16 +1,17 @@
 
-function VenueStarsystem(venueParent, starsystem)
+class VenueStarsystem
 {
-	this.venueParent = venueParent;
-	this.starsystem = starsystem;
+	constructor(venueParent, starsystem)
+	{
+		this.venueParent = venueParent;
+		this.starsystem = starsystem;
 
-	this.cursor = new Cursor();
+		this.cursor = new Cursor();
 
-	this._mouseClickPos = new Coords();
-}
+		this._mouseClickPos = new Coords();
+	}
 
-{
-	VenueStarsystem.prototype.draw = function(universe)
+	draw(universe)
 	{
 		var world = universe.world;
 		var display = universe.display;
@@ -27,14 +28,14 @@ function VenueStarsystem(venueParent, starsystem)
 		this.cursor.draw(universe, world, display, this);
 
 		this.venueControls.draw(universe, world);
-	};
+	}
 
-	VenueStarsystem.prototype.finalize = function(universe)
+	finalize(universe)
 	{
 		universe.soundHelper.soundForMusic.pause(universe);
-	};
+	}
 
-	VenueStarsystem.prototype.initialize = function(universe)
+	initialize(universe)
 	{
 		this.venueControls = new VenueControls
 		(
@@ -98,19 +99,19 @@ function VenueStarsystem(venueParent, starsystem)
 		this.bodies = this.bodies.concat(starsystem.linkPortals);
 		this.bodies = this.bodies.concat(starsystem.planets);
 		this.bodies = this.bodies.concat(starsystem.ships);
-	};
+	}
 
-	VenueStarsystem.prototype.model = function()
+	model()
 	{
 		return this.starsystem;
-	};
+	}
 
-	VenueStarsystem.prototype.selectionName = function()
+	selectionName()
 	{
 		return (this.selection == null ? "[none]" : this.selection.name);
-	};
+	}
 
-	VenueStarsystem.prototype.updateForTimerTick = function(universe)
+	updateForTimerTick(universe)
 	{
 		this.venueControls.updateForTimerTick(universe);
 
@@ -137,9 +138,9 @@ function VenueStarsystem(venueParent, starsystem)
 		this.draw(universe);
 
 		this.updateForTimerTick_Input(universe);
-	};
+	}
 
-	VenueStarsystem.prototype.updateForTimerTick_Input = function(universe)
+	updateForTimerTick_Input(universe)
 	{
 		var cameraSpeed = 10;
 
@@ -183,9 +184,9 @@ function VenueStarsystem(venueParent, starsystem)
 				this.updateForTimerTick_Input_Mouse(universe);
 			}
 		}
-	};
+	}
 
-	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse = function(universe)
+	updateForTimerTick_Input_Mouse(universe)
 	{
 		universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 
@@ -278,9 +279,9 @@ function VenueStarsystem(venueParent, starsystem)
 		this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
 
 		inputHelper.isMouseClicked(false);
-	};
+	}
 
-	VenueStarsystem.prototype.updateForTimerTick_Input_Mouse_Selection = function(universe, bodyClicked)
+	updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked)
 	{
 		if (this.selection == null)
 		{
@@ -337,9 +338,9 @@ function VenueStarsystem(venueParent, starsystem)
 		{
 			this.selection = bodyClicked;
 		}
-	};
+	}
 
-	VenueStarsystem.prototype.updateForTimerTick_Input_MouseMove = function(universe)
+	updateForTimerTick_Input_MouseMove(universe)
 	{
 		var inputHelper = universe.inputHelper;
 		var mouseMovePos = this._mouseClickPos.overwriteWith
@@ -389,11 +390,11 @@ function VenueStarsystem(venueParent, starsystem)
 		}
 
 		this.cursor.bodyUnderneath = bodyUnderMouse;
-	};
+	}
 
 	// camera
 
-	VenueStarsystem.prototype.cameraCenterOnSelection = function()
+	cameraCenterOnSelection()
 	{
 		if (this.selection != null)
 		{
@@ -401,46 +402,46 @@ function VenueStarsystem(venueParent, starsystem)
 			var selectionPos = this.selection.locatable().loc.pos;
 			cameraConstraint.center.overwriteWith(selectionPos);
 		}
-	};
+	}
 
-	VenueStarsystem.prototype.cameraDown = function(cameraSpeed)
+	cameraDown(cameraSpeed)
 	{
 		new Action_CylinderMove_DistanceAlongAxis(cameraSpeed).perform(this.camera);
-	};
+	}
 
-	VenueStarsystem.prototype.cameraIn = function(cameraSpeed)
+	cameraIn(cameraSpeed)
 	{
 		new Action_CylinderMove_Radius(0 - cameraSpeed).perform(this.camera);
-	};
+	}
 
-	VenueStarsystem.prototype.cameraLeft = function(cameraSpeed)
+	cameraLeft(cameraSpeed)
 	{
 		new Action_CylinderMove_Yaw(cameraSpeed / 1000).perform(this.camera);
-	};
+	}
 
-	VenueStarsystem.prototype.cameraOut = function(cameraSpeed)
+	cameraOut(cameraSpeed)
 	{
 		new Action_CylinderMove_Radius(cameraSpeed).perform(this.camera);
-	};
+	}
 
-	VenueStarsystem.prototype.cameraReset = function()
+	cameraReset()
 	{
 		new Action_CylinderMove_Reset().perform(this.camera);
-	};
+	}
 
-	VenueStarsystem.prototype.cameraRight = function(cameraSpeed)
+	cameraRight(cameraSpeed)
 	{
 		new Action_CylinderMove_Yaw(0 - cameraSpeed / 1000).perform(this.camera);
-	};
+	}
 
-	VenueStarsystem.prototype.cameraUp = function(cameraSpeed)
+	cameraUp(cameraSpeed)
 	{
 		new Action_CylinderMove_DistanceAlongAxis(0 - cameraSpeed).perform(this.camera);
-	};
+	}
 
 	// controls
 
-	VenueStarsystem.prototype.controlBuild = function(universe)
+	controlBuild(universe)
 	{
 		var returnValue = null;
 
@@ -524,5 +525,5 @@ function VenueStarsystem(venueParent, starsystem)
 		returnValue = new ControlContainerTransparent(returnValue);
 
 		return returnValue;
-	};
+	}
 }

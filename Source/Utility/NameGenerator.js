@@ -1,11 +1,7 @@
 
-function NameGenerator()
+class NameGenerator
 {
-	// static class
-}
-
-{
-	NameGenerator.generateName = function()
+	static generateName()
 	{
 		var returnValue = "";
 
@@ -37,5 +33,5 @@ function NameGenerator()
 		returnValue = returnValue[0].toUpperCase() + returnValue.substr(1);
 
 		return returnValue;
-	};
+	}
 }

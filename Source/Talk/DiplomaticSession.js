@@ -1,24 +1,25 @@
 
-function DiplomaticSession(diplomaticActions, factionActing, factions, venueParent)
+class DiplomaticSession
 {
-	this.diplomaticActions = diplomaticActions;
-	this.diplomaticActions.addLookupsByName();
+	constructor(diplomaticActions, factionActing, factions, venueParent)
+	{
+		this.diplomaticActions = diplomaticActions;
+		this.diplomaticActions.addLookupsByName();
 
-	this.factionActing = factionActing;
-	this.factions = factions;
-	this.factions.addLookupsByName();
+		this.factionActing = factionActing;
+		this.factions = factions;
+		this.factions.addLookupsByName();
 
-	this.venueParent = venueParent;
+		this.venueParent = venueParent;
 
-	this.factionSelected = null;
-}
+		this.factionSelected = null;
+	}
 
-{
 	// static methods
 
-	DiplomaticSession.demo = function(factionActing, factions, venueParent)
+	static demo(factionActing, factions, venueParent)
 	{
-		var diplomaticActions = DiplomaticAction.Instances._All;
+		var diplomaticActions = DiplomaticAction.Instances()._All;
 
 		var session = new DiplomaticSession
 		(
@@ -29,16 +30,16 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 		);
 
 		return session;
-	};
+	}
 
 	// instance methods
 
-	DiplomaticSession.prototype.isFactionSelected = function()
+	isFactionSelected()
 	{
 		return (this.factionSelected != null);
-	};
+	}
 
-	DiplomaticSession.prototype.talkSessionInitialize = function(universe)
+	talkSessionInitialize(universe)
 	{
 		var talkSession = TalkSession.buildExample
 		(
@@ -51,11 +52,11 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 		);
 		venueNext = new VenueFader(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
-	};
+	}
 
 	// controls
 
-	DiplomaticSession.prototype.controlBuild = function(universe)
+	controlBuild(universe)
 	{
 		var containerSize = universe.display.sizeInPixels.clone();
 		var margin = 10;
@@ -142,12 +143,10 @@ function DiplomaticSession(diplomaticActions, factionActing, factions, venuePare
 						containerSize.x - listWidth - margin * 2,
 						containerSize.y
 					)
-				),
-
-
+				)
 			]
 		);
 
 		return returnValue;
-	};
+	}
 }

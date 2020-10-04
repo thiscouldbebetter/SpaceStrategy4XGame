@@ -1,20 +1,22 @@
 
-function VenueWorld(world)
+class VenueWorld
 {
-	this.world = world;
+	constructor(world)
+	{
+		this.world = world;
 
-	this.camera = this.world.camera;
-}
+		this.camera = this.world.camera;
+	}
 
-{
-	VenueWorld.prototype.model = function()
+
+	model()
 	{
 		return this.world.network;
-	};
+	}
 
 	// camera
 
-	VenueWorld.prototype.cameraCenterOnSelection = function()
+	cameraCenterOnSelection()
 	{
 		if (this.selection != null)
 		{
@@ -27,15 +29,15 @@ function VenueWorld(world)
 			var constraintLookAt = cameraConstraints["LookAt"];
 			constraintLookAt.targetPos = targetPosNew;
 		}
-	};
+	}
 
-	VenueWorld.prototype.cameraDown = function(cameraSpeed)
+	cameraDown(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([0, cameraSpeed]);
 		cameraAction.perform(this.camera);
-	};
+	}
 
-	VenueWorld.prototype.cameraIn = function(cameraSpeed)
+	cameraIn(cameraSpeed)
 	{
 		var constraint = this.camera.constrainable().constraints["HoldDistanceFromTarget"];
 		constraint.distanceToHold -= cameraSpeed / 2;
@@ -43,15 +45,15 @@ function VenueWorld(world)
 		{
 			constraint.distanceToHold = 1;
 		}
-	};
+	}
 
-	VenueWorld.prototype.cameraLeft = function(cameraSpeed)
+	cameraLeft(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
 		cameraAction.perform(this.camera);
-	};
+	}
 
-	VenueWorld.prototype.cameraOut = function(cameraSpeed)
+	cameraOut(cameraSpeed)
 	{
 		var constraint = this.camera.constrainable().constraints["HoldDistanceFromTarget"];
 		constraint.distanceToHold += cameraSpeed / 2;
@@ -59,9 +61,9 @@ function VenueWorld(world)
 		{
 			constraint.distanceToHold = 0;
 		}
-	};
+	}
 
-	VenueWorld.prototype.cameraReset = function()
+	cameraReset()
 	{
 		var cameraConstraints = this.camera.constrainable().constraints;
 
@@ -74,23 +76,23 @@ function VenueWorld(world)
 		constraintLookAt.targetPos = origin;
 
 		this.camera.loc.pos.clear().x = 0 - this.camera.focalLength;
-	};
+	}
 
-	VenueWorld.prototype.cameraRight = function(cameraSpeed)
+	cameraRight(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
 		cameraAction.perform(this.camera);
-	};
+	}
 
-	VenueWorld.prototype.cameraUp = function(cameraSpeed)
+	cameraUp(cameraSpeed)
 	{
 		var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
 		cameraAction.perform(this.camera);
-	};
+	}
 
 	// controls
 
-	VenueWorld.prototype.controlBuild = function(universe)
+	controlBuild(universe)
 	{
 		var returnValue = null;
 
@@ -186,11 +188,11 @@ function VenueWorld(world)
 		returnValue = new ControlContainerTransparent(returnValue);
 
 		return returnValue;
-	};
+	}
 
 	// venue
 
-	VenueWorld.prototype.draw = function(universe)
+	draw(universe)
 	{
 		universe.display.drawBackground();
 		//this.world.network.draw(universe, this.world.camera);
@@ -199,14 +201,14 @@ function VenueWorld(world)
 		var worldKnown = playerKnowledge.worldKnown(universe, this.world);
 		worldKnown.network.draw(universe, worldKnown.camera);
 		this.venueControls.draw(universe);
-	};
+	}
 
-	VenueWorld.prototype.finalize = function(universe)
+	finalize(universe)
 	{
 		universe.soundHelper.soundForMusic.pause(universe);
-	};
+	}
 
-	VenueWorld.prototype.initialize = function(universe)
+	initialize(universe)
 	{
 		this.world.initialize(universe);
 		this.venueControls = new VenueControls
@@ -234,14 +236,14 @@ function VenueWorld(world)
 			].addLookupsByName()
 		);
 		this.camera.constrainable = () => cameraConstrainable;
-	};
+	}
 
-	VenueWorld.prototype.selectionName = function()
+	selectionName()
 	{
 		return (this.selection == null ? "[none]" : this.selection.name);
-	};
+	}
 
-	VenueWorld.prototype.updateForTimerTick = function(universe)
+	updateForTimerTick(universe)
 	{
 		var world = universe.world;
 		Constrainable.constrain(universe, world, this, this.camera);
@@ -361,5 +363,5 @@ function VenueWorld(world)
 				this.cameraIn(cameraSpeed);
 			}
 		}
-	};
+	}
 }

@@ -1,28 +1,29 @@
 
-function Cursor()
+class Cursor
 {
-	this.bodyUnderneath = null;
+	constructor()
+	{
+		this.bodyUnderneath = null;
 
-	this.bodyParent = null;
-	this.orderName = null;
-	this.mustTargetBody = null;
-	this.hasXYPositionBeenSpecified = false;
-	this.hasZPositionBeenSpecified = false;
+		this.bodyParent = null;
+		this.orderName = null;
+		this.mustTargetBody = null;
+		this.hasXYPositionBeenSpecified = false;
+		this.hasZPositionBeenSpecified = false;
 
-	this.defn = this.bodyDefn();
+		this.defn = this.bodyDefn();
 
-	var loc = new Disposition(new Coords(0, 0, 0));
-	this._locatable = new Locatable(loc);
+		var loc = new Disposition(new Coords(0, 0, 0));
+		this._locatable = new Locatable(loc);
 
-	var constrainable = new Constrainable
-	([
-		new Constraint_Cursor()
-	]);
-	this.constrainable = () => constrainable;
-}
+		var constrainable = new Constrainable
+		([
+			new Constraint_Cursor()
+		]);
+		this.constrainable = () => constrainable;
+	}
 
-{
-	Cursor.prototype.bodyDefn = function()
+	bodyDefn()
 	{
 		var radius = 5;
 		var color = Color.Instances().White;
@@ -98,38 +99,38 @@ function Cursor()
 		);
 
 		return bodyDefn;
-	};
+	}
 
-	Cursor.prototype.clear = function()
+	clear()
 	{
 		this.bodyParent = null;
 		this.orderName = null;
 		this.hasXYPositionBeenSpecified = false;
 		this.hasZPositionBeenSpecified = false;
-	};
+	}
 
-	Cursor.prototype.locatable = function()
+	locatable()
 	{
 		return this._locatable;
-	};
+	}
 
-	Cursor.prototype.set = function(actor, orderName, mustTargetBody)
+	set(actor, orderName, mustTargetBody)
 	{
 		this.bodyParent = actor;
 		this.orderName = orderName;
 		this.mustTargetBody = mustTargetBody;
-	};
+	}
 
 	// controls
 
-	Cursor.prototype.controlBuild = function(universe, controlSize)
+	controlBuild(universe, controlSize)
 	{
 		return this.bodyParent.controlBuild(universe, controlSize);
-	};
+	}
 
 	// drawable
 
-	Cursor.prototype.draw = function(universe, world, display, venueStarsystem)
+	draw(universe, world, display, venueStarsystem)
 	{
 		var starsystem = venueStarsystem.starsystem;
 		starsystem.draw_Body
@@ -140,5 +141,5 @@ function Cursor()
 			venueStarsystem.camera,
 			this
 		);
-	};
+	}
 }

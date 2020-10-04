@@ -1,22 +1,23 @@
 
-function TechnologyResearcher
-(
-	factionName,
-	nameOfTechnologyBeingResearched,
-	researchAccumulated,
-	namesOfTechnologiesKnown
-)
+class TechnologyResearcher
 {
-	this.factionName = factionName;
-	this.nameOfTechnologyBeingResearched = nameOfTechnologyBeingResearched;
-	this.researchAccumulated = researchAccumulated;
-	this.namesOfTechnologiesKnown = namesOfTechnologiesKnown;
+	constructor
+	(
+		factionName,
+		nameOfTechnologyBeingResearched,
+		researchAccumulated,
+		namesOfTechnologiesKnown
+	)
+	{
+		this.factionName = factionName;
+		this.nameOfTechnologyBeingResearched = nameOfTechnologyBeingResearched;
+		this.researchAccumulated = researchAccumulated;
+		this.namesOfTechnologiesKnown = namesOfTechnologiesKnown;
 
-	this.name = this.factionName + " Research";
-}
+		this.name = this.factionName + " Research";
+	}
 
-{
-	TechnologyResearcher.prototype.buildablesAvailable = function(world)
+	buildablesAvailable(world)
 	{
 		var returnValues = [];
 
@@ -31,9 +32,9 @@ function TechnologyResearcher
 		}
 
 		return returnValues;
-	};
+	}
 
-	TechnologyResearcher.prototype.researchAccumulatedIncrement = function(world, faction, amountToIncrement)
+	researchAccumulatedIncrement(world, faction, amountToIncrement)
 	{
 		var technologyBeingResearched = this.technologyBeingResearched(world);
 
@@ -57,9 +58,9 @@ function TechnologyResearcher
 				this.researchAccumulated = 0;
 			}
 		}
-	};
+	}
 
-	TechnologyResearcher.prototype.strength = function()
+	strength()
 	{
 		var returnValue = 0;
 
@@ -71,9 +72,9 @@ function TechnologyResearcher
 		}
 
 		return returnValue;
-	};
+	}
 
-	TechnologyResearcher.prototype.technologiesAvailable = function(technologyResearchSession)
+	technologiesAvailable(technologyResearchSession)
 	{
 		var technologyTree = technologyResearchSession.technologyTree;
 		var technologies = technologyTree.technologies;
@@ -127,9 +128,9 @@ function TechnologyResearcher
 		}
 
 		return technologiesUnknownWithKnownPrerequisites;
-	};
+	}
 
-	TechnologyResearcher.prototype.technologiesKnown = function(universe)
+	technologiesKnown(universe)
 	{
 		var returnValues = [];
 
@@ -141,22 +142,22 @@ function TechnologyResearcher
 		}
 
 		return returnValues;
-	};
+	}
 
-	TechnologyResearcher.prototype.technologyBeingResearched = function(world)
+	technologyBeingResearched(world)
 	{
 		var technologyTree = world.technologyTree;
 
 		var returnValue = technologyTree.technologies[this.nameOfTechnologyBeingResearched];
 
 		return returnValue;
-	};
+	}
 
 	// turns
 
-	TechnologyResearcher.prototype.updateForTurn = function(universe, world, faction)
+	updateForTurn(universe, world, faction)
 	{
 		var researchThisTurn = faction.researchPerTurn(universe, world);
 		this.researchAccumulatedIncrement(world, faction, researchThisTurn);
-	};
+	}
 }

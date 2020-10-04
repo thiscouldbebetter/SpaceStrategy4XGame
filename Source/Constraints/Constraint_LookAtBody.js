@@ -1,12 +1,13 @@
 
-function Constraint_LookAt(targetPos)
+class Constraint_LookAt
 {
-	this.name = "LookAt";
-	this.targetPos = targetPos;
-}
+	constructor(targetPos)
+	{
+		this.name = "LookAt";
+		this.targetPos = targetPos;
+	}
 
-{
-	Constraint_LookAt.prototype.constrain = function(universe, world, place, body)
+	constrain(universe, world, place, body)
 	{
 		var bodyLoc = body.locatable().loc;
 		var bodyPos = bodyLoc.pos;
@@ -18,5 +19,5 @@ function Constraint_LookAt(targetPos)
 		).normalize();
 
 		bodyOrientation.forwardSet(bodyOrientationForwardNew);
-	};
+	}
 }

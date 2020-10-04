@@ -1,23 +1,25 @@
 
-function ControlDynamic(name, pos, size, binding)
+class ControlDynamic
 {
-	this.name = name;
-	this.pos = pos;
-	this.size = size;
-	this.binding = binding;
+	constructor(name, pos, size, binding)
+	{
+		this.name = name;
+		this.pos = pos;
+		this.size = size;
+		this.binding = binding;
 
-	this.boundValuePrev = null;
-	this.child = null;
+		this.boundValuePrev = null;
+		this.child = null;
 
-	// Helper variables.
+		// Helper variables.
 
-	this.drawPos = new Coords();
-	this.drawLoc = new Disposition(this.drawPos);
-	this.mouseClickPos = new Coords();
-	this.mouseMovePos = new Coords();
-}
-{
-	ControlDynamic.prototype.actionHandle = function(actionNameToHandle)
+		this.drawPos = new Coords();
+		this.drawLoc = new Disposition(this.drawPos);
+		this.mouseClickPos = new Coords();
+		this.mouseMovePos = new Coords();
+	}
+
+	actionHandle(actionNameToHandle)
 	{
 		var wasActionHandled = false;
 		if (this.child != null)
@@ -25,35 +27,35 @@ function ControlDynamic(name, pos, size, binding)
 			wasActionHandled = this.child.actionHandle(actionNameToHandle);
 		}
 		return wasActionHandled;
-	};
+	}
 
-	ControlDynamic.prototype.childWithFocus = function()
+	childWithFocus()
 	{
 		return (this.child == null ? null : this.child.childWithFocus());
-	};
+	}
 
-	ControlDynamic.prototype.focusGain = function()
+	focusGain()
 	{
 		if (this.child != null && this.child.focusGain != null)
 		{
 			this.child.focusGain();
 		}
-	};
+	}
 
-	ControlDynamic.prototype.focusLose = function()
+	focusLose()
 	{
 		if (this.child != null && this.child.focusLose != null)
 		{
 			this.child.focusLose();
 		}
-	};
+	}
 
-	ControlDynamic.prototype.isEnabled = function()
+	isEnabled()
 	{
 		return true;
-	};
+	}
 
-	ControlDynamic.prototype.mouseClick = function(mouseClickPos)
+	mouseClick(mouseClickPos)
 	{
 		var wasHandledByChild = false;
 		if (this.child != null && this.child.mouseClick != null)
@@ -63,36 +65,36 @@ function ControlDynamic(name, pos, size, binding)
 			wasHandledByChild = this.child.mouseClick(mouseClickPos);
 		}
 		return wasHandledByChild;
-	};
+	}
 
-	ControlDynamic.prototype.mouseEnter = function()
+	mouseEnter()
 	{
 		if (this.child != null && this.child.mouseEnter != null)
 		{
 			return this.child.mouseEnter();
 		}
-	};
+	}
 
-	ControlDynamic.prototype.mouseExit = function()
+	mouseExit()
 	{
 		if (this.child != null && this.child.mouseExit != null)
 		{
 			return this.child.mouseExit();
 		}
-	};
+	}
 
-	ControlDynamic.prototype.mouseMove = function(mouseMovePos)
+	mouseMove(mouseMovePos)
 	{
 		if (this.child != null && this.child.mouseMove != null)
 		{
 			mouseMovePos = this.mouseMovePos.overwriteWith(mouseMovePos).subtract(this.pos);
 			return this.child.mouseMove(mouseMovePos);
 		}
-	};
+	}
 
 	// drawable
 
-	ControlDynamic.prototype.draw = function(universe, display, drawLoc, style)
+	draw(universe, display, drawLoc, style)
 	{
 		var boundValue = this.binding.get();
 		if (boundValue != this.boundValuePrev)
@@ -114,5 +116,5 @@ function ControlDynamic(name, pos, size, binding)
 			drawLoc.pos.add(this.pos);
 			this.child.draw(universe, display, drawLoc);
 		}
-	};
+	}
 }

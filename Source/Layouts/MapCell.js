@@ -1,7 +1,10 @@
 
-function MapCell(pos, terrain, body)
+class MapCell
 {
-	this.pos = pos;
-	this.terrain = terrain;
-	this.body = body;
+	constructor(pos, terrain, body)
+	{
+		this.pos = pos;
+		this.terrain = terrain;
+		this.body = body;
+	}
 }

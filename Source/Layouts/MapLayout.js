@@ -6,6 +6,11 @@ class MapLayout
 		this.sizeInPixels = sizeInPixels;
 		this.pos = pos;
 		this.terrains = terrains;
+		this.terrainsByCodeChar = ArrayHelper.addLookups
+		(
+			this.terrains, (x) => x.codeChar
+		);
+
 		this.cellsAsStrings = cellsAsStrings;
 		this.bodies = bodies;
 
@@ -95,7 +100,7 @@ class MapLayout
 	terrainAtPosInCells(cellPos)
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
-		return this.terrains[terrainCode];
+		return this.terrainsByCodeChar.get(terrainCode);
 		return returnValue;
 	}
 
@@ -161,9 +166,8 @@ class MapLayout
 			map.sizeInCellsMinusOnes
 		);
 
-		if (cursorIsWithinMap == true)
+		if (cursorIsWithinMap)
 		{
-
 			var cursorVisual = new VisualRectangle
 			(
 				new Coords(10, 10), null, Color.byName("Cyan")
@@ -192,15 +196,12 @@ class MapLayout
 					bodyVisual.draw(universe, world, null, drawable, display);
 
 					var isBuildableAllowedOnTerrain =
-						buildableDefn.terrainNamesAllowed.contains(terrainName);
+						ArrayHelper.contains(buildableDefn.terrainNamesAllowed, terrainName);
 					if (isBuildableAllowedOnTerrain == false)
 					{
-						var visualNotAllowed = new VisualText
+						var visualNotAllowed = VisualText.fromTextAndColor
 						(
-							DataBinding.fromContext("X"),
-							null, // height
-							Color.byName("Red"),
-							Color.byName("White")
+							"X", Color.byName("Red"),
 						);
 						visualNotAllowed.draw(universe, world, display, drawable);
 					}

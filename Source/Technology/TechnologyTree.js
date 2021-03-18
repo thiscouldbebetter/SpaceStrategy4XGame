@@ -4,7 +4,8 @@ class TechnologyTree
 	constructor(name, technologies)
 	{
 		this.name = name;
-		this.technologies = technologies.addLookupsByName();
+		this.technologies = technologies;
+		this.technologiesByName = ArrayHelper.addLookupsByName(this.technologies);
 	}
 
 	static demo()
@@ -38,5 +39,10 @@ class TechnologyTree
 		);
 
 		return returnValue;
+	}
+
+	technologyByName(technologyName)
+	{
+		return this.technologiesByName.get(technologyName);
 	}
 }

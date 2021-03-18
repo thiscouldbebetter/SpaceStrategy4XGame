@@ -25,7 +25,7 @@ class LinkPortal
 	starsystemFrom(cluster)
 	{
 		var starsystemName = this.starsystemNameFrom();
-		var returnValue = cluster.nodes[starsystemName].starsystem;
+		var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
 		return returnValue;
 	}
 
@@ -42,7 +42,7 @@ class LinkPortal
 	starsystemTo(cluster)
 	{
 		var starsystemName = this.starsystemNameTo();
-		var returnValue = cluster.nodes[starsystemName].starsystem;
+		var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
 		return returnValue;
 	}
 

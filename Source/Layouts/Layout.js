@@ -50,7 +50,6 @@ class Layout
 				false
 			),
 		];
-		terrains.addLookups( function(x) { return x.codeChar; } );
 
 		var map = new MapLayout
 		(

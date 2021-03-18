@@ -19,7 +19,7 @@ class PlanetIndustry
 		{
 			var buildableDefn = buildableInProgress.defn(world);
 			var resourcesToBuild = buildableDefn.resourcesToBuild;
-			if (Resource.isSupersetOf(resourcesAccumulated, resourcesToBuild) == true)
+			if (Resource.isSupersetOf(resourcesAccumulated, resourcesToBuild))
 			{
 				Resource.subtract(resourcesAccumulated, resourcesToBuild);
 				buildableInProgress.isComplete = true;

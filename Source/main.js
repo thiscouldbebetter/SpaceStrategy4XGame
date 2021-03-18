@@ -45,12 +45,12 @@ function main()
 	var universe = Universe.create
 	(
 		"Space_Strategy_4X",
-		"0.0.0-20201003-2130",
+		"0.0.0-20210317-2130",
 		new TimerHelper(20),
 		display,
 		mediaLibrary,
 		ControlStyle.Instances().Default,
-		null // world
+		(universe) => World.create(universe)
 	);
 	universe.initialize(x => { x.start() });
 

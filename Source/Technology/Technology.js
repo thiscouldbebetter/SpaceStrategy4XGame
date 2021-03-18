@@ -22,7 +22,7 @@ class Technology
 		for (var i = 0; i < this.namesOfBuildablesEnabled.length; i++)
 		{
 			var buildableName = this.namesOfBuildablesEnabled[i];
-			var buildable = world.buildables[buildableName];
+			var buildable = world.buildableByName(buildableName);
 			returnValues.push(buildable);
 		}
 

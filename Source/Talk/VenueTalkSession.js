@@ -51,7 +51,7 @@ class VenueTalkSession
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venueNext = universe.venueCurrent.venueParent;
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);
@@ -74,7 +74,7 @@ class VenueTalkSession
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var talkSession = universe.venueCurrent.talkSession;
 						alert(talkSession.log.join("\n"));

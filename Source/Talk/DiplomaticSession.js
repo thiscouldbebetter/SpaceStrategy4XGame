@@ -4,11 +4,12 @@ class DiplomaticSession
 	constructor(diplomaticActions, factionActing, factions, venueParent)
 	{
 		this.diplomaticActions = diplomaticActions;
-		this.diplomaticActions.addLookupsByName();
+		this.diplomaticActionsByName =
+			ArrayHelper.addLookupsByName(this.diplomaticActions);
 
 		this.factionActing = factionActing;
 		this.factions = factions;
-		this.factions.addLookupsByName();
+		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
 
 		this.venueParent = venueParent;
 
@@ -86,7 +87,7 @@ class DiplomaticSession
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venueNext = new VenueWorld(universe.world);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);

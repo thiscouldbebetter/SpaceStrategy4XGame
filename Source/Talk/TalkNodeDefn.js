@@ -272,6 +272,7 @@ class TalkNodeDefn_Instances
 			this.Set,
 			this.Quit,
 		];
-		this._All.addLookupsByName();
+
+		this._AllByName = this._All.addLookupsByName(this._All);
 	}
 }

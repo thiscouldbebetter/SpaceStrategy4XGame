@@ -72,7 +72,7 @@ class NetworkNode
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venueCurrent = universe.venueCurrent;
 						var starsystemToView = venueCurrent.selection.starsystem;
@@ -114,10 +114,10 @@ class NetworkNode
 		);
 
 		var display = universe.display;
-		var gradient = new Gradient
+		var gradient = new ValueBreakGroup
 		([
-			new GradientStop(0, Color.byName("White")),
-			new GradientStop(1, nodeColor),
+			new ValueBreak(0, Color.byName("White")),
+			new ValueBreak(1, nodeColor),
 		]);
 		var visual = new VisualCircleGradient(radiusApparent, gradient);
 		var drawableTransformed = {};
@@ -204,11 +204,9 @@ class NetworkNode
 			visualShip.draw(universe, world, null, drawableTransformed, display);
 		}
 
-		var visualText = new VisualText
+		var visualText = VisualText.fromTextAndColor
 		(
-			DataBinding.fromContext(this.starsystem.name),
-			null, // heightInPixels
-			nodeColor, Color.byName("Black")
+			this.starsystem.name, nodeColor
 		);
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;

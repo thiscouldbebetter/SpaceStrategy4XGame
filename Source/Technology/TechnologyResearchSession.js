@@ -203,11 +203,11 @@ class TechnologyResearchSession
 					labelHeight, // fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var world = universe.world;
 						var session = universe.venueCurrent.researchSession;
-						var faction = world.factions[session.researcher.factionName];
+						var faction = world.factionByName(session.researcher.factionName);
 						session.researchAccumulatedIncrement(universe.world, faction, 1);
 					},
 					universe // context
@@ -222,7 +222,7 @@ class TechnologyResearchSession
 					labelHeight, // fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venueNext = new VenueWorld(universe.world);
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);

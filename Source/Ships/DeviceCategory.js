@@ -33,6 +33,7 @@ class DeviceCategory_Instances
 			this.Shield,
 			this.Special,
 			this.Weapon,
-		].addLookupsByName();
+		];
+		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}
 }

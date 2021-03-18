@@ -1,12 +1,9 @@
 <html>
 <body>
 
-<script type="text/javascript" src="Framework/Source/Extensions/ArrayExtensions.js"></script>
-<script type="text/javascript" src="Framework/Source/Extensions/ArrayHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Extensions/NumberExtensions.js"></script>
-<script type="text/javascript" src="Framework/Source/Extensions/NumberHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Extensions/StringExtensions.js"></script>
-<script type="text/javascript" src="Framework/Source/Extensions/StringHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Helpers/ArrayHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Helpers/NumberHelper.js"></script>
+<script type="text/javascript" src="Framework/Source/Helpers/StringHelper.js"></script>
 
 <!-- hack -->
 <script type="text/javascript" src="Framework/Source/Model/EntityProperty.js"></script>
@@ -32,11 +29,10 @@
 <script type="text/javascript" src="Framework/Source/Display/Color.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Drawable.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Display2D.js"></script>
-<script type="text/javascript" src="Framework/Source/Display/Gradient.js"></script>
+<script type="text/javascript" src="Framework/Source/Display/DisplayRecorder.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/VenueFader.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/VenueLayered.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Display/Visuals/VisualAnimation.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualCircle.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualDirectional.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualDynamic.js"></script>
@@ -52,8 +48,10 @@
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualSelect.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Visuals/VisualText.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Display/Visuals/Animation/VisualAnimation.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Geometry/Camera.js"></script>
-<!--<script type="text/javascript" src="Framework/Source/Geometry/Collision.js"></script>-->
+<script type="text/javascript" src="Framework/Source/Geometry/Collision.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/CollisionHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Disposition.js"></script>
@@ -101,18 +99,17 @@
 <script type="text/javascript" src="Framework/Source/Media/VideoHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/VisualSound.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Model/Action.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Universe.js"></script>
-<!--<script type="text/javascript" src="Framework/Source/Model/VenueWorld.js"></script>
-<script type="text/javascript" src="Framework/Source/Model/World.js"></script>-->
+<script type="text/javascript" src="Framework/Source/Model/UniverseWorldPlaceEntities.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Model/Actors/Action.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Physics/Constrainable.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Physics/Locatable.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Profiles/Profile.js"></script>
-<script type="text/javascript" src="Framework/Source/Profiles/ProfileHelper.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Storage/FileHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/Serializer.js"></script>
@@ -130,6 +127,7 @@
 <script type="text/javascript" src="Framework/Source/Utility/Reference.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/TimerHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/URLParser.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/ValueBreakGroup.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/VenueTask.js"></script>
 
 <script type="text/javascript" src="Actions/Action_CameraMove.js"></script>
@@ -146,8 +144,8 @@
 
 <script type="text/javascript" src="Controls/ControlDynamic.js"></script>
 
-<script type="text/javascript" src="Extensions/ControlBuilderExtensions.js"></script>
-<script type="text/javascript" src="Extensions/VenueFaderExtensions.js"></script>
+<script type="text/javascript" src="Extensions/ControlBuilderExtended.js"></script>
+<script type="text/javascript" src="Extensions/VenueFaderExtended.js"></script>
 
 <script type="text/javascript" src="Factions/Faction.js"></script>
 <script type="text/javascript" src="Factions/FactionKnowledge.js"></script>
@@ -213,6 +211,8 @@
 
 <script type="text/javascript" src="VenueWorld.js"></script>
 <script type="text/javascript" src="World.js"></script>
+
+<script type="text/javascript" src="Imports.js"></script>
 
 <script type="text/javascript" src="main.js"></script>
 

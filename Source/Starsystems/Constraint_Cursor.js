@@ -7,51 +7,64 @@ class Constraint_Cursor
 
 		// Helper variables.
 
+		this._cameraRightOrDown = new Coords();
+		this._displacement = new Coords();
 		this._max = new Coords();
 		this._min = new Coords();
-		this._boundsToRestrictTo = new Box(this._min, this._max);
+		this._mousePos = new Coords();
+		this._xyPlaneNormal = new Coords(0, 0, 1);
+
+		this._boundsToRestrictTo = Box.fromMinAndMax(new Coords(), new Coords());
+		this._positiveInfinity = 1000000000; // Number.POSITIVE_INFINITY;
+		this._negativeInfinity = -1000000000; // Number.NEGATIVE_INFINITY;
 	}
 
 	constrain(universe, world, place, body)
 	{
 		var cursor = body;
 		var venue = universe.venueCurrent;
-		var mousePos = universe.inputHelper.mouseMovePos.clone();
 
 		var camera = venue.camera;
 		var cameraLoc = camera.loc;
 		var cameraPos = cameraLoc.pos;
 		var cameraOrientation = cameraLoc.orientation;
 
+		var mousePos = this._mousePos.overwriteWith
+		(
+			universe.inputHelper.mouseMovePos
+		);
 		mousePos.subtract(camera.viewSizeHalf);
 
-		var xyPlaneNormal = new Coords(0, 0, 1);
-
-		var cursorPos = cursor.locatable().loc.pos;
-
-		var cameraForward = cameraOrientation.forward;
-		var displacementFromCameraToMousePosProjected = cameraForward.clone().multiplyScalar
+		var displacementFromCameraToMousePosProjected = this._displacement.overwriteWith
+		(
+			cameraOrientation.forward
+		).multiplyScalar
 		(
 			camera.focalLength
 		).add
 		(
-			cameraOrientation.right.clone().multiplyScalar
+			this._cameraRightOrDown.overwriteWith
+			(
+				cameraOrientation.right
+			).multiplyScalar
 			(
 				mousePos.x
 			)
 		).add
 		(
-			cameraOrientation.down.clone().multiplyScalar
+			this._cameraRightOrDown.overwriteWith
+			(
+				cameraOrientation.down
+			).multiplyScalar
 			(
 				mousePos.y
 			)
 		);
 
-		var rayFromCameraToMousePos = new Ray
-		(
-			cameraPos,
-			displacementFromCameraToMousePosProjected
-		);
+		var rayFromCameraToMousePos =
+			new Ray(cameraPos, displacementFromCameraToMousePosProjected);
+
+		var cursorPos = cursor.locatable().loc.pos;
 
 		if (cursor.hasXYPositionBeenSpecified == false)
 		{
@@ -59,70 +72,53 @@ class Constraint_Cursor
 			(
 				this._min.overwriteWithDimensions
 				(
-					Number.NEGATIVE_INFINITY,
-					Number.NEGATIVE_INFINITY,
-					0
+					this._negativeInfinity, this._negativeInfinity, 0
 				),
 				this._max.overwriteWithDimensions
 				(
-					Number.POSITIVE_INFINITY,
-					Number.POSITIVE_INFINITY,
-					0
+					this._positiveInfinity, this._positiveInfinity, 0
 				)
 			);
 
-			var planeToRestrictTo = new Plane
-			(
-				xyPlaneNormal,
-				0
-			);
+			var planeToRestrictTo = new Plane(this._xyPlaneNormal, 0);
 
 			var collisionPos = new Collision().rayAndPlane
 			(
-				rayFromCameraToMousePos,
-				planeToRestrictTo
+				rayFromCameraToMousePos, planeToRestrictTo
 			).pos;
 
 			if (collisionPos != null)
 			{
-				body.locatable().loc.pos.overwriteWith(collisionPos);
+				cursorPos.overwriteWith(collisionPos);
 			}
 		}
-		else // if (cursor.hasXYPositionBeenSpecified == true)
+		else // if (cursor.hasXYPositionBeenSpecified)
 		{
 			this._boundsToRestrictTo.fromMinAndMax
 			(
-				this._pos.overwriteWithDimensions
+				this._min.overwriteWithDimensions
 				(
-					cursorPos.x,
-					cursorPos.y,
-					Number.NEGATIVE_INFINITY
+					cursorPos.x, cursorPos.y, this._negativeInfinity
 				),
-				this._pos.overwriteWithDimensions
+				this._max.overwriteWithDimensions
 				(
-					cursorPos.x,
-					cursorPos.y,
-					Number.POSITIVE_INFINITY
+					cursorPos.x, cursorPos.y, this._positiveInfinity
 				)
 			);
 
-			var planeNormal = xyPlaneNormal.clone().crossProduct
+			var planeNormal = this._xyPlaneNormal.clone().crossProduct
 			(
 				cameraOrientation.right
 			);
 
 			cursorPos.z = 0;
 
-			var planeToRestrictTo = new Plane
-			(
-				planeNormal,
-				cursorPos.dotProduct(planeNormal)
-			);
+			var planeToRestrictTo =
+				new Plane(planeNormal, cursorPos.dotProduct(planeNormal));
 
 			var collisionPos = new Collision().rayAndPlane
 			(
-				rayFromCameraToMousePos,
-				planeToRestrictTo
+				rayFromCameraToMousePos, planeToRestrictTo
 			).pos;
 
 			if (collisionPos != null)
@@ -133,8 +129,7 @@ class Constraint_Cursor
 
 		cursorPos.trimToRangeMinMax
 		(
-			this._boundsToRestrictTo._min,
-			this._boundsToRestrictTo._max
+			this._boundsToRestrictTo.min(), this._boundsToRestrictTo.max()
 		);
 	}
 }

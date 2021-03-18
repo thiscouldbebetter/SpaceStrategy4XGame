@@ -10,12 +10,12 @@ class Order
 
 	defn()
 	{
-		return OrderDefn.Instances()._All[this.defnName];
+		return OrderDefn.Instances()._AllByName.get(this.defnName);
 	}
 
 	obey(universe, actor)
 	{
-		if (this.isComplete == true)
+		if (this.isComplete)
 		{
 			actor.order = null;
 		}

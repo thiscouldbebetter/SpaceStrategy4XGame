@@ -1,17 +1,12 @@
 
-function ControlBuilderExtensions()
+class ControlBuilderExtended
 {
-	// extension class
-}
-{
-	ControlBuilder.prototype.selection = function
-	(
-		universe,
-		pos,
-		size,
-		margin,
-		controlHeight
-	)
+	constructor(controlBuilderInner)
+	{
+		this.controlBuilderInner = controlBuilderInner;
+	}
+
+	selection(universe, pos, size, margin, controlHeight)
 	{
 		var fontHeightInPixels = 10; // universe.display.fontHeightInPixels;
 
@@ -75,7 +70,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueCurrent.cameraCenterOnSelection();
 					},
@@ -95,7 +90,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venueCurrent = universe.venueCurrent;
 						var selection = venueCurrent.selection;
@@ -130,14 +125,11 @@ function ControlBuilderExtensions()
 		);
 
 		return returnValue;
-	};
+	}
 
-	ControlBuilder.prototype.timeAndPlace = function
+	timeAndPlace
 	(
-		universe,
-		containerMainSize,
-		containerInnerSize,
-		margin,
+		universe, containerMainSize, containerInnerSize, margin,
 		controlHeight
 	)
 	{
@@ -166,7 +158,11 @@ function ControlBuilderExtensions()
 					false, // isTextCentered
 					new DataBinding
 					(
-						universe, function get(c) { return c.venueCurrent.model().name; }
+						universe,
+						c =>
+						{
+							return (c.venueCurrent.model == null ? "" : c.venueCurrent.model().name);
+						}
 					)
 				),
 
@@ -201,7 +197,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.world.updateForTurn(universe);
 					},
@@ -217,7 +213,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var world = universe.world;
 						var faction = world.factions[0];
@@ -242,14 +238,11 @@ function ControlBuilderExtensions()
 		);
 
 		return returnValue;
-	};
+	}
 
-	ControlBuilder.prototype.view = function
+	view
 	(
-		universe,
-		containerMainSize,
-		containerInnerSize,
-		margin,
+		universe, containerMainSize, containerInnerSize, margin,
 		controlHeight
 	)
 	{
@@ -291,7 +284,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueCurrent.cameraUp(cameraSpeed);
 					},
@@ -312,7 +305,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueCurrent.cameraDown(cameraSpeed);
 					},
@@ -333,7 +326,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueCurrent.cameraLeft(cameraSpeed);
 					},
@@ -354,7 +347,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueCurrent.cameraRight(cameraSpeed);
 					},
@@ -375,7 +368,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueCurrent.cameraIn(cameraSpeed);
 					},
@@ -396,7 +389,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueCurrent.cameraOut(cameraSpeed);
 					},
@@ -417,7 +410,7 @@ function ControlBuilderExtensions()
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueCurrent.cameraReset();
 					},
@@ -427,5 +420,5 @@ function ControlBuilderExtensions()
 		);
 
 		return returnValue;
-	};
+	}
 }

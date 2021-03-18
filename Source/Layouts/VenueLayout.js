@@ -44,9 +44,9 @@ class VenueLayout
 			map.cellSizeInPixels
 		).round();
 
-		if (cursorPos.isInRangeMax(map.sizeInCellsMinusOnes) == true)
+		if (cursorPos.isInRangeMax(map.sizeInCellsMinusOnes))
 		{
-			if (inputHelper.isMouseClicked() == true)
+			if (inputHelper.isMouseClicked())
 			{
 				inputHelper.isMouseClicked(false);
 
@@ -60,22 +60,24 @@ class VenueLayout
 						var neighboringBodies = map.bodiesNeighboringCursor();
 						if (neighboringBodies.length == 0)
 						{
-							universe.venueNext = new VenueMessage("Cannot build there.", this, this, universe.display.sizeInPixels.clone().half());
+							universe.venueNext = VenueMessage.fromText("Cannot build there.");
 						}
 						else
 						{
-							var controlBuildables = this.controlBuildableSelectBuild(universe, cursorPos);
+							var controlBuildables =
+								this.controlBuildableSelectBuild(universe, cursorPos);
 							universe.venueNext = new VenueControls(controlBuildables);
 						}
 					}
 					else
 					{
-						VenueMessage.showAsDialog(universe, "Already building.", this);
+						universe.venueNext = VenueMessage.fromText("Already building.");
 					}
 				}
 				else
 				{
-					var controlBuildableDetails = this.controlBuildableDetailsBuild(universe, cursorPos);
+					var controlBuildableDetails =
+						this.controlBuildableDetailsBuild(universe, cursorPos);
 					universe.venueNext = new VenueControls(controlBuildableDetails);
 				}
 			}
@@ -127,9 +129,9 @@ class VenueLayout
 					fontHeightInPixels,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
+					(universe) => // click
 					{
-						layout.map.bodies.remove(buildableAtCursor);
+						ArrayHelper.remove(layout.map.bodies, buildableAtCursor);
 						universe.venueNext = venueThis;
 					},
 					universe // context
@@ -144,7 +146,7 @@ class VenueLayout
 					fontHeightInPixels,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
+					(universe) => // click
 					{
 						universe.venueNext = venueThis;
 					},
@@ -171,8 +173,8 @@ class VenueLayout
 		{
 			var buildableDefn = buildableDefnsAvailable[i];
 			var isBuildableDefnAllowedOnTerrain =
-				buildableDefn.terrainNamesAllowed.contains(terrainName);
-			if (isBuildableDefnAllowedOnTerrain == true)
+				ArrayHelper.contains(buildableDefn.terrainNamesAllowed, terrainName);
+			if (isBuildableDefnAllowedOnTerrain)
 			{
 				buildableDefnsAllowedOnTerrain.push(buildableDefn);
 			}
@@ -229,7 +231,7 @@ class VenueLayout
 					fontHeightInPixels,
 					true, // hasBorder,
 					true, // isEnabled,
-					function click(universe)
+					(universe) => // click
 					{
 						var venueCurrent = universe.venueCurrent;
 						var controlList =
@@ -255,7 +257,7 @@ class VenueLayout
 
 	controlBuild(universe)
 	{
-		var controlBuilder = universe.controlBuilder;
+		var controlBuilder = new ControlBuilderExtended(universe.controlBuilder);
 
 		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
@@ -286,7 +288,7 @@ class VenueLayout
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venueNext = universe.venueCurrent.venueParent;
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);

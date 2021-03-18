@@ -7,7 +7,8 @@ class Network
 		this.nodes = nodes;
 		this.links = links;
 
-		this.nodes.addLookupsByName();
+		this.nodes = nodes;
+		this.nodesByName = ArrayHelper.addLookupsByName(this.nodes);
 
 		for (var i = 0; i < this.links.length; i++)
 		{
@@ -123,15 +124,17 @@ class Network
 			new Coords(1, 1, 1).multiplyScalar(2 * radiusMax) // size
 		);
 
+		var boundsActualSizeHalf = boundsActual.sizeHalf();
+		var boundsDesiredSizeHalf = boundsDesired.sizeHalf();
 		for (var i = 0; i  < nodePositions.length; i++)
 		{
 			var nodePos = nodePositions[i];
 			nodePos.subtract(boundsActual.center);
-			nodePos.divide(boundsActual.sizeHalf).multiply(boundsDesired.sizeHalf);
+			nodePos.divide(boundsActualSizeHalf).multiply(boundsDesiredSizeHalf);
 		}
 
 		var nodesLinked = [ nodesNotYetLinked[0] ];
-		nodesNotYetLinked.removeAt(0);
+		ArrayHelper.removeAt(nodesNotYetLinked, 0);
 		var links = [];
 		var colors = Color.Instances();
 
@@ -144,12 +147,12 @@ class Network
 				new VisualCircleGradient
 				(
 					10, // radius
-					new Gradient
+					new ValueBreakGroup
 					([
-						new GradientStop(0, Color.byName("Black") ),
-						new GradientStop(.5, Color.byName("Black") ),
-						new GradientStop(.75, Color.byName("Violet") ),
-						new GradientStop(1, Color.byName("Blue") )
+						new ValueBreak(0, Color.byName("Black") ),
+						new ValueBreak(.5, Color.byName("Black") ),
+						new ValueBreak(.75, Color.byName("Violet") ),
+						new ValueBreak(1, Color.byName("Blue") )
 					])
 				)
 			])
@@ -198,7 +201,7 @@ class Network
 			var linkIndex = links.length;
 			links.push(link);
 			nodesLinked.push(nodeToLink);
-			nodesNotYetLinked.remove(nodeToLink);
+			ArrayHelper.remove(nodesNotYetLinked, nodeToLink);
 
 			for (var i = 0; i < nodePairClosestSoFar.length; i++)
 			{
@@ -311,7 +314,7 @@ class Network
 					}
 				}
 
-				drawablesSortedByZ.insertElementAt(drawableToSort, j);
+				ArrayHelper.insertElementAt(drawablesSortedByZ, drawableToSort, j);
 			}
 		}
 

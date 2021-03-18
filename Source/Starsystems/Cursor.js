@@ -42,7 +42,7 @@ class Cursor
 					])
 				]
 			]),
-			(universe, world, display, drawable, entity, visual) => // selectChildNames
+			(universe, world, place, entity, display) => // selectChildNames
 			{
 				var returnValue;
 				var cursor = entity;
@@ -81,8 +81,10 @@ class Cursor
 					return returnValue;
 				} 
 			),
+			false, // shouldTextContextBeReset
 			null, // heightInPixels
-			Color.byName("Gray"), Color.byName("White")
+			Color.byName("Gray"),
+			Color.byName("White")
 		);
 
 		var visual = new VisualGroup
@@ -130,16 +132,17 @@ class Cursor
 
 	// drawable
 
-	draw(universe, world, display, venueStarsystem)
+	draw(universe, world, place, entity, display)
 	{
+		var venueStarsystem = place;
 		var starsystem = venueStarsystem.starsystem;
 		starsystem.draw_Body
 		(
 			universe,
 			world,
-			display,
-			venueStarsystem.camera,
-			this
+			place,
+			this,
+			display
 		);
 	}
 }

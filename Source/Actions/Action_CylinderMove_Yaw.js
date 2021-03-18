@@ -8,9 +8,10 @@ class Action_CylinderMove_Yaw
 
 	perform(actor)
 	{
-		var constraintCylinder = actor.constrainable().constraints["PositionOnCylinder"];
+		var constraintCylinder =
+			actor.constrainable().constraintsByName.get("PositionOnCylinder");
 
 		constraintCylinder.yawInTurns += this.turnsToMove;
-		constraintCylinder.yawInTurns.wrapToRangeMinMax(0, 1);
+		NumberHelper.wrapToRangeMinMax(constraintCylinder.yawInTurns, 0, 1);
 	}
 }

@@ -44,7 +44,7 @@ class TalkNode
 
 			if (token == "")
 			{
-				stringAsTokens.removeAt(i);
+				ArrayHelper.removeAt(stringAsTokens, i);
 				i--;
 			}
 		}

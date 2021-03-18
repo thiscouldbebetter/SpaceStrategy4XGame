@@ -15,23 +15,30 @@ class Starsystem
 
 		// Helper variables
 		this.posSaved = new Coords();
-		this.visualElevationStem = new VisualElevationStem(null);
+		this.visualElevationStem = new VisualElevationStem();
 		var gridColor = Color.Instances().Cyan.clone();
 		gridColor.alpha(.5);
 		var gridColorSystemColor = gridColor.systemColor();
-		this.visualGrid = new VisualGrid(null, 40, 10, gridColorSystemColor);
+		this.visualGrid = new VisualGrid(40, 10, gridColorSystemColor);
 	}
 
 	// constants
 
-	static SizeStandard = new Coords(100, 100, 100);
+	static SizeStandard()
+	{
+		if (Starsystem._sizeStandard == null)
+		{
+			Starsystem._sizeStandard = new Coords(100, 100, 100);
+		}
+		return Starsystem._sizeStandard;
+	}
 
 	// static methods
 
 	static generateRandom(universe)
 	{
 		var name = NameGenerator.generateName();
-		var size = Starsystem.SizeStandard;
+		var size = Starsystem.SizeStandard();
 
 		var starRadius = 30;
 		var starColor = Color.Instances().Yellow;
@@ -45,13 +52,7 @@ class Starsystem
 				new VisualGroup
 				([
 					new VisualCircle(starRadius, starColor, starColor),
-					new VisualText
-					(
-						DataBinding.fromContext(name),
-						null, // heightInPixels
-						Color.byName("Gray"),
-						null
-					)
+					VisualText.fromTextAndColor(name, Color.byName("Gray"))
 				])
 			),
 			new Coords(0, 0, -10)
@@ -114,7 +115,7 @@ class Starsystem
 
 	faction(world)
 	{
-		return (this.factionName == null ? null : world.factions[this.factionName]);
+		return (this.factionName == null ? null : world.factionByName(this.factionName));
 	}
 
 	links(cluster)
@@ -154,12 +155,9 @@ class Starsystem
 
 	// drawing
 
-	draw(universe, world, display, camera)
+	draw(universe, world, place, entity, display)
 	{
-		this.visualElevationStem.camera = camera;
-		this.visualGrid.camera = camera;
-
-		this.visualGrid.draw(universe, display);
+		this.visualGrid.draw(universe, world, place, null, display);
 
 		var bodiesByType =
 		[
@@ -172,6 +170,7 @@ class Starsystem
 		var bodyToSortDrawPos = new Coords();
 		var bodySortedDrawPos = new Coords();
 		var bodiesToDrawSorted = [];
+		var camera = place.camera;
 
 		for (var t = 0; t < bodiesByType.length; t++)
 		{
@@ -199,19 +198,21 @@ class Starsystem
 					}
 				}
 
-				bodiesToDrawSorted.insertElementAt(bodyToSort, j);
+				ArrayHelper.insertElementAt(bodiesToDrawSorted, bodyToSort, j);
 			}
 		}
 
 		for (var i = 0; i < bodiesToDrawSorted.length; i++)
 		{
 			var body = bodiesToDrawSorted[i];
-			this.draw_Body(universe, world, display, camera, body);
+			this.draw_Body(universe, world, place, body, display);
 		}
 	}
 
-	draw_Body(universe, world, display, camera, body)
+	draw_Body(universe, world, place, body, display)
 	{
+		var camera = place.camera;
+
 		var bodyPos = body.locatable().loc.pos;
 		this.posSaved.overwriteWith(bodyPos);
 
@@ -219,10 +220,10 @@ class Starsystem
 
 		var bodyDefn = body.defn;
 		var bodyVisual = bodyDefn.visual;
-		bodyVisual.draw(universe, world, this, body, display);
+		bodyVisual.draw(universe, world, place, body, display);
 		bodyPos.overwriteWith(this.posSaved);
 
-		this.visualElevationStem.draw(universe, world, null, body, display);
+		this.visualElevationStem.draw(universe, world, place, body, display);
 	}
 }
 
@@ -230,35 +231,34 @@ class Starsystem
 
 class VisualElevationStem
 {
-	constructor(camera)
+	constructor()
 	{
-		this.camera = camera;
+		// Helper variables.
 		this.drawPosTip = new Coords();
 		this.drawPosPlane = new Coords();
 	}
 
 	draw(universe, world, place, entity, display)
 	{
+		var camera = place.camera;
 		var drawablePosWorld = entity.locatable().loc.pos;
-		var drawPosTip = this.camera.coordsTransformWorldToView
+		var drawPosTip = camera.coordsTransformWorldToView
 		(
 			this.drawPosTip.overwriteWith(drawablePosWorld)
 		);
-		var drawPosPlane = this.camera.coordsTransformWorldToView
+		var drawPosPlane = camera.coordsTransformWorldToView
 		(
 			this.drawPosPlane.overwriteWith(drawablePosWorld).clearZ()
 		);
 		var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
-		var colors = Color.Instances();
-		display.drawLine(drawPosTip, drawPosPlane, colors[colorName].systemColor());
+		display.drawLine(drawPosTip, drawPosPlane, Color.byName(colorName).systemColor());
 	}
 }
 
 class VisualGrid
 {
-	constructor(camera, gridDimensionInCells, gridCellDimensionInPixels, color)
+	constructor(gridDimensionInCells, gridCellDimensionInPixels, color)
 	{
-		this.camera = camera;
 		this.gridSizeInCells = new Coords(1, 1, 0).multiplyScalar(gridDimensionInCells);
 		this.gridCellSizeInPixels = new Coords(1, 1, 0).multiplyScalar(gridCellDimensionInPixels);
 		this.color = color;
@@ -272,13 +272,17 @@ class VisualGrid
 		this.drawPosFrom = new Coords();
 		this.drawPosTo = new Coords();
 		this.multiplier = new Coords();
+		this.multiplierTimesI = new Coords();
 	}
 
-	draw(universe, display, drawable, drawLoc)
+	draw(universe, world, place, entity, display)
 	{
+		var camera = place.camera;
+
 		var drawPosFrom = this.drawPosFrom;
 		var drawPosTo = this.drawPosTo;
 		var multiplier = this.multiplier;
+		var multiplierTimesI = this.multiplierTimesI;
 
 		for (var d = 0; d < 2; d++)
 		{
@@ -287,7 +291,6 @@ class VisualGrid
 			(
 				d, this.gridCellSizeInPixels.dimensionGet(d)
 			);
-
 			for (var i = 0 - this.gridSizeInCellsHalf.x; i <= this.gridSizeInCellsHalf.x; i++)
 			{
 				drawPosFrom.overwriteWith
@@ -303,11 +306,12 @@ class VisualGrid
 				drawPosFrom.dimensionSet(d, 0);
 				drawPosTo.dimensionSet(d, 0);
 
-				drawPosFrom.add(multiplier.clone().multiplyScalar(i));
-				drawPosTo.add(multiplier.clone().multiplyScalar(i));
+				multiplierTimesI.overwriteWith(multiplier).multiplyScalar(i)
+				drawPosFrom.add(multiplierTimesI);
+				drawPosTo.add(multiplierTimesI);
 
-				this.camera.coordsTransformWorldToView(drawPosFrom);
-				this.camera.coordsTransformWorldToView(drawPosTo);
+				camera.coordsTransformWorldToView(drawPosFrom);
+				camera.coordsTransformWorldToView(drawPosTo);
 
 				if (drawPosFrom.z >= 0 && drawPosTo.z >= 0)
 				{

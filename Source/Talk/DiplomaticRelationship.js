@@ -41,7 +41,7 @@ class DiplomaticRelationship
 		for (var f = 0; f < factions.length; f++)
 		{
 			var faction = factions[f];
-			faction.relationships.addLookups( function(x) { return x.factionNameOther; } );
+			ArrayHelper.addLookups(faction.relationships, x => x.factionNameOther);
 		}
 	}
 
@@ -86,7 +86,7 @@ class DiplomaticRelationship
 
 	factionOther(universe)
 	{
-		return universe.factions[this.factionNameOther];
+		return universe.world.factionByName(this.factionNameOther);
 	}
 
 	toString()

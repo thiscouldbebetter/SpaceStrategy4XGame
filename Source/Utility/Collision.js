@@ -66,7 +66,7 @@ class Collision
 				for (var t = 0; t < face.triangles.length; t++)
 				{
 					var triangle = face.triangles[t];
-					if (this.isPosWithinFace(triangle) == true)
+					if (this.isPosWithinFace(triangle))
 					{
 						this.colliders["Triangle"] = triangle;
 						break;

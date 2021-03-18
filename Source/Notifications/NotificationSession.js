@@ -12,7 +12,7 @@ class NotificationSession
 	notificationDismiss(notification)
 	{
 		var notificationIndex = this.notifications.indexOf(notification);
-		this.notifications.remove(notification);
+		ArrayHelper.remove(this.notifications, notification);
 		this.notificationSelected = this.notifications[notificationIndex];
 	}
 
@@ -23,7 +23,7 @@ class NotificationSession
 		if (notificationLocType == TechnologyResearcher.name)
 		{
 			var factionName = notificationLoc.factionName;
-			var faction = universe.world.factions[factionName];
+			var faction = universe.world.factionByName(factionName);
 			faction.researchSessionStart(universe);
 		}
 		else if (notificationLocType == Starsystem.name)

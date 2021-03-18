@@ -1,3 +1,12 @@
+// hack
+// This namespace is a cheat.
+// Maybe eventually add a WorldBase class,
+// with a .toVenue() method on it?
+
+var ThisCouldBeBetter;
+(function (ThisCouldBeBetter) {
+    var GameFramework;
+    (function (GameFramework) {
 
 class VenueWorld
 {
@@ -7,7 +16,6 @@ class VenueWorld
 
 		this.camera = this.world.camera;
 	}
-
 
 	model()
 	{
@@ -22,11 +30,11 @@ class VenueWorld
 		{
 			var targetPosNew = this.selection.locatable().loc.pos;
 
-			var cameraConstraints = camera.constrainable().constraints;
-			var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
+			var cameraConstraints = camera.constrainable().constraintsByName;
+			var constraintDistance = cameraConstraints.get("HoldDistanceFromTarget");
 			constraintDistance.targetPos = targetPosNew;
 
-			var constraintLookAt = cameraConstraints["LookAt"];
+			var constraintLookAt = cameraConstraints.get("LookAt");
 			constraintLookAt.targetPos = targetPosNew;
 		}
 	}
@@ -39,7 +47,8 @@ class VenueWorld
 
 	cameraIn(cameraSpeed)
 	{
-		var constraint = this.camera.constrainable().constraints["HoldDistanceFromTarget"];
+		var constraint =
+			this.camera.constrainable().constraints.get("HoldDistanceFromTarget");
 		constraint.distanceToHold -= cameraSpeed / 2;
 		if (constraint.distanceToHold < 1)
 		{
@@ -55,7 +64,8 @@ class VenueWorld
 
 	cameraOut(cameraSpeed)
 	{
-		var constraint = this.camera.constrainable().constraints["HoldDistanceFromTarget"];
+		var constraint =
+			this.camera.constrainable().constraints.get("HoldDistanceFromTarget");
 		constraint.distanceToHold += cameraSpeed / 2;
 		if (constraint.distanceToHold < 0)
 		{
@@ -65,14 +75,14 @@ class VenueWorld
 
 	cameraReset()
 	{
-		var cameraConstraints = this.camera.constrainable().constraints;
+		var cameraConstraints = this.camera.constrainable().constraintsByName;
 
 		var origin = new Coords(0, 0, 0);
-		var constraintDistance = cameraConstraints["HoldDistanceFromTarget"];
+		var constraintDistance = cameraConstraints.get("HoldDistanceFromTarget");
 		constraintDistance.distanceToHold = this.camera.focalLength;
 		constraintDistance.targetPos = origin;
 
-		constraintLookAt = cameraConstraints["LookAt"];
+		constraintLookAt = cameraConstraints.get("LookAt");
 		constraintLookAt.targetPos = origin;
 
 		this.camera.loc.pos.clear().x = 0 - this.camera.focalLength;
@@ -108,7 +118,7 @@ class VenueWorld
 
 		var faction = universe.world.factionCurrent();
 
-		var controlBuilder = universe.controlBuilder;
+		var controlBuilder = new ControlBuilderExtended(universe.controlBuilder);
 
 		var returnValue = new ControlContainer
 		(
@@ -130,7 +140,7 @@ class VenueWorld
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venueNext = new VenueControls
 						(
@@ -224,17 +234,19 @@ class VenueWorld
 		// hack
 		var cameraLocatable = new Locatable(this.camera.loc);
 		this.camera.locatable = () => cameraLocatable;
-		var cameraConstrainable = new Constrainable
-		(
-			[
-				new Constraint_HoldDistanceFromTarget
-				(
-					this.camera.focalLength, // distanceToHold
-					origin
-				),
-				new Constraint_LookAt(origin),
-			].addLookupsByName()
-		);
+
+		var constraints = 
+		[
+			new Constraint_HoldDistanceFromTarget
+			(
+				this.camera.focalLength, // distanceToHold
+				origin
+			),
+			new Constraint_LookAt(origin),
+		]
+		var cameraConstrainable = new Constrainable(constraints);
+		cameraConstrainable.constraintsByName =
+			ArrayHelper.addLookupsByName(constraints);
 		this.camera.constrainable = () => cameraConstrainable;
 	}
 
@@ -256,7 +268,7 @@ class VenueWorld
 		var camera = world.camera;
 
 		var inputHelper = universe.inputHelper;
-		if (inputHelper.isMouseClicked() == true)
+		if (inputHelper.isMouseClicked())
 		{
 			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 
@@ -365,3 +377,7 @@ class VenueWorld
 		}
 	}
 }
+
+        GameFramework.VenueWorld = VenueWorld;
+    })(GameFramework = ThisCouldBeBetter.GameFramework || (ThisCouldBeBetter.GameFramework = {}));
+})(ThisCouldBeBetter || (ThisCouldBeBetter = {}));

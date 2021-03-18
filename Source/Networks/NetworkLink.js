@@ -40,8 +40,8 @@ class NetworkLink
 	{
 		var returnValue =
 		[
-			cluster.nodes[this.namesOfNodesLinked[0]],
-			cluster.nodes[this.namesOfNodesLinked[1]],
+			cluster.nodesByName.get(this.namesOfNodesLinked[0]),
+			cluster.nodesByName.get(this.namesOfNodesLinked[1]),
 		];
 
 		return returnValue;
@@ -64,7 +64,7 @@ class NetworkLink
 			for (var i = 0; i < this.ships.length; i++)
 			{
 				var ship = this.ships[i];
-				var shipLoc = ship.locatable.loc;
+				var shipLoc = ship.locatable().loc;
 				var shipPos = shipLoc.pos;
 				var shipVel = shipLoc.vel;
 				var shipSpeed = ship.movementThroughLinkPerTurn(this);

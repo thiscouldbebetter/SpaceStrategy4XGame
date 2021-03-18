@@ -9,7 +9,7 @@ class Activity
 
 	defn(universe)
 	{
-		return (universe.world.activityDefns[this.defnName]);
+		return (universe.world.activityDefnByName(this.defnName));
 	}
 
 	perform(universe, actor)

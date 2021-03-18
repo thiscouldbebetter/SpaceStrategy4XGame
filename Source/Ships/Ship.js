@@ -51,7 +51,7 @@ class Ship
 
 	faction(world)
 	{
-		return (this.factionName == null ? null : world.factions[this.factionName]);
+		return (this.factionName == null ? null : world.factionByName(this.factionName));
 	}
 
 	id()
@@ -76,7 +76,7 @@ class Ship
 			{
 				var device = this.devices[i];
 				var deviceDefn = device.defn;
-				if (deviceDefn.isActive == true)
+				if (deviceDefn.isActive)
 				{
 					this._devicesUsable.push(device);
 				}
@@ -94,7 +94,7 @@ class Ship
 		var starsystemTo = linkPortal.starsystemTo(cluster);
 		var link = linkPortal.link(cluster);
 
-		starsystemFrom.ships.remove(this);
+		ArrayHelper.remove(starsystemFrom.ships, this);
 		link.ships.push(this);
 
 		var nodesLinked = link.nodesLinked(cluster);
@@ -105,8 +105,8 @@ class Ship
 
 		var shipLoc = this.locatable().loc;
 
-		var nodeFrom = (isLinkForward == true ? linkNode0 : linkNode1);
-		shipLoc.pos.overwriteWith(nodeFrom.locatable.loc.pos);
+		var nodeFrom = (isLinkForward ? linkNode0 : linkNode1);
+		shipLoc.pos.overwriteWith(nodeFrom.locatable().loc.pos);
 
 		var linkDirection = link.displacement(cluster).normalize();
 		if (isLinkForward == false)
@@ -118,11 +118,11 @@ class Ship
 
 	linkExit(world, link)
 	{
-		link.ships.remove(this);
+		ArrayHelper.remove(link.ships, this);
 
 		var cluster = world.network;
 		var ship = this;
-		var shipLoc = ship.locatable.loc;
+		var shipLoc = ship.locatable().loc;
 		var shipPos = shipLoc.pos;
 		var shipVel = shipLoc.vel;
 
@@ -148,7 +148,7 @@ class Ship
 		var factionKnowledge = shipFaction.knowledge;
 		var starsystemNamesKnown = factionKnowledge.starsystemNames;
 		var starsystemName = starsystemDestination.name;
-		if (starsystemNamesKnown.contains(starsystemName) == false)
+		if (ArrayHelper.contains(starsystemNamesKnown, starsystemName) == false)
 		{
 			starsystemNamesKnown.push(starsystemName);
 			var linkPortals = starsystemDestination.linkPortals;
@@ -177,9 +177,9 @@ class Ship
 
 		if (this.distanceLeftThisMove > 0)
 		{
-			var shipLoc = this.locatable.loc;
+			var shipLoc = this.locatable().loc;
 			var shipPos = shipLoc.pos;
-			var targetLoc = target.locatable.loc;
+			var targetLoc = target.locatable().loc;
 			var targetPos = targetLoc.pos;
 
 			var displacementToTarget = this._displacement.overwriteWith
@@ -255,7 +255,7 @@ class Ship
 
 	planetOrbitEnter(universe, starsystem, planet)
 	{
-		starsystem.ships.remove(this);
+		ArrayHelper.remove(starsystem.ships, this);
 		planet.ships.push(this);
 	}
 
@@ -334,7 +334,7 @@ class Ship
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						alert("todo - view")
 					},
@@ -350,13 +350,13 @@ class Ship
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venue = universe.venueCurrent;
 						var ship = venue.selection;
 						var mustTargetBodyFalse = false;
-						var orderDefns = OrderDefn.Instances;
-						venue.cursor.set(ship, orderDefns["Go"].name, mustTargetBodyFalse);
+						var orderDefns = OrderDefn.Instances();
+						venue.cursor.set(ship, orderDefns.Go.name, mustTargetBodyFalse);
 					},
 					universe // context
 				),
@@ -369,7 +369,7 @@ class Ship
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venue = universe.venueCurrent;
 						var ship = venue.selection;
@@ -421,7 +421,7 @@ class Ship
 						this,
 						function get(c) { return (c.deviceSelected != null); }
 					),
-					function click(universe)
+					(universe) => // click
 					{
 						var venue = universe.venueCurrent;
 						var starsystem = venue.starsystem;

@@ -284,7 +284,7 @@ class Faction
 					true, // hasBorder
 					true, // isEnabled
 					// click
-					function click(universe) { alert("todo"); }
+					(universe) => { alert("todo"); } // click
 				),
 
 				new ControlButton
@@ -301,7 +301,7 @@ class Faction
 					true, // hasBorder
 					true, // isEnabled
 					// click
-					function click(universe) { alert("todo"); }
+					(universe) => { alert("todo"); } // click
 				),
 			]
 		);

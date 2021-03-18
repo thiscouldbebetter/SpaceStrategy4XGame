@@ -8,7 +8,8 @@ class Action_CylinderMove_Radius
 
 	perform(actor)
 	{
-		var constraintCylinder = actor.constrainable().constraints["PositionOnCylinder"];
+		var constraintCylinder =
+			actor.constrainable().constraintsByName.get("PositionOnCylinder");
 
 		constraintCylinder.radius += this.distanceToMove;
 	}

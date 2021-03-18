@@ -11,7 +11,7 @@ class Buildable
 
 	defn(world)
 	{
-		return world.buildables[this.defnName];
+		return world.buildableByName(this.defnName);
 	}
 
 	locatable()
@@ -24,7 +24,7 @@ class Buildable
 		if (this._visual == null)
 		{
 			var defnVisual = this.defn(world).visual;
-			if (this.isComplete == true)
+			if (this.isComplete)
 			{
 				this._visual = defnVisual;
 			}
@@ -33,13 +33,7 @@ class Buildable
 				this._visual = new VisualGroup
 				([
 					defnVisual,
-					new VisualText
-					(
-						DataBinding.fromContext("X"),
-						null, // height
-						Color.byName("White"),
-						Color.byName("Black")
-					)
+					VisualText.fromTextAndColor("X", Color.byName("White"))
 				]);
 			}
 		}

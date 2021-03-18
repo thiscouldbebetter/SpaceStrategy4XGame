@@ -21,11 +21,12 @@ class VenueStarsystem
 		(
 			universe,
 			world,
-			display,
-			this.camera
+			this, // place
+			null, // entity
+			display
 		);
 
-		this.cursor.draw(universe, world, display, this);
+		this.cursor.draw(universe, world, this, null, display);
 
 		this.venueControls.draw(universe, world);
 	}
@@ -71,25 +72,26 @@ class VenueStarsystem
 		// hack
 		var locatable = new Locatable(this.camera.loc);
 		this.camera.locatable = () => locatable;
-		var constrainable = new Constrainable
-		(
-			[
-				new Constraint_PositionOnCylinder
+		var constraints =
+		[
+			new Constraint_PositionOnCylinder
+			(
+				targetForCamera, // center
+				new Orientation
 				(
-					targetForCamera, // center
-					new Orientation
-					(
-						new Coords(1, 0, 0),
-						new Coords(0, 0, 1) // axis
-					),
-					0, // yaw
-					this.camera.focalLength, // radius
-					0 - this.camera.focalLength / 2 // distanceFromCenterAlongAxisMax
+					new Coords(1, 0, 0),
+					new Coords(0, 0, 1) // axis
 				),
+				0, // yaw
+				this.camera.focalLength, // radius
+				0 - this.camera.focalLength / 2 // distanceFromCenterAlongAxisMax
+			),
 
-				new Constraint_LookAt(targetForCamera),
-			].addLookupsByName()
-		);
+			new Constraint_LookAt(targetForCamera),
+		];
+
+		var constrainable = new Constrainable(constraints);
+		constrainable.constraintsByName = ArrayHelper.addLookupsByName(constraints);
 		this.camera.constrainable = () => constrainable;
 
 		Constrainable.constrain(universe, universe.world, this, this.camera);
@@ -179,7 +181,7 @@ class VenueStarsystem
 			{
 				this.cameraIn(cameraSpeed);
 			}
-			else if (inputHelper.isMouseClicked() == true)
+			else if (inputHelper.isMouseClicked())
 			{
 				this.updateForTimerTick_Input_Mouse(universe);
 			}
@@ -243,9 +245,9 @@ class VenueStarsystem
 					}
 				}
 
-				bodiesClickedAsCollisionsSorted.insertElementAt
+				ArrayHelper.insertElementAt
 				(
-					collisionToSort, j
+					bodiesClickedAsCollisionsSorted, collisionToSort, j
 				);
 			}
 
@@ -283,11 +285,12 @@ class VenueStarsystem
 
 	updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked)
 	{
+		// todo - Fix.
 		if (this.selection == null)
 		{
 			this.selection = bodyClicked;
 		}
-		else if (this.selection.defn.name == "Ship")
+		else if (this.selection.defn.name == Ship.name)
 		{
 			var ship = this.selection;
 
@@ -297,8 +300,11 @@ class VenueStarsystem
 				universe.inputHelper.isEnabled = false;
 
 				var targetBody = bodyClicked;
-				ship.order = new Order(this.cursor.orderName, targetBody);
-				ship.order.obey(universe, ship);
+				if (this.cursor.orderName != null)
+				{
+					ship.order = new Order(this.cursor.orderName, targetBody);
+					ship.order.obey(universe, ship);
+				}
 
 				this.cursor.clear();
 			}
@@ -327,12 +333,15 @@ class VenueStarsystem
 				this.cursor.clear();
 			}
 		}
-		else if (this.selection.defn.name == "Planet")
+		else if (this.selection.defn.name == Planet.name)
 		{
-			var layout = bodyClicked.layout;
-			var venueNext = new VenueLayout(this, bodyClicked, layout);
-			venueNext = new VenueFader(venueNext, universe.venueCurrent);
-			universe.venueNext = venueNext;
+			if (bodyClicked == this.selection)
+			{
+				var layout = bodyClicked.layout;
+				var venueNext = new VenueLayout(this, bodyClicked, layout);
+				venueNext = new VenueFader(venueNext, universe.venueCurrent);
+				universe.venueNext = venueNext;
+			}
 		}
 		else
 		{
@@ -398,7 +407,8 @@ class VenueStarsystem
 	{
 		if (this.selection != null)
 		{
-			var cameraConstraint = this.camera.constrainable().constraints["PositionOnCylinder"];
+			var cameraConstraint =
+				this.camera.constrainable().constraintsByName.get("PositionOnCylinder");
 			var selectionPos = this.selection.locatable().loc.pos;
 			cameraConstraint.center.overwriteWith(selectionPos);
 		}
@@ -453,7 +463,7 @@ class VenueStarsystem
 		var containerInnerSize = new Coords(100, 60);
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
-		var controlBuilder = universe.controlBuilder;
+		var controlBuilder = new ControlBuilderExtended(universe.controlBuilder);
 
 		var returnValue = new ControlContainer
 		(
@@ -475,7 +485,7 @@ class VenueStarsystem
 					fontHeightInPixels,
 					true, // hasBorder
 					true, // isEnabled
-					function click(universe)
+					(universe) => // click
 					{
 						var venueNext = universe.venueCurrent.venueParent;
 						venueNext = new VenueFader(venueNext, universe.venueCurrent);

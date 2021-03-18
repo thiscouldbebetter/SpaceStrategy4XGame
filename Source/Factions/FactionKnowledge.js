@@ -20,7 +20,7 @@ class FactionKnowledge
 			{
 				var node = nodesActual[i];
 				var starsystemName = node.starsystem.name;
-				if (this.starsystemNames.contains(starsystemName) == true)
+				if (ArrayHelper.contains(this.starsystemNames, starsystemName))
 				{
 					nodesKnown.push(node);
 				}
@@ -43,7 +43,7 @@ class FactionKnowledge
 			{
 				var link = linksActual[i];
 				var linkName = link.name;
-				if (this.linkNames.contains(linkName) == true)
+				if (ArrayHelper.contains(this.linkNames, linkName))
 				{
 					linksKnown.push(link);
 				}

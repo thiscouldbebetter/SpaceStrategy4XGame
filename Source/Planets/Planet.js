@@ -33,13 +33,13 @@ class Planet
 					new VisualCircleGradient
 					(
 						10, // radius
-						new Gradient
+						new ValueBreakGroup
 						([
-							new GradientStop(0, Color.byName("White")),
-							new GradientStop(.2, Color.byName("White")),
-							new GradientStop(.3, Color.byName("Cyan")),
-							new GradientStop(.75, Color.byName("Cyan")),
-							new GradientStop(1, Color.byName("Black")),
+							new ValueBreak(0, Color.byName("White")),
+							new ValueBreak(.2, Color.byName("White")),
+							new ValueBreak(.3, Color.byName("Cyan")),
+							new ValueBreak(.75, Color.byName("Cyan")),
+							new ValueBreak(1, Color.byName("Black")),
 						])
 					),
 					new VisualDynamic
@@ -55,12 +55,9 @@ class Planet
 							{
 								returnValue = new VisualOffset
 								(
-									new VisualText
+									VisualText.fromTextAndColor
 									(
-										DataBinding.fromContext(drawable.factionName),
-										null, // heightInPixels
-										Color.byName("White"),
-										null
+										drawable.factionName, Color.byName("White"),
 									),
 									new Coords(0, 16)
 								)
@@ -79,7 +76,7 @@ class Planet
 
 	faction(world)
 	{
-		return (this.factionName == null ? null : world.factions[this.factionName]);
+		return (this.factionName == null ? null : world.factionByName(this.factionName));
 	}
 
 	locatable()
@@ -174,7 +171,7 @@ class Planet
 			for (var f = 0; f < facilities.length; f++)
 			{
 				var facility = facilities[f];
-				if (facility.isComplete == true)
+				if (facility.isComplete)
 				{
 					var facilityDefn = facility.defn(world);
 					var facilityResources = facilityDefn.resourcesPerTurn;

@@ -18,7 +18,7 @@ class Constraint_PositionOnCylinder
 	{
 		var body = constrainable;
 
-		this.yawInTurns.wrapToRangeMinMax(0, 1);
+		NumberHelper.wrapToRangeMinMax(this.yawInTurns, 0, 1);
 		var yawInRadians = this.yawInTurns * Polar.RadiansPerTurn;
 
 		var bodyLoc = body.locatable().loc;

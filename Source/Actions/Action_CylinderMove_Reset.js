@@ -3,7 +3,8 @@ class Action_CylinderMove_Reset
 {
 	perform(actor)
 	{
-		var constraint = actor.constrainable().constraints["PositionOnCylinder"];
+		var constraint =
+			actor.constrainable().constraintsByName.get("PositionOnCylinder");
 		constraint.center.clear();
 		constraint.orientation.forwardDownSet
 		(

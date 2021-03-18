@@ -35,9 +35,9 @@ class OrderDefn_Instances
 				}
 				else
 				{
-					var actorLoc = actor.locatable.loc;
+					var actorLoc = actor.locatable().loc;
 					var target = order.target;
-					var targetLoc = target.locatable.loc;
+					var targetLoc = target.locatable().loc;
 
 					if
 					(
@@ -88,7 +88,7 @@ class OrderDefn_Instances
 					}
 					else
 					{
-						starsystem.ships.remove(projectile);
+						ArrayHelper.remove(starsystem.ships, projectile);
 						device.projectile = null;
 
 						var projectilePos = projectile.locatable().loc.pos;
@@ -110,6 +110,6 @@ class OrderDefn_Instances
 			this.UseDevice,
 		];
 
-		this._All.addLookupsByName();
+		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}
 }

@@ -11,7 +11,7 @@ class Notification
 
 	defn()
 	{
-		return NotificationType.Instances()._All[this.defnName];
+		return NotificationType.Instances()._AllByName.get(this.defnName);
 	}
 
 	locatable()
@@ -23,7 +23,7 @@ class Notification
 	{
 		var returnValue =
 			this.turnCreated + " - "
-			+ this.locatable.loc.name + " - "
+			+ this.locatable().loc.name + " - "
 			+ this.message;
 		return returnValue;
 	}

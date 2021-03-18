@@ -1,13 +1,21 @@
 
 class World
 {
-	constructor(name, dateCreated, activityDefns, buildables, technologyTree, network, factions, ships, camera)
+	constructor
+	(
+		name, dateCreated, activityDefns, buildables, technologyTree,
+		network, factions, ships, camera
+	)
 	{
 		this.name = name;
 		this.dateCreated = dateCreated;
 
-		this.activityDefns = activityDefns.addLookupsByName();
-		this.buildables = buildables.addLookupsByName();
+		this.activityDefns = activityDefns;
+		this.activityDefnsByName =
+			ArrayHelper.addLookupsByName(this.activityDefns);
+		this.buildables = buildables;
+		this.buildablesByName =
+			ArrayHelper.addLookupsByName(this.buildables);
 		this.technologyTree = technologyTree;
 		this.network = network;
 		this.factions = factions;
@@ -16,8 +24,8 @@ class World
 
 		this.dateSaved = this.dateCreated;
 
-		this.factions.addLookupsByName();
-		this.ships.addLookupsByName();
+		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
+		this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
 
 		this.turnsSoFar = 0;
 		this.factionIndexCurrent = 0;
@@ -34,7 +42,7 @@ class World
 		var terrainNamesOrbit = [ "Orbit" ];
 		var terrainNamesSurface = [ "Surface" ];
 
-		var buildables =
+		var buildableDefns =
 		[
 			new BuildableDefn
 			(
@@ -43,14 +51,7 @@ class World
 				new VisualGroup
 				([
 					new VisualRectangle(mapCellSizeInPixels, Color.byName("Gray")),
-					new VisualText
-					(
-						new DataBinding(null, (c) => "H", null),
-						null, // heightInPixels
-						Color.byName("White"),
-						Color.byName("Gray"),
-						null
-					)
+					VisualText.fromTextAndColor("H", Color.byName("White"))
 				]),
 				[ new Resource("Industry", 100) ], // resourcesToBuild
 				// resourcesProducedPerTurn
@@ -66,14 +67,7 @@ class World
 				new VisualGroup
 				([
 					new VisualRectangle(mapCellSizeInPixels, Color.byName("Red")),
-					new VisualText
-					(
-						new DataBinding(null, (c) => "F", null),
-						null, // heightInPixels
-						Color.byName("White"),
-						Color.byName("Gray"),
-						null
-					)
+					VisualText.fromTextAndColor("F", Color.byName("White"))
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Industry", 1) ] // resourcesPerTurn
@@ -86,15 +80,7 @@ class World
 				new VisualGroup
 				([
 					new VisualRectangle(mapCellSizeInPixels, Color.byName("Blue")),
-					new VisualText
-					(
-						new DataBinding(null, (c) => "L", null),
-						null, // heightInPixels
-						Color.byName("White"),
-						Color.byName("Gray"),
-						null
-					)
-
+					VisualText.fromTextAndColor("L", Color.byName("White"))
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Research", 1) ] // resourcesPerTurn
@@ -107,15 +93,7 @@ class World
 				new VisualGroup
 				([
 					new VisualRectangle(mapCellSizeInPixels, Color.byName("Green")),
-					new VisualText
-					(
-						new DataBinding(null, (c) => "P", null),
-						null, // heightInPixels
-						Color.byName("White"),
-						Color.byName("Gray"),
-						null
-					)
-
+					VisualText.fromTextAndColor("P", Color.byName("White"))
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Prosperity", 1) ] // resourcesPerTurn
@@ -128,7 +106,7 @@ class World
 				new VisualGroup
 				([
 					Ship.visual("Gray"),
-					new VisualText("Ship", "White", "Gray")
+					VisualText.fromTextAndColor("Ship", Color.byName("White"))
 				]),
 				[ new Resource("Industry", 1) ], // resourcesToBuild
 				[] // resourcesPerTurn
@@ -153,7 +131,9 @@ class World
 					);
 				}
 			),
-		].addLookupsByName();
+		];
+
+		var buildableDefnsByName = ArrayHelper.addLookupsByName(buildableDefns);
 
 		var technologyTree = TechnologyTree.demo();
 
@@ -238,7 +218,7 @@ class World
 				},
 				function updateForTurn(universe, actor, device)
 				{
-					if (device.isActive == true)
+					if (device.isActive)
 					{
 						actor.energyThisTurn -= 1;
 						actor.shieldingThisTurn = 0;
@@ -246,7 +226,7 @@ class World
 				},
 				function use(universe, actor, device, target)
 				{
-					if (device.isActive == true)
+					if (device.isActive)
 					{
 						device.isActive = false;
 						actor.energyThisTurn += 1;
@@ -293,7 +273,8 @@ class World
 					}
 				}
 			),
-		].addLookupsByName();
+		];
+		var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
 
 		for (var i = 0; i < numberOfFactions; i++)
 		{
@@ -309,7 +290,8 @@ class World
 
 			while (factionHomeStarsystem == null)
 			{
-				factionHomeStarsystem = network.nodes[starsystemIndex].starsystem;
+				factionHomeStarsystem =
+					network.nodes[starsystemIndex].starsystem;
 				if (factionHomeStarsystem.planets.length == 0)
 				{
 					factionHomestarsystem = null;
@@ -366,10 +348,10 @@ class World
 					),
 					factionName,
 					[
-						new Device(deviceDefns["Generator"]),
-						new Device(deviceDefns["Drive"]),
-						new Device(deviceDefns["Shield"]),
-						new Device(deviceDefns["Weapon"]),
+						new Device(deviceDefnsByName.get("Generator") ),
+						new Device(deviceDefnsByName.get("Drive") ),
+						new Device(deviceDefnsByName.get("Shield") ),
+						new Device(deviceDefnsByName.get("Weapon") ),
 					]
 				);
 				ships.push(ship);
@@ -430,7 +412,7 @@ class World
 			worldName,
 			DateTime.now(),
 			ActivityDefn.Instances()._All,
-			buildables,
+			buildableDefns,
 			technologyTree,
 			network,
 			factions,
@@ -443,6 +425,21 @@ class World
 
 	// instance methods
 
+	activityDefnByName(activityDefnName)
+	{
+		return this.activityDefnsByName.get(activityDefnName);
+	}
+
+	buildableByName(buildableName)
+	{
+		return this.buildablesByName.get(buildableName);
+	}
+
+	factionByName(factionName)
+	{
+		return this.factionsByName.get(factionName);
+	}
+
 	factionCurrent()
 	{
 		return this.factions[this.factionIndexCurrent];
@@ -452,7 +449,7 @@ class World
 	{
 		var factionCurrent = this.factionCurrent();
 		var returnValues = this.factions.slice();
-		returnValues.removeAt(this.factionIndexCurrent);
+		ArrayHelper.removeAt(returnValues, this.factionIndexCurrent);
 		return returnValues;
 	}
 

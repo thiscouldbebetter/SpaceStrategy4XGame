@@ -21,14 +21,14 @@ class TechnologyResearcher
 	{
 		var returnValues = [];
 
-		var technologiesAll = world.technologyTree.technologies;
+		var technologiesByName = world.technologyTree.technologiesByName;
 
 		for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++)
 		{
 			var technologyName = this.namesOfTechnologiesKnown[i];
-			var technology = technologiesAll[technologyName];
+			var technology = technologiesByName.get(technologyName);
 			var technologyBuildables = technology.buildablesEnabled(world);
-			returnValues.append(technologyBuildables);
+			returnValues.push(...technologyBuildables);
 		}
 
 		return returnValues;
@@ -118,7 +118,7 @@ class TechnologyResearcher
 				}
 			}
 
-			if (areAllPrerequisitesKnown == true)
+			if (areAllPrerequisitesKnown)
 			{
 				technologiesUnknownWithKnownPrerequisites.push
 				(
@@ -137,7 +137,7 @@ class TechnologyResearcher
 		for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++)
 		{
 			var techName = this.namesOfTechnologiesKnown[i];
-			var technology = universe.world.technologyTree.technologies[techName];
+			var technology = universe.world.technologyTree.technologyByName(techName);
 			returnValues.push(technology);
 		}
 
@@ -148,7 +148,8 @@ class TechnologyResearcher
 	{
 		var technologyTree = world.technologyTree;
 
-		var returnValue = technologyTree.technologies[this.nameOfTechnologyBeingResearched];
+		var returnValue =
+			technologyTree.technologyByName(this.nameOfTechnologyBeingResearched);
 
 		return returnValue;
 	}

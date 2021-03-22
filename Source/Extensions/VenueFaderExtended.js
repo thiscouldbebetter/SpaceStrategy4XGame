@@ -1,13 +1,10 @@
-
-class VenueFaderExtended
-{
-	constructor(venueFaderInner)
-	{
-		this.venueFaderInner = venueFaderInner;
-	}
-
-	model()
-	{
-		return this.venueCurrent().model();
-	}
+"use strict";
+class VenueFaderExtended {
+    constructor(venueFaderInner) {
+        this.venueFaderInner = venueFaderInner;
+    }
+    model() {
+        // todo
+        return null; // this.venueFaderInner.venueCurrent().model();
+    }
 }

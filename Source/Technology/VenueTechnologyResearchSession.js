@@ -1,26 +1,18 @@
-
-class VenueTechnologyResearchSession
-{
-	constructor(researchSession)
-	{
-		this.researchSession = researchSession;
-	}
-
-	draw(universe)
-	{
-		this.venueControls.draw(universe);
-	}
-
-	initialize(universe)
-	{
-		this.venueControls = new VenueControls
-		(
-			this.researchSession.controlBuild(universe)
-		);
-	}
-
-	updateForTimerTick(universe)
-	{
-		this.venueControls.updateForTimerTick(universe);
-	}
+"use strict";
+class VenueTechnologyResearchSession {
+    constructor(researchSession) {
+        this.researchSession = researchSession;
+    }
+    draw(universe) {
+        this.venueControls.draw(universe);
+    }
+    finalize(universe) {
+        // Do nothing.
+    }
+    initialize(universe) {
+        this.venueControls = new VenueControls(this.researchSession.toControl(universe), null);
+    }
+    updateForTimerTick(universe) {
+        this.venueControls.updateForTimerTick(universe);
+    }
 }

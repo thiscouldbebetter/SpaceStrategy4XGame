@@ -1,0 +1,24 @@
+Issues
+======
+
+Cluster - Clicking starsystem immediately transfers to it.
+Cluster - Camera In button doesn't work (but out does!).
+
+Diplomacy - Errors on load.
+
+Planet - Can't view details.
+
+Planet Summary - Shows "todo" popup.
+
+Ships Summary - Shows "todo" popup.
+
+Starsystem - Planets labeled with "todo".
+Starsystem - Error means can't finish move.
+Starsystem - Can't select planet after moving ship.
+Starsystem - Ships can't fire weapons.
+
+Technology - Errors on load.
+
+Turn - Advance Single Turn - Doesn't actually advance to turn 2.
+Turn - Fast Forward - Does same thing as Advance Single Turn.
+

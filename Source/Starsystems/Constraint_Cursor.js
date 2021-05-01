@@ -14,7 +14,7 @@ class Constraint_Cursor {
         this._negativeInfinity = -1000000000; // Number.NEGATIVE_INFINITY;
     }
     constrain(universe, world, place, body) {
-        var cursor = EntityExtensions.cursor(body);
+        var cursor = body;
         var venue = universe.venueCurrent;
         var camera = venue.camera();
         var cameraLoc = camera.loc;
@@ -33,7 +33,8 @@ class Constraint_Cursor {
                 cursorPos.overwriteWith(collisionPos);
             }
         }
-        else {
+        else // if (cursor.hasXYPositionBeenSpecified)
+         {
             this._boundsToRestrictTo.fromMinAndMax(this._min.overwriteWithDimensions(cursorPos.x, cursorPos.y, this._negativeInfinity), this._max.overwriteWithDimensions(cursorPos.x, cursorPos.y, this._positiveInfinity));
             var planeNormal = this._xyPlaneNormal.clone().crossProduct(cameraOrientation.right);
             cursorPos.z = 0;

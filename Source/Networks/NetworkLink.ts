@@ -1,29 +1,28 @@
 
-class NetworkLink2 extends EntityProperty
+class NetworkLink2 implements EntityProperty
 {
 	namesOfNodesLinked: string[];
 
 	ships: Ship[];
 	name: string;
-	color: string;
+	color: Color;
 
 	constructor(namesOfNodesLinked: string[])
 	{
-		super();
 		this.namesOfNodesLinked = namesOfNodesLinked;
 		this.ships = new Array<Ship>();
 
 		this.name = this.namesOfNodesLinked.join("-");
 
-		this.color = "rgba(128, 128, 128, .4)"; // hack
+		this.color = Color.fromSystemColor("rgba(128, 128, 128, .4)"); // hack
 	}
 
-	direction(cluster: Network2)
+	direction(cluster: Network2): Coords
 	{
 		return this.displacement(cluster).normalize();
 	}
 
-	displacement(cluster: Network2)
+	displacement(cluster: Network2): Coords
 	{
 		var nodesLinked = this.nodesLinked(cluster);
 
@@ -38,12 +37,12 @@ class NetworkLink2 extends EntityProperty
 		return returnValue;
 	}
 
-	length(cluster: Network2)
+	length(cluster: Network2): number
 	{
 		return this.displacement(cluster).magnitude();
 	}
 
-	nodesLinked(cluster: Network2)
+	nodesLinked(cluster: Network2): NetworkNode2[]
 	{
 		var returnValue =
 		[
@@ -54,18 +53,18 @@ class NetworkLink2 extends EntityProperty
 		return returnValue;
 	}
 
-	shipAdd(shipToAdd: Ship)
+	shipAdd(shipToAdd: Ship): void
 	{
 		this.ships.push(shipToAdd);
 	}
 
-	shipRemove(shipToRemove: Ship)
+	shipRemove(shipToRemove: Ship): void
 	{
 		ArrayHelper.remove(this.ships, shipToRemove);
 	}
 
 	_entity: Entity;
-	toEntity()
+	toEntity(): Entity
 	{
 		if (this._entity == null)
 		{
@@ -76,7 +75,7 @@ class NetworkLink2 extends EntityProperty
 
 	// turns
 
-	updateForTurn(universe: Universe, world: WorldExtended)
+	updateForTurn(universe: Universe, world: WorldExtended): void
 	{
 		if (this.ships.length > 0)
 		{
@@ -131,7 +130,7 @@ class NetworkLink2 extends EntityProperty
 		nodeRadiusActual: number,
 		drawPosFrom: Coords,
 		drawPosTo: Coords
-	)
+	): void
 	{
 		var cluster = (universe.world as WorldExtended).network;
 		var nodesLinked = this.nodesLinked(cluster);
@@ -184,4 +183,10 @@ class NetworkLink2 extends EntityProperty
 			null
 		);
 	}
+
+	// EntityProperty.
+
+	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
+	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
+	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
 }

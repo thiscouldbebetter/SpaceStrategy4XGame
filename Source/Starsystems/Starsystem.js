@@ -128,7 +128,7 @@ class Starsystem {
                         break;
                     }
                 }
-                ArrayHelper.insertElementAt(bodiesToDrawSorted, bodyToSort.toEntity(), j);
+                ArrayHelper.insertElementAt(bodiesToDrawSorted, bodyToSort, j);
             }
         }
         for (var i = 0; i < bodiesToDrawSorted.length; i++) {
@@ -141,8 +141,7 @@ class Starsystem {
         this.posSaved.overwriteWith(bodyPos);
         var camera = this.camera(universe);
         camera.coordsTransformWorldToView(bodyPos);
-        var body = EntityExtensions.body(entity);
-        var bodyDefn = body.defn;
+        var bodyDefn = BodyDefn.fromEntity(entity);
         var bodyVisual = bodyDefn.visual;
         bodyVisual.draw(universe, world, place, entity, display);
         bodyPos.overwriteWith(this.posSaved);
@@ -166,15 +165,18 @@ class VisualElevationStem {
         var drawPosTip = camera.coordsTransformWorldToView(this.drawPosTip.overwriteWith(drawablePosWorld));
         var drawPosPlane = camera.coordsTransformWorldToView(this.drawPosPlane.overwriteWith(drawablePosWorld).clearZ());
         var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
-        display.drawLine(drawPosTip, drawPosPlane, Color.byName(colorName).systemColor(), null);
+        display.drawLine(drawPosTip, drawPosPlane, Color.byName(colorName), null);
     }
 }
 class VisualGrid {
     constructor(gridDimensionInCells, gridCellDimensionInPixels, color) {
-        this.gridSizeInCells = new Coords(1, 1, 0).multiplyScalar(gridDimensionInCells);
-        this.gridCellSizeInPixels = new Coords(1, 1, 0).multiplyScalar(gridCellDimensionInPixels);
+        this.gridSizeInCells =
+            Coords.fromXY(1, 1).multiplyScalar(gridDimensionInCells);
+        this.gridCellSizeInPixels =
+            Coords.fromXY(1, 1).multiplyScalar(gridCellDimensionInPixels);
         this.color = color;
-        this.gridSizeInPixels = this.gridSizeInCells.clone().multiply(this.gridCellSizeInPixels);
+        this.gridSizeInPixels =
+            this.gridSizeInCells.clone().multiply(this.gridCellSizeInPixels);
         this.gridSizeInCellsHalf = this.gridSizeInCells.clone().half();
         this.gridSizeInPixelsHalf = this.gridSizeInPixels.clone().half();
         // Helper variables.
@@ -209,7 +211,7 @@ class VisualGrid {
                 camera.coordsTransformWorldToView(drawPosTo);
                 if (drawPosFrom.z >= 0 && drawPosTo.z >= 0) {
                     // todo - Real clipping.
-                    display.drawLine(drawPosFrom, drawPosTo, this.color.systemColor(), null);
+                    display.drawLine(drawPosFrom, drawPosTo, this.color, null);
                 }
             }
         }

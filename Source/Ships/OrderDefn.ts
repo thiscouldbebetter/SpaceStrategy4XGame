@@ -2,9 +2,13 @@
 class OrderDefn
 {
 	name: string;
-	obey: any;
+	obey: (u: Universe, w: World, p: Place, e: Entity)=>void;
 
-	constructor(name: string, obey: any)
+	constructor
+	(
+		name: string,
+		obey: (u: Universe, w: World, p: Place, e: Entity)=>void
+	)
 	{
 		this.name = name;
 		this.obey = obey;
@@ -34,22 +38,23 @@ class OrderDefn_Instances
 		this.Go = new OrderDefn
 		(
 			"Go",
-			(universe: Universe, actor: Actor, order: Order) =>
+			(u: Universe, w: World, p: Place, e: Entity) =>
 			{
-				if (actor.activity() == null)
+				var actor = e.actor();
+				var orderable = Orderable.fromEntity(e);
+				var order = orderable.order;
+
+				if (actor.activity == null)
 				{
-					actor.activitySet
+					actor.activity = Activity.fromDefnNameAndTarget
 					(
-						new Activity
-						(
-							"MoveToTarget", order.target
-						)
+						"MoveToTarget", order.targetEntity
 					);
 				}
 				else
 				{
-					var actorLoc = actor.locatable().loc;
-					var target = order.target;
+					var actorLoc = e.locatable().loc;
+					var target = order.targetEntity;
 					var targetLoc = target.locatable().loc;
 
 					if
@@ -67,9 +72,12 @@ class OrderDefn_Instances
 		this.UseDevice = new OrderDefn
 		(
 			"UseDevice",
-			(universe: Universe, actor: Actor, order: Order) =>
+			(universe: Universe, world: World, place: Place, entity: Entity) =>
 			{
-				var ship = actor as Ship;
+				var orderable = Orderable.fromEntity(entity);
+				var order = orderable.order;
+
+				var ship = entity as Ship;
 
 				var device = ship.deviceSelected;
 				if (device != null)
@@ -92,13 +100,11 @@ class OrderDefn_Instances
 						projectile.energyPerMove = 0;
 						projectile.distancePerMove = 1000;
 
-						projectile.activitySet
-						(
-							new Activity
+						projectile.actor().activity = 
+							Activity.fromDefnNameAndTarget
 							(
-								"MoveToTarget", order.target
-							)
-						);
+								"MoveToTarget", order.targetEntity
+							);
 
 						starsystem.shipAdd(projectile);
 
@@ -110,7 +116,7 @@ class OrderDefn_Instances
 						device.projectile = null;
 
 						var projectilePos = projectile.locatable().loc.pos;
-						var targetPos = order.target.locatable().loc.pos;
+						var targetPos = order.targetEntity.locatable().loc.pos;
 
 						if (projectilePos.equals(targetPos))
 						{

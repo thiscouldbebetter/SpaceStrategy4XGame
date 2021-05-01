@@ -51,7 +51,8 @@ class DiplomaticAction_Instances {
                         "The " + factionReceiving.name
                             + " are already at peace with the " + factionActing.name + ".";
                 }
-                else {
+                else // if (stateExisting == DiplomaticRelationship.States().War)
+                 {
                     var strengthOfEnemies = DiplomaticRelationship.strengthOfFactions(world, factionReceiving.enemies(world));
                     var strengthOfSelfAndAllies = DiplomaticRelationship.strengthOfFactions(world, factionReceiving.selfAndAllies(world));
                     var strengthOfAlliesMinusEnemies = strengthOfSelfAndAllies - strengthOfEnemies;

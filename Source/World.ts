@@ -209,17 +209,17 @@ class WorldExtended extends World
 				false, // isActive
 				false, // needsTarget
 				[ "Drive" ], // categoryNames
-				(universe: Universe, actor: Actor, device: Device) => // init
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) => // init
 				{},
-				(universe: Universe, actor: Actor, device: Device) => // updateForTurn
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) => // updateForTurn
 				{
-					var ship = actor as Ship;
+					var ship = e as Ship;
 					ship.distancePerMove += 50;
 					ship.energyPerMove += 1;
 				},
-				(universe: Universe, place: Place, actor: Actor, device: Device, target: any) => // use
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) => // use
 				{
-					var ship = actor as Ship;
+					var ship = e as Ship;
 					ship.energyThisTurn -= ship.energyPerMove;
 				}
 			),
@@ -229,14 +229,14 @@ class WorldExtended extends World
 				false, // isActive
 				false, // needsTarget
 				[ "Generator" ], // categoryNames
-				(universe: Universe, actor: Actor, device: Device) => // init
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // init
 				{},
-				(universe: Universe, actor: Actor, device: Device) => // updateForTurn
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // updateForTurn
 				{
-					var ship = actor as Ship;
+					var ship = e as Ship;
 					ship.energyThisTurn += 10;
 				},
-				(universe: Universe, place: Place, actor: Actor, device: Device, target: any) => // use
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // use
 				{
 					// Do nothing.
 				}
@@ -247,23 +247,23 @@ class WorldExtended extends World
 				true, // isActive
 				false, // needsTarget
 				[ "Shield" ], // categoryNames
-				(universe: Universe, actor: Actor, device: Device) => // intialize
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // intialize
 				{
 					device.isActive = false;
 				},
-				(universe: Universe, actor: Actor, device: Device) => // updateForTurn
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // updateForTurn
 				{
-					var ship = actor as Ship;
+					var ship = e as Ship;
 					if (device.isActive)
 					{
 						ship.energyThisTurn -= 1;
 						ship.shieldingThisTurn = 0;
 					}
 				},
-				(universe: Universe, place: Place, actor: Actor, device: Device, target: any) => // use
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) => // use
 				{
-					var ship = actor as Ship;
-
+					var ship = e as Ship;
+					var device = ship.deviceSelected;
 					if (device.isActive)
 					{
 						device.isActive = false;
@@ -282,29 +282,31 @@ class WorldExtended extends World
 				true, // isActive
 				true, // needsTarget
 				[ "Weapon" ], // categoryNames
-				(universe: Universe, actor: Actor, device: Device) => // initialize
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // initialize
 				{
 					// todo
 				},
-				(universe: Universe, actor: Actor, device: Device) => // updateForTurn
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // updateForTurn
 				{
 					device.usesThisTurn = 3;
 				},
-				(universe: Universe, place: Place, actor: Actor, device: Device, target: any) => // use
+				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // use
 				{
 					if (device.usesThisTurn > 0)
 					{
+						var target = device.target; // todo
 						if (target == null)
 						{
 							var mustTargetBody = true;
 							var venue = universe.venueCurrent as VenueStarsystem;
-							venue.cursor.set(actor, "UseDevice", mustTargetBody);
+							venue.cursor.set(e, "UseDevice", mustTargetBody);
 						}
 						else // if (target != null)
 						{
 							device.usesThisTurn--;
-							target.integrity -= 1;
-							if (target.integrity <= 0)
+							var targetKillable = target.killable();
+							targetKillable.integrity -= 1;
+							if (targetKillable.integrity <= 0)
 							{
 								alert("todo - ship destroyed");
 							}
@@ -438,16 +440,11 @@ class WorldExtended extends World
 		(
 			viewSize,
 			focalLength,
-			new Disposition
+			Disposition.fromPos
 			(
 				new Coords(-viewDimension, 0, 0), //pos,
-				new Orientation
-				(
-					new Coords(1, 0, 0), // forward
-					new Coords(0, 0, 1) // down
-				),
-				null
-			)
+			),
+			null // entitiesInViewSort
 		);
 
 		var returnValue = new WorldExtended

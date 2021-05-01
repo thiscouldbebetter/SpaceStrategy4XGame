@@ -5,9 +5,9 @@ class DeviceDefn
 	isActive: boolean;
 	needsTarget: boolean;
 	categoryNames: string[];
-	initialize: any;
-	updateForTurn: any;
-	use: any;
+	initialize: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void;
+	updateForTurn: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void;
+	use: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void;
 
 	constructor
 	(
@@ -15,9 +15,9 @@ class DeviceDefn
 		isActive: boolean,
 		needsTarget: boolean,
 		categoryNames: string[],
-		initialize: any,
-		updateForTurn: any,
-		use: any
+		initialize: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void,
+		updateForTurn: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void,
+		use: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void
 	)
 	{
 		this.name = name;

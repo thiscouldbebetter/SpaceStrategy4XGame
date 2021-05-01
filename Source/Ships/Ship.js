@@ -1,14 +1,15 @@
 "use strict";
-class Ship extends EntityProperty {
+class Ship extends Entity {
     constructor(name, defn, pos, factionName, devices) {
-        super();
-        this.name = name;
+        super(name, [
+            Actor.create(),
+            defn,
+            Killable.fromIntegrityMax(10),
+            Locatable.fromPos(pos)
+        ]);
         this.defn = defn;
-        var loc = Disposition.fromPos(pos);
-        this._locatable = new Locatable(loc);
         this.factionName = factionName;
         this.devices = devices;
-        this.integrity = 10;
         this.energyThisTurn = 0;
         this.distancePerMove = 0;
         this.shieldingThisTurn = 0;
@@ -32,25 +33,8 @@ class Ship extends EntityProperty {
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
     }
-    id() {
+    nameWithFaction() {
         return this.factionName + this.name;
-    }
-    locatable() {
-        return this._locatable;
-    }
-    toEntity() {
-        if (this._entity == null) {
-            var body = new Body(this.name, this.defn, this.pos);
-            this._entity = new Entity(this.name, [this, this.locatable(), body]);
-        }
-        return this._entity;
-    }
-    // Actor.
-    activity() {
-        return this._activity;
-    }
-    activitySet(value) {
-        this._activity = value;
     }
     // devices
     devicesUsable(world) {
@@ -145,17 +129,17 @@ class Ship extends EntityProperty {
                 shipPos.overwriteWith(targetPos);
                 // hack
                 this.distanceLeftThisMove = null;
-                this.activitySet(null);
+                this.actor().activity = null;
                 universe.inputHelper.isEnabled = true;
                 this.order = null;
-                var targetBody = EntityExtensions.body(target);
-                var targetDefnName = targetBody.defn.name;
+                var targetBodyDefn = BodyDefn.fromEntity(target);
+                var targetDefnName = targetBodyDefn.name;
                 if (targetDefnName == LinkPortal.name) {
-                    var portal = EntityExtensions.linkPortal(target);
+                    var portal = target;
                     this.linkPortalEnter(universe.world.network, portal, ship);
                 }
                 else if (targetDefnName == Planet.name) {
-                    var planet = EntityExtensions.planet(target);
+                    var planet = target;
                     var venue = universe.venueCurrent;
                     var starsystem = venue.starsystem;
                     this.planetOrbitEnter(universe, starsystem, planet, null);
@@ -170,7 +154,7 @@ class Ship extends EntityProperty {
                 if (this.distanceLeftThisMove <= 0) {
                     // hack
                     this.distanceLeftThisMove = null;
-                    this.activitySet(null);
+                    this.actor().activity = null;
                     universe.inputHelper.isEnabled = true;
                 }
             }
@@ -237,8 +221,9 @@ class Ship extends EntityProperty {
              {
                 var venue = universe.venueCurrent;
                 var ship = venue.selection;
-                if (ship.order != null) {
-                    ship.order.obey(universe, ship);
+                var order = Orderable.fromEntity(ship).order;
+                if (order != null) {
+                    order.obey(universe, null, null, ship);
                 }
             }, universe // context
             ),
@@ -258,10 +243,9 @@ class Ship extends EntityProperty {
             DataBinding.fromContextAndGet(this, (c) => (c.deviceSelected != null)), (universe) => // click
              {
                 var venue = universe.venueCurrent;
-                var starsystem = venue.starsystem;
                 var ship = venue.selection;
                 var device = ship.deviceSelected;
-                device.use(universe, starsystem, ship);
+                device.use(universe, universe.world, null, ship);
             }, universe // context
             ),
         ]);
@@ -279,7 +263,7 @@ class Ship extends EntityProperty {
         this.shieldingThisTurn = 0;
         for (var i = 0; i < this.devices.length; i++) {
             var device = this.devices[i];
-            device.updateForTurn(universe, this);
+            device.updateForTurn(universe, world, null, this);
         }
     }
     // drawable
@@ -290,8 +274,7 @@ class Ship extends EntityProperty {
         var shipPos = ship.locatable().loc.pos;
         camera.coordsTransformWorldToView(drawPos.overwriteWith(shipPos));
         var visual = this.visual(world);
-        //visual.draw(universe, display, ship, new Disposition(drawPos), ship); // todo
-        visual.draw(universe, world, null, ship.toEntity(), display); // todo
+        visual.draw(universe, world, null, ship, display); // todo
     }
     visual(world) {
         if (this._visual == null) {

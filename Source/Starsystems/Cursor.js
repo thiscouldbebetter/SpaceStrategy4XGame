@@ -1,20 +1,20 @@
 "use strict";
-class Cursor extends EntityProperty {
+class Cursor extends Entity {
     constructor() {
-        super();
-        this.bodyUnderneath = null;
-        this.bodyParent = null;
+        super(Cursor.name, [
+            new Constrainable([
+                new Constraint_Cursor()
+            ]),
+            Locatable.fromPos(Coords.create())
+        ]);
+        this.propertyAdd(this.bodyDefn());
+        this.entityUnderneath = null;
+        this.entityParent = null;
         this.orderName = null;
-        this.mustTargetBody = null;
+        this.mustTargetEntity = null;
         this.hasXYPositionBeenSpecified = false;
         this.hasZPositionBeenSpecified = false;
         this.defn = this.bodyDefn();
-        var loc = Disposition.fromPos(Coords.create());
-        this._locatable = new Locatable(loc);
-        var constrainable = new Constrainable([
-            new Constraint_Cursor()
-        ]);
-        this.constrainable = () => constrainable;
     }
     bodyDefn() {
         var radius = 5;
@@ -33,11 +33,11 @@ class Cursor extends EntityProperty {
         // selectChildNames
         (universe, world, place, entity, display) => {
             var returnValue;
-            var cursor = EntityExtensions.cursor(entity);
-            if (cursor.bodyParent == null) {
+            var cursor = entity;
+            if (cursor.entityParent == null) {
                 returnValue = "_0";
             }
-            else if (cursor.mustTargetBody) {
+            else if (cursor.mustTargetEntity) {
                 returnValue = "_1";
             }
             else {
@@ -47,11 +47,11 @@ class Cursor extends EntityProperty {
         });
         var visualHover = new VisualText(DataBinding.fromContextAndGet(this, (c) => {
             var returnValue;
-            if (c.bodyUnderneath == null) {
+            if (c.entityUnderneath == null) {
                 returnValue = "";
             }
             else {
-                returnValue = c.bodyUnderneath.name;
+                returnValue = c.entityUnderneath.name;
             }
             return returnValue;
         }), false, // shouldTextContextBeReset
@@ -66,29 +66,19 @@ class Cursor extends EntityProperty {
         return bodyDefn;
     }
     clear() {
-        this.bodyParent = null;
+        this.entityParent = null;
         this.orderName = null;
         this.hasXYPositionBeenSpecified = false;
         this.hasZPositionBeenSpecified = false;
     }
-    locatable() {
-        return this._locatable;
-    }
-    set(actor, orderName, mustTargetBody) {
-        this.bodyParent = actor;
+    set(entity, orderName, mustTargetEntity) {
+        this.entityParent = entity;
         this.orderName = orderName;
-        this.mustTargetBody = mustTargetBody;
-    }
-    toEntity() {
-        if (this._entity == null) {
-            var body = new Body(Cursor.name, this.bodyDefn(), this.locatable().loc.pos);
-            this._entity = new Entity(Cursor.name, [this, body, this.constrainable(), this.locatable()]);
-        }
-        return this._entity;
+        this.mustTargetEntity = mustTargetEntity;
     }
     // controls
     toControl(universe, controlSize) {
-        return this.bodyParent.toEntity().controllable().toControl(universe, controlSize);
+        return this.entityParent.controllable().toControl(universe, controlSize);
     }
     // drawable
     draw(universe, world, place, entity, display) {
@@ -99,6 +89,6 @@ class Cursor extends EntityProperty {
         }
         var venueStarsystem = venue;
         var starsystem = venueStarsystem.starsystem;
-        starsystem.draw_Body(universe, world, place, this.toEntity(), display);
+        starsystem.draw_Body(universe, world, place, this, display);
     }
 }

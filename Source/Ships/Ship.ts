@@ -1,13 +1,10 @@
 
-class Ship extends EntityProperty implements Actor
+class Ship extends Entity
 {
-	name: string;
 	defn: BodyDefn;
-	pos: Coords;
 	factionName: string;
 	devices: Device[];
 
-	_activity: Activity;
 	deviceSelected: Device;
 	distanceLeftThisMove: number;
 	distancePerMove: number;
@@ -19,7 +16,6 @@ class Ship extends EntityProperty implements Actor
 
 	_devicesUsable: Device[];
 	_displacement: Coords;
-	_locatable: Locatable;
 	_visual: Visual;
 
 	constructor
@@ -28,15 +24,21 @@ class Ship extends EntityProperty implements Actor
 		factionName: string, devices: Device[]
 	)
 	{
-		super();
-		this.name = name;
+		super
+		(
+			name,
+			[
+				Actor.create(),
+				defn,
+				Killable.fromIntegrityMax(10),
+				Locatable.fromPos(pos)
+			]
+		);
+
 		this.defn = defn;
-		var loc = Disposition.fromPos(pos);
-		this._locatable = new Locatable(loc);
 		this.factionName = factionName;
 		this.devices = devices;
 
-		this.integrity = 10;
 		this.energyThisTurn = 0;
 		this.distancePerMove = 0;
 		this.shieldingThisTurn = 0;
@@ -75,47 +77,19 @@ class Ship extends EntityProperty implements Actor
 
 	// instance methods
 
-	faction(world: WorldExtended)
+	faction(world: WorldExtended): Faction
 	{
 		return (this.factionName == null ? null : world.factionByName(this.factionName));
 	}
 
-	id()
+	nameWithFaction(): string
 	{
 		return this.factionName + this.name;
 	}
 
-	locatable()
-	{
-		return this._locatable;
-	}
-
-	_entity: Entity;
-	toEntity()
-	{
-		if (this._entity == null)
-		{
-			var body = new Body(this.name, this.defn, this.pos);
-			this._entity = new Entity(this.name, [ this, this.locatable(), body ] );
-		}
-		return this._entity;
-	}
-
-	// Actor.
-
-	activity()
-	{
-		return this._activity;
-	}
-
-	activitySet(value: Activity)
-	{
-		this._activity = value;
-	}
-
 	// devices
 
-	devicesUsable(world: WorldExtended)
+	devicesUsable(world: WorldExtended): Device[]
 	{
 		if (this._devicesUsable == null)
 		{
@@ -137,7 +111,7 @@ class Ship extends EntityProperty implements Actor
 
 	// movement
 
-	linkPortalEnter(cluster: Network2, linkPortal: LinkPortal, ship: Ship)
+	linkPortalEnter(cluster: Network2, linkPortal: LinkPortal, ship: Ship): void
 	{
 		var starsystemFrom = linkPortal.starsystemFrom(cluster);
 		var starsystemTo = linkPortal.starsystemTo(cluster);
@@ -165,7 +139,7 @@ class Ship extends EntityProperty implements Actor
 		shipLoc.vel.overwriteWith(linkDirection);
 	}
 
-	linkExit(world: WorldExtended, link: NetworkLink2)
+	linkExit(world: WorldExtended, link: NetworkLink2): void
 	{
 		var ship = this;
 		link.shipRemove(ship); // todo
@@ -214,7 +188,7 @@ class Ship extends EntityProperty implements Actor
 		}
 	}
 
-	moveTowardTarget(universe: Universe, target: Entity, ship: Ship)
+	moveTowardTarget(universe: Universe, target: Entity, ship: Ship): void
 	{
 		if (this.distanceLeftThisMove == null)
 		{
@@ -256,22 +230,22 @@ class Ship extends EntityProperty implements Actor
 
 				// hack
 				this.distanceLeftThisMove = null;
-				this.activitySet(null);
+				this.actor().activity = null;
 				universe.inputHelper.isEnabled = true;
 				this.order = null;
 
-				var targetBody = EntityExtensions.body(target);
-				var targetDefnName = targetBody.defn.name;
+				var targetBodyDefn = BodyDefn.fromEntity(target);
+				var targetDefnName = targetBodyDefn.name;
 				if (targetDefnName == LinkPortal.name)
 				{
-					var portal = EntityExtensions.linkPortal(target);
+					var portal = target as LinkPortal;
 					this.linkPortalEnter(
 						(universe.world as WorldExtended).network, portal, ship
 					);
 				}
 				else if (targetDefnName == Planet.name)
 				{
-					var planet = EntityExtensions.planet(target);
+					var planet = target as Planet;
 					var venue = universe.venueCurrent as VenueStarsystem;
 					var starsystem = venue.starsystem;
 					this.planetOrbitEnter(universe, starsystem, planet, null);
@@ -300,14 +274,14 @@ class Ship extends EntityProperty implements Actor
 				{
 					// hack
 					this.distanceLeftThisMove = null;
-					this.activitySet(null);
+					this.actor().activity = null;
 					universe.inputHelper.isEnabled = true;
 				}
 			}
 		}
 	}
 
-	movementThroughLinkPerTurn(link: NetworkLink2)
+	movementThroughLinkPerTurn(link: NetworkLink2): number
 	{
 		return 8; // todo
 	}
@@ -316,7 +290,7 @@ class Ship extends EntityProperty implements Actor
 	(
 		universe: Universe, starsystem: Starsystem,
 		planet: Planet, ship: Ship
-	)
+	): void
 	{
 		ArrayHelper.remove(starsystem.ships, ship);
 		planet.shipAdd(ship);
@@ -324,7 +298,7 @@ class Ship extends EntityProperty implements Actor
 
 	// controls
 
-	toControl(universe: Universe, containerSize: Coords)
+	toControl(universe: Universe, containerSize: Coords): ControlBase
 	{
 		var world = universe.world as WorldExtended;
 
@@ -444,9 +418,10 @@ class Ship extends EntityProperty implements Actor
 					{
 						var venue = universe.venueCurrent as VenueStarsystem;
 						var ship = venue.selection;
-						if (ship.order != null)
+						var order = Orderable.fromEntity(ship).order;
+						if (order != null)
 						{
-							ship.order.obey(universe, ship);
+							order.obey(universe, null, null, ship);
 						}
 					},
 					universe // context
@@ -498,10 +473,9 @@ class Ship extends EntityProperty implements Actor
 					(universe: Universe) => // click
 					{
 						var venue = universe.venueCurrent as VenueStarsystem;
-						var starsystem = venue.starsystem;
-						var ship = venue.selection;
+						var ship = venue.selection as Ship;
 						var device = ship.deviceSelected;
-						device.use(universe, starsystem, ship);
+						device.use(universe, universe.world, null, ship);
 					},
 					universe // context
 				),
@@ -515,14 +489,14 @@ class Ship extends EntityProperty implements Actor
 
 	// diplomacy
 
-	strength(world: WorldExtended)
+	strength(world: WorldExtended): number
 	{
 		return 1; // todo
 	}
 
 	// turns
 
-	updateForTurn(universe: Universe, world: World, faction: Faction)
+	updateForTurn(universe: Universe, world: World, faction: Faction): void
 	{
 		this.energyThisTurn = 0;
 		this.distancePerMove = 0;
@@ -532,13 +506,17 @@ class Ship extends EntityProperty implements Actor
 		for (var i = 0; i < this.devices.length; i++)
 		{
 			var device = this.devices[i];
-			device.updateForTurn(universe, this);
+			device.updateForTurn(universe, world, null, this);
 		}
 	}
 
 	// drawable
 
-	draw(universe: Universe, nodeRadiusActual: number, camera: Camera, drawPos: Coords)
+	draw
+	(
+		universe: Universe, nodeRadiusActual: number, camera: Camera,
+		drawPos: Coords
+	): void
 	{
 		var world = universe.world as WorldExtended;
 		var display = universe.display;
@@ -555,11 +533,10 @@ class Ship extends EntityProperty implements Actor
 		);
 
 		var visual = this.visual(world);
-		//visual.draw(universe, display, ship, new Disposition(drawPos), ship); // todo
-		visual.draw(universe, world, null, ship.toEntity(), display); // todo
+		visual.draw(universe, world, null, ship, display); // todo
 	}
 
-	visual(world: WorldExtended)
+	visual(world: WorldExtended): Visual
 	{
 		if (this._visual == null)
 		{
@@ -570,7 +547,7 @@ class Ship extends EntityProperty implements Actor
 		return this._visual;
 	}
 
-	static visual(color: Color)
+	static visual(color: Color): Visual
 	{
 		var shipSizeMultiplier = 4; // hack
 

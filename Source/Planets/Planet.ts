@@ -1,9 +1,7 @@
 
-class Planet extends EntityProperty
+class Planet extends Entity
 {
-	name: string;
 	factionName: string;
-	pos: Coords;
 	demographics: PlanetDemographics;
 	industry: PlanetIndustry;
 	layout: Layout;
@@ -11,7 +9,6 @@ class Planet extends EntityProperty
 	ships: Ship[];
 
 	bodyDefn: BodyDefn;
-	_locatable: Locatable;
 	_resourcesPerTurn: Resource[];
 	_resourcesPerTurnByName: Map<string,Resource>;
 
@@ -26,12 +23,17 @@ class Planet extends EntityProperty
 		layout: Layout
 	)
 	{
-		super();
-		this.name = name;
+		super
+		(
+			name,
+			[
+				bodyDefn,
+				Locatable.fromPos(pos)
+			]
+		);
+
 		this.bodyDefn = bodyDefn;
 		this.factionName = factionName;
-		var loc = Disposition.fromPos(pos);
-		this._locatable = new Locatable(loc);
 		this.demographics = demographics;
 		this.industry = industry;
 		this.layout = layout;
@@ -49,7 +51,7 @@ class Planet extends EntityProperty
 	// constants
 
 	static _bodyDefnPlanet: BodyDefn;
-	static bodyDefnPlanet()
+	static bodyDefnPlanet(): BodyDefn
 	{
 		if (Planet._bodyDefnPlanet == null)
 		{
@@ -71,12 +73,13 @@ class Planet extends EntityProperty
 								new ValueBreak(.75, Color.byName("Cyan")),
 								new ValueBreak(1, Color.byName("Black")),
 							],
-							null
-						)
+							null // ?
+						),
+						null // colorBorder
 					),
 					new VisualDynamic // todo - VisualDynamic2?
 					(
-						(u: Universe, w: World, d: Display, e: Entity) =>
+						(u: Universe, w: World, p: Place, e: Entity) =>
 						{
 							var factionName = "todo"; // todo
 							var returnValue: Visual = null;
@@ -106,8 +109,9 @@ class Planet extends EntityProperty
 	}
 
 	static _bodyDefnStar: BodyDefn
-	static bodyDefnStar()
+	static bodyDefnStar(): BodyDefn
 	{
+		var starName = "Star";
 		var starRadius = 30;
 		var starColor = Color.Instances().Yellow;
 
@@ -121,7 +125,7 @@ class Planet extends EntityProperty
 					new VisualGroup
 					([
 						new VisualCircle(starRadius, starColor, starColor, null),
-						VisualText.fromTextAndColor(name, Color.byName("Gray"))
+						VisualText.fromTextAndColor(starName, Color.byName("Gray"))
 					])
 				);
 		}
@@ -131,40 +135,30 @@ class Planet extends EntityProperty
 
 	// instance methods
 
-	faction(world: WorldExtended)
+	faction(world: WorldExtended): Faction
 	{
 		return (this.factionName == null ? null : world.factionByName(this.factionName));
 	}
 
-	locatable()
-	{
-		return this._locatable;
-	}
-
 	_entity: Entity;
-	toEntity()
+	toEntity(): Entity
 	{
-		if (this._entity == null)
-		{
-			var body = new Body(this.name, this.bodyDefn, this.pos); 
-			this._entity = new Entity(this.name, [ this, this.locatable(), body ] );
-		}
 		return this._entity;
 	}
 
-	shipAdd(shipToAdd: Ship)
+	shipAdd(shipToAdd: Ship): void
 	{
 		this.ships.push(shipToAdd);
 	}
 
-	shipRemove(shipToRemove: Ship)
+	shipRemove(shipToRemove: Ship): void
 	{
 		ArrayHelper.remove(this.ships, shipToRemove);
 	}
 
 	// controls
 
-	toControl(universe: Universe, size: Coords)
+	toControl(universe: Universe, size: Coords): ControlBase
 	{
 		var returnValue = ControlContainer.from4
 		(
@@ -189,14 +183,14 @@ class Planet extends EntityProperty
 
 	// diplomacy
 
-	strength(world: WorldExtended)
+	strength(world: WorldExtended): number
 	{
 		return 1; // todo
 	}
 
 	// turns
 
-	updateForTurn(universe: Universe, world: WorldExtended, faction: Faction)
+	updateForTurn(universe: Universe, world: WorldExtended, faction: Faction): void
 	{
 		this._resourcesPerTurn = null;
 		this.layout.updateForTurn(universe, world, faction, null);
@@ -206,14 +200,14 @@ class Planet extends EntityProperty
 
 	// resources
 
-	buildableInProgress()
+	buildableInProgress(): Buildable
 	{
 		var returnValue = null;
 
 		var buildables = this.layout.map.bodies;
 		for (var i = 0; i < buildables.length; i++)
 		{
-			var buildable = EntityExtensions.buildable(buildables[i]);
+			var buildable = Buildable.fromEntity(buildables[i]);
 			if (buildable.isComplete == false)
 			{
 				returnValue = buildable;
@@ -224,22 +218,46 @@ class Planet extends EntityProperty
 		return returnValue;
 	}
 
-	industryPerTurn(universe: Universe, world: WorldExtended, faction: Faction)
+	industryPerTurn
+	(
+		universe: Universe, world: WorldExtended, faction: Faction
+	): number
 	{
-		return this.resourcesPerTurnByName(universe, world, faction).get("Industry");
+		var resource = this.resourcesPerTurnByName
+		(
+			universe, world, faction
+		).get("Industry");
+		return (resource == null ? 0: resource.quantity);
 	}
 
-	prosperityPerTurn(universe: Universe, world: WorldExtended, faction: Faction)
+	prosperityPerTurn
+	(
+		universe: Universe, world: WorldExtended, faction: Faction
+	): number
 	{
-		return this.resourcesPerTurnByName(universe, world, faction).get("Prosperity");
+		var resource = this.resourcesPerTurnByName
+		(
+			universe, world, faction
+		).get("Prosperity");
+		return (resource == null ? 0: resource.quantity);
 	}
 
-	researchPerTurn(universe: Universe, world: WorldExtended, faction: Faction)
+	researchPerTurn
+	(
+		universe: Universe, world: WorldExtended, faction: Faction
+	): number
 	{
-		return this.resourcesPerTurnByName(universe, world, faction).get("Research");
+		var resource = this.resourcesPerTurnByName
+		(
+			universe, world, faction
+		).get("Research");
+		return (resource == null ? 0: resource.quantity);
 	}
 
-	resourcesPerTurn(universe: Universe, world: WorldExtended, faction: Faction)
+	resourcesPerTurn
+	(
+		universe: Universe, world: WorldExtended, faction: Faction
+	): Resource[]
 	{
 		if (this._resourcesPerTurn == null)
 		{
@@ -249,7 +267,7 @@ class Planet extends EntityProperty
 			var facilities = layout.facilities();
 			for (var f = 0; f < facilities.length; f++)
 			{
-				var facility = EntityExtensions.buildable(facilities[f]);
+				var facility = Buildable.fromEntity(facilities[f]);
 				if (facility.isComplete)
 				{
 					var facilityDefn = facility.defn(world);
@@ -263,13 +281,19 @@ class Planet extends EntityProperty
 		return this._resourcesPerTurn;
 	}
 
-	resourcesPerTurnByName(universe: Universe, world: WorldExtended, faction: Faction)
+	resourcesPerTurnByName
+	(
+		universe: Universe, world: WorldExtended, faction: Faction
+	): Map<string,Resource>
 	{
 		if (this._resourcesPerTurnByName == null)
 		{
-			var resourcesPerTurn = this.resourcesPerTurn(universe, world, faction);
-			this._resourcesPerTurnByName =
-				ArrayHelper.addLookups(resourcesPerTurn, (x:Resource) => x.defnName);
+			var resourcesPerTurn =
+				this.resourcesPerTurn(universe, world, faction);
+			this._resourcesPerTurnByName = ArrayHelper.addLookups
+			(
+				resourcesPerTurn, (x: Resource) => x.defnName
+			);
 		}
 
 		return this._resourcesPerTurnByName;

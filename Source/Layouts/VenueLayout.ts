@@ -103,7 +103,7 @@ class VenueLayout implements Venue
 		var layout = this.layout;
 
 		var buildableAtCursorEntity = this.layout.map.bodyAtCursor();
-		var buildableAtCursor = EntityExtensions.buildable(buildableAtCursorEntity);
+		var buildableAtCursor = Buildable.fromEntity(buildableAtCursorEntity);
 
 		var displaySize = universe.display.sizeInPixels;
 		var containerSize = displaySize.clone().half();

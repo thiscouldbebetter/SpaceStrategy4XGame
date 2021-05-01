@@ -1,14 +1,11 @@
 
-class NetworkNode2 extends EntityProperty
+class NetworkNode2 extends Entity
 {
-	name: string;
 	defn: NetworkNodeDefn;
-	pos: Coords;
 	starsystem: Starsystem;
 
 	drawPos: Coords;
 	drawLoc: Disposition;
-	_locatable: Locatable;
 
 	constructor
 	(
@@ -16,11 +13,14 @@ class NetworkNode2 extends EntityProperty
 		starsystem: Starsystem
 	)
 	{
-		super();
-		this.name = name;
+		super
+		(
+			name,
+			[
+				Locatable.fromPos(pos)
+			]
+		);
 		this.defn = defn;
-		var loc = Disposition.fromPos(pos);
-		this._locatable = new Locatable(loc);
 		this.starsystem = starsystem;
 
 		// Helper variables.
@@ -28,24 +28,9 @@ class NetworkNode2 extends EntityProperty
 		this.drawLoc = Disposition.fromPos(this.drawPos);
 	}
 
-	locatable()
-	{
-		return this._locatable;
-	}
-
-	_entity: Entity;
-	toEntity()
-	{
-		if (this._entity == null)
-		{
-			this._entity = new Entity(this.name, [ this, this.locatable() ] );
-		}
-		return this._entity;
-	}
-
 	// Controls.
 
-	toControl(universe: Universe)
+	toControl(universe: Universe): ControlBase
 	{
 		var world = universe.world as WorldExtended;
 		var viewSize = universe.display.sizeInPixels;
@@ -99,11 +84,14 @@ class NetworkNode2 extends EntityProperty
 					true, // isEnabled
 					(universe: Universe) => // click
 					{
-						var venueCurrent = universe.venueCurrent as VenueWorldExtended;
-						var starsystemToView = EntityExtensions.networkNode(venueCurrent.selection).starsystem;
+						var venueCurrent =
+							universe.venueCurrent as VenueWorldExtended;
+						var starsystemToView =
+							(venueCurrent.selection as NetworkNode2).starsystem;
 						if (starsystemToView != null)
 						{
-							universe.venueNext = new VenueStarsystem(venueCurrent, starsystemToView);
+							universe.venueNext =
+								new VenueStarsystem(venueCurrent, starsystemToView);
 						}
 					}
 				),
@@ -115,7 +103,7 @@ class NetworkNode2 extends EntityProperty
 
 	// drawable
 
-	draw(universe: Universe, nodeRadiusActual: number, camera: Camera)
+	draw(universe: Universe, nodeRadiusActual: number, camera: Camera): void
 	{
 		var world = universe.world;
 		var display = universe.display;
@@ -147,7 +135,10 @@ class NetworkNode2 extends EntityProperty
 			],
 			null
 		);
-		var visual = new VisualCircleGradient(radiusApparent, gradient);
+		var visual = new VisualCircleGradient
+		(
+			radiusApparent, gradient, null // colorBorder
+		);
 		var locatable = new Locatable(Disposition.fromPos(drawPos));
 		var drawableTransformed = new Entity("[drawable]", [ locatable ]);
 		visual.draw(universe, world, null, drawableTransformed, display);
@@ -168,7 +159,7 @@ class NetworkNode2 extends EntityProperty
 		universe: Universe, radiusApparent: number,
 		starsystemDrawPos: Coords, nodeColor: Color,
 		starsystem: Starsystem
-	)
+	): void
 	{
 		var world = universe.world as WorldExtended;
 		var display = universe.display;
@@ -241,56 +232,8 @@ class NetworkNode2 extends EntityProperty
 		visualText.draw(universe, world, null, drawableTransformed, display);
 	}
 
-	static RadiusActual()
+	static RadiusActual(): number
 	{
 		return 4;
-	}
-}
-
-class VisualCircleGradient implements Visual
-{
-	radius: number;
-	gradient: ValueBreakGroup;
-
-	constructor(radius: number, gradient: ValueBreakGroup)
-	{
-		// todo - Use version from Framework.
-		this.radius = radius;
-		this.gradient = gradient;
-	}
-
-	// Clonable.
-
-	clone()
-	{
-		return this; // todo
-	}
-
-	overwriteWith(other: VisualCircleGradient)
-	{
-		// todo
-		// Do nothing;
-		return this;
-	}
-
-	// Transformable.
-
-	transform(t: Transform)
-	{
-		return this; // todo
-	}
-
-	// Visual.
-
-	draw
-	(
-		universe: Universe, world: World, place: Place, entity: Entity,
-		display: Display
-	)
-	{
-		display.drawCircleWithGradient
-		(
-			entity.locatable().loc.pos, this.radius, this.gradient, null
-		);
 	}
 }

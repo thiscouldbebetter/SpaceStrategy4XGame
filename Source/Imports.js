@@ -7,8 +7,6 @@ var RandomizerLCG = gf.RandomizerLCG;
 var ArrayHelper = gf.ArrayHelper;
 var NumberHelper = gf.NumberHelper;
 var StringHelper = gf.StringHelper;
-// hack
-var EntityProperty = gf.EntityProperty;
 // Controls.
 var ControlActionNames = gf.ControlActionNames;
 var ControlBase = gf.ControlBase;
@@ -35,6 +33,7 @@ var DisplayRecorder = gf.DisplayRecorder;
 var VenueFader = gf.VenueFader;
 var VenueLayered = gf.VenueLayered;
 var VisualCircle = gf.VisualCircle;
+var VisualCircleGradient = gf.VisualCircleGradient;
 var VisualDirectional = gf.VisualDirectional;
 var VisualDynamic = gf.VisualDynamic;
 var VisualGroup = gf.VisualGroup;
@@ -107,6 +106,11 @@ var VenueWorld = gf.VenueWorld;
 var World = gf.World;
 // Model - Actors.
 var Action = gf.Action;
+var Activity = gf.Activity;
+var ActivityDefn = gf.ActivityDefn;
+var Actor = gf.Actor;
+// Model - Combat.
+var Killable = gf.Killable;
 // Model - Physics.
 var Constrainable = gf.Constrainable;
 var Locatable = gf.Locatable;

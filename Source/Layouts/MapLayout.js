@@ -84,7 +84,7 @@ class MapLayout {
                 terrainVisual.draw(universe, world, null, drawable, display);
                 var cellEntity = map.bodyAtPosInCells(cellPos);
                 if (cellEntity != null) {
-                    //var cellBody = EntityExtensions.body(cellEntity);
+                    //var cellBody = Body.fromEntity(cellEntity);
                     var cellBodyVisual = cellEntity.drawable().visual; //(world);
                     cellBodyVisual.draw(universe, world, null, drawable, display);
                 }

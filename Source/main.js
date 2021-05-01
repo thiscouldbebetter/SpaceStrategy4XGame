@@ -4,7 +4,7 @@ function main() {
     var displaySizeInPixels = new Coords(400, 300, 1);
     var display = new Display2D([displaySizeInPixels], "Font", // fontName
     10, // fontHeightInPixels
-    "Blue", "rgb(16, 0, 32)", // colorFore, colorBack
+    Color.byName("Blue"), Color.fromSystemColor("rgb(16, 0, 32)"), // colorFore, colorBack
     null // ?
     );
     var contentPath = "../Content/";

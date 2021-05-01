@@ -101,7 +101,7 @@ class Layout
 		var bodies = this.map.bodies;
 		for (var i = 0; i < bodies.length; i++)
 		{
-			var body = EntityExtensions.body(bodies[i]);
+			var body = Body.fromEntity(bodies[i]);
 			if (body.updateForTurn != null)
 			{
 				body.updateForTurn(universe, world, faction, parentModel, this);

@@ -1,11 +1,10 @@
 "use strict";
-class NetworkLink2 extends EntityProperty {
+class NetworkLink2 {
     constructor(namesOfNodesLinked) {
-        super();
         this.namesOfNodesLinked = namesOfNodesLinked;
         this.ships = new Array();
         this.name = this.namesOfNodesLinked.join("-");
-        this.color = "rgba(128, 128, 128, .4)"; // hack
+        this.color = Color.fromSystemColor("rgba(128, 128, 128, .4)"); // hack
     }
     direction(cluster) {
         return this.displacement(cluster).normalize();
@@ -94,4 +93,8 @@ class NetworkLink2 extends EntityProperty {
         ], this.color, // hack
         null);
     }
+    // EntityProperty.
+    finalize(u, w, p, e) { }
+    initialize(u, w, p, e) { }
+    updateForTimerTick(u, w, p, e) { }
 }

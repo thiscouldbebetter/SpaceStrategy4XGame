@@ -1,24 +1,14 @@
 "use strict";
-class NetworkNode2 extends EntityProperty {
+class NetworkNode2 extends Entity {
     constructor(name, defn, pos, starsystem) {
-        super();
-        this.name = name;
+        super(name, [
+            Locatable.fromPos(pos)
+        ]);
         this.defn = defn;
-        var loc = Disposition.fromPos(pos);
-        this._locatable = new Locatable(loc);
         this.starsystem = starsystem;
         // Helper variables.
         this.drawPos = Coords.create();
         this.drawLoc = Disposition.fromPos(this.drawPos);
-    }
-    locatable() {
-        return this._locatable;
-    }
-    toEntity() {
-        if (this._entity == null) {
-            this._entity = new Entity(this.name, [this, this.locatable()]);
-        }
-        return this._entity;
     }
     // Controls.
     toControl(universe) {
@@ -46,9 +36,10 @@ class NetworkNode2 extends EntityProperty {
             (universe) => // click
              {
                 var venueCurrent = universe.venueCurrent;
-                var starsystemToView = EntityExtensions.networkNode(venueCurrent.selection).starsystem;
+                var starsystemToView = venueCurrent.selection.starsystem;
                 if (starsystemToView != null) {
-                    universe.venueNext = new VenueStarsystem(venueCurrent, starsystemToView);
+                    universe.venueNext =
+                        new VenueStarsystem(venueCurrent, starsystemToView);
                 }
             }),
         ]);
@@ -73,7 +64,8 @@ class NetworkNode2 extends EntityProperty {
             new ValueBreak(0, Color.byName("White")),
             new ValueBreak(1, nodeColor),
         ], null);
-        var visual = new VisualCircleGradient(radiusApparent, gradient);
+        var visual = new VisualCircleGradient(radiusApparent, gradient, null // colorBorder
+        );
         var locatable = new Locatable(Disposition.fromPos(drawPos));
         var drawableTransformed = new Entity("[drawable]", [locatable]);
         visual.draw(universe, world, null, drawableTransformed, display);
@@ -127,29 +119,5 @@ class NetworkNode2 extends EntityProperty {
     }
     static RadiusActual() {
         return 4;
-    }
-}
-class VisualCircleGradient {
-    constructor(radius, gradient) {
-        // todo - Use version from Framework.
-        this.radius = radius;
-        this.gradient = gradient;
-    }
-    // Clonable.
-    clone() {
-        return this; // todo
-    }
-    overwriteWith(other) {
-        // todo
-        // Do nothing;
-        return this;
-    }
-    // Transformable.
-    transform(t) {
-        return this; // todo
-    }
-    // Visual.
-    draw(universe, world, place, entity, display) {
-        display.drawCircleWithGradient(entity.locatable().loc.pos, this.radius, this.gradient, null);
     }
 }

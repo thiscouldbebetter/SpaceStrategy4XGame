@@ -1,42 +1,45 @@
 
-class Cursor extends EntityProperty
+class Cursor extends Entity
 {
-	bodyUnderneath: Actor;
-	bodyParent: Actor;
+	entityUnderneath: Entity;
+	entityParent: Entity;
 	orderName: string;
-	mustTargetBody: boolean;
+	mustTargetEntity: boolean;
 	hasXYPositionBeenSpecified: boolean;
 	hasZPositionBeenSpecified: boolean;
 
 	defn: any;
-	_locatable: Locatable;
-
-	constrainable: () => Constrainable;
 
 	constructor()
 	{
-		super();
-		this.bodyUnderneath = null;
+		super
+		(
+			Cursor.name,
+			[
+				new Constrainable
+				([
+					new Constraint_Cursor()
+				]),
+				Locatable.fromPos(Coords.create())
+			]
+		)
+		this.propertyAdd
+		(
+			this.bodyDefn()
+		);
 
-		this.bodyParent = null;
+		this.entityUnderneath = null;
+
+		this.entityParent = null;
 		this.orderName = null;
-		this.mustTargetBody = null;
+		this.mustTargetEntity = null;
 		this.hasXYPositionBeenSpecified = false;
 		this.hasZPositionBeenSpecified = false;
 
 		this.defn = this.bodyDefn();
-
-		var loc = Disposition.fromPos(Coords.create());
-		this._locatable = new Locatable(loc);
-
-		var constrainable = new Constrainable
-		([
-			new Constraint_Cursor()
-		]);
-		this.constrainable = () => constrainable;
 	}
 
-	bodyDefn()
+	bodyDefn(): BodyDefn
 	{
 		var radius = 5;
 		var color = Color.Instances().White;
@@ -62,15 +65,18 @@ class Cursor extends EntityProperty
 				]
 			]),
 			// selectChildNames
-			(universe: Universe, world: World, place: Place, entity: Entity, display: Display) =>
+			(
+				universe: Universe, world: World, place: Place,
+				entity: Entity, display: Display
+			) =>
 			{
 				var returnValue;
-				var cursor = EntityExtensions.cursor(entity);
-				if (cursor.bodyParent == null)
+				var cursor = entity as Cursor;
+				if (cursor.entityParent == null)
 				{
 					returnValue = "_0";
 				}
-				else if (cursor.mustTargetBody)
+				else if (cursor.mustTargetEntity)
 				{
 					returnValue = "_1";
 				}
@@ -90,13 +96,13 @@ class Cursor extends EntityProperty
 				(c: Cursor) =>
 				{
 					var returnValue;
-					if (c.bodyUnderneath == null)
+					if (c.entityUnderneath == null)
 					{
 						returnValue = "";
 					}
 					else
 					{
-						returnValue = c.bodyUnderneath.name;
+						returnValue = c.entityUnderneath.name;
 					}
 					return returnValue;
 				} 
@@ -123,45 +129,26 @@ class Cursor extends EntityProperty
 		return bodyDefn;
 	}
 
-	clear()
+	clear(): void
 	{
-		this.bodyParent = null;
+		this.entityParent = null;
 		this.orderName = null;
 		this.hasXYPositionBeenSpecified = false;
 		this.hasZPositionBeenSpecified = false;
 	}
 
-	locatable()
+	set(entity: Entity, orderName: string, mustTargetEntity: boolean): void
 	{
-		return this._locatable;
-	}
-
-	set(actor: Actor, orderName: string, mustTargetBody: boolean)
-	{
-		this.bodyParent = actor;
+		this.entityParent = entity;
 		this.orderName = orderName;
-		this.mustTargetBody = mustTargetBody;
-	}
-
-	_entity: Entity;
-	toEntity()
-	{
-		if (this._entity == null)
-		{
-			var body = new Body(Cursor.name, this.bodyDefn(), this.locatable().loc.pos);
-			this._entity = new Entity
-			(
-				Cursor.name, [ this, body, this.constrainable(), this.locatable() ]
-			);
-		}
-		return this._entity;
+		this.mustTargetEntity = mustTargetEntity;
 	}
 
 	// controls
 
 	toControl(universe: Universe, controlSize: Coords): ControlBase
 	{
-		return this.bodyParent.toEntity().controllable().toControl(universe, controlSize);
+		return this.entityParent.controllable().toControl(universe, controlSize);
 	}
 
 	// drawable
@@ -170,7 +157,7 @@ class Cursor extends EntityProperty
 	(
 		universe: Universe, world: WorldExtended, place: Place, entity: Entity,
 		display: Display
-	)
+	): void
 	{
 		var venue = universe.venueCurrent;
 		var venueTypeName = venue.constructor.name;
@@ -183,7 +170,7 @@ class Cursor extends EntityProperty
 		var starsystem = venueStarsystem.starsystem;
 		starsystem.draw_Body
 		(
-			universe, world, place, this.toEntity(), display
+			universe, world, place, this, display
 		);
 	}
 }

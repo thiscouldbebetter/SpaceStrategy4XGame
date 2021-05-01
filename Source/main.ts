@@ -9,8 +9,8 @@ function main()
 		[ displaySizeInPixels ],
 		"Font", // fontName
 		10, // fontHeightInPixels
-		"Blue",
-		"rgb(16, 0, 32)", // colorFore, colorBack
+		Color.byName("Blue"),
+		Color.fromSystemColor("rgb(16, 0, 32)"), // colorFore, colorBack
 		null // ?
 	);
 

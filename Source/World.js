@@ -94,45 +94,46 @@ class WorldExtended extends World {
             new DeviceDefn("Drive", false, // isActive
             false, // needsTarget
             ["Drive"], // categoryNames
-            (universe, actor, device) => // init
-             { }, (universe, actor, device) => // updateForTurn
+            (u, w, p, e, device) => // init
+             { }, (u, w, p, e, device) => // updateForTurn
              {
-                var ship = actor;
+                var ship = e;
                 ship.distancePerMove += 50;
                 ship.energyPerMove += 1;
-            }, (universe, place, actor, device, target) => // use
+            }, (u, w, p, e, device) => // use
              {
-                var ship = actor;
+                var ship = e;
                 ship.energyThisTurn -= ship.energyPerMove;
             }),
             new DeviceDefn("Generator", false, // isActive
             false, // needsTarget
             ["Generator"], // categoryNames
-            (universe, actor, device) => // init
-             { }, (universe, actor, device) => // updateForTurn
+            (u, w, p, e, device) => // init
+             { }, (u, w, p, e, device) => // updateForTurn
              {
-                var ship = actor;
+                var ship = e;
                 ship.energyThisTurn += 10;
-            }, (universe, place, actor, device, target) => // use
+            }, (u, w, p, e, device) => // use
              {
                 // Do nothing.
             }),
             new DeviceDefn("Shield", true, // isActive
             false, // needsTarget
             ["Shield"], // categoryNames
-            (universe, actor, device) => // intialize
+            (u, w, p, e, device) => // intialize
              {
                 device.isActive = false;
-            }, (universe, actor, device) => // updateForTurn
+            }, (u, w, p, e, device) => // updateForTurn
              {
-                var ship = actor;
+                var ship = e;
                 if (device.isActive) {
                     ship.energyThisTurn -= 1;
                     ship.shieldingThisTurn = 0;
                 }
-            }, (universe, place, actor, device, target) => // use
+            }, (u, w, p, e, device) => // use
              {
-                var ship = actor;
+                var ship = e;
+                var device = ship.deviceSelected;
                 if (device.isActive) {
                     device.isActive = false;
                     ship.energyThisTurn += 1;
@@ -145,24 +146,27 @@ class WorldExtended extends World {
             new DeviceDefn("Weapon", true, // isActive
             true, // needsTarget
             ["Weapon"], // categoryNames
-            (universe, actor, device) => // initialize
+            (u, w, p, e, device) => // initialize
              {
                 // todo
-            }, (universe, actor, device) => // updateForTurn
+            }, (u, w, p, e, device) => // updateForTurn
              {
                 device.usesThisTurn = 3;
-            }, (universe, place, actor, device, target) => // use
+            }, (u, w, p, e, device) => // use
              {
                 if (device.usesThisTurn > 0) {
+                    var target = device.target; // todo
                     if (target == null) {
                         var mustTargetBody = true;
                         var venue = universe.venueCurrent;
-                        venue.cursor.set(actor, "UseDevice", mustTargetBody);
+                        venue.cursor.set(e, "UseDevice", mustTargetBody);
                     }
-                    else {
+                    else // if (target != null)
+                     {
                         device.usesThisTurn--;
-                        target.integrity -= 1;
-                        if (target.integrity <= 0) {
+                        var targetKillable = target.killable();
+                        targetKillable.integrity -= 1;
+                        if (targetKillable.integrity <= 0) {
                             alert("todo - ship destroyed");
                         }
                     }
@@ -226,10 +230,8 @@ class WorldExtended extends World {
             factions.push(faction);
         }
         DiplomaticRelationship.initializeForFactions(factions);
-        var camera = new Camera(viewSize, focalLength, new Disposition(new Coords(-viewDimension, 0, 0), //pos,
-        new Orientation(new Coords(1, 0, 0), // forward
-        new Coords(0, 0, 1) // down
-        ), null));
+        var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
+        );
         var returnValue = new WorldExtended(worldName, DateTime.now(), ActivityDefn.Instances()._All, buildableDefns, technologyTree, network, factions, ships, camera);
         return returnValue;
     }

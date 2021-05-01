@@ -1,12 +1,12 @@
 "use strict";
-class Planet extends EntityProperty {
+class Planet extends Entity {
     constructor(name, bodyDefn, pos, factionName, demographics, industry, layout) {
-        super();
-        this.name = name;
+        super(name, [
+            bodyDefn,
+            Locatable.fromPos(pos)
+        ]);
         this.bodyDefn = bodyDefn;
         this.factionName = factionName;
-        var loc = Disposition.fromPos(pos);
-        this._locatable = new Locatable(loc);
         this.demographics = demographics;
         this.industry = industry;
         this.layout = layout;
@@ -27,9 +27,11 @@ class Planet extends EntityProperty {
                     new ValueBreak(.3, Color.byName("Cyan")),
                     new ValueBreak(.75, Color.byName("Cyan")),
                     new ValueBreak(1, Color.byName("Black")),
-                ], null)),
+                ], null // ?
+                ), null // colorBorder
+                ),
                 new VisualDynamic // todo - VisualDynamic2?
-                ((u, w, d, e) => {
+                ((u, w, p, e) => {
                     var factionName = "todo"; // todo
                     var returnValue = null;
                     if (factionName == null) {
@@ -45,6 +47,7 @@ class Planet extends EntityProperty {
         return Planet._bodyDefnPlanet;
     }
     static bodyDefnStar() {
+        var starName = "Star";
         var starRadius = 30;
         var starColor = Color.Instances().Yellow;
         if (Planet._bodyDefnStar == null) {
@@ -52,7 +55,7 @@ class Planet extends EntityProperty {
                 new BodyDefn("Star", Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
                 new VisualGroup([
                     new VisualCircle(starRadius, starColor, starColor, null),
-                    VisualText.fromTextAndColor(name, Color.byName("Gray"))
+                    VisualText.fromTextAndColor(starName, Color.byName("Gray"))
                 ]));
         }
         return Planet._bodyDefnStar;
@@ -61,14 +64,7 @@ class Planet extends EntityProperty {
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
     }
-    locatable() {
-        return this._locatable;
-    }
     toEntity() {
-        if (this._entity == null) {
-            var body = new Body(this.name, this.bodyDefn, this.pos);
-            this._entity = new Entity(this.name, [this, this.locatable(), body]);
-        }
         return this._entity;
     }
     shipAdd(shipToAdd) {
@@ -105,7 +101,7 @@ class Planet extends EntityProperty {
         var returnValue = null;
         var buildables = this.layout.map.bodies;
         for (var i = 0; i < buildables.length; i++) {
-            var buildable = EntityExtensions.buildable(buildables[i]);
+            var buildable = Buildable.fromEntity(buildables[i]);
             if (buildable.isComplete == false) {
                 returnValue = buildable;
                 break;
@@ -114,13 +110,16 @@ class Planet extends EntityProperty {
         return returnValue;
     }
     industryPerTurn(universe, world, faction) {
-        return this.resourcesPerTurnByName(universe, world, faction).get("Industry");
+        var resource = this.resourcesPerTurnByName(universe, world, faction).get("Industry");
+        return (resource == null ? 0 : resource.quantity);
     }
     prosperityPerTurn(universe, world, faction) {
-        return this.resourcesPerTurnByName(universe, world, faction).get("Prosperity");
+        var resource = this.resourcesPerTurnByName(universe, world, faction).get("Prosperity");
+        return (resource == null ? 0 : resource.quantity);
     }
     researchPerTurn(universe, world, faction) {
-        return this.resourcesPerTurnByName(universe, world, faction).get("Research");
+        var resource = this.resourcesPerTurnByName(universe, world, faction).get("Research");
+        return (resource == null ? 0 : resource.quantity);
     }
     resourcesPerTurn(universe, world, faction) {
         if (this._resourcesPerTurn == null) {
@@ -128,7 +127,7 @@ class Planet extends EntityProperty {
             var layout = this.layout;
             var facilities = layout.facilities();
             for (var f = 0; f < facilities.length; f++) {
-                var facility = EntityExtensions.buildable(facilities[f]);
+                var facility = Buildable.fromEntity(facilities[f]);
                 if (facility.isComplete) {
                     var facilityDefn = facility.defn(world);
                     var facilityResources = facilityDefn.resourcesPerTurn;
@@ -142,8 +141,7 @@ class Planet extends EntityProperty {
     resourcesPerTurnByName(universe, world, faction) {
         if (this._resourcesPerTurnByName == null) {
             var resourcesPerTurn = this.resourcesPerTurn(universe, world, faction);
-            this._resourcesPerTurnByName =
-                ArrayHelper.addLookups(resourcesPerTurn, (x) => x.defnName);
+            this._resourcesPerTurnByName = ArrayHelper.addLookups(resourcesPerTurn, (x) => x.defnName);
         }
         return this._resourcesPerTurnByName;
     }

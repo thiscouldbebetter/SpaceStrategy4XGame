@@ -1,11 +1,13 @@
 "use strict";
-class Buildable extends EntityProperty {
+class Buildable {
     constructor(defnName, pos, isComplete) {
-        super();
         this.defnName = defnName;
         var loc = Disposition.fromPos(pos);
         this._locatable = new Locatable(loc);
         this.isComplete = (isComplete || false);
+    }
+    static fromEntity(entity) {
+        return entity.propertyByName(Buildable.name);
     }
     defn(world) {
         return world.buildableDefnByName(this.defnName);
@@ -28,4 +30,8 @@ class Buildable extends EntityProperty {
         }
         return this._visual;
     }
+    // EntityProperty.
+    finalize(u, w, p, e) { }
+    initialize(u, w, p, e) { }
+    updateForTimerTick(u, w, p, e) { }
 }

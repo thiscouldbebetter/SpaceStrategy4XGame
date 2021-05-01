@@ -1,19 +1,16 @@
 "use strict";
-class LinkPortal extends EntityProperty {
+class LinkPortal extends Entity {
     constructor(name, defn, pos, starsystemNamesFromAndTo) {
-        super();
-        this.name = name;
+        super(name, [
+            defn,
+            Locatable.fromPos(pos)
+        ]);
         this.defn = defn;
-        var loc = Disposition.fromPos(pos);
-        this._locatable = new Locatable(loc);
         this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
     }
     link(cluster) {
         var returnValue = cluster.linkByStarsystemNamesFromTo(this.starsystemNameFrom(), this.starsystemNameTo());
         return returnValue;
-    }
-    locatable() {
-        return this._locatable;
     }
     starsystemFrom(cluster) {
         var starsystemName = this.starsystemNameFrom();
@@ -30,13 +27,6 @@ class LinkPortal extends EntityProperty {
         var starsystemName = this.starsystemNameTo();
         var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
         return returnValue;
-    }
-    toEntity() {
-        if (this._entity == null) {
-            var body = new Body(this.name, this.defn, this.pos);
-            this._entity = new Entity(this.name, [this, this.locatable(), body]);
-        }
-        return this._entity;
     }
     // controls
     toControl() {

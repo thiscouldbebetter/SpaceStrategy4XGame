@@ -52,40 +52,7 @@ class CollisionExtended
 
 	// instance methods
 
-	rayAndFace(ray: Ray, face: Face)
-	{
-		this.rayAndPlane(ray, face.plane());
-
-		if (this.collidersByName.get(Plane.name) != null)
-		{
-			if (this.isPosWithinFace(face) == false)
-			{
-				this.collidersByName.set(Face.name, null);
-			}
-			else
-			{
-				this.collidersByName.set(Face.name, face);
-
-				/*
-				var displacementFromVertex0ToCollision = Coords.create();
-
-				for (var t = 0; t < face.triangles.length; t++)
-				{
-					var triangle = face.triangles[t];
-					if (this.isPosWithinFace(triangle))
-					{
-						this.collidersByName.set("Triangle", triangle);
-						break;
-					}
-				}
-				*/
-			}
-		}
-
-		return this;
-	}
-
-	rayAndPlane(ray: Ray, plane: Plane)
+	rayAndPlane(ray: Ray, plane: Plane): CollisionExtended
 	{
 		this.distanceToCollision =
 			(
@@ -114,7 +81,7 @@ class CollisionExtended
 		return this;
 	}
 
-	rayAndSphere(ray: Ray, sphere: Sphere)
+	rayAndSphere(ray: Ray, sphere: Sphere): CollisionExtended
 	{
 		var rayDirection = ray.direction;
 		var displacementFromSphereCenterToCamera = ray.vertex.clone().subtract
@@ -185,42 +152,5 @@ class CollisionExtended
 		}
 
 		return this;
-	}
-
-	isPosWithinFace(face: Face)
-	{
-		var displacementFromVertex0ToCollision = Coords.create();
-
-		var isPosWithinAllEdgesOfFaceSoFar = true;
-
-		var edges = face.edges(); // todo - Formerly .edgesRectified;
-
-		for (var e = 0; e < edges.length; e++)
-		{
-			var edgeFromFace = edges[e];
-
-			displacementFromVertex0ToCollision.overwriteWith
-			(
-				this.pos
-			).subtract
-			(
-				edgeFromFace.vertices[0]
-			);
-
-			// hack?
-			var epsilon = .01;
-
-			var dotProduct = displacementFromVertex0ToCollision.dotProduct
-			(
-				edgeFromFace.transverse(null)
-			);
-			if (dotProduct >= epsilon)
-			{
-				isPosWithinAllEdgesOfFaceSoFar = false;
-				break;
-			}
-		}
-
-		return isPosWithinAllEdgesOfFaceSoFar;
 	}
 }

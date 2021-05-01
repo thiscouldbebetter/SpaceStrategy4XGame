@@ -206,9 +206,7 @@ class Faction {
         for (var i = 0; i < this.planets.length; i++) {
             var planet = this.planets[i];
             var planetResearchThisTurn = planet.researchPerTurn(universe, world, this);
-            if (planetResearchThisTurn != null) {
-                returnValue += planetResearchThisTurn.quantity;
-            }
+            returnValue += planetResearchThisTurn;
         }
         return returnValue;
     }

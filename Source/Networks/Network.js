@@ -1,5 +1,6 @@
 "use strict";
-class Network2 {
+class Network2 //
+ {
     constructor(name, nodes, links) {
         this.name = name;
         this.nodes = nodes;
@@ -81,7 +82,8 @@ class Network2 {
                 new ValueBreak(.75, Color.byName("Violet")),
                 new ValueBreak(1, Color.byName("Blue"))
             ], null // interpolationMode
-            ))
+            ), null // colorBorder
+            )
         ]));
         var tempPos = Coords.create();
         while (nodesLinked.length < numberOfNodes) {
@@ -158,7 +160,7 @@ class Network2 {
         var drawablesToSort = shipsInLinks.concat(this.nodes);
         var drawablesSortedByZ = new Array();
         for (var i = 0; i < drawablesToSort.length; i++) {
-            var drawableToSort = drawablesToSort[i].toEntity();
+            var drawableToSort = drawablesToSort[i];
             camera.coordsTransformWorldToView(drawPos.overwriteWith(drawableToSort.locatable().loc.pos));
             if (drawPos.z > 0) {
                 var j;
@@ -175,12 +177,12 @@ class Network2 {
         }
         for (var i = 0; i < drawablesSortedByZ.length; i++) {
             var entity = drawablesSortedByZ[i];
-            var node = EntityExtensions.networkNode(entity);
+            var node = entity;
             if (node != null) {
                 node.draw(universe, nodeRadiusActual, camera);
             }
             else {
-                var ship = EntityExtensions.ship(entity);
+                var ship = entity;
                 if (ship != null) {
                     ship.draw(universe, nodeRadiusActual, camera, this.drawPos);
                 }

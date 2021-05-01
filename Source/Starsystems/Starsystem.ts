@@ -257,7 +257,10 @@ class Starsystem
 					}
 				}
 
-				ArrayHelper.insertElementAt(bodiesToDrawSorted, bodyToSort.toEntity(), j);
+				ArrayHelper.insertElementAt
+				(
+					bodiesToDrawSorted, bodyToSort, j
+				);
 			}
 		}
 
@@ -280,8 +283,7 @@ class Starsystem
 		var camera = this.camera(universe);
 		camera.coordsTransformWorldToView(bodyPos);
 
-		var body = EntityExtensions.body(entity);
-		var bodyDefn = body.defn;
+		var bodyDefn = BodyDefn.fromEntity(entity);
 		var bodyVisual = bodyDefn.visual;
 		bodyVisual.draw(universe, world, place, entity, display);
 		bodyPos.overwriteWith(this.posSaved);
@@ -329,8 +331,7 @@ class VisualElevationStem
 		var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
 		display.drawLine
 		(
-			drawPosTip, drawPosPlane,
-			Color.byName(colorName).systemColor(), null
+			drawPosTip, drawPosPlane, Color.byName(colorName), null
 		);
 	}
 }
@@ -358,11 +359,14 @@ class VisualGrid
 		color: Color
 	)
 	{
-		this.gridSizeInCells = new Coords(1, 1, 0).multiplyScalar(gridDimensionInCells);
-		this.gridCellSizeInPixels = new Coords(1, 1, 0).multiplyScalar(gridCellDimensionInPixels);
+		this.gridSizeInCells =
+			Coords.fromXY(1, 1).multiplyScalar(gridDimensionInCells);
+		this.gridCellSizeInPixels =
+			Coords.fromXY(1, 1).multiplyScalar(gridCellDimensionInPixels);
 		this.color = color;
 
-		this.gridSizeInPixels = this.gridSizeInCells.clone().multiply(this.gridCellSizeInPixels);
+		this.gridSizeInPixels =
+			this.gridSizeInCells.clone().multiply(this.gridCellSizeInPixels);
 		this.gridSizeInCellsHalf = this.gridSizeInCells.clone().half();
 		this.gridSizeInPixelsHalf = this.gridSizeInPixels.clone().half();
 
@@ -420,7 +424,10 @@ class VisualGrid
 				if (drawPosFrom.z >= 0 && drawPosTo.z >= 0)
 				{
 					// todo - Real clipping.
-					display.drawLine(drawPosFrom, drawPosTo, this.color.systemColor(), null);
+					display.drawLine
+					(
+						drawPosFrom, drawPosTo, this.color, null
+					);
 				}
 			}
 		}

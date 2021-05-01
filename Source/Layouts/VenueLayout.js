@@ -57,7 +57,7 @@ class VenueLayout {
     controlBuildableDetailsBuild(universe) {
         var layout = this.layout;
         var buildableAtCursorEntity = this.layout.map.bodyAtCursor();
-        var buildableAtCursor = EntityExtensions.buildable(buildableAtCursorEntity);
+        var buildableAtCursor = Buildable.fromEntity(buildableAtCursorEntity);
         var displaySize = universe.display.sizeInPixels;
         var containerSize = displaySize.clone().half();
         var margin = Coords.fromXY(1, 1).multiplyScalar(8);

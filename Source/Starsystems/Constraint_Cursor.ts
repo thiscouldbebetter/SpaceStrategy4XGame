@@ -31,9 +31,9 @@ class Constraint_Cursor implements Constraint
 		this._negativeInfinity = -1000000000; // Number.NEGATIVE_INFINITY;
 	}
 
-	constrain(universe: Universe, world: World, place: Place, body: Entity)
+	constrain(universe: Universe, world: World, place: Place, body: Entity): void
 	{
-		var cursor = EntityExtensions.cursor(body);
+		var cursor = body as Cursor;
 		var venue = (universe.venueCurrent as VenueStarsystem);
 
 		var camera = venue.camera();

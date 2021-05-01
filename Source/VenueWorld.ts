@@ -15,14 +15,14 @@ class VenueWorldExtended extends VenueWorld
 		this.cameraEntity = new Entity("camera", [ this.world.camera ] );
 	}
 
-	model()
+	model(): Network2
 	{
 		return this.world.network;
 	}
 
 	// camera
 
-	cameraCenterOnSelection()
+	cameraCenterOnSelection(): void
 	{
 		if (this.selection != null)
 		{
@@ -46,13 +46,13 @@ class VenueWorldExtended extends VenueWorld
 		}
 	}
 
-	cameraDown(cameraSpeed: number)
+	cameraDown(cameraSpeed: number): void
 	{
 		var cameraAction = new Action_CameraMove([0, cameraSpeed]);
 		cameraAction.perform(this.cameraEntity.camera());
 	}
 
-	cameraIn(cameraSpeed: number)
+	cameraIn(cameraSpeed: number): void
 	{
 		var cameraConstrainable = this.cameraEntity.constrainable();
 		var constraint =
@@ -66,13 +66,13 @@ class VenueWorldExtended extends VenueWorld
 		}
 	}
 
-	cameraLeft(cameraSpeed: number)
+	cameraLeft(cameraSpeed: number): void
 	{
 		var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
 		cameraAction.perform(this.cameraEntity.camera());
 	}
 
-	cameraOut(cameraSpeed: number)
+	cameraOut(cameraSpeed: number): void
 	{
 		var cameraConstrainable = this.cameraEntity.constrainable();
 		var constraint =
@@ -85,7 +85,7 @@ class VenueWorldExtended extends VenueWorld
 		}
 	}
 
-	cameraReset()
+	cameraReset(): void
 	{
 		var cameraConstrainable = this.cameraEntity.constrainable();
 		var camera = this.cameraEntity.camera();
@@ -105,13 +105,13 @@ class VenueWorldExtended extends VenueWorld
 		camera.loc.pos.clear().x = 0 - camera.focalLength;
 	}
 
-	cameraRight(cameraSpeed: number)
+	cameraRight(cameraSpeed: number): void
 	{
 		var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
 		cameraAction.perform(this.cameraEntity.camera());
 	}
 
-	cameraUp(cameraSpeed: number)
+	cameraUp(cameraSpeed: number): void
 	{
 		var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
 		cameraAction.perform(this.cameraEntity.camera());
@@ -119,7 +119,7 @@ class VenueWorldExtended extends VenueWorld
 
 	// controls
 
-	toControl(universe: Universe)
+	toControl(universe: Universe): ControlBase
 	{
 		var containerMainSize = universe.display.sizeInPixels.clone();
 		var controlHeight = 16;
@@ -219,7 +219,7 @@ class VenueWorldExtended extends VenueWorld
 
 	// venue
 
-	draw(universe: Universe)
+	draw(universe: Universe): void
 	{
 		universe.display.drawBackground(null, null);
 		//this.world.network.draw(universe, this.world.camera);
@@ -230,12 +230,12 @@ class VenueWorldExtended extends VenueWorld
 		this.venueControls.draw(universe);
 	}
 
-	finalize(universe: Universe)
+	finalize(universe: Universe): void
 	{
 		universe.soundHelper.soundForMusic.pause(universe);
 	}
 
-	initialize(universe: Universe)
+	initialize(universe: Universe): void
 	{
 		this.world.initialize(universe);
 		this.venueControls = this.toControl(universe).toVenue();
@@ -263,15 +263,18 @@ class VenueWorldExtended extends VenueWorld
 		this.cameraEntity.propertyAdd(cameraConstrainable);
 	}
 
-	selectionName()
+	selectionName(): string
 	{
 		return (this.selection == null ? "[none]" : this.selection.name);
 	}
 
-	updateForTimerTick(universe: Universe)
+	updateForTimerTick(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		Constrainable.constrain(universe, world, null, this.cameraEntity);
+		this.cameraEntity.constrainable().constrain
+		(
+			universe, world, null, this.cameraEntity
+		);
 
 		this.draw(universe);
 
@@ -307,10 +310,7 @@ class VenueWorldExtended extends VenueWorld
 			var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies
 			(
 				rayFromCameraThroughClick,
-				worldKnown.network.nodes.map
-				(
-					(x: NetworkNode2) => x.toEntity()
-				), // hack
+				worldKnown.network.nodes,
 				NetworkNode2.RadiusActual(),
 				[] // listToAddTo
 			);
@@ -333,7 +333,7 @@ class VenueWorldExtended extends VenueWorld
 				if (bodyClicked == this.selection)
 				{
 					var venueCurrent = universe.venueCurrent;
-					var bodyClickedNetworkNode = EntityExtensions.networkNode(bodyClicked);
+					var bodyClickedNetworkNode = bodyClicked as NetworkNode2;
 					var starsystem = bodyClickedNetworkNode.starsystem;
 					if (starsystem != null)
 					{

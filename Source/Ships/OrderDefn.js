@@ -13,13 +13,16 @@ class OrderDefn {
 }
 class OrderDefn_Instances {
     constructor() {
-        this.Go = new OrderDefn("Go", (universe, actor, order) => {
-            if (actor.activity() == null) {
-                actor.activitySet(new Activity("MoveToTarget", order.target));
+        this.Go = new OrderDefn("Go", (u, w, p, e) => {
+            var actor = e.actor();
+            var orderable = Orderable.fromEntity(e);
+            var order = orderable.order;
+            if (actor.activity == null) {
+                actor.activity = Activity.fromDefnNameAndTarget("MoveToTarget", order.targetEntity);
             }
             else {
-                var actorLoc = actor.locatable().loc;
-                var target = order.target;
+                var actorLoc = e.locatable().loc;
+                var target = order.targetEntity;
                 var targetLoc = target.locatable().loc;
                 if (actorLoc.placeName == targetLoc.placeName
                     && actorLoc.pos.equals(targetLoc.pos)) {
@@ -27,8 +30,10 @@ class OrderDefn_Instances {
                 }
             }
         });
-        this.UseDevice = new OrderDefn("UseDevice", (universe, actor, order) => {
-            var ship = actor;
+        this.UseDevice = new OrderDefn("UseDevice", (universe, world, place, entity) => {
+            var orderable = Orderable.fromEntity(entity);
+            var order = orderable.order;
+            var ship = entity;
             var device = ship.deviceSelected;
             if (device != null) {
                 var projectile = device.projectile;
@@ -40,7 +45,8 @@ class OrderDefn_Instances {
                     );
                     projectile.energyPerMove = 0;
                     projectile.distancePerMove = 1000;
-                    projectile.activitySet(new Activity("MoveToTarget", order.target));
+                    projectile.actor().activity =
+                        Activity.fromDefnNameAndTarget("MoveToTarget", order.targetEntity);
                     starsystem.shipAdd(projectile);
                     device.projectile = projectile;
                 }
@@ -48,7 +54,7 @@ class OrderDefn_Instances {
                     ArrayHelper.remove(starsystem.ships, projectile);
                     device.projectile = null;
                     var projectilePos = projectile.locatable().loc.pos;
-                    var targetPos = order.target.locatable().loc.pos;
+                    var targetPos = order.targetEntity.locatable().loc.pos;
                     if (projectilePos.equals(targetPos)) {
                         order.isComplete = true;
                     }

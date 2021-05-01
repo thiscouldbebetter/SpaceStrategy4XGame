@@ -1,5 +1,5 @@
 
-class Device
+class Device //
 {
 	defn: DeviceDefn;
 
@@ -10,18 +10,26 @@ class Device
 
 	projectile: Ship;
 
+	target: Entity;
+
 	constructor(defn: DeviceDefn)
 	{
 		this.defn = defn;
 	}
 
-	updateForTurn(universe: Universe, actor: Actor)
+	updateForTurn
+	(
+		universe: Universe, world: World, place: Place, entity: Entity
+	): void
 	{
-		this.defn.updateForTurn(universe, actor, this);
+		this.defn.updateForTurn(universe, world, place, entity, this);
 	}
 
-	use(universe: Universe, place: any, actor: Entity)
+	use
+	(
+		universe: Universe, world: World, place: Place, entity: Entity
+	): void
 	{
-		this.defn.use(universe, place, actor, this);
+		this.defn.use(universe, world, place, entity, this);
 	}
 }

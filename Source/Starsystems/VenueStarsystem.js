@@ -27,7 +27,8 @@ class VenueStarsystem {
         var viewSize = universe.display.sizeInPixels.clone();
         var focalLength = viewSize.y;
         viewSize.z = focalLength * 4;
-        var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(0 - focalLength, 0, 0)));
+        var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(0 - focalLength, 0, 0)), null // entitiesSort
+        );
         var cameraLocatable = new Locatable(camera.loc);
         var targetForCamera = Coords.create();
         // hack
@@ -41,12 +42,12 @@ class VenueStarsystem {
         ];
         var cameraConstrainable = new Constrainable(constraints);
         this.cameraEntity = new Entity(Camera.name, [camera, cameraLocatable, cameraConstrainable]);
-        Constrainable.constrain(universe, universe.world, null, this.cameraEntity);
-        this.bodies = new Array();
-        this.bodies.push(starsystem.star);
-        this.bodies.push(...starsystem.linkPortals);
-        this.bodies.push(...starsystem.planets);
-        this.bodies.push(...starsystem.ships);
+        cameraConstrainable.constrain(universe, universe.world, null, this.cameraEntity);
+        this.entities = new Array();
+        this.entities.push(starsystem.star);
+        this.entities.push(...starsystem.linkPortals);
+        this.entities.push(...starsystem.planets);
+        this.entities.push(...starsystem.ships);
     }
     model() {
         return this.starsystem;
@@ -56,16 +57,16 @@ class VenueStarsystem {
     }
     updateForTimerTick(universe) {
         this.venueControls.updateForTimerTick(universe);
-        Constrainable.constrain(universe, universe.world, null, this.cameraEntity);
+        this.cameraEntity.constrainable().constrain(universe, universe.world, null, this.cameraEntity);
         if (this.cursor != null) {
-            Constrainable.constrain(universe, universe.world, null, this.cursor.toEntity());
+            this.cursor.constrainable().constrain(universe, universe.world, null, this.cursor);
         }
         var ships = this.starsystem.ships;
         for (var i = 0; i < ships.length; i++) {
             var ship = ships[i];
-            var bodyActivity = ship.activity();
-            if (bodyActivity != null) {
-                bodyActivity.perform(universe, ship);
+            var activity = ship.actor().activity;
+            if (activity != null) {
+                activity.perform(universe, universe.world, null, ship);
             }
         }
         this.draw(universe);
@@ -110,7 +111,7 @@ class VenueStarsystem {
         var camera = this.camera();
         var rayFromCameraThroughClick = new Ray(camera.loc.pos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
         ).subtract(camera.loc.pos));
-        var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughClick, this.bodies, 10, // bodyRadius
+        var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughClick, this.entities, 10, // bodyRadius
         []);
         var bodyClicked;
         if (bodiesClickedAsCollisions.length == 0) {
@@ -153,19 +154,23 @@ class VenueStarsystem {
         inputHelper.isMouseClicked(false);
     }
     updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked) {
+        var selectionTypeName = (this.selection == null ? null : this.selection.constructor.name);
         // todo - Fix.
         if (this.selection == null) {
             this.selection = bodyClicked;
         }
-        else if (this.selection.defn.name == Ship.name) {
+        else if (selectionTypeName == Ship.name) {
             var ship = this.selection;
-            if (bodyClicked != null) {
+            if (bodyClicked != null) // && bodyClicked.defn.name != "Cursor")
+             {
                 // Targeting an existing body, not an arbitrary point.
                 universe.inputHelper.isEnabled = false;
                 var targetEntity = bodyClicked;
                 if (this.cursor.orderName != null) {
-                    ship.order = new Order(this.cursor.orderName, targetEntity);
-                    ship.order.obey(universe, ship);
+                    var shipOrderable = Orderable.fromEntity(ship);
+                    var order = new Order(this.cursor.orderName, targetEntity);
+                    shipOrderable.order = order;
+                    order.obey(universe, universe.world, null, ship);
                 }
                 this.cursor.clear();
             }
@@ -174,15 +179,20 @@ class VenueStarsystem {
             }
             else if (this.cursor.hasZPositionBeenSpecified == false) {
                 universe.inputHelper.isEnabled = false;
-                var targetBody = new Body("Target", new BodyDefn("MoveTarget", Coords.create(), null), this.cursor.locatable().loc.pos.clone());
-                ship.order = new Order(this.cursor.orderName, targetBody);
-                ship.order.obey(universe, ship);
+                var targetPos = Coords.create();
+                var target = new Entity("Target", [
+                    new BodyDefn("MoveTarget", targetPos, null),
+                    this.cursor.locatable().clone()
+                ]);
+                var order = new Order(this.cursor.orderName, target);
+                Orderable.fromEntity(ship).order = order;
+                order.obey(universe, universe.world, null, ship);
                 this.cursor.clear();
             }
         }
-        else if (this.selection.defn.name == Planet.name) {
+        else if (selectionTypeName == Planet.name) {
             if (bodyClicked == this.selection) {
-                var planet = EntityExtensions.planet(bodyClicked);
+                var planet = bodyClicked;
                 if (planet != null) {
                     var layout = planet.layout;
                     var venueNext = new VenueLayout(this, bodyClicked, layout);
@@ -202,7 +212,7 @@ class VenueStarsystem {
         var cameraPos = camera.loc.pos;
         var rayFromCameraThroughMouse = new Ray(cameraPos, camera.coordsTransformViewToWorld(mouseMovePos, true // ignoreZ
         ).subtract(cameraPos));
-        var bodiesUnderMouseAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughMouse, this.bodies, 10, // bodyRadius
+        var bodiesUnderMouseAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughMouse, this.entities, 10, // bodyRadius
         []);
         var bodyUnderMouse;
         if (bodiesUnderMouseAsCollisions.length == 0) {
@@ -212,7 +222,7 @@ class VenueStarsystem {
             bodiesUnderMouseAsCollisions = bodiesUnderMouseAsCollisions.sort((x) => x.distanceToCollision);
             bodyUnderMouse = bodiesUnderMouseAsCollisions[0].colliders[0];
         }
-        this.cursor.bodyUnderneath = bodyUnderMouse;
+        this.cursor.entityUnderneath = bodyUnderMouse;
     }
     // camera
     camera() {

@@ -1,25 +1,30 @@
 
-class LinkPortal extends EntityProperty
+class LinkPortal extends Entity
 {
 	name: string;
 	defn: BodyDefn;
-	pos: Coords;
 	starsystemNamesFromAndTo: string[];
 
-	_locatable: Locatable;
-
-	constructor(name: string, defn: BodyDefn, pos: Coords, starsystemNamesFromAndTo: string[])
+	constructor
+	(
+		name: string, defn: BodyDefn, pos: Coords, starsystemNamesFromAndTo: string[]
+	)
 	{
-		super();
-		this.name = name;
+		super
+		(
+			name,
+			[
+				defn,
+				Locatable.fromPos(pos)
+			]
+		);
+
 		this.defn = defn;
-		var loc = Disposition.fromPos(pos);
-		this._locatable = new Locatable(loc);
 
 		this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
 	}
 
-	link(cluster: Network2)
+	link(cluster: Network2): NetworkLink2
 	{
 		var returnValue = cluster.linkByStarsystemNamesFromTo
 		(
@@ -28,49 +33,33 @@ class LinkPortal extends EntityProperty
 		return returnValue;
 	}
 
-	locatable()
-	{
-		return this._locatable;
-	}
-
-	starsystemFrom(cluster: Network2)
+	starsystemFrom(cluster: Network2): Starsystem
 	{
 		var starsystemName = this.starsystemNameFrom();
 		var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
 		return returnValue;
 	}
 
-	starsystemNameFrom()
+	starsystemNameFrom(): string
 	{
 		return this.starsystemNamesFromAndTo[0];
 	}
 
-	starsystemNameTo()
+	starsystemNameTo(): string
 	{
 		return this.starsystemNamesFromAndTo[1];
 	}
 
-	starsystemTo(cluster: Network2)
+	starsystemTo(cluster: Network2): Starsystem
 	{
 		var starsystemName = this.starsystemNameTo();
 		var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
 		return returnValue;
 	}
 
-	_entity: Entity;
-	toEntity()
-	{
-		if (this._entity == null)
-		{
-			var body = new Body(this.name, this.defn, this.pos);
-			this._entity = new Entity(this.name, [ this, this.locatable(), body ]);
-		}
-		return this._entity;
-	}
-
 	// controls
 
-	toControl()
+	toControl(): ControlBase
 	{
 		var returnValue = ControlLabel.from5
 		(

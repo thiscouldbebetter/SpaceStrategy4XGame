@@ -50,6 +50,7 @@ import VenueLayered = gf.VenueLayered;
 
 import Visual = gf.Visual;
 import VisualCircle = gf.VisualCircle;
+import VisualCircleGradient = gf.VisualCircleGradient;
 import VisualDirectional = gf.VisualDirectional;
 import VisualDynamic = gf.VisualDynamic;
 import VisualGroup = gf.VisualGroup;
@@ -110,6 +111,7 @@ import Transform = gf.Transform;
 import Transform_Locate = gf.Transform_Locate;
 import Transform_Orient = gf.Transform_Orient;
 import Transform_Translate = gf.Transform_Translate;
+import Transformable = gf.Transformable;
 import Transforms = gf.Transforms;
 
 // Input.
@@ -145,6 +147,13 @@ import World = gf.World;
 // Model - Actors.
 
 import Action = gf.Action;
+import Activity = gf.Activity;
+import ActivityDefn = gf.ActivityDefn;
+import Actor = gf.Actor;
+
+// Model - Combat.
+
+import Killable = gf.Killable;
 
 // Model - Physics.
 

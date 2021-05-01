@@ -1,12 +1,13 @@
 "use strict";
-class Device {
+class Device //
+ {
     constructor(defn) {
         this.defn = defn;
     }
-    updateForTurn(universe, actor) {
-        this.defn.updateForTurn(universe, actor, this);
+    updateForTurn(universe, world, place, entity) {
+        this.defn.updateForTurn(universe, world, place, entity, this);
     }
-    use(universe, place, actor) {
-        this.defn.use(universe, place, actor, this);
+    use(universe, world, place, entity) {
+        this.defn.use(universe, world, place, entity, this);
     }
 }

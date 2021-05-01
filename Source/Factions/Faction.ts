@@ -483,10 +483,7 @@ class Faction
 			(
 				universe, world, this
 			);
-			if (planetResearchThisTurn != null)
-			{
-				returnValue += planetResearchThisTurn.quantity;
-			}
+			returnValue += planetResearchThisTurn;
 		}
 
 		return returnValue;

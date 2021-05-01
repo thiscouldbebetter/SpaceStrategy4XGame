@@ -141,7 +141,7 @@ class VenueWorldExtended extends VenueWorld {
     }
     updateForTimerTick(universe) {
         var world = universe.world;
-        Constrainable.constrain(universe, world, null, this.cameraEntity);
+        this.cameraEntity.constrainable().constrain(universe, world, null, this.cameraEntity);
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
         var inputHelper = universe.inputHelper;
@@ -154,8 +154,7 @@ class VenueWorldExtended extends VenueWorld {
             ).subtract(cameraPos));
             var playerFaction = world.factions[0];
             var worldKnown = playerFaction.knowledge.worldKnown(universe, world);
-            var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughClick, worldKnown.network.nodes.map((x) => x.toEntity()), // hack
-            NetworkNode2.RadiusActual(), [] // listToAddTo
+            var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughClick, worldKnown.network.nodes, NetworkNode2.RadiusActual(), [] // listToAddTo
             );
             if (bodiesClickedAsCollisions.length > 0) {
                 var collisionNearest = bodiesClickedAsCollisions[0];
@@ -168,7 +167,7 @@ class VenueWorldExtended extends VenueWorld {
                 var bodyClicked = collisionNearest.colliders[0]; // todo
                 if (bodyClicked == this.selection) {
                     var venueCurrent = universe.venueCurrent;
-                    var bodyClickedNetworkNode = EntityExtensions.networkNode(bodyClicked);
+                    var bodyClickedNetworkNode = bodyClicked;
                     var starsystem = bodyClickedNetworkNode.starsystem;
                     if (starsystem != null) {
                         var venueNext = new VenueStarsystem(venueCurrent, starsystem);

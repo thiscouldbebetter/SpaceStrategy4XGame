@@ -1,5 +1,5 @@
 
-class Network2
+class Network2 //
 {
 	name: string;
 	nodes: NetworkNode2[];
@@ -174,7 +174,8 @@ class Network2
 							new ValueBreak(1, Color.byName("Blue") )
 						],
 						null // interpolationMode
-					)
+					),
+					null // colorBorder
 				)
 			])
 		);
@@ -320,7 +321,7 @@ class Network2
 		var drawablesSortedByZ = new Array<Entity>();
 		for (var i = 0; i < drawablesToSort.length; i++)
 		{
-			var drawableToSort = drawablesToSort[i].toEntity();
+			var drawableToSort = drawablesToSort[i];
 			camera.coordsTransformWorldToView
 			(
 				drawPos.overwriteWith(drawableToSort.locatable().loc.pos)
@@ -350,14 +351,14 @@ class Network2
 		for (var i = 0; i < drawablesSortedByZ.length; i++)
 		{
 			var entity = drawablesSortedByZ[i];
-			var node = EntityExtensions.networkNode(entity);
+			var node = entity as NetworkNode2;
 			if (node != null)
 			{
 				node.draw(universe, nodeRadiusActual, camera);
 			}
 			else
 			{
-				var ship = EntityExtensions.ship(entity);
+				var ship = entity as Ship;
 				if (ship != null)
 				{
 					ship.draw(universe, nodeRadiusActual, camera, this.drawPos);

@@ -106,8 +106,8 @@ class ControlBuilderExtended extends ControlBuilder
 						if (selection != null)
 						{
 							var venueNext: Venue;
-							var selectionAsNetworkNode = EntityExtensions.networkNode(selection);
-							var selectionAsPlanet = EntityExtensions.planet(selection);
+							var selectionAsNetworkNode = selection as NetworkNode2;
+							var selectionAsPlanet = selection as Planet;
 							if (selectionAsNetworkNode != null)
 							{
 								var starsystem = selectionAsNetworkNode.starsystem;

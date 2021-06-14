@@ -93,6 +93,10 @@ class NetworkLink2 {
         ], this.color, // hack
         null);
     }
+    // Clonable.
+    clone() {
+        return new NetworkLink2(this.namesOfNodesLinked.slice());
+    }
     // EntityProperty.
     finalize(u, w, p, e) { }
     initialize(u, w, p, e) { }

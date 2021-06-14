@@ -25,12 +25,14 @@ function main()
 		// images
 		[
 			new Image2("Opening", contentPathImages + "Opening.png"),
+			new Image2("Producer", contentPathImages + "Producer.png"),
 			new Image2("Title", contentPathImages + "Title.png"),
 		],
 		// sounds
 		[
-			new Sound("Sound", contentPathAudio + "Effects/Sound.wav"),
 			new Sound("Music_Title", contentPathAudio + "Music/Music.mp3"),
+			new Sound("Music_Producer", contentPathAudio + "Music/Producer.mp3"),
+			new Sound("Sound", contentPathAudio + "Effects/Sound.wav"),
 		],
 		// videos
 		[

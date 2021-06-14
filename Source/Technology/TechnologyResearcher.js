@@ -7,6 +7,11 @@ class TechnologyResearcher {
         this.namesOfTechnologiesKnown = namesOfTechnologiesKnown;
         this.name = this.factionName + " Research";
     }
+    static default() {
+        return new TechnologyResearcher("[factionName]", null, // nameOfTechnologyBeingResearched
+        0, // researchAccumulated
+        []);
+    }
     buildablesAvailable(world) {
         var returnValues = [];
         var technologiesByName = world.technologyTree.technologiesByName;

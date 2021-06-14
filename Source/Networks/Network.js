@@ -27,12 +27,12 @@ class Network2 //
         this.drawPosFrom = Coords.create();
         this.drawPosTo = Coords.create();
     }
-    static generateRandom(universe, name, nodeDefns, numberOfNodes, minAndMaxDistanceOfNodesFromOrigin, distanceBetweenNodesMin) {
+    static generateRandom(universe, name, nodeDefns, numberOfNodes) {
         var nodesNotYetLinked = [];
-        var radiusMinAndMax = minAndMaxDistanceOfNodesFromOrigin;
-        var radiusMin = radiusMinAndMax[0];
-        var radiusMax = radiusMinAndMax[1];
+        var radiusMin = .25;
+        var radiusMax = 1;
         var radiusRange = radiusMax - radiusMin;
+        var distanceBetweenNodesMin = .05;
         var nodePos = Coords.create();
         var displacementOfNodeNewFromOther = Coords.create();
         var minusOnes = new Coords(-1, -1, -1);
@@ -88,7 +88,7 @@ class Network2 //
         var tempPos = Coords.create();
         while (nodesLinked.length < numberOfNodes) {
             var nodePairClosestSoFar = null;
-            var distanceBetweenNodePairClosestSoFar = minAndMaxDistanceOfNodesFromOrigin[1] * 4;
+            var distanceBetweenNodePairClosestSoFar = 4; // hack
             for (var i = 0; i < nodesLinked.length; i++) {
                 var nodeLinked = nodesLinked[i];
                 var nodeLinkedPos = nodeLinked.locatable().loc.pos;
@@ -137,6 +137,13 @@ class Network2 //
             this._nodesAsEntities = this.nodes.map(x => new Entity(x.name, [x, x.locatable()]));
         }
         return this._nodesAsEntities;
+    }
+    scale(scaleFactor) {
+        for (var i = 0; i < this.nodes.length; i++) {
+            var node = this.nodes[i];
+            node.locatable().loc.pos.multiplyScalar(scaleFactor);
+        }
+        return this;
     }
     // turns
     updateForTurn(universe, world) {
@@ -188,5 +195,12 @@ class Network2 //
                 }
             }
         }
+    }
+    // Clonable.
+    clone() {
+        var nodesCloned = ArrayHelper.clone(this.nodes);
+        var linksCloned = ArrayHelper.clone(this.links);
+        var returnValue = new Network2(this.name, nodesCloned, linksCloned);
+        return returnValue;
     }
 }

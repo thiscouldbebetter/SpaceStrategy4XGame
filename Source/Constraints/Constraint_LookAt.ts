@@ -11,7 +11,12 @@ class Constraint_LookAt implements Constraint
 		this.targetPos = targetPos;
 	}
 
-	constrain(universe: Universe, world: World, place: Place, body: Entity)
+	static default(): Constraint_LookAt
+	{
+		return new Constraint_LookAt(Coords.zeroes());
+	}
+
+	constrain(universe: Universe, world: World, place: Place, body: Entity): void
 	{
 		var bodyLoc = body.locatable().loc;
 		var bodyPos = bodyLoc.pos;

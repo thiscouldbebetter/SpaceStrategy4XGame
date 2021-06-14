@@ -25,6 +25,18 @@ class Constraint_PositionOnCylinder implements Constraint
 		this.distanceFromCenterAlongAxis = distanceFromCenterAlongAxis;
 	}
 
+	static default(): Constraint_PositionOnCylinder
+	{
+		return new Constraint_PositionOnCylinder
+		(
+			Coords.zeroes(), // center
+			Orientation.default(), // orientation
+			0, // yawInTurns
+			1, // radius
+			1 // distanceFromCenterAlongAxis
+		);
+	}
+
 	constrain(universe: Universe, world: World, place: Place, constrainable: Entity)
 	{
 		var body = constrainable;

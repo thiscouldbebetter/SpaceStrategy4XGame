@@ -16,7 +16,12 @@ class Constraint_HoldDistanceFromTarget implements Constraint
 		this.displacement = Coords.create();
 	}
 
-	constrain(universe: Universe, world: World, place: Place, entity: Entity)
+	static default(): Constraint_HoldDistanceFromTarget
+	{
+		return new Constraint_HoldDistanceFromTarget(1, Coords.zeroes());
+	}
+
+	constrain(universe: Universe, world: World, place: Place, entity: Entity): void
 	{
 		var body = entity;
 		var bodyPos = body.locatable().loc.pos;

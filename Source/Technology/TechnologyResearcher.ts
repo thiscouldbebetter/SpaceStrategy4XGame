@@ -24,7 +24,18 @@ class TechnologyResearcher
 		this.name = this.factionName + " Research";
 	}
 
-	buildablesAvailable(world: WorldExtended)
+	static default(): TechnologyResearcher
+	{
+		return new TechnologyResearcher
+		(
+			"[factionName]",
+			null, // nameOfTechnologyBeingResearched
+			0, // researchAccumulated
+			[], // namesOfTechnologiesKnown
+		);
+	}
+
+	buildablesAvailable(world: WorldExtended): any[]
 	{
 		var returnValues = [];
 
@@ -41,7 +52,10 @@ class TechnologyResearcher
 		return returnValues;
 	}
 
-	researchAccumulatedIncrement(world: WorldExtended, faction: Faction, amountToIncrement: number)
+	researchAccumulatedIncrement
+	(
+		world: WorldExtended, faction: Faction, amountToIncrement: number
+	): void
 	{
 		var technologyBeingResearched = this.technologyBeingResearched(world);
 
@@ -70,7 +84,7 @@ class TechnologyResearcher
 		}
 	}
 
-	strength(world: WorldExtended)
+	strength(world: WorldExtended): number
 	{
 		var returnValue = 0;
 
@@ -84,7 +98,10 @@ class TechnologyResearcher
 		return returnValue;
 	}
 
-	technologiesAvailable(technologyResearchSession: TechnologyResearchSession)
+	technologiesAvailable
+	(
+		technologyResearchSession: TechnologyResearchSession
+	): any[]
 	{
 		var technologyTree = technologyResearchSession.technologyTree;
 		var technologies = technologyTree.technologies;
@@ -140,7 +157,7 @@ class TechnologyResearcher
 		return technologiesUnknownWithKnownPrerequisites;
 	}
 
-	technologiesKnown(world: WorldExtended)
+	technologiesKnown(world: WorldExtended): any[]
 	{
 		var returnValues = [];
 
@@ -154,7 +171,7 @@ class TechnologyResearcher
 		return returnValues;
 	}
 
-	technologyBeingResearched(world: WorldExtended)
+	technologyBeingResearched(world: WorldExtended): Technology
 	{
 		var technologyTree = world.technologyTree;
 
@@ -166,7 +183,10 @@ class TechnologyResearcher
 
 	// turns
 
-	updateForTurn(universe: Universe, world: WorldExtended, faction: Faction)
+	updateForTurn
+	(
+		universe: Universe, world: WorldExtended, faction: Faction
+	): void
 	{
 		var researchThisTurn = faction.researchPerTurn(universe, world);
 		this.researchAccumulatedIncrement(world, faction, researchThisTurn);

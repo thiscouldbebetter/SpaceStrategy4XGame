@@ -15,12 +15,17 @@ class FactionKnowledge
 		linkNames: string[]
 	)
 	{
-		this.factionNames = factionNames;
-		this.starsystemNames = starsystemNames;
-		this.linkNames = linkNames;
+		this.factionNames = factionNames || [];
+		this.starsystemNames = starsystemNames || [];
+		this.linkNames = linkNames || [];
 	}
 
-	worldKnown(universe: Universe, worldActual: WorldExtended)
+	static default(): FactionKnowledge
+	{
+		return new FactionKnowledge(null, null, null)
+	}
+
+	worldKnown(universe: Universe, worldActual: WorldExtended): WorldExtended
 	{
 		if (this._worldKnown == null)
 		{
@@ -94,7 +99,7 @@ class FactionKnowledge
 		return this._worldKnown;
 	}
 
-	worldKnownUpdate()
+	worldKnownUpdate(): void
 	{
 		this._worldKnown = null;
 	}

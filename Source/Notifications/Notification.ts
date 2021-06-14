@@ -4,9 +4,9 @@ class Notification2
 	defnName: string;
 	turnCreated: number;
 	message: string;
-	locus: string;
+	locus: any;
 
-	constructor(defnName: string, turnCreated: number, message: string, locus: string)
+	constructor(defnName: string, turnCreated: number, message: string, locus: any)
 	{
 		this.defnName = defnName;
 		this.turnCreated = turnCreated;
@@ -14,16 +14,16 @@ class Notification2
 		this.locus = locus;
 	}
 
-	defn()
+	defn(): NotificationType
 	{
 		return NotificationType.Instances()._AllByName.get(this.defnName);
 	}
 
-	toString()
+	toString(): string
 	{
 		var returnValue =
 			this.turnCreated + " - "
-			+ this.locus + " - "
+			+ this.locus.toString() + " - "
 			+ this.message;
 		return returnValue;
 	}

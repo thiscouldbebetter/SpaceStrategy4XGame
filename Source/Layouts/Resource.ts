@@ -10,7 +10,7 @@ class Resource
 		this.quantity = quantity;
 	}
 
-	static add(resourcesToAddTo: Resource[], resourcesToBeAdded: Resource[])
+	static add(resourcesToAddTo: Resource[], resourcesToBeAdded: Resource[]): void
 	{
 		for (var r = 0; r < resourcesToBeAdded.length; r++)
 		{
@@ -29,7 +29,7 @@ class Resource
 		}
 	}
 
-	static isSupersetOf(resourcesThis: Resource[], resourcesOther: Resource[])
+	static isSupersetOf(resourcesThis: Resource[], resourcesOther: Resource[]): boolean
 	{
 		var returnValue = true;
 
@@ -50,7 +50,8 @@ class Resource
 				}
 			}
 
-			var resourceThisQuantity = (resourceThisFound == null ? 0 : resourceThisFound.quantity);
+			var resourceThisQuantity =
+				(resourceThisFound == null ? 0 : resourceThisFound.quantity);
 			if (resourceThisQuantity < resourceOther.quantity)
 			{
 				returnValue = false;
@@ -65,7 +66,7 @@ class Resource
 	(
 		resourcesToSubtractFrom: Resource[],
 		resourcesToBeSubtracted: Resource[]
-	)
+	): void
 	{
 		for (var r = 0; r < resourcesToBeSubtracted.length; r++)
 		{
@@ -86,7 +87,7 @@ class Resource
 
 	// instance methods
 
-	toString()
+	toString(): string
 	{
 		return this.defnName + ": " + this.quantity;
 	}

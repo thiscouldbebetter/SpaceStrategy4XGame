@@ -72,10 +72,7 @@ class WorldExtended extends World {
         var viewDimension = viewSize.y;
         var networkRadius = viewDimension * .25;
         var numberOfNetworkNodes = 12;
-        var network = Network2.generateRandom(universe, worldName, NetworkNodeDefn.Instances()._All, numberOfNetworkNodes, 
-        // minAndMaxDistanceOfNodesFromOrigin
-        [networkRadius / 2, networkRadius], 20 // distanceBetweenNodesMin
-        );
+        var network = Network2.generateRandom(universe, worldName, NetworkNodeDefn.Instances()._All, numberOfNetworkNodes).scale(networkRadius);
         var focalLength = viewDimension;
         viewSize.z = focalLength;
         var numberOfFactions = 6;

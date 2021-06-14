@@ -61,17 +61,15 @@ class Network2 //
 		universe: Universe,
 		name: string,
 		nodeDefns: NetworkNodeDefn[],
-		numberOfNodes: number,
-		minAndMaxDistanceOfNodesFromOrigin: number[],
-		distanceBetweenNodesMin: number
-	)
+		numberOfNodes: number
+	): Network2
 	{
 		var nodesNotYetLinked = [];
 
-		var radiusMinAndMax = minAndMaxDistanceOfNodesFromOrigin;
-		var radiusMin = radiusMinAndMax[0];
-		var radiusMax = radiusMinAndMax[1];
+		var radiusMin = .25;
+		var radiusMax = 1;
 		var radiusRange = radiusMax - radiusMin;
+		var distanceBetweenNodesMin = .05;
 
 		var nodePos = Coords.create();
 		var displacementOfNodeNewFromOther = Coords.create();
@@ -185,7 +183,7 @@ class Network2 //
 		while (nodesLinked.length < numberOfNodes)
 		{
 			var nodePairClosestSoFar = null;
-			var distanceBetweenNodePairClosestSoFar = minAndMaxDistanceOfNodesFromOrigin[1] * 4;
+			var distanceBetweenNodePairClosestSoFar = 4; // hack
 
 			for (var i = 0; i < nodesLinked.length; i++)
 			{
@@ -263,12 +261,15 @@ class Network2 //
 		return returnValue;
 	}
 
-	linkByStarsystemNamesFromTo(starsystemFromName: string, starsystemToName: string)
+	linkByStarsystemNamesFromTo
+	(
+		starsystemFromName: string, starsystemToName: string
+	): NetworkLink2
 	{
 		return this.linksByStarsystemNamesFromTo.get(starsystemFromName).get(starsystemToName);
 	}
 
-	nodesAsEntities()
+	nodesAsEntities(): Entity[]
 	{
 		if (this._nodesAsEntities == null)
 		{
@@ -279,6 +280,17 @@ class Network2 //
 		}
 
 		return this._nodesAsEntities;
+	}
+
+	scale(scaleFactor: number): Network2
+	{
+		for (var i = 0; i < this.nodes.length; i++)
+		{
+			var node = this.nodes[i];
+			node.locatable().loc.pos.multiplyScalar(scaleFactor);
+		}
+
+		return this;
 	}
 
 	// turns
@@ -365,5 +377,15 @@ class Network2 //
 				}
 			}
 		}
+	}
+
+	// Clonable.
+
+	clone(): Network2
+	{
+		var nodesCloned = ArrayHelper.clone(this.nodes);
+		var linksCloned = ArrayHelper.clone(this.links)
+		var returnValue = new Network2(this.name, nodesCloned, linksCloned);
+		return returnValue;
 	}
 }

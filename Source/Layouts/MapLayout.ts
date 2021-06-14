@@ -56,11 +56,11 @@ class MapLayout
 				this.sizeInCells
 			);
 
-		this.cursor = new MapCursor(null, Coords.create());
+		this.cursor = new MapCursor(null, Coords.zeroes());
 
 		// Helper variables.
 
-		this._cellPos = Coords.create();
+		this._cellPos = Coords.zeroes();
 		var drawableLocatable = new Locatable(null);
 		this._drawable = new Entity("[drawable]", [ drawableLocatable ]);
 		this._neighborOffsets =
@@ -74,12 +74,12 @@ class MapLayout
 
 	// instance methods
 
-	bodiesNeighboringCursor()
+	bodiesNeighboringCursor(): Entity[]
 	{
 		return this.bodiesNeighboringPosInCells(this.cursor.pos);
 	}
 
-	bodiesNeighboringPosInCells(centerPosInCells: Coords)
+	bodiesNeighboringPosInCells(centerPosInCells: Coords): Entity[]
 	{
 		var returnValues = new Array<Entity>();
 
@@ -99,7 +99,7 @@ class MapLayout
 		return returnValues;
 	}
 
-	bodyAtPosInCells(cellPos: Coords)
+	bodyAtPosInCells(cellPos: Coords): Entity
 	{
 		var returnValue = null;
 		for (var i = 0; i < this.bodies.length; i++)
@@ -115,25 +115,25 @@ class MapLayout
 		return returnValue;
 	}
 
-	bodyAtCursor()
+	bodyAtCursor(): Entity
 	{
 		return this.bodyAtPosInCells(this.cursor.pos);
 	}
 
-	terrainAtPosInCells(cellPos: Coords)
+	terrainAtPosInCells(cellPos: Coords): MapTerrain
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
 		return this.terrainsByCodeChar.get(terrainCode);
 	}
 
-	terrainAtCursor()
+	terrainAtCursor(): MapTerrain
 	{
 		return this.terrainAtPosInCells(this.cursor.pos);
 	}
 
 	// drawable
 
-	draw(universe: Universe, display: Display)
+	draw(universe: Universe, display: Display): void
 	{
 		var world = universe.world;
 		var map = this;

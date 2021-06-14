@@ -1,0 +1,2510 @@
+{
+  "program": {
+    "fileInfos": {
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts": {
+        "version": "721cec59c3fef87aaf480047d821fb758b3ec9482c4129a54631e6e25e432a31",
+        "signature": "721cec59c3fef87aaf480047d821fb758b3ec9482c4129a54631e6e25e432a31",
+        "affectsGlobalScope": false
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "b3584bc5798ed422ce2516df360ffa9cf2d80b5eae852867db9ba3743145f895",
+        "signature": "b3584bc5798ed422ce2516df360ffa9cf2d80b5eae852867db9ba3743145f895",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "dc47c4fa66b9b9890cf076304de2a9c5201e94b740cffdf09f87296d877d71f6",
+        "signature": "dc47c4fa66b9b9890cf076304de2a9c5201e94b740cffdf09f87296d877d71f6",
+        "affectsGlobalScope": false
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "feeeb1dd8a80fb76be42b0426e8f3ffa9bdef3c2f3c12c147e7660b1c5ba8b3b",
+        "signature": "feeeb1dd8a80fb76be42b0426e8f3ffa9bdef3c2f3c12c147e7660b1c5ba8b3b",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts": {
+        "version": "d42f4141bd9ce82b4e2902f26acb00c183e321be19a38bbc0e76a922c1724c94",
+        "signature": "d42f4141bd9ce82b4e2902f26acb00c183e321be19a38bbc0e76a922c1724c94",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts": {
+        "version": "7fac8cb5fc820bc2a59ae11ef1c5b38d3832c6d0dfaec5acdb5569137d09a481",
+        "signature": "7fac8cb5fc820bc2a59ae11ef1c5b38d3832c6d0dfaec5acdb5569137d09a481",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.scripthost.d.ts": {
+        "version": "097a57355ded99c68e6df1b738990448e0bf170e606707df5a7c0481ff2427cd",
+        "signature": "097a57355ded99c68e6df1b738990448e0bf170e606707df5a7c0481ff2427cd",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "46ee15e9fefa913333b61eaf6b18885900b139867d89832a515059b62cf16a17",
+        "signature": "46ee15e9fefa913333b61eaf6b18885900b139867d89832a515059b62cf16a17",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+        "signature": "43fb1d932e4966a39a41b464a12a81899d9ae5f2c829063f5571b6b87e6d2f9c",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+        "signature": "cdccba9a388c2ee3fd6ad4018c640a471a6c060e96f1232062223063b0a5ac6a",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "8b2a5df1ce95f78f6b74f1a555ccdb6baab0486b42d8345e0871dd82811f9b9a",
+        "signature": "8b2a5df1ce95f78f6b74f1a555ccdb6baab0486b42d8345e0871dd82811f9b9a",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "2bb4b3927299434052b37851a47bf5c39764f2ba88a888a107b32262e9292b7c",
+        "signature": "2bb4b3927299434052b37851a47bf5c39764f2ba88a888a107b32262e9292b7c",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "810627a82ac06fb5166da5ada4159c4ec11978dfbb0805fe804c86406dab8357",
+        "signature": "810627a82ac06fb5166da5ada4159c4ec11978dfbb0805fe804c86406dab8357",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "62d80405c46c3f4c527ee657ae9d43fda65a0bf582292429aea1e69144a522a6",
+        "signature": "62d80405c46c3f4c527ee657ae9d43fda65a0bf582292429aea1e69144a522a6",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+        "signature": "3013574108c36fd3aaca79764002b3717da09725a36a6fc02eac386593110f93",
+        "affectsGlobalScope": true
+      },
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "9d122b7e8c1a5c72506eea50c0973cba55b92b5532d5cafa8a6ce2c547d57551",
+        "signature": "9d122b7e8c1a5c72506eea50c0973cba55b92b5532d5cafa8a6ce2c547d57551",
+        "affectsGlobalScope": true
+      },
+      "./Imports.ts": {
+        "version": "96f6d63cda11021d375e8e695201ec4ea962bda269208b8dcdc2088040f8c9ea",
+        "signature": "43c5647fb6bbaf93a4a4fc7a666bed813cd37125b03b52f7e67aa321865ca2bb",
+        "affectsGlobalScope": true
+      },
+      "./Mocks/EnvironmentMock.ts": {
+        "version": "427100af4e1e132adf89f9ec30fd86243e43bc8477a455dad06532724a08b762",
+        "signature": "5fe434072dbda1db647d5da37ab111f4bc38bd7b75e1b61ede9bfe57a6a87430",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Actions/Action_CameraMoveTests.ts": {
+        "version": "53c417a3306cb44a133b8c138bf3c5cf5a22c3476fe1d08d917c1c6f504e7905",
+        "signature": "a6ca2b6c2347ffdcf392cfed7ae1ede33ce813c7d2b052d1fd860679ba98ddf1",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Actions/Action_CylinderMove_DistanceAlongAxisTests.ts": {
+        "version": "99a014e414fdd476c7c838b89b8cf8d88bc1a184abe008cd09dad3c1ecb7a276",
+        "signature": "f26de3067dc37db2807632e836f7d03bb937da79a19eed62e0d61d3a42c0ca16",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Actions/Action_CylinderMove_RadiusTests.ts": {
+        "version": "f270abfc563b33bd99b48c1bb27e2b8a134c62d77ecceddbd87e98a16adc4fe7",
+        "signature": "0f107f21a45739f7ae62670fd8b2478a49bd251b4bd295b7be475597099528ce",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Actions/Action_CylinderMove_ResetTests.ts": {
+        "version": "45276228263129af7fe1f6815da46ba11e54f664e681f3942db55c4de32a2185",
+        "signature": "f603aea3c430795b79f5c3ba608b28138a695403f57e22a8854056cbf5975728",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Actions/Action_CylinderMove_YawTests.ts": {
+        "version": "851c10747eb93856c9cc3eddf98e8239d840f11138b66029ae3b466b5b36ad38",
+        "signature": "b33a9c000ea081dd773613e687b1b5afe7dca40db1f3709ddb203834316ccfe4",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Constraints/Constraint_HoldDistanceFromTargetTests.ts": {
+        "version": "dbf3322aa3bfe2bc0bf5df2edfaee16dd3de42c811ce410d4da042d850769fd4",
+        "signature": "79e7b8a9e5a397c3b820b0421087382bfe4ba5f7d142230aa036aa272289fefa",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Constraints/Constraint_LookAtTests.ts": {
+        "version": "d37cb859c4e05535cfbf2a1d0512462fecceab48a2f1db501f37c600060da551",
+        "signature": "9789d89178032cad771020ace0d52c9b7aa2e3c3455edabe759abc5bc2d5c0ba",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Constraints/Constraint_PositionOnCylinderTests.ts": {
+        "version": "296380ccdd084a2922ba8314fbaebb6ef3a32709f11324ca8c1ee3bfd87b64a0",
+        "signature": "be617e649ed9ffd4f2350a40cfe0af6884ef6e775e9d7e5d398be5c04c889c07",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Layouts/BuildableTests.ts": {
+        "version": "0f2c7913cf3e6e536450e874b88cd81c928cb9a480510ea97270aadc0fdf3f15",
+        "signature": "fcac66b9479e323886ed573c6e9711ca4bc9209effb8b11299886f3c82ee2103",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Layouts/LayoutTests.ts": {
+        "version": "9617faa4950512fea7c3ef9248c984d4451f40f535fbf5c4aeba97a9c8dcac57",
+        "signature": "ac1ef0f35437204d75541c791b2f52fd01e4f388a26627c249f132e9687f358f",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Layouts/MapLayoutTests.ts": {
+        "version": "7cdbf861b5b699ca37b28d999d9693c3d8b5dcf9817e0faf47838ae2a425ce30",
+        "signature": "782a213204cdcbc3652d3f92036019676d3b1d38229a85a6c6a8bcf21d1c63f2",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Layouts/ResourceGroupTests.ts": {
+        "version": "cd060f80bb53f47a70f0f41d16de39e6ad812d50e966cfaf43d04eecde20294c",
+        "signature": "4f3304b626e7e2428a225192ec47b3f504f47da29c7139d6b8d39bb4b0da0892",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Layouts/ResourceTests.ts": {
+        "version": "d7cbfa6816e0688de8c9b0f7732d4915562d705bc72d70c7196cd0c49929e24e",
+        "signature": "0fde67ab1283898593e092e4ed4461890d504378db1dac1965a8cda6995103a6",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Layouts/VenueLayoutTests.ts": {
+        "version": "d6fcfbc598e964c8c6429bf4f5137278bc21e98bd358ba1dcbe818c8e26893c3",
+        "signature": "c921eb1f05d0848b68bab4200096897ddddd051b0ca089de8955f1c9648a5f1b",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Networks/NetworkTests.ts": {
+        "version": "665ce7ef11def776bce5eb75e564f972898710761ba29e7d4f6107a4716d6b6a",
+        "signature": "69ee9e7b5872694f19786619aaffe3658ea858ba713a4c63874ebd3d289a7133",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Notifications/NotificationSessionTests.ts": {
+        "version": "7e6b034b147987b47b15a47d20bb8cd66ce719cd7015d88a42f5f3a9cd4eec3e",
+        "signature": "0ca486ebfce4069fc1894fa3ae6bcab1612eb19a03056cf122ebd4d140f43ce8",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Notifications/NotificationTests.ts": {
+        "version": "7ecaf68444732d8159d9a5d0f5bc6d6aac7bdbf8062ff0adb024e22ab8169c5c",
+        "signature": "350e4d1a63f78c5401c1fe5f8b194367336b8f54df740ed1d7e19e5b19e5ccb3",
+        "affectsGlobalScope": true
+      },
+      "./Tests/Notifications/NotificationTypeTests.ts": {
+        "version": "279c4ffdbbc14fb95edf7e0c1b14d0c1cb1cad3b952fd4e15765d6d59a730604",
+        "signature": "3f9f270ab54da61839fe1ab95a641159a96c7056a38852c9bf82dbae7ec4e200",
+        "affectsGlobalScope": true
+      },
+      "../Source/VenueWorld.ts": {
+        "version": "e68efdb59e97e88cc124bb0ecad004830b30bd29d82f184f0315ed098941a626",
+        "signature": "65429696b004dc2d0b43858ca15a3bbd276a77256473090b9146dc17353f9431",
+        "affectsGlobalScope": true
+      },
+      "../Source/World.ts": {
+        "version": "72fd565c38ad3cba0011f060719aefd05081092c1d4b109a7b47ad888f28d02c",
+        "signature": "cf7bfbc55f45fc27aee04e4cda367d3c75cd50584d9c6c067525115966ffb76e",
+        "affectsGlobalScope": true
+      },
+      "../Source/main.ts": {
+        "version": "efd210703e4c9ae705352064a632972813cb6af4528da0649cb3b686f3fcdeb8",
+        "signature": "ed4b087ea2a2e4a58647864cf512c7534210bfc2f9d236a2f9ed5245cf7a0896",
+        "affectsGlobalScope": true
+      },
+      "../Source/Actions/Action_CameraMove.ts": {
+        "version": "55f96982a4d171590ea993eb16d8b14cf82ef5bbfde58cb8b87a68feec33c5fc",
+        "signature": "719b5beade5375af82933fa44a21dd56ec95eed411f52b5da4e291b3863c01c0",
+        "affectsGlobalScope": true
+      },
+      "../Source/Actions/Action_CylinderMove_DistanceAlongAxis.ts": {
+        "version": "71af6fef9a9ab3eb25a5a64ddc240142de1c664a7d527325893fb620a65a12b7",
+        "signature": "155e09e6eebf82604d82dcc8181bfc6c9306b3ded4ad1032cfc19ae1ef8fca4e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Actions/Action_CylinderMove_Radius.ts": {
+        "version": "9192e27042dde7d2a4c0bec6ff25ffc5477eda2e6c6264627e401019f3b54faf",
+        "signature": "cd315b6803004b5d5e378aeb2177500ce30c6fb3bfdcc647d5166fed9da21845",
+        "affectsGlobalScope": true
+      },
+      "../Source/Actions/Action_CylinderMove_Reset.ts": {
+        "version": "13cab9ffa2104d6ae8b85c1ce1166f286bb117fd3fabf8e7fc8b296634f64f3b",
+        "signature": "85a90c06bc6d7fe11ffa88f5a1c5b1fe847e79c15bd16def84c611d1aa5a547f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Actions/Action_CylinderMove_Yaw.ts": {
+        "version": "837ed3898ea76e5a286184ca8d774dde8519cb36fc8a182334b0a89fd57a68dd",
+        "signature": "961ae94496d4ae4c03a95b1c07ac76fac6db25c77a243e1f03b4fa28d0e98ac3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Actions/ActivityDefn_Instances2.ts": {
+        "version": "17d07d79f34d6dcf54282b84879b81de8921c9b84505b4e2358dc6b18c456833",
+        "signature": "762b421ca375c5e9823545f325eb699d97b9e595f9d82552fc0aa5b9c090feb1",
+        "affectsGlobalScope": true
+      },
+      "../Source/Constraints/Constraint_HoldDistanceFromTarget.ts": {
+        "version": "ead997658671beae9ce1c8906c410cf903cc96d91c52893f357048b62c1ffb1c",
+        "signature": "335c6d541edbc403c680eb68263cde8cf56d835f6e8a2391cdd65bf6b5a3e9a5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Constraints/Constraint_LookAt.ts": {
+        "version": "36ce2af336a1248d85a6fb2bb422beddde6f9f6a7e2b1cbd89723eba6856b1d9",
+        "signature": "315fdb27b6e080af6786822b09162de485cb80062d6c7a0012eea82309313cec",
+        "affectsGlobalScope": true
+      },
+      "../Source/Constraints/Constraint_PositionOnCylinder.ts": {
+        "version": "fff403988cdfb232130e03f19c27b9d34934a0efb21270b564676ba1c750b31e",
+        "signature": "7095d521ee347b0cbba1d5cc83f88c75f98e386d20bbcb2631220bc11a76e3b3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Controls/ControlDynamic.ts": {
+        "version": "75cb4e7e358610aa4538b490352144c10883f9e0b79c34348a115d53959e949f",
+        "signature": "3d6c5ed4cd95cd120ea9c576b01ed4419f828ee17118836d144fcfc030e41c75",
+        "affectsGlobalScope": true
+      },
+      "../Source/Extensions/ControlBuilderExtended.ts": {
+        "version": "c3531807872a8a46837a51d1af9158755182832d22ec5920605b07dcfdfdc361",
+        "signature": "920c0e9f515a07dbc868ee30e3a34e27bf12abbb80a21fcbd63f47214f2c39d5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Extensions/VenueFaderExtended.ts": {
+        "version": "a8d084f811dd7e4d3f9303caa43025184f618d42f58797e7768a9cf978a7b496",
+        "signature": "975befb160f4e85fc4df44eb273161f9881f7cb45c84b89ef5dc4d1187f48ea8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Factions/Faction.ts": {
+        "version": "48ca62953eeba8ed7bbaf55ad74767936489f56e811c718a63c4d5295ac21edd",
+        "signature": "6472f1bcc42fc98ae0805605b64db9b8728419bfe5515be14f4d8363f00ce21c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Factions/FactionKnowledge.ts": {
+        "version": "163597d1c3d4d90ede0bb33a36d22471d35ffdb0d4f01d7fd32e200051a2f7f5",
+        "signature": "fb2a0e393447acee00edc9032e3594ea2e508a0d78e2f2edd6c748533a67e753",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlActionNames.ts": {
+        "version": "5bbb4e9726a0344902e7c8e3e3afa16f5803eaf5a078ed6cfaa18d174d871642",
+        "signature": "41898277b86bb5989017c019fdcc629af52f0e3ebdfc52e1ac71b5f47bfaeb66",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlBase.ts": {
+        "version": "b81a760ae4f7483a810aca530eb1ab2b9829157da36c8ca183920cba78e16e2d",
+        "signature": "d4bfd13439de56fdbe96e1454d6208618a1d0a20ee32f001008135ec135e6a9d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlBuilder.ts": {
+        "version": "a9a74006e63cf8c4a350933d00e7b1d58f2fd18f7f3475758881d29806347c7d",
+        "signature": "c05c92a9c3ea0b4471d4515e6a72c075301bf5a6618231f169ddce5dd3372a57",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlButton.ts": {
+        "version": "128de273fe08cbc9b8a6c387c9164dc4e82ae673ed7be70595c9adbe2c52b073",
+        "signature": "fda8052ba6e0244a31c5d921626b01452c837249bf35132c31ed0ebd693f8f29",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlContainer.ts": {
+        "version": "8df2d4001045704eda41a11c13e3575d0d333eb4c7c744474fd44812094e90a1",
+        "signature": "ee2e52575b505a7260b9e2329021cbee51b0ee3fff428302606dc05901555a5f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlContainerTransparent.ts": {
+        "version": "128faa85f2feb720cf8ed730d0fb8a1b0a7faa64db729e0115cfc0beeec87679",
+        "signature": "ed1b87ee6361ff00ee8590c026c4516ccbd7920bc77cae945a49570bdb914060",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlLabel.ts": {
+        "version": "751b639fd59667f9e2ee97cce58abe277771907ed10752e9c4cb9da2c345d0e8",
+        "signature": "f727068c54a84861f87653ea95518d8a9a7446b9bc3876bdeb810c3ee4a1337e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlList.ts": {
+        "version": "3ff62bb6474c46a4fd377202cf8f2cfc6819a9bb27b5b14ef804171878bc5747",
+        "signature": "a69688eed4599ab39d92b320c2e4dbbaa70528a0189bdb2615d0b406169d1036",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlNone.ts": {
+        "version": "924f56516c08b36fd69079ad38f789d5f4815f9fbe0f863acbfc23f59424dd52",
+        "signature": "7d3256445c3738c79408ec2f38e0d983b23ee20b9dcc69d4787767751c5783b9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlScrollbar.ts": {
+        "version": "b530568d44627c59a48207cafbe6bac3023c38d841141c16bc9be3863b322585",
+        "signature": "996b64f1c2cf6af9a170d9667401acd3718f0f5c3ffbc8a507cecfeacf94bc1c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlSelect.ts": {
+        "version": "4c0756dd375b27679f54454062bf402232d41a9c78fd06295592f29e9f56e879",
+        "signature": "d8b228c3e3b73754feac773e84ec4ac34c4938ca913cecc1efe1d47f3a41511e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlSelectOption.ts": {
+        "version": "6fa701537825192c33541b038332d0337fa787b733b6cd2825d2499a465c233d",
+        "signature": "8534638cd6037cd3de8447da711bb4fa84c25e3529c5e6e4c3df6689750c1d11",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlStyle.ts": {
+        "version": "838a4dc385ee6a26507f4b622f67187d8868cdf2cb869b9edf76b8ec7b6113de",
+        "signature": "4ecf4eb909eb5616fef38e55873af070e7e6ad8b437181206bc5452e849ffa23",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlTabbed.ts": {
+        "version": "f5025f89647a266282c2177974d123a34999c4ee1509b919eedd448e86f4f1f9",
+        "signature": "0f2243cda9a26c85fd66bb76ca0f5878418360a682336f1d53c521a0839ffa0c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlTextBox.ts": {
+        "version": "fccdf898de6cfd1867be19772a6a10068950612eef9e0a74ebbb09e3612b02c7",
+        "signature": "01daebd2b5242cf0b74aa2038bed40c15becd33f6c3be7458ac92a1d7a4f48fb",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlTextarea.ts": {
+        "version": "75ffc37b9828b08534519be0a255132879f783e5f676a0c4b6907394ae1d1855",
+        "signature": "bf76df8825de20e4f9c0c091f497a88e6392c8bec747a3b55c64583dd6cbb61f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/ControlVisual.ts": {
+        "version": "bfd8c96459f409c1ee8695b5eb7aa7ccfb65206d776430c5cefff98c7fee0b69",
+        "signature": "b873b7c9cad13a74f76eee8a48179ea48c0054ca64536cfc30feceff20b19dd3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/Controllable.ts": {
+        "version": "de48bb07cafb4539a1f13d3c00e9b1183deb11466896afeb513d4b92b6537e60",
+        "signature": "6f85c3e61a4751fac7c7f95c1115cefd016490544f1f08825eb756db41718f29",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/DataBinding.ts": {
+        "version": "dd8e6f13541c635c97424c567ecea655f1114b5271934ba96c076071551d9e48",
+        "signature": "99ee7191afd31ef72e9aca5394bb0573bf7cd2c57b41f0f309ad197bebb9d5c8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/VenueControls.ts": {
+        "version": "e9371687398be9f6413fbf15d6d804794a81e35647df93bc2d15ff1817eae679",
+        "signature": "582b076e48f5a1adb37686001b8a6b06b81ab06a59c96d5e5aed0860e73935a1",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Controls/VenueMessage.ts": {
+        "version": "b3f41612f66c781d093deb5df55c1815f215ec9a817dabaa7d6c5c664b8109ef",
+        "signature": "cef6618f48f9db737416116e36e408881c7d0f14bb011996fb5543e5c0d67982",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Color.ts": {
+        "version": "848071d97cd5e7c2e5bb9abe138016e867e1c3f06ac7abc5931019ffdbfb73d6",
+        "signature": "dc6b2b20e314b2f8efe30ea8768490ad2b7abb878297332ef849033adfe9762d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Colorable.ts": {
+        "version": "4ebcfa23f8b3f8f4234a1497c26ea7996fe2bfa4d93a72d4e5711d094e18c052",
+        "signature": "85220fc801b4e19de683442d06ffc3e03788b73fe423163b11adcf8d8c33949c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Display.ts": {
+        "version": "ca4ccecae5188cdaa0c34cf66e31bb2fb723cd803c26b9f33bdb1b0a37a70ece",
+        "signature": "17e75f8663ac3bcf331416e4598149325cd62140f1c7efe16d514edae5412bc0",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Display2D.ts": {
+        "version": "f9697d817887f21b90f437e7d0dbb9d3ba84d164b0e9bf02f13ee1ae0dec4182",
+        "signature": "0ba5d58cfcbc17df4781bc5e2790bda9cc0b4134a124528c3559fa5b0e97b8fe",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Display3D.ts": {
+        "version": "282b259b7be4c75105b425fde40f8d09ad7a36ede571947b0c7be41ec6194755",
+        "signature": "0baaebb7207f38ee6b68c2ffc97f500ba6ca6e2d64a505a84a5d7b04934f0736",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/DisplayRecorder.ts": {
+        "version": "201dbb229bd86812f6f4d1ee1898dc358afd6ca9a4a383538c86eafb1dda7dc1",
+        "signature": "531dd659ddc4895202e1232961834c7eb82a690b5e2607c3e081ea34b0be5830",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/DisplayTest.ts": {
+        "version": "555b646df0f35240c04a34628369ea43594e414b6c60bf90c9130775bda4415b",
+        "signature": "042c43234e06a40817308f4536b1b27f2972e6276f9b20e2b4f9edf0116533a2",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Drawable.ts": {
+        "version": "88ec7e2f99b3230f8cf45374e26e4f7dd2624c64e63d72e418e656af9f418349",
+        "signature": "8e2dccd38a8cb62ee30369940d3e0fb1053406b92514aa8f72c712a1948cd552",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/FaceTextured.ts": {
+        "version": "dff2d07a4b7bf251abf935abda228769de7ce40ee54d45f874381edd19587de5",
+        "signature": "ad4561861cdbe098e591536c1a11a425e9a0dbf3fa7ff1a63f94163b57b031c5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Lighting.ts": {
+        "version": "754d735fdfe8d7fe657d1806feb5496d9dfa7f47e804541ca5fcfc431c4dd42d",
+        "signature": "bcc1d81db70053a6055f43660f9455d94935c8519ab60ecdc1b5c5799a7575a5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Material.ts": {
+        "version": "8eb35346f8054b149fc04b93a1fc2a05af1b0b14d4a4745e08aaeb0051e06b06",
+        "signature": "e76a4d74c014c236d4d194cc21e2cd08d5e23a22ccc30144861445e12d956a9a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Matrix.ts": {
+        "version": "3ae36bdf47457ac6a61fe2b10ee9a22aaf18c888fc3e7156be360c17a7ae0f38",
+        "signature": "a9d6a79f5f355f0e15ed0a5b070667b0203293bcc2778b6bb6e0617f3f95d39e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/MeshTextured.ts": {
+        "version": "9811b1fa3ac977206fbb451f707bbb41537fdd3b1948db67c96db7349a6652a7",
+        "signature": "060dc23f6e6a0415eb8406248819a891c96cc863dfdfbce064a5713a9c95812c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Texture.ts": {
+        "version": "5e6fdbd141652bbb49f2d06c7d34235cdc37d1b64e081ae8872ab34ffb1cceed",
+        "signature": "72e1c0644769542870748a3aba0f576909cb4aa4d91470836ac8876507bb3fa7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/VenueFader.ts": {
+        "version": "6db70ed58106e2a2e098397fd76779828a698bac316a70660cf57cc1a559c5e9",
+        "signature": "9b931be7339be6d237e0f7522989648bc6cff2eff2d4e7c4fa9b96c1867d894c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/VenueLayered.ts": {
+        "version": "ea8c952f0194e275cf778ad2e0cc8966e82a443841af3652f0a0a39bcd35af3e",
+        "signature": "5d9af7ef2fefd9d6eac5731dfaa9483891a3df7b4a1b389d6bf004857379e94d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/VertexGroup.ts": {
+        "version": "37938d3698cea4a3f23b1734edaf4fa2b64b21aa9c383f4fa02e2e8a65108d10",
+        "signature": "965346f4e53dfdf613eef1fb92caee9b50c4a67bb6da4ffce60b052eb8565082",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/WebGLContext.ts": {
+        "version": "86e6fee76c3cc277770432e70509e7910a5c8195c07e25b831ee20d300d9ec21",
+        "signature": "2054b2c51edf0c7bd2d08e8628eb6cbdf2877d0bdca13aabbfa268f2f8424680",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Animation/Animatable2.ts": {
+        "version": "e732f99c5f13920ba17fd305c44901a50e6c131e9acfd2b56ea174e95afebdf8",
+        "signature": "193a256c8594d7ed4e2ab23d7d969661b40bd87de9f141e6997619e11761b7ae",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Animation/AnimationDefn.ts": {
+        "version": "8baa6ecda83b44a20dd5daca1baaf731f0b86e1bc7a695758bc384a7a56cf0eb",
+        "signature": "57d7762e7c5a07a5ee44deb89381572dfb2dab07c94a9b36ffba04de3eabf68d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Animation/AnimationDefnGroup.ts": {
+        "version": "c1b5cfb8742801af14d3b0f959a62bcb4b6d080939a69bcc3f948c4ae64de77d",
+        "signature": "118ae91854738f1f2b1f8abbda8860847a3a077eaa994a5346286dd3d760aabd",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Animation/AnimationKeyframe.ts": {
+        "version": "c2f57f985f109a4f9fbc2cc204be27e76226ffcc76d3143b3aa8e7c45d3e96fc",
+        "signature": "79c5e2e9d30b779d766670c42faecc28d77a96dcf3e790a31d6d176313229cc8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Animation/Transform_Animate.ts": {
+        "version": "b26e76fbc3ec458932531f8c7e448f296e899016c12f6b01cefc5ab1f1336170",
+        "signature": "e3c4af80c19039a51cfd1bee42296352f7a5906257cbc18141172614170b5540",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/Transform_Colorize.ts": {
+        "version": "453a2d0d84c618af525af53370ee6b0b17bc4630d19b7d57b97da1f9785785d9",
+        "signature": "21655a4b4eccb7c69fbf7b3360006560374da980010ea1c088c8a12dab4e6d8a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/Visual.ts": {
+        "version": "51dfc9a5b2ab74f022be5263789cc8bf8ec98757b2f2b7f1eb5cd6e0b8e88a99",
+        "signature": "067da181137cc5ab256a20a6065bc311ed8627c0b7c85c68ccfb068549b6d131",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualAnchor.ts": {
+        "version": "af4dd81c5823a1dcba41d6aa38a2af78b6330c9025de8df2c8fd734f28a9955d",
+        "signature": "2a797a4eb5813b52077c75dfffe25f68ca31d3eb8c393e24a6717d3b0c9b45df",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualArc.ts": {
+        "version": "b7ba5c66604d8b8035c9bdafb84b7c03fd82284569fa5484810ee27b691551e7",
+        "signature": "66ec836ab987b433943ce757ef967fc6f2ba19fe595e287b06a534844c20e9d9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualBar.ts": {
+        "version": "720ca57287d86c73dfa29e9e9e31a0a105c04b8858fee377303b371aa0748057",
+        "signature": "4df226b1beb216f4fe25f2c93db006440275a698807f0d4bcb18966c5d274362",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualBuffered.ts": {
+        "version": "610b616816c7a1c5dbe78e807c51847f37f81ee7fc8f9a46baaa411bdcfe6506",
+        "signature": "e099c3e8d7a6201618d617978ec12539cd0e57c92b62836fec58c4f2b1f027f9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualBuilder.ts": {
+        "version": "2ba714380538b6f53f73dc7a393e38a7d1e87fcdebe58bae0319731127cf03a5",
+        "signature": "6c10ea7fee4ccb42b2af4018423d286ddfeefec10f9c5717068da1d3127e3602",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualCircle.ts": {
+        "version": "2a957ba0567437ab6dd62e113d9a5c2e82e39211f17ba5f521c3bd4c187f3656",
+        "signature": "49db348ad52acc7c42014f2182d644a3148d6fca3bcb03ec787364c11ae2ab0c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualCircleGradient.ts": {
+        "version": "7c97753e56b7f3827c39b4216f4fdd678b240aea8e799234bcb3fbf9777ea336",
+        "signature": "6d8b5ac6daf34b6a2b6233d60c46b26d2309b29a72a94a14aaa9f104c1abb4ca",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualControl.ts": {
+        "version": "b76461e8ac789558b9e312e83cfaddabfb9513f6c178e29ea8a4005d844afc39",
+        "signature": "c299925b340b2767f9ac65af1cd9b810ef456599c5cced07a5864e3369573568",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualDirectional.ts": {
+        "version": "0ba6d82d266f767cff54b0d87d32ec0a3ee8c27f5f8dff52ed208309a786de94",
+        "signature": "ad7055bfdb85970ee6098d2a40ec22ef2c226af8f62541ecdc730192bf4e5a29",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualDynamic.ts": {
+        "version": "2ae34f0bc507b9d5c292a27eb0044e073860abccc6904a034409f088d8eb3323",
+        "signature": "b5e9fbaee5a92092dd01957c875b3e559b32f5f31a6485fcfff16ce0c34bbe87",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualEllipse.ts": {
+        "version": "245d58d6a8cab329efa0ba48c0a5c78cdce8207c8a31a23420d57e04a92530fe",
+        "signature": "8c437717ef3afa57d4404ea5c787dac97ea2a8b28e786878940397b05deeb9d9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualErase.ts": {
+        "version": "c5e8e4b13b2814aab6da9a5bac52e47ef86647209560f28d12ae1be172995d4a",
+        "signature": "9bf9d62c9256bed26038998a7e97c1be28da0397e683aa261778d0542e3b77e6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualFan.ts": {
+        "version": "c283cf0c542b3807ae9875ab80e4da0fad8d73aec0e98304f9980e8e1844c542",
+        "signature": "0808ac4c635a6293773d8b7043e0cbe49784c2127d88fc4910a4d8fb0bd86d9f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualGroup.ts": {
+        "version": "20ac15fb8296b4e1a7231e184fe5a5e38ad71a51eeca29e30422f0517574b40e",
+        "signature": "00bb975c8540a7c7f8ea9bbc753df4ba75b59a67ff812a51d9a9abc7d7492937",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualImage.ts": {
+        "version": "0eb8a4526379ba845fdec63b6ecb1e0a70c92ffc317a2baebf32aaf8ab46c74f",
+        "signature": "06b811de4ec136be18ff0a8d1ea09e18e394906716dabbc731e4af551cf189c6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualImageFromLibrary.ts": {
+        "version": "ac819f2899b2bb1dc05876c1f1d5b2c3befd6dd2f9597fe1823fdaf17d6c560b",
+        "signature": "33156f7dbc75ab33db9048d00b04b45012d5b08a6d2b76709a47619f547ad3a3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualImageImmediate.ts": {
+        "version": "ea6ffaa513105ced9c1883cb156448bbc010f608dd275b020fb603d37d1a6244",
+        "signature": "8e9f84a1fea35b0a476f896249b62f55d2a505963d1bd298653b9c17ad0f9f70",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualImageMock.ts": {
+        "version": "2290e7838cfe72c6873944a93bb02f11ca4592f5914f9080e0e3b161d55d822e",
+        "signature": "adf32c51da4e4d69ab9f330e88c13d3edc6a8d7439c5c306f663ad1886ac6f5d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualImageScaled.ts": {
+        "version": "9160576142ff6cd96c376d4282472c6d7caa7aba5fe0826496bc84214c8d64a3",
+        "signature": "89cebb0d44fb1e0f491383ec1b9740952ab84c5a92de2e3ee01638b155df3dc6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualImageScaledPartial.ts": {
+        "version": "c1c07c6db53c42eb0a4fdc65288d6ad9c98b108b2023c3822815cf8aaebebc9f",
+        "signature": "bcc293accfe0738710fb2870e364f818d5c49dccac3c32f69ada47c3127c28b3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualInvisible.ts": {
+        "version": "7349f8e077ba09f6bef7d28af11cbbe43836db461ddc1f2da2ac0e6330beb70d",
+        "signature": "710f1e3aa44707a05504c3444b7ea232f36b813a816be6dc4d8b2856d5e161f5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualJump2D.ts": {
+        "version": "82c504363c3e02f91826fcfce357bbb831c4f21dbe67e7d93905468b4dd013d7",
+        "signature": "1d49ed0ada605d56f4c4460d589c4ff63d5cb340f2ce1d291f5c7d740f0ff39d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualLine.ts": {
+        "version": "bcf59c4fcfd53e6aa41a1dee0ed66e0c3de254a132fde2441f5a554b8e3ec1dc",
+        "signature": "f1d1560306617a923592f87b588d8cf74d00217b7663f55a06a4de02e32ced6c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualMap.ts": {
+        "version": "546d2f1790eb97f652487e819e907cf8dd365191bc712168c8b2a4742b2fbe3c",
+        "signature": "f70306db44307b8308db236edb1cda5a36952d30dcaea7ba48872d12312637cb",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualMesh.ts": {
+        "version": "8e5b2a89a7570c4a10d9222a56d39f66776bbe9eb6b0ba9f2d1fa8640c901e05",
+        "signature": "17436f5a2f54b9eda27c2709d37696f85d93b2f0ef565c03307d5f79ad73c35f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualNone.ts": {
+        "version": "2af26a6d9216da4a24a80c32e9c4decc8d2cdf0aad7c646e049e4875d41e50e9",
+        "signature": "48ae2b32e79bcebfe3ac142c9fb164aaea2a67183ec233e206e6628d9615288b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualOffset.ts": {
+        "version": "38fe06ded58325c9ec0bcb71892ff5455aa0969e167cacb0a5f0cdc1ecfb3735",
+        "signature": "6689c5945635d94208fc078c0cf423057c12f5b3c734f9bb3b32623402664a6e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualParticles.ts": {
+        "version": "a93455738caf206c3acae21a24a7e7bdfe0cd6c9bb8875492be52fa7d9a2f966",
+        "signature": "fc716ca46a90275f4a95704ae5b7a3885837c40e59665fe89d3bf697384e4104",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualPath.ts": {
+        "version": "43f6ae53bc223979b76921ce02abd9238a3bc3b078c88e3d9c978af5d62b493e",
+        "signature": "8ec3bb8039a765b570b3b3b048f0d8b43060a18431f219c04912b75b7dbc42c7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualPolars.ts": {
+        "version": "962d640601813bd1c177495ba033da567b53a4138f0428bb2094d06cb6cd5a38",
+        "signature": "7dfacdcfca5bb17a3d5ed417ea33bfd4cc6f660d2ef06e9dc041612d97963ff0",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualPolygon.ts": {
+        "version": "022f0eb03ea4df90943d39158abdbbdb2c24761ad7dc542ad63759c18670f4ab",
+        "signature": "81fb49366f3de6ea2b18e417bd150b2ce840fd62766eaa4aa357e95386993e05",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualRectangle.ts": {
+        "version": "b99d40d2b7868aaa7171c6baf95b12358455730b5eb63928300a389225c753fa",
+        "signature": "b58e65b5431228e10da346a5c6c1c9f1db908096cd610c34387c4fa98f9f920e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualRepeating.ts": {
+        "version": "6835c071341ae33a611c0a868e1f6a890f596e203162817a90de3eba5e9bbcf2",
+        "signature": "2ee713bc8eea87dc332f2571801099c5dd5d1385a669cd5fed091e64bd9a6498",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualRotate.ts": {
+        "version": "172d8bcc303151184af4593ed63c83a5105e2ab3479212bc682b106496ae985b",
+        "signature": "5534086fa153869380118cc7cbbb8b3e02661cedb3b17a059cb0a7829c24a65b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualSelect.ts": {
+        "version": "d3084675aaeafe1e0efab947e7e99f6da983bbe33d181f624f0a63923c203261",
+        "signature": "155057829461be74552cbfcae766267821f4e302d278f0977e56b2501d4283bd",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualStack.ts": {
+        "version": "6e27334aae4cb674a4059f70bc2ef46711162379a2dbd6602a7389dc0ab17bcf",
+        "signature": "8aa599faf9b42ca5abdbed21b0f697ea0ff0c17d781a0b9fc4e5f7b62020d83e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualText.ts": {
+        "version": "8a16496b40a5560774855202241e758e49834cd334477c1e887e73bc8a2eadf8",
+        "signature": "3528c6724c28e2e38818619615dedae5a5d948daead01610d6548a4c6f8dd77a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/VisualTransform.ts": {
+        "version": "29fb7fe8be259ac66862c2bf051b5619a92cedd73897beb1f03675033b8f4140",
+        "signature": "cc415339af44e97006bb1fd7286774a138733594300f5b3cfae9642e3736afab",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Display/Visuals/Animation/VisualAnimation.ts": {
+        "version": "f8db675c76b855fe26c632883d9abb5aa5470ee04cbd9ffc2145a1633ded0a61",
+        "signature": "a6ec85f7c93f09672cac4588fc4c250ee8414701ef8635b30e9ac30329494895",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Camera.ts": {
+        "version": "466b2fd257a83c8f8ad4b1faae1ba12da812720240edef66530df428a4325306",
+        "signature": "ad8ccaf4108ace577a084c90cc8ce955bdeddda57c2ce880bd5082786419dab8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Coords.ts": {
+        "version": "707050e10be7661dd35be1142f84553e97811ab67a2ed8c0143a5e4a4b886045",
+        "signature": "a9da0ab57e16f1c5fc2fe4cf9f3d2880a0ed44cef6060ec0cb25d9ad11d849b5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Direction.ts": {
+        "version": "094c3d9e6d226d7106eb904d82a78df07437a03295555140136a54bb2841742e",
+        "signature": "72526a774f6337e9417b2368413340979ed1baa84b4f6082c7d326fc04914cde",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Disposition.ts": {
+        "version": "9d4d17fdfbc2e12fe80265b59ee782909f966e0bad1aa51b92b492e74dd34871",
+        "signature": "71cecd0d42ddce3913ca0d2c0207ddff4f0dd517f77f1ea9e7277a3b8c0d8e56",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Orientation.ts": {
+        "version": "62934a39d7d001e8b6417f8c04fe0ea1cdb7064113d1ed3e65cf294022fe1172",
+        "signature": "6f0436e3770e8950e5263904c4fadf2d8e32d71f5ba53b7236b3098d8701ff7a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Polar.ts": {
+        "version": "b22d31fde6c1d5d8570d6c799468c05e18a19653e97f53d285d5cbd7eeb21caa",
+        "signature": "803699473b5678075a60dd6d355fe65b78887d3144923dee5ccc63c43f48eff8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Quaternion.ts": {
+        "version": "936066d9784a675a906839df6b9527bdb43636d551930f228282d8e0294e9b91",
+        "signature": "3adf83872b0e4dab0025a2e398e700c37315d0c783ce1185667e08c4e020ccf5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/RangeExtent.ts": {
+        "version": "24e064a549c3074dfe942c233803b7e1d647936dd8d02991170076d44bc3891c",
+        "signature": "03801998cbe543f9cb1afe738362216ca8ab457108a255067c146d3fc61e2861",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Rotation.ts": {
+        "version": "583432ecd614eff6be78d789c36a60dab3930943f105084749986d52bc02512d",
+        "signature": "e8754cb4d06aa4094e5fd23102520bacb6e9b18d99e8ad433bd9d954dcbbcff8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Collisions/Collision.ts": {
+        "version": "0cef90e9d28e57f0c3fcbff5b0e563dc734a1456b2dbd4fd42a16920e65fac91",
+        "signature": "77baad840636aad67e5b1d763ef1298c2169631a0b397b54d690ba0ae06b1ba9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Collisions/CollisionHelper.ts": {
+        "version": "3ee63821241013d0564ae41a9b64bdd4b1ca22c39acfaeb8001dbeef61fce5e5",
+        "signature": "2ee17d2769e2b7667ccdd7d015b0e31750331721e365caab313a163606315c10",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Collisions/CollisionTracker.ts": {
+        "version": "b1b3f7d1d107a64e7c3ce8000da2ee75f442d5d6fce53995b6ab6870f888fcca",
+        "signature": "e38f8ad04af89747f55ea56c4472b9b9896ed143a2bb1adecd91302c16d30341",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint.ts": {
+        "version": "e1745672caff391ab60b66f35b61693e3bcb8de27ca0578cae213260a51e2a40",
+        "signature": "ebfb422ce25b666497f6611c90121686c480cbf6f0413a32357e568dad0da17b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_AttachToEntityWithId.ts": {
+        "version": "dd2e8e578ad180956f68f24f6c48c18a4f87e3bbf8b67b9e83bf2315db1448fa",
+        "signature": "ad038cf824dcdb369478214b647a345fc23ee9bf072d8989808bcc190d15dfbd",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_AttachToEntityWithName.ts": {
+        "version": "34d04b1846e3226d5c49052cc32e892303c0954b3d395e5d9ef94523690291bd",
+        "signature": "c24fa3f0b224c410d21b9a8486faf98b25dcb5ef81b62655ecdf1713d9b8f556",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_Conditional.ts": {
+        "version": "30ac5bdbfd32248cee14b76f55948efe57da51b0b340e73e9671f0bdc4c392eb",
+        "signature": "49ebebae7cc1012ca0aaab41051d828fd41bd4e1c80ba3db00b853fa043b4681",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_ContainInBox.ts": {
+        "version": "7c38463edcb1c01142d4991b54b8d69f8251aae54af44d1ea4556f4255579074",
+        "signature": "8055fefde5ad2db63aac82f0fbb767f19c53df92df456484f7fa9622527502f7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_ContainInHemispace.ts": {
+        "version": "eef6a5baec85fd6617ad723091d031e7551557e46779e8ba0fa016b14b697e47",
+        "signature": "eefc290bedfaff79bd65b936b25d43448004a144bf87abc440f7388c233696fd",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_FrictionDry.ts": {
+        "version": "7bd3fc92e351f65db800a0e3f523761f502b3d7d60db6588f9b1c6be01d27542",
+        "signature": "72c359f601b96f094b170c27536d0b849f6602f08ac06f0ebf92b1cbca7e32c7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_FrictionXY.ts": {
+        "version": "c550d2d6567e660451f29abb590ab369cc327af1a9a2e315d38d866518942e3f",
+        "signature": "cbc18b3ba599bb9ec81eb0343a57b6f970d429fc7eb28427b942347d8563af8c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_Gravity.ts": {
+        "version": "a065717a5c93a85d66a9956b15207d305e659367d5b5aad4ae2278f0b8da49b1",
+        "signature": "fd5dad7f2a540db0a302ce886b10a5558f4317cd675b8009c641c98905d53b9d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_Offset.ts": {
+        "version": "1019aabb685c9a20483fb7494b4de03bbe539d65e5dab7e10c52e1f5f9ffe946",
+        "signature": "81e57adb105ca909884e66513532161387bafa27dcaabcdb1bc81aea75c67f22",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_OrientToward.ts": {
+        "version": "18bc798920af727148113dbdba2cc2add1b658ba05524a5a230af995a5a314fe",
+        "signature": "09198183080f997160a0fe05726afc4b7c6a7afa80aed4db071ce796255d82b5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_SpeedMaxXY.ts": {
+        "version": "1f1f45663ae010bfe720b83f58e2781b1ba97a87039687eaf061502eac814a42",
+        "signature": "593cbdaa56ce3b16de27381be322bf204de52babb95a0fb729173e81fad29529",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_StopBelowSpeedMin.ts": {
+        "version": "f3d5447970b62149f4a33e14da9e6703128efe6fd76728ce6a73dea69c8fb638",
+        "signature": "2c97471dd6282a5aa0530e19a0438ea2c7ba56c0c235246505b5dcae42061c5c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_TrimToPlaceSize.ts": {
+        "version": "bca42d7a41cc2c7437c6b6cca6dba764aa1f2a0851535768e302a4660f5596ff",
+        "signature": "0bbfa5482ab19a7c1cfa20cf2267b71c0879edc22765d191047ef3d1d14ca787",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSize.ts": {
+        "version": "ee4c3fe0a84d58129e74d24efb0ac013c509ed1b726cb184db42b01920794a38",
+        "signature": "5b3676de5dca358cbb95f95600b3c06c7f71607ff360e060c8d03f4a5880ea29",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSizeX.ts": {
+        "version": "85c38c8a5916c155a1c787018722abb40ee585d1aa0be8065643ddfb933562d4",
+        "signature": "73f4eaa59fe8a0cab75533bc841ab3bd56954377def887a80b6627d502c26fea",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSizeXTrimY.ts": {
+        "version": "a120008719ebdd3e39e1a836df8caa34900127d526c604d9fb8729d16c9d8556",
+        "signature": "7a8450b34576288e72c189bb60d839a22a81092bdf6f62af1651ebc43452433b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Landscape/Landscape.ts": {
+        "version": "f756e041514f36155d750b4a12799bce25021530caa13fa458adefef81cfc03e",
+        "signature": "a952f66f65e1402f12a8a3202918efcaf0b423bc393e56a57b45826552fc8c0a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Network/Network.ts": {
+        "version": "1cd0e17d966f2cd6bc63ee4501f31f2a14e1536788dbae3fc0318ca740193dd8",
+        "signature": "0704023653d6371b3ad48e68407becf1792a8f8503e073ca986a6cbeb584c5e8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Arc.ts": {
+        "version": "49d846d73f8608dc3382237a4022e50af017a8a6e9725751ad9d6d49497674c9",
+        "signature": "b9b31529a34db7fa100867042dd5cf829816ea49f03b4e49c8baed3302fb5e66",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Box.ts": {
+        "version": "ccd899c32730c909c7fd1e2327f9c2bdea6b7f8b62d2fd0d85bcd1547073ecf6",
+        "signature": "99e69d2eb84d8b66df5d93452a20ddb50317904ac29f28a174c162d80ae32c1e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/BoxRotated.ts": {
+        "version": "d8bb3f10e87f7ccf86563767dd6f726cf57f099189f417103acbb515c7444ad4",
+        "signature": "8af57c73d698b12966a1c3c3dccabb756f1f22043fc17bb805cac22425980a96",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Cylinder.ts": {
+        "version": "992a6c1d561cc578d233a0cdc4be19abeb0e3ac60c8d2eb272c73142c01f07c8",
+        "signature": "f98e8a3c02bccdafaeb0f497997154ee39f4900e214e54ee788c7237d3b0425b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Edge.ts": {
+        "version": "cdccfdc5082c24b3ba6c848b7bb7baaa69d240c34be043b824bd3ab735cf7f16",
+        "signature": "766b18370c2455b83e8afcbe31cef0538456c37f70b688ff8379864a912a32ee",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Face.ts": {
+        "version": "74233358ef2fd6c95d074873341032a043ae6083000e10d34e68259c43c89453",
+        "signature": "4eea02d7075bc860b0eb466cc3dd816405b522422c9ea717f0d714a7e9baa13a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Hemispace.ts": {
+        "version": "9628b8d9da1613c8d349cc2f54438758ba284dc7dc1558deefefdf4c45483cb2",
+        "signature": "11df1a64025974af871dd75784b8a0ff7349b76787270328f225089ac883e1df",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Path.ts": {
+        "version": "03eed168fec86079babc14d649c0ab764c01d414b70ae245389a05061576e77a",
+        "signature": "9a263cb34c55128d6247d3cae300364e835703b8ce1ff10890e8176038a9bf80",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/PathBuilder.ts": {
+        "version": "f3e315a8e9f66d3b7c55e4009b8ba5439dad8d204ed693dae1ed6b96a40e8caf",
+        "signature": "8dc76eaf6ae3c5fa6c8a7627e6a545d27aa7355eee8fdcf88bac407850b8da80",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Plane.ts": {
+        "version": "26a3aaab8eca457e9e6f909e5aa714606b251b133bdfa2383938c52b850187e1",
+        "signature": "81bf372ed1ef89357c70b200b20545515d9229ab290ae3b004f8c629756248ee",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Ray.ts": {
+        "version": "5b91a161dae245907c0c6987002f79865974f8379cafd2dd47097862616eafcf",
+        "signature": "2a4a79537ddc8905a787a4d080ac679f1dda7bbe303d00427987e120387d9bd7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/ShapeBase.ts": {
+        "version": "3fab1c204dcf772ae9e410045c14fee923fcc2af698d1d64fd96769a7b5ee78a",
+        "signature": "ad22e75840563efd14a1f5340a447786abb060e6d5773725260b05dc581c0710",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/ShapeContainer.ts": {
+        "version": "83d968852388108c5600cfe9c9d696ebdaba57f6f4ceace9278b46e8241c4594",
+        "signature": "a85fd0f7290e007488609ad6443269a6ebbc3292776c95afe5d1bbf6abbf7e7a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/ShapeGroupAll.ts": {
+        "version": "f75f7c3e912b1f0a9b6d3b4f3937998b68f25023c8d3116a48cb167caf4034fc",
+        "signature": "e4b21afb6c3a5a814a8146b7adfa5217fc03bf84bb33b6d54d5f3b80491c7483",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/ShapeGroupAny.ts": {
+        "version": "c7cd7b9e525c239e248ec6fcde51bf2ff05a944bc3ea2783eb92a90d09fddb8a",
+        "signature": "0f010c08bac39567f434ce4b4eba19572fe67f898a1f650606c82b34313c9ced",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/ShapeHelper.ts": {
+        "version": "9bf1bc1eb806d18d9f501e6c1bc5c9371fd15178730a65c5757b82e4f1de424c",
+        "signature": "91b565df89b505406a28a2329eab434f7c1b720d736a0032b3e78a78e6c78eca",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/ShapeInverse.ts": {
+        "version": "af04629e2c99f8166cd4a4dd8adeb9dca0b81cd8411b4a312ab9cabf08c94213",
+        "signature": "6ba3d9c19a043f26104378c06ea3d5ab7203822e51caa67806ea7a8dac9bbdba",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Shell.ts": {
+        "version": "54c43d015bfc282d78e3486feef6cca92923a4a833939859f1e32c4045929710",
+        "signature": "f22d694260edccdf94537f9b472d83bdfde00678c1c46b2a7e123e3a7a130540",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Sphere.ts": {
+        "version": "51e898e5531f080e0259cb99a6a33940a0a0000308be659eaffb627e45a2eae0",
+        "signature": "8edab4852cf10d7e462e5830e87d0915b5d7da135526585262bf368e630aec53",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Wedge.ts": {
+        "version": "d6a48da65e8a1d3d7f6fc0e5e897b10a978800b2c6a6e48560b0326b5be5f135",
+        "signature": "b67617226358ec31b5a7452d676da5303dfbc27ce54d99d48923de5dfe997104",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Maps/MapCell.ts": {
+        "version": "aa63ef3a08c4338b11c74561371d5cb326be8e6608df1f4ab5ae6108b0228d73",
+        "signature": "6920c9a13cecf16e2dfd5784c2466a596a1c3896549cd425c2a2ffbde2b62703",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Maps/MapLocated.ts": {
+        "version": "736bc024f690e89d74ff2061345e6dbd07f6225b8df5aa2a20ec1e3061e1aeea",
+        "signature": "b22dffbd87ccec5b6b83666b5a1792138aa314d3f499d94b62b3ce89864de209",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Maps/MapOfCells.ts": {
+        "version": "1d7a32eba2baa1b9e745d848b3d7583ecdb716618f33ba423f70f282985ab84d",
+        "signature": "2b69a81741b815031ee10bd677986b7a8820a5b9a3d03d49541b536757dea740",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Maze/Maze.ts": {
+        "version": "b776850cdc396f597331c5a7b1d06ddcb413cc76c3cd27d1b08bc5afcb029f1f",
+        "signature": "cb5ae075b0a0ee91cb9341da61c6ab7093a72d11bc8216352868a8eb559e7ca9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Maze/MazeCell.ts": {
+        "version": "412c5de9ed80b9c65a4292c2429334a4fcd57e113f9744d3bfc6fb3e21b236f4",
+        "signature": "0212caf280cef1151cfb87d1a88dbd23bfa97f6e0c5ede5abbb8e66063d2a49b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Maze/MazeCellNetwork.ts": {
+        "version": "24c98b97a370ee8b7e1f5a212ccfe1e1e3ace6894d00351ccfd9d06796442560",
+        "signature": "aeca77bd8b3310412ed5e9fc289b1a684131faa4822c71f0ce8e6acb6666f964",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Meshes/Mesh.ts": {
+        "version": "440902ad2b7fd524276d1898e791a246e48f9b393a0381cf3b10bfe0c665863f",
+        "signature": "56ce1823be694644cc1388ba78f129ca58e439ce141fc2329b7f04d27c9ed96e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Shapes/Meshes/MeshBuilder.ts": {
+        "version": "28c16efe5094426f2d7f8ed58f2d0b32b7b73fd56c16d1f05e62bb91cc172c3d",
+        "signature": "108f9fc787596dc45108ad52272b2c6aab4ce8ef994c7f4a531903e128719557",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform.ts": {
+        "version": "2b3d05165ed343bc04e033769c9f27be9a3200f626d143d21697822b22854a92",
+        "signature": "c34e27bc8b6c9d8601d9ce8fe826e5a1fa228bae6d780fabf92c3691ba35df36",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Camera.ts": {
+        "version": "d8ef2999054683e9f899db7cb91e83cc39dcb4cf37c2cd5d772505b269fe2ffe",
+        "signature": "42702e7627097d40f373f056829e45fd95ba920a88cd668744399b6ed94af777",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_DimensionsSwap.ts": {
+        "version": "589af2ef2507005afb914879549897197dcdc1b4adcfbcb8a9904a7cafb6d1bb",
+        "signature": "1ce66d34cbb296f88d12ba03a78bdf63db9192623f6daf91714468bf89987403",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Dynamic.ts": {
+        "version": "536f63307456431208b1ca24456812b16e8761ea5b1b945a9d3f1c92cf8f6b6b",
+        "signature": "bcc829faad7cb828fc4a2792abe51f3201ddc6b6e94ef7e4cd03115e8300a719",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Interpolatable.ts": {
+        "version": "9e35ecaeffd06a1cc68b1a2a9ed1158f90bd84638ba1c8aeccc4a03bf087ae33",
+        "signature": "41023977ecfdc8b374f0610479d33ad0be3f1e3c1a2d66f264e77a77acb73621",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Locate.ts": {
+        "version": "0c745db6f20e9871bc820a509ca1aa82f874271eff85a48866534e66049d970a",
+        "signature": "7c8748ebec5b7ec66085bcf062aac833840956ac8b14bdc75d84d997b66c7672",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Multiple.ts": {
+        "version": "e620c3678a9814ebca2a449dbc288b90daa5b69521527bba52a3041c702ed169",
+        "signature": "778a428cc4bbbf92e3068b855c3170ab94049a004346b4c17bd7d06161c967ff",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_None.ts": {
+        "version": "30c07be362bc24f475a710ead668a92ffd7bb93e857cdfdcd4541a9455d4c8c2",
+        "signature": "30dedfe30c4ded1361368537a41d99fd0b9825a2c38bc04fa5577160bb5cb62e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Orient.ts": {
+        "version": "c84622946fa11e42265166a5af6bf083e5adc05fcaef30743d53d74ae2d2866b",
+        "signature": "ecc080759afe1f266bc2b062e88f80793c4549d87fbf00b3a65cca5a3a9f1df3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_OrientForCamera.ts": {
+        "version": "1378913550e208413870f34022b31be7f2ee81d16c18dbc58af4745e09f40522",
+        "signature": "42f4470f3e0d9d6ad9e2a66d7964b594348a696f3341ad0e9ad39e4fab22855d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_OrientRDF.ts": {
+        "version": "b3437b699a0d82f337f90ade55306762a8119b79e4a22a1194b0b35e439d5f88",
+        "signature": "47e6f4122cd8a137fdf8ce2151f41c098c48543fe81c2f0d58069c0b5527f876",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Overwrite.ts": {
+        "version": "556040a58497b3b0b96966aad8642e0d1ab3d60516be133078e675c102d94661",
+        "signature": "4ec3585b8b7367a6bb1867bffadc5effa70d2e3edc632ffb59fdd2831942b12f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Perspective.ts": {
+        "version": "eae4eb6a66f96a4cdf5e85dba1e46c9f6b21c5d36c123ce4a59c8350264fbbdb",
+        "signature": "60f0690ac7fd6942c6cd5ab36f220ee84896117c8c6cbfbeb86859e06b3ab20f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Rotate2D.ts": {
+        "version": "2641bad048ef8c8c2bb3132732f53fcf7e6f6ad08b65cc6f9fb29040982aa9c1",
+        "signature": "defe33f0498340fcdab511cd91ec7f97176749e8198d803c2132cf9b7681c6b6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_RotateRight.ts": {
+        "version": "e31e295ec913f5d153151a5d6c622020ac22e4fffb4fdc7f896aa47675897676",
+        "signature": "460847c48b43b403d1b33395bed6cfe697e0772b99a09186be633e72824ec4e1",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Scale.ts": {
+        "version": "15312939ecd7ddeebe8fbb27ed3014fd879f7c4e11a3d0afd51bd16541b365aa",
+        "signature": "7051d855db180e3e596a96675dd0344300c0b276ac84adeb57fbe6807eab1150",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Translate.ts": {
+        "version": "d94ab9d48a3f49a4b0fcf8eb388bc6278c141c9235f30fd3f8c2813297183b74",
+        "signature": "ab167849b0afec95f352c972b94aada1947f732e3e50845ab26a0490f4864fe7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transform_TranslateInvert.ts": {
+        "version": "bdea6172f6c08100416bf32a03e6638e1a47eeab9a07fd0286c952fef7c4e021",
+        "signature": "0fff88573a7ef03bf0cc8552f095bfb49afbece9557cad5ec46523d7fa922b99",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transformable.ts": {
+        "version": "b3f0214a5e97932682ff76f166d8533007fc2e3136c05ff39dd1383c87f2fba3",
+        "signature": "26d41832c6792be716504ceef6da362d824d9c7911c501e1e969680b1f979657",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Transforms.ts": {
+        "version": "3c23973fa1e3e87bc2838590c9e78e1f1abc564600a4df417414b5a374077145",
+        "signature": "a2aa03e605026235d02ea31b6c8e67162d1734c03d501049beb0cbb91b5fc03f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Bones/Bone.ts": {
+        "version": "2e7a659a938786c8c772f4e820e2d356b15f3b30f18d5e4a4195d047916e0744",
+        "signature": "025f408b884517cec09cb8c303f2930fff3878c02ff24cbcadaec5af15830145",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Bones/BoneInfluence.ts": {
+        "version": "29e44ceaf856e035b5e37213d24f756710a7aab91748d76345ffd5508fc736b1",
+        "signature": "a1e8f2668097064046a077363c299ffe3293fdd0d4deeaec1fd5062ff9020b76",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Bones/Skeleton.ts": {
+        "version": "666fdd56679eaa28a9b0a8d1ca84a236e3234677f4dc19c780568f5e29eaea66",
+        "signature": "fb71481883c6d5c2ae6b5fd09e9969f34b0460fe04c5262df6562ca55ba55c55",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Bones/SkeletonHelper.ts": {
+        "version": "d037ab4ba6ba6006899c33b21583053dab83e9b58a3991b8d469447da292d496",
+        "signature": "1cf672fe61917115e9721b53463af1b217f6403529df55667ecded0e6a438744",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Bones/Transform_BonePose.ts": {
+        "version": "793c82680d500d1973104d5163e78b382e375a1ad1c1502e4ae3c8748fa3e56b",
+        "signature": "33eb5631ce417146062486cf5f42362e9ef39caf45fec37763433c106d21307a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Geometry/Transforms/Bones/Transform_MeshPoseWithSkeleton.ts": {
+        "version": "d1cf6c7cfd6f368e87f57de344f4168e90b4cb3772194bbe21c6859cc8e914a4",
+        "signature": "d5b89e3777bf0aa2e449e43f59a0fad60242e43f4eda0460fe435e9a35e67df3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Helpers/ArrayHelper.ts": {
+        "version": "beb1da61cb229537fe18557273b700d7e4343e600beb3db54e2655574efe6d06",
+        "signature": "059fc851c3d02c794286b813b03ab72cb1b7accf81ad816154dbb364fc18a005",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Helpers/ByteHelper.ts": {
+        "version": "0e7d6414f8a14bff6c8178b0a426216f48d772ea8789a195c67e28c06ef07624",
+        "signature": "2c0928ce022af107eba95a5ba50183de24eaefaec89748aeadae496b2e7fe957",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Helpers/NumberHelper.ts": {
+        "version": "11fc9bbdc613f6dbb631c9807cbb17ef5b312f31ebd0afb26fd53ae3d14480e1",
+        "signature": "ddd7e05a44bf1619ce95a64a987408f48c3c8340e5da37bb8980f31b0cd19f50",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Helpers/StringHelper.ts": {
+        "version": "657f98b3b984ce5f11eae3e6b683bba725de2a9be26f049f47f63040d1fdbdfb",
+        "signature": "1b0a671af56576cd54f09b57609c5601817f3b8ae8b9167e927658b2a9d4c60b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Input/ActionToInputsMapping.ts": {
+        "version": "c13150ea2f8a51419733feb86184ac4b31abf233a0a48a77eab7e32c67c76f6b",
+        "signature": "34f14b21f5e463a3a130bc99940276da27be18a2e8e490473c9763d527a826c6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Input/Input.ts": {
+        "version": "ed625ca529b9d5ad5abcde8f213ef38e2555685c9e838e04f0b471c0b5c2331d",
+        "signature": "d714d3d421ae7f0821e2d7940fb3a3f09539084c75ca520f182861e6f1c22a8f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Input/InputHelper.ts": {
+        "version": "1af3f31b55fc6a71959af6c14838e9d3d68dc37aeb1855ebba96414ba3257757",
+        "signature": "536885b11534a937ddd0c60827cbff55b6c07f230ec3dcda6ac1bc68c7463280",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Input/UserInputListener.ts": {
+        "version": "5719d1ab69985cbb0e330be7fb47ae704f2b80d57bca8bce4dc968fbc9eee481",
+        "signature": "6c8f3d53d8661bb3a21560d8d2f4acfb3afea10c429a0199a07e1d150bc1c232",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Input/VenueInputCapture.ts": {
+        "version": "73ef9c2c7b4ecbe72a78791871c277960deed8869c8e965e7b16c7cfd5d695a5",
+        "signature": "887e06bdcd56a26b3da08de75457ad13b570a5feb3a55e137ba73205b550fea5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/Audible.ts": {
+        "version": "5c9dee16e914f3efd84e03d312b9b532d7c8b571ec96e80c35c07eb2b3757a9f",
+        "signature": "91068efd50e9e5fcae3406a8b7d2aa595965b6f9702f0197ec9fbb16e1166334",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/Font.ts": {
+        "version": "b2703033ca55ac46acc29aba8dbc0fb2249877c10c365ef00801624fd6a74bc0",
+        "signature": "bea2e9a643ec58cfcf27eb22b7df6ef970b98e6eba85718fa3d8acb154d7d46c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/Image.ts": {
+        "version": "29378a590083f5191ca8cdccd995bd4363fff7f1e3c79a6bf94e2f34713acc05",
+        "signature": "ff90c8109c157f666f96dbd94f512ae9869153a9933a278dc9d8d81bec55c7ab",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/ImageBuilder.ts": {
+        "version": "36ad80bd1a57105c521e68b88e8c011932ddd2eb426e151d88cdeaf330aaa6ed",
+        "signature": "c87138e9e6766b00f286d1c7cfa706d7988b5e9c104bb27a8de62fbab7cfb370",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/MediaLibrary.ts": {
+        "version": "01e7807f1666759dd6983ce480c7ba0d09785fe54c3f8c88790aec7664644024",
+        "signature": "b5f5d2b7e0e5a0742e978781a6ed60ceb0c3c695d69f2ecbe647bb8a79b9e635",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/Sound.ts": {
+        "version": "98adb17b05416e050ec0c14a57a2d805f59074b836c75e680f29f1c78b86b606",
+        "signature": "d67eb3bb280e63e4069fcff5d3ff770744d03771bfea472b6bf3bd3577e94272",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/SoundFromAudioContext.ts": {
+        "version": "c0c446b90c041629732302cddc63da43cdea610ccec6d3a511349bb733a4f4e1",
+        "signature": "5960fef90815bab2442f97ef235e4884835a462ff280942dcac24f8a040ec2e2",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/SoundHelper.ts": {
+        "version": "868d688b81f8d0aa95f12a349cc71bc27dc6b33e2ec9ac702a3772896ea2aa39",
+        "signature": "37065c3c4b358d8090d5ea8e645268803089ec05696eae4e84a32944e2198ceb",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/TextString.ts": {
+        "version": "f865f5b9d73d62c687c221e9989b986469536fe0881a256650e30687d5a2795f",
+        "signature": "e4acf0723f35ba91bc10b12d13911ab426de759f3e439f295a7b20f3c7419dfe",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/VenueVideo.ts": {
+        "version": "6669c0c30169d7556228db78119c50600ac9a21537882367e3cd1656c30aeccc",
+        "signature": "58c604317efb6e64bc4dbf9ba11316ee89e3079a911fa190bd82bb6ac5d3706b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/Video.ts": {
+        "version": "1ba91ec38188093abc947692c2782f256f3546522ca96ca6e95938ca57cb7597",
+        "signature": "ecfa4f156f72c12097947791f0009bf632d3919200214a4c18499b415fd38fee",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/VideoHelper.ts": {
+        "version": "529a34c15707f8f36c4e5ab5bf18d2865a30434b33a603beef8d6e940c566269",
+        "signature": "9fd07be0eb36e82f33f64216a3c8bac0076a11d2951e2c7efddcb45d0ca78beb",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Media/VisualSound.ts": {
+        "version": "2b97549db7cbf6d6c2937594701755f0e9b3cc2f653e43df3f034f1fc87bedca",
+        "signature": "11093abc1481ebc7201b55e91dabe25892fd41b6bccd9f421d4d5d90d5fb5c06",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Clonable.ts": {
+        "version": "e7d58fa217bcd4ca05d354a072e5d0cf7922a85e269f3ec9370107a24630d7a7",
+        "signature": "60ebc102bafa60fef36bfa2f14cf04a4628699c2e5ed3defdef51a2578d3539d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Entity.ts": {
+        "version": "033309b23e1bc880f3da99c7f1b1817b7e66e2177d971025f19fbb3205448b41",
+        "signature": "bf8fc35e78719d41befa96d02986bc0c80fd26e91cbf22d57a27c69202a628e5",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/EntityBuilder.ts": {
+        "version": "5fc85e83d1f2aaf5522712ad69c513f55b1c40fa563e4264f3319b4fdb3cc63b",
+        "signature": "7c22c70574d1e80f1a76f9177cda8d5871500d8a55fa08047443f65e1001c5ff",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/EntityGenerator.ts": {
+        "version": "a2170dc94cfa9812b1b4d349822ff3a67befad4be56ab57156dec57e7fa163d9",
+        "signature": "ed2972605ff63d585c10eda5f695289aaab0581ca6e056a0e62d7a69324949ba",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/EntityProperty.ts": {
+        "version": "7e3f0baf521213811234504d2274bffe4ebfbb378735c5e02c7530967dcbd47a",
+        "signature": "8a606820f1faf2afa463f8309450bb7a35bc2dae6ea58f8b0eb52f36058079cd",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Loadable.ts": {
+        "version": "dbd1af4aaa9e042f6edc1425da9889ba7fe1f22c79da8b824165776ef802bf41",
+        "signature": "297d0cafb304b3fe8e6f1582f4e33073a2c10212bc425b978a7a882c5dfd97c3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Modellable.ts": {
+        "version": "9270275370685e3e38220c9a55b1692f929d40247163bf1c43610f7c97c83d57",
+        "signature": "0aa41d0b09c4efe603a75d1956eeb613ced350bfdd0cea9d3772104fab38ebd0",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Namable.ts": {
+        "version": "42e95f0d46767d2a3d9969f556edcf778601c51ce0a7a9439c077f0914a7404f",
+        "signature": "ab5aa5dc1029e362a62b8fd48b5f792937bc53da7a82796a3fca1ecce5fda5b2",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Playable.ts": {
+        "version": "2c71bfa1c2060cfe98f29b37c651ecb038c50111f3306af4f1958dd464dbaaf5",
+        "signature": "b72700d5844fa0e7918e5be15e137d3e3c1d151028727503390f538d11fa65cb",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Routable.ts": {
+        "version": "ba64d04c5a6a095fb8ecab5e1c2f46db5589a6af6bfab645b121ee8fd3c22db8",
+        "signature": "a995f0595f4fe460c3784c98d83cce8fad624cd2c0e936f604eba2f204757cfc",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Selector.ts": {
+        "version": "18f0e5a26983462cff9b1bc5880be09a7db3bbaab6ff6d4f4f567e626f41b31d",
+        "signature": "ef1a5a0e81d967a011b731ddfeb16dfbefc69348d1b53a093c9209e3cef432bc",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Universe.ts": {
+        "version": "b57eddf1743706b0ba7e9fab4afc4f03ed378b6d317329b6fac00f0bb27a7845",
+        "signature": "86ceb735d9f837247805df28b103d9d5b6888b2046b6aca2b66eda5e6b34b797",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/UniverseWorldPlaceEntities.ts": {
+        "version": "302a427780c79bc95e5cae892e2a5b3c2f7ac21740f2f5e4368dc3efd0e4a98b",
+        "signature": "f598f09c0a567e9f1ca945a29a7a6f8af47d70e792aad3c123bd273225077320",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Venue.ts": {
+        "version": "e209a2126623ed0ce3a5d3aac023c69f1f117e04108a4446ade047ee39448661",
+        "signature": "2bf2f8a9ebbe03bdf061126b0f45e27bcf28c9fb719180482afd4206d4b3f58c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/VenueWorld.ts": {
+        "version": "6cbc0af1eda9093f2c964e1eb07c12323240740dda94f4759782ae74e811db5b",
+        "signature": "1b5c707f3d80e2d17f0719db563faa6798c7566c53c8e41b6b1f9568601eaf3c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/World.ts": {
+        "version": "2f99d705437479ee9f2772fada6307126d9295f5010299407e50d8aa239703ed",
+        "signature": "1a23f81fe1bf7e787fb84bfeb940805341958112ad198abdbf6e65c4745310e2",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/WorldDefn.ts": {
+        "version": "03e64f87f2f9c61c4bc97c61d50ca388ad2e71d619cf3e11fa44cc29e7679471",
+        "signature": "567b776288e19464904f535500b5d33ba1905a3aa07dd250e65201f7e6ecc216",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Actors/Action.ts": {
+        "version": "4d4aea48f9aa75e75674b6eac3ce89824a52795ce7cde9dd1aed9db87e3b1a37",
+        "signature": "8f58ae23df6eaa470dfd9bb3d5f451dd833b9be36a56085dcbf252f47ce816a9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Actors/Activity.ts": {
+        "version": "1f24bd90bf059785c90d4053e572a911cf21db160d231bddb4a5537eef815eb6",
+        "signature": "cdae03dab693591c412d9bb49e0e5121b64e92396d94591318ea36b8615bec13",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Actors/ActivityDefn.ts": {
+        "version": "59d44be91275eb9137aa27c4ef39d4914bc64a18587bbe3dbb75659767776957",
+        "signature": "52020c8c4f0334f9c62c1fbfc21c870db1c21921988156bd5453d1a30fb969a8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Actors/Actor.ts": {
+        "version": "cec0a8b7867e571bb374893c1b8307913808a1d57e8a5340b2a09ecdb5a1ee4a",
+        "signature": "2c5c9170ff8fb7be36e11a1c036a91b3688e97f15b1dd5af564906e0a67b5a1b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Combat/Armor.ts": {
+        "version": "ac49bb0ddcfe2f2a513a778b43ae865092791141a071b617399e05910b1aa486",
+        "signature": "6724b4bdfbb793648c869ee3d92e5cd0866ec84576c165f4a728e7af0bcc98ae",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Combat/Damage.ts": {
+        "version": "a43840fcbbbb41a3a6b5c01a51b54d17eb54783ea35d061f2bb215184107c40f",
+        "signature": "14d1dcd441e200517d7056a7f5d9587770d62efc6cb8a23ce7583785aa71c9c7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Combat/DamageType.ts": {
+        "version": "16618acce39356004e53e35007c3d5422f2b3aeb10fbdfe1f9aa237a13002c77",
+        "signature": "86920d29e0c0094530b434d38b2e905fcfe9ed67ae5474cc5a570cd0b659633c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Combat/Damager.ts": {
+        "version": "c3d744711e7dca1372e2c5abe1c29a2d87f8ad5722eea6df536649bf14ac0e1b",
+        "signature": "11cbc552c12a9c7e0fc1bfbd6beb43d34c8e433dd1862ff400723d602b2d5614",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Combat/Enemy.ts": {
+        "version": "6a8dbdd2dd256da138cd100af850a3f7a2bcda3dd97b582297fc14cb4533b359",
+        "signature": "a45e6019d445725a43bd22d01fe73cf662a62c8feefa4689b3b4a7286bfe3181",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Combat/Killable.ts": {
+        "version": "c4080cf54254b20ef801780646d150a750fb40e9f12978319eded74f17b4b97b",
+        "signature": "98c6aea93af02eb125d09f31cb873c2699634f5ebc6dea69ffc4896126d4cd19",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Combat/ProjectileGenerator.ts": {
+        "version": "33a3661501aaea302a2034f5e0487e7b1ebb5ce35c738cc1f1c652f09eb30617",
+        "signature": "5c8fc79b53fa28d3bc69af30a390f3219591b622b2bcc0bd5d4a4ee6b4c36498",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Combat/Weapon.ts": {
+        "version": "0ed8374a06896289c0e40275afc88451f6bdbd18c19e9055cd88f942da56396c",
+        "signature": "039d2e2a09a7038e52313079c9dbf901e2a71387ced157fbd419b1acf6fef43c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Effects/Effect.ts": {
+        "version": "8560285191476fe8e1ab252f63356f0e06a4743b517bbc6abcd538236aa33f8c",
+        "signature": "30aca83bb9d43a907f0d65580ca4bc6e7e7a8d0fa5ef87116ee157a7339df0ee",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Effects/Effectable.ts": {
+        "version": "818cb773a26b9250df2da3a269223ebe62b963088035a5644d0406ad7398d090",
+        "signature": "abd26c0da6d23648eb21d5d31676d65e60edbc37db1892b544f9eec6c766d09f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Item.ts": {
+        "version": "86d67b57174ed4ec8d596c37aeb3cc13fc25853d59c1f5bee2b1fc5115c1edbb",
+        "signature": "83d712336f14fe1b43777669e78800d711d433162f8e174acb5f755fd8bb77ed",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/ItemBarterer.ts": {
+        "version": "964d13ab9c5093be9901e96b1fb2d607ee06ed54e03847969ab1af2bec29899e",
+        "signature": "20e98038ef84540906645ce96905803624f05142cd4d9ebe9595e2b21187c9f6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/ItemContainer.ts": {
+        "version": "2987badfba0ee77632894983c1d5bb4e3abca0855ab63f60f321ce347810cdfb",
+        "signature": "9f418ce7c25551dc87ee8068613e9cc15958a6c522e4415559ba8ec69e5aba21",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/ItemDefn.ts": {
+        "version": "8fe2b4b93215231991e0a8a87b068821bcc9b28656db1a87447862fa26a73c44",
+        "signature": "5d476d7361387171b9c5608bbf1f20b80b7f9c0ee79689bf70d65c613376af94",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/ItemHolder.ts": {
+        "version": "751c27e339b3d453a8dad6584a059cd655924b34f951426d91514b7b492e391a",
+        "signature": "59da409e5a88c54f25415980a0bf1eb1fbcc39d541c27cd6ace61bf72797af5b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/ItemStore.ts": {
+        "version": "6f41392b64381dc3489214a2fa99a69b58be6e3287b6a498b10250b70fe71635",
+        "signature": "ff89a3d042454034e460b3fcef200bb3817d5e849757c2186b6ce8dbcd6a6c34",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Crafting/CraftingRecipe.ts": {
+        "version": "08e78002eebf167758d99e0953e586bef0077b35604f23ea98136e60a74a07d3",
+        "signature": "72fdeb18ad1e8e86c24446aeda2d298e7408d12241d3c81ee2cad2f2a7302118",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Crafting/ItemCrafter.ts": {
+        "version": "092b5724b284d804280fa84563028b9cb72921a24a741c19f9d772cf43df218c",
+        "signature": "a21ad70e96585c4e478e3ad081356561acd368ab847f9785393d6fe6f6d84628",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentSocket.ts": {
+        "version": "c7efc60d4810289c4033979c0f52c535fc858308253132aba970db193cb2d386",
+        "signature": "d7ab9bde597b2aefc0c21caf5ae8467299070d0df1d6969ef0b21a3c32275d16",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentSocketDefn.ts": {
+        "version": "e1633bd0841f132734acb3ee9da3eab283733c4fceb8b9d337ac3fa2c67bb1d6",
+        "signature": "c323803e02bc223640683bc6e49c3c0de7ced8bab23a63ccdb89cd8af8d132e8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentSocketDefnGroup.ts": {
+        "version": "c3cfa82d8400c95168ddb9737217fa06b2b75066846c9e625f3df5cdd97c0457",
+        "signature": "2cdc67e4a1625e3fa7413a5c4687f3773e8dc1668f81451abe53ca3681dc8da2",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentSocketGroup.ts": {
+        "version": "fae83667d9adbbb7d06d3f172ca8e40feb9b60cbba86d1285311da05f125a345",
+        "signature": "de2b9ae5809a203a0eb620a3eb03f4f5ed3634d5a930f0a4f311a4f5de6c8954",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentUser.ts": {
+        "version": "b50a055d4631064a67ef24b7037637f9986f2a638d65ef50bd7427630b81aa4d",
+        "signature": "eb61c97f78b51a2fabc889733f8aac63da86ef395c62e145795503c92716b638",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Equipment/Equippable.ts": {
+        "version": "85e6b77d48e720f277b9a4bc68bf49ba455df6ec3cd7bacca4fb694f16035a52",
+        "signature": "90b6576af13a9dd4259651943f5d77c97e6671fee2c6fe95c1eb11d8e6a9e0e6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Items/Equipment/ItemCategory.ts": {
+        "version": "bc61b5b12cc0d3c568e158f24142044d08bf72b7295157f43462b35015dec267",
+        "signature": "7f40e3a928b7d6670c26fcdc26cf8a47333a18e26cdc5415322ca532fb70d3bf",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Journal/Journal.ts": {
+        "version": "b06ef82ca60a9f81a0c27bf3a33135e2725a51acdd4fd9ff249a9bf0770a79f9",
+        "signature": "a112718de41fb26ff9ea48f337e9ad045a28e67bb3bd8a1ff95c6fb9fbf170cd",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Journal/JournalEntry.ts": {
+        "version": "5d386420737ad2a345f4a0b9e07c439a862d6d40d7d9a049920aea9d2d73e21f",
+        "signature": "8c3f215a31b2270a5a1f75df66b5b8bd78acfa23410aad1693d9e34ba81cd86f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Journal/JournalKeeper.ts": {
+        "version": "4784d3ecde156eab1769301826101fbc2ba39d70567eaca77f5f97b26433f5f8",
+        "signature": "b3ca13962f26b385fe108c39153b493b88dcbac7da5c30d7b56ef50ce94065d0",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Maps/Terrain.ts": {
+        "version": "0de631ce5f969ca425ed4f38ae5c9e5ed8aedd33301c9bb0921cbe83ce316a79",
+        "signature": "61a5be785714218c958810f3933fdf9a71b38568c3d49fcb7eb5887697d1ef17",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Mortality/Ephemeral.ts": {
+        "version": "35b400c02a8e3b5b5faa026a44b0226a17fcab85faa65d129c05ce2fa820d0b9",
+        "signature": "a84e07ea2e3f58a0626da108ac5cc395636992dfefc19da7b6a54ee65e2703f3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Mortality/Phased.ts": {
+        "version": "39f5a3cc8b9fc3d5660f5ec21f8f304622137b9b740af0b6d0525b87a41204b9",
+        "signature": "ddf66f177531c2ccac84f36771a762823064951e9504d88cc608063d56f34c17",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Mortality/Starvable.ts": {
+        "version": "54a23f3793b95caffcb90795322ecb73988df9b08fa4115d192a3f3073009bd9",
+        "signature": "89878dea3896aa60ff97c29da15a6981fed0ba1f9585f7250531f98f8ae58a43",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Mortality/Tirable.ts": {
+        "version": "962b65e080f638e0bfe702a5ea007cfef23a4d15b8d711a825b1a8ca4a08310f",
+        "signature": "8282b711a556caf90760611a4eff34e42e620365191746f1ef18e517c3b6e183",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Perception/Perceptible.ts": {
+        "version": "1b876ff70f157116a0c8de4a9cf0b12587ba0302eedcd9b2db55e14f04421bda",
+        "signature": "dfb48e8f4ed768b328bba185825b7bb269e56a3ed1805c8d3cf80f985c0bcd50",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Perception/Perceptor.ts": {
+        "version": "23163a2155dba62d47dc1b9414b9e49c3cf8ed33e9b026e7d97f379797046d6a",
+        "signature": "0350ccfc09897582db43110a2870e2a3eafa4b06bd7a6d23ad04512c60a837a3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Boundable.ts": {
+        "version": "6a49cdcbe3d464789d4c91532e4b40ce68b79a309f8948b1c9767d05e9acfd72",
+        "signature": "466e6d610b88df27ed7283387355e45b1db51f8ffc4995fba47f6accb6253e54",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Collidable.ts": {
+        "version": "1a4ac86fafb15b49b765a0ecff57cc4e6318b04f0dd7f299167c7118d91e6c82",
+        "signature": "996a2582678c2a756d47f8abe7f1de155193eb5f029940ed6902237b7eb8dfb6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Constrainable.ts": {
+        "version": "dfcf1524515a7919586ed604c5134313bc9cf1719c4eff5e6d6cbbfb74f4282b",
+        "signature": "20301a57301120f0e64918bc9169113e39f0768ef74b9b5bc281250ac4eb6310",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/ForceField.ts": {
+        "version": "c0e2ecc73636af542123e49a714ca85029e588824f5183c40f64ab0c4847b23e",
+        "signature": "5debd2ddcb5eb820718fa49549ac83a92488930c8e0b25bab8101f73ae564faf",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Locatable.ts": {
+        "version": "cdf9f97a324078bac9a1b5166a8d581def631c9b7149c896ac442bad3575bb4b",
+        "signature": "afee3a286a61ff34e1cc405e9f6cdce1e0d0dd41c6088f1162f82d58a6608008",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Movable.ts": {
+        "version": "019715fa9b4777f8357a5ab4b49168aac99a4198c8cdb8fc442ee4bcbfe576bb",
+        "signature": "adafa337abf3ebcb706fdcf1fc2e134d603c851096ce25fc8f3ee0cad537aabd",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Obstacle.ts": {
+        "version": "d3594492d2bf43bd53ae730eb9482c13d95728ea738d9fec68ac8335bbee2f6c",
+        "signature": "e29b1a63da8832a7eef37a7d97fea28c33c576fe364938dda5021d4f192ce596",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Portal.ts": {
+        "version": "c816b149bf69683c5072d52e8eff73180c5eb187ff4293a87e1fca9ea351d436",
+        "signature": "d13bfc2196cebcb36e119c126a612613a77123ac6d87f4137897b4b027e4bbe8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Traversable.ts": {
+        "version": "7eed2df36ce541db69371a929339a45b43dda5e593d7895aa3b3d01d1cd7f561",
+        "signature": "4eda4f834260e030b5b044545cce7ba51e5e94844e6d5183a6a069fd37a0237d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Physics/Vehicle.ts": {
+        "version": "daf467864d59dc6106957b5487b455145d333979e6323202695ff7c34bd4f784",
+        "signature": "6c4699a38deea0111d9d5289e917ab53cebee1d80004dc53e3c5b616ba79e271",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Places/Place.ts": {
+        "version": "c5553019d3806d78d0ff7ac5b1fbe40a955b1c51cf6d11ab7db5f212dcc220e7",
+        "signature": "9627d7fc0155c46191bf42fd533898af7a175fa11a5006cb6d68aa78a8185d64",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Places/PlaceDefn.ts": {
+        "version": "ed2c6228d641555b6f43e405ad7b529d34b88df1d3a21c6308107300afd7772c",
+        "signature": "47c3415b4414fc004cf1da309d4e3b14d7e6bbd8c0eca3fc1bd9c2bcd502b6c9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Places/PlaceZoned.ts": {
+        "version": "528f130fc634df0020f06f852b72e211475032934ce40382062578c3c087a978",
+        "signature": "5fad8ecc08d7b79d0c5dc93ec5c73d59c43cc79afd1d392b39b9cf1ebe284053",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Skills/Skill.ts": {
+        "version": "b4a38b222810ce05fc5d83df0518657bf10a262215bd44c7d45abc0b01cbcf96",
+        "signature": "0e917a36c65a77c2d268b1bdd8999ddd729a950c87b2ca476e2dbc9a6d1cceb7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Skills/SkillLearner.ts": {
+        "version": "808c3a87b54cc0b53493542c3389b30725df5a1d1fee039a693daf7a7360e29d",
+        "signature": "8e0c4c6c0c06d0fa765f69607655d8d3705acd2315c95d1cb82656f9a8bf5871",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Talk/ConversationDefn.ts": {
+        "version": "29ca9ad968c8aa5a6b9cbc647cda26ef5439f8ba18c76beafe6e0843beecec64",
+        "signature": "82bf35f0828ddbfe311045d0412bd7e917523629ea891f9b4c786af977a6dc0a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Talk/ConversationRun.ts": {
+        "version": "6bb61aef85779e842bf372c7f056717ec0f161a2188760b8e97fdb8b0176de94",
+        "signature": "4fe61b8b50fd0f08f75be6ea56ae130eca35987559e453a9281a21f998096272",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Talk/ConversationScope.ts": {
+        "version": "43bb6f6836250c02fbf526ec520a269d1ba503202d837094a8ca8f592fdc3ff4",
+        "signature": "8957e5e87d94c40f025b4abc048a48f704545c1ac03fd01f099a6c9c9001fd12",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Talk/TalkNode.ts": {
+        "version": "e83312fd3e35843a3f77a582059efffd41347f39207d50959602efa4b0c92868",
+        "signature": "2b228be11476376bb67dab07f8bef568f6783744cdb69c8fa032bad06fa69dec",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Talk/TalkNodeDefn.ts": {
+        "version": "54169e79a1eaa7c3aad64bc2916e20f2252fe8d5dcce3d399d3d7e6cf74e43a0",
+        "signature": "c6d3469d8dfb3bf6f565b5951aa75eea7f333148969969ea452df6ac2135442d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Talk/Talker.ts": {
+        "version": "152cf142c390c21e209816f08206b0799c350b2b19ab24f60ddee4319dccfbc2",
+        "signature": "af236b179e61917bd0adf711c60580125679d60117eb9b00a705774f9501b3aa",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Talk/WordBubble.ts": {
+        "version": "b797ff1704386adf84211c9b648b338c3186db09284215ce458f2acad19c47cc",
+        "signature": "12f08c4c9e0b81120883308d4d41229161a4d45f51c5381f7209a6746bbbd96e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Time/Idleable.ts": {
+        "version": "9b38ed542c42afbbd794b28d9cba50e384c31400e0c5bd8ed526c24be0892f06",
+        "signature": "ef2afaec4041125fa4d390233fa0d4353835feceb6eb06a99c2a7c85eaa35dba",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Time/Recurrent.ts": {
+        "version": "0bc415047a452046ce40124de59df07812a28be86e2faad4d422a1b32d32e578",
+        "signature": "00a3e420a555b6d80655e128e04128b7b93452f1a076a9e1b00891dd2a1754fe",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Usables/Device.ts": {
+        "version": "f8070825a3463c178c7e04e70758b384545e9ba7fb36351d0e7c0395031ae0e6",
+        "signature": "ec03d8d307e52a457e6168608606e7656b2838ec3ae4bae1646177f1c7fec4da",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Model/Usables/Usable.ts": {
+        "version": "9ac9cd10948d3105cf1e07c1ed8c7fab6c543b84c6da627cb7a2c899397b235f",
+        "signature": "8367279d4d7425634f02d8df841ccf4621a2d01a0f353b060a6d3b88f1d295da",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Profiles/Profile.ts": {
+        "version": "bd728268a6baa7cce207fed7de3e9eafdbc6e05be3217228721a8215307929b8",
+        "signature": "ab5409a4a2510e9b3119f0c85a92e28eb2fb12d6ab82688caa72dea534223d14",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Profiles/SaveState.ts": {
+        "version": "9781e699aa7b6754cb476ff823e16264cc1cb767964a3e25a4f2a45cfd6de698",
+        "signature": "cba07b2c4ba3020bd212274c705ffbb2869788ac9b1f0cc8ebcf44e9d4afffff",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/FileHelper.ts": {
+        "version": "200cae045c3a379be44a8b088b84552c41e6af5d54e8caffffa211b5ebd88082",
+        "signature": "ccb6ff0fef77fa44513935d8d003cfeeaa98ee8bfca02131d6510509020aaff6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/Serializer.ts": {
+        "version": "72731c2a7d757982ff6f764fb4e2a14ada346e2fdda0567a3f8e84a1906ee1a8",
+        "signature": "1d48ef79bba775e9d867e8dca41d5cc713c2ec57c6f94a237b296db6919bfee7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/StorageHelper.ts": {
+        "version": "95ad7ae635ef135c883b0a2f1b7479831ec74a8403fe45661f2a500a8b070eb7",
+        "signature": "b6fd90e9736d27194df8c3c4ae54318a813b9e0eb0a19d95331ae99bd6453d1f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/VenueFileUpload.ts": {
+        "version": "340557543549d70f2cf192609148caeb215631017222cb8d81c56d24e5d83a8d",
+        "signature": "3612adf795392158951311aa42477da6b0c3c5c24356d9091c3e0c17d8bf3ea7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/Compressor/BitStream.ts": {
+        "version": "f0f9b5fa4a135a4f16a50e14d07613b9b8c5ff76b29dbb7a08b33d8e1bb9a850",
+        "signature": "76c3091e5feda71f96bd6dfcb8063fdf5b0e39e124fb1e6e4c1e0b337d59405b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/Compressor/ByteStream.ts": {
+        "version": "9c244fb07679d9d6ea59cb9a83d5f0c06d89a33162bee167c5349bcfb29470e1",
+        "signature": "f5e83479c345d8fbf20aa97c9a2016bd04f07910e29a9f78516ea9fe1c6b6b93",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/Compressor/ByteStreamFromBytes.ts": {
+        "version": "a96f8b787193e059b24f7f49018569be05858acaf5811782063b088f5b618f2d",
+        "signature": "ee26892c7e223263a0c88bf5c539440c4b0449cc5d3da8d6526b70ffa17c445c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/Compressor/ByteStreamFromString.ts": {
+        "version": "25ba4fe30d5ce0a2051cf9a48075ca54a2704a5b13b28bb029357e8aac2861fb",
+        "signature": "9bb6e61ea30cefc8290bd4e0f6db5703473de545de4fbd6b9c13a01d49f897af",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/Compressor/CompressorLZW.ts": {
+        "version": "3f3061c4249c473336258e70b749cd9ff27c683b5790e8bf2ff1dd7d21a91fb6",
+        "signature": "0f14adbc539e2399e79bc5c69ab14e1b55ebd9383296283d23b62d6fba25be6c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/TarFiles/TarFile.ts": {
+        "version": "64e9ed453468f69b0003955eecda9ec3905f9e6be847fd4d026d69250c2d110b",
+        "signature": "9f5b6e31cb0aeb8b34e0e06f9be5b917687d3dc30b2ce5c94fdfae8f4bd545ae",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/TarFiles/TarFileEntry.ts": {
+        "version": "c34ca60ce18b1f981d46a2786dfb62500e30f29741b2b75b72efcca019bd610d",
+        "signature": "637d9a9c9f6df481b31fde98d49745e5badebbfa28e5bfcd38582ef9f870fbdf",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/TarFiles/TarFileEntryHeader.ts": {
+        "version": "7991957643b1c310ef610b91fea5555b5ff573ec71b5263d8a32e3ffa0b21237",
+        "signature": "4062057a53c105c9158a17b2abeee949639cdc0040bb64563b3158aa45c983b4",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Storage/TarFiles/TarFileTypeFlag.ts": {
+        "version": "5c2cac94c435fc2df2fdfdf6cfc5c33f217e667ecfb3d3caa46faa183fefde06",
+        "signature": "b607cf512d7087f1b3e9f74145a9f08d3911f70b2411eb0be5e284921761c81f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Tests/Assert.ts": {
+        "version": "983cc4ec41be2df1d65618269c05a782dc4a6ef5b7a5e9a89f869547d3e1d2ac",
+        "signature": "609a5fda30cad95fd76379bfb9cdcad52bc74dbe13a58ad885df2824c2c2f177",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Tests/TestFixture.ts": {
+        "version": "69f6025d6ec3cd7dc5fb5dd8dc9916393f79fa703663009c5e848f242fc19c8b",
+        "signature": "deab311b50aa3835cbc8a9e0f0b2e8b8a50ac74b140b5aa68ea7eca9643993eb",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Tests/TestSuite.ts": {
+        "version": "03fca22e641391a74cbb9c26fdefbd4d6f9d1ffb8eda7116f045bc2ada10361a",
+        "signature": "e2650873e156b517dff19a30014558973d90443ec413586e7795d0ba0402f1ce",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/Base64Encoder.ts": {
+        "version": "95348a3ea08edc9f003451be4762c6b671540b885892818e785370c636b852ab",
+        "signature": "caf13db6729eeb0c2eae7cece6532f2c8355d9ac7d6bcbe043ff9f39e69d1757",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/ClonableHelper.ts": {
+        "version": "7a8b902b933b398cd47910c63f73fcfffb6e611aaf991f64d08394903d9c4c47",
+        "signature": "cd6908f9d633dc800c3f2e863a805bff46f3e3e842aefc1fb2d3d57c9417e3c8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/DateTime.ts": {
+        "version": "147bd7e6b227e00454046cd8cde53e4e854b4a2065bdfb484053a2a192f173ff",
+        "signature": "ae0b4c61e2104b3af96d8a8685ef32fc17f1901dee94e48aaad8811fc3b7f23b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/Debug.ts": {
+        "version": "5b6110aeb521da9f1b12a6ab500f92927967f7883e29c01f3483a42121511f39",
+        "signature": "95c3515833d3f850bb1ba42b3749a94372844183faa4e1283473cd4c778d6156",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/DiceRoll.ts": {
+        "version": "f97031ae76776779181e9e9bdaa179d40ce46b58a2c70f37e991f5ccdccc874b",
+        "signature": "eb25f193b7f8db300d9e16051f2566c715b60c4d5c2e4ad15c202ad8ef561ae0",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/IDHelper.ts": {
+        "version": "57ade37612352bce625cb6b3d115efffbcc8a1fe87732e65c9a54fc5d59fd4da",
+        "signature": "7f8de54c3480c62071959e1da7e22e85db9ae4bfa8b3f2d2eae21743c32ea26d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/Interpolatable.ts": {
+        "version": "e4771d3a3fb9727beb9d5c12ecd5f33956abadfc0a01deeae37f44cef8140dbf",
+        "signature": "791da8ee553e710caa51f324fc540dfd0c5e9c58d37e6e7689bced0889473267",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/InterpolationMode.ts": {
+        "version": "e2c5ac430f0dccfa092aaae9aed6f7cca8115f93d33e7325c594b34f02a14dc3",
+        "signature": "bf79405107089b24f260dd608e117a568843464ca4bce336834d350173e3efc3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/PlatformHelper.ts": {
+        "version": "7466b4a8de263b9bc206715fd653b5b11fbd9ba7b7fdbd3bd94e1a9db7165f78",
+        "signature": "6d7b05700ddd51043b8229d55929a015eea1eff4e9784909601c5717aa6eb4c4",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/Randomizer.ts": {
+        "version": "22126a6aebdd077d90ada173070dbbd5b3eb5ac3af01eb6c215a16573d013f93",
+        "signature": "a5402b911d0618ee9c2d305e2e99a962bba7cfb532cf4892af4b1887727ddee9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/RandomizerLCG.ts": {
+        "version": "2eceb90709ec71f6cf8e6be3e4982b19ae95c00c07c75ea13dd6ecb45e8f5b83",
+        "signature": "534b78244202ee6be8ab687479bc9e92cf0683eea223131d88a68be0e913a6a8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/RandomizerSystem.ts": {
+        "version": "4f3a853c499c6a21548fdfa24b45292d1c0cb998768e300e2f274b4385ab23ec",
+        "signature": "642d4a33a24ebac44e86d1a9a289710912d2ca47423d9bb0c2822a2820e6d32e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/Reference.ts": {
+        "version": "2108b29717268900102a9879d63fa1d067df212e6d7e4cf545bf8192f72f2511",
+        "signature": "4dc864a6e081665706b3792494f2af25871cbb8a4f62701bf2d4f8c44877c0e9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/Stopwatch.ts": {
+        "version": "3f5b37ae949c07c4fa1be5459b25a81b1627304718102d777069462263bc8851",
+        "signature": "6fc7ab991b582a6e37e4c22a64d874a7a11066f7207a7ad18a8803f4a8016ddf",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/TimerHelper.ts": {
+        "version": "f64198153310aed1af28a82fbe1402fa03bdae4916111c32b6a56c71fb5b1ca1",
+        "signature": "6403a41bc461c6e762afe2128ae33ceb1fe337e4af8d0314346a6e8be957514e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/TreeHelper.ts": {
+        "version": "f4b2a07419e50e73585b3df3f1decfad8021cc3c33d44b30666128b2a79eb1ea",
+        "signature": "fdf4cad08a15ed530f218296c037f41f3dad4257ec669499e8e83be2a0f78591",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/URLParser.ts": {
+        "version": "ef36b542df84e098430043ff55846f913f0681713690fe4de40392b9cc62eead",
+        "signature": "cd7a850b0f783741999ec2cfafee6a38c2ddeb90941ccb6174829cc537da661f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/ValueBreakGroup.ts": {
+        "version": "a55895465684324a78503ddd2b1aa080587332bba0a3ca127d569b4ef3c38996",
+        "signature": "bba8e0716fa59b54222bb0d9ae72b8d78ea6f83e4f105ee0c5308bb3706a03d9",
+        "affectsGlobalScope": true
+      },
+      "../Source/Framework/Source/Utility/VenueTask.ts": {
+        "version": "47e708547f2c1061ba316c0306c2c1d1bdf401510ce88c2c4e242a05890b9841",
+        "signature": "49fb27c18be9e816198968be2e5d21cabf666d1794cbf2de369e41d1382458c8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/Buildable.ts": {
+        "version": "c42b592811c2eb549673713b1131ec00b9e379bb36481d3b3bc8f48afb2d60d3",
+        "signature": "d44cffed406ba89656740ad69bb35a7dc824bc9c2bb5c5365718a59c56ccd43f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/BuildableDefn.ts": {
+        "version": "796a668a4e53e1ebf8e5b21dfc08961c86ffaba23a79dc3da016d03fd524251b",
+        "signature": "f5a0033ac4e40f91a65d67bf25c623fcf76aff2f135753df84e4a8a51c59288f",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/Layout.ts": {
+        "version": "bfc4fd4d5be1157e8b7f3687a004d8cd3996fe2a043388b5a16018581871be2b",
+        "signature": "dfaf7175ec9d6e96433717c4e6b6a676eb863e39f3dfb8df36cfffcd9ff02835",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/MapCell.ts": {
+        "version": "276452fcfa5d284eb8de82f3f137c4e2158a699b457afb4d7b6ac4da03b226d1",
+        "signature": "2170ccad6868a260c4568821b47d17880ab0a595ab2630cba7908503a34185aa",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/MapCursor.ts": {
+        "version": "d37a9260b66a8a66c5feecb12b94e9773270287e6b25eca6de057994ef4f26c0",
+        "signature": "a902d91ac6fbe0b3a4a8ee1291443357c4af5b6575bb58580caa772633aa8746",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/MapLayout.ts": {
+        "version": "0697b744e2a7afbde139f5fb98a77825e382a52f8e82340f572263a06f6569b9",
+        "signature": "d645c9649ec6cb18a75adea7690d5e2189cbd3abdc4fa5e499adcf7e86677f62",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/MapTerrain.ts": {
+        "version": "5a8b22b6bfbed5f3f516c032c09229f20a80bf22922cd2e5211be70a0d6609fd",
+        "signature": "604e49c3a9bad256c0d809e2de4ec8ccf053dc17dd9cceee0f26774754e300ee",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/Resource.ts": {
+        "version": "a7460c0406d11e27a8628fb7f8a441258b5ebfa0392b42ee4ebf6701ce18ab12",
+        "signature": "8e29bd2144330d07b92d2778b2ccd554115ee6ad451bc3c71505cc3a29a1eab2",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/ResourceDefn.ts": {
+        "version": "29c2c4e12a8b509d4fda792609de6873024fd7eb3b022ee106f73e0d95fc074d",
+        "signature": "a21d8c7b2674a17de322c5bf5b9b1b773c5c573e4b73f1136d3987149986f20d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/ResourceGroup.ts": {
+        "version": "119d508ab321441d11ea2fcaffe8ffc66a1af5bd3847e3d643ebce1e1c2c81e0",
+        "signature": "fcfb24f60e56162e26579527ebca4ea729bf52f3b74e3c8b396a768ddbaa6137",
+        "affectsGlobalScope": true
+      },
+      "../Source/Layouts/VenueLayout.ts": {
+        "version": "457d5ee51756eef2a513f1b27a70849dbc37a780feb7a074515cf2a48bab9b1f",
+        "signature": "90563467df085ecf8c7c6437d5156836ccbcfc69ff589d62bfe9b3fd8e99268a",
+        "affectsGlobalScope": true
+      },
+      "../Source/Networks/Network.ts": {
+        "version": "3cc5e51be1ef62551e80652806669e7b685254d00be79d53682ecd13a4623f34",
+        "signature": "40c1ceddd637d5880c809ec21e50767ff68038bf174eb59d815ac7d2accc9663",
+        "affectsGlobalScope": true
+      },
+      "../Source/Networks/NetworkLink.ts": {
+        "version": "4b9717e32ef1a2c06fba80c7ca7db5eb5178dc28856cd12795cb21453356d4a3",
+        "signature": "babae4fdf0618028982abb6feab672427a97a6b87d6713005ee3d4cdd522548b",
+        "affectsGlobalScope": true
+      },
+      "../Source/Networks/NetworkNode.ts": {
+        "version": "cc08fd79853e4e11cef076206e94d5ec51775740a0b015f9ec183a446e5f8799",
+        "signature": "553c5f5fbe3de690136185985adedb928df58124c0747f7950d686eefe397cf8",
+        "affectsGlobalScope": true
+      },
+      "../Source/Networks/NetworkNodeDefn.ts": {
+        "version": "187f8a395b665a6c3328e5c438fe45fe3b3cdb4483fc552a3387ebf2da508cfb",
+        "signature": "a6d7f051ae0d5b4c13e5f2d486ea1dde75d60341dd97d6403d6ab6bbda7451e3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Notifications/Notification.ts": {
+        "version": "c256b2316e5f7ebe9f9fe813ce9b31c19c6a3af9cb547ba67492a873af8c8f5c",
+        "signature": "d5f7a8fed244738193583a555c1738e5289c5f75607d900c8a0305db9df360fc",
+        "affectsGlobalScope": true
+      },
+      "../Source/Notifications/NotificationSession.ts": {
+        "version": "f17843929499627e1c76ae0c23e417488845d4f3018400d6a56b3f68680e081c",
+        "signature": "0326491ba6a419ad3f15125558ae668c9ce45487a764a49ab3ba891353368df2",
+        "affectsGlobalScope": true
+      },
+      "../Source/Notifications/NotificationType.ts": {
+        "version": "55d71cdfae2bed1b0191434e3d13332ad65fd596d066489e0bb18b572e3547e4",
+        "signature": "73823b3b614980dbb444c88c3529d2b71bb4edef33d5e34591726ec7cb02e4ea",
+        "affectsGlobalScope": true
+      },
+      "../Source/Planets/Planet.ts": {
+        "version": "b444bf001d42386c24475c83ad2c5602b5f3dfa5dec8b777c0526333690444e9",
+        "signature": "b06b51a73ad0c903c6d2fcfc3a413e7454b90a75e42f0740b80e4c0e35605cc0",
+        "affectsGlobalScope": true
+      },
+      "../Source/Planets/PlanetDemographics.ts": {
+        "version": "5a110d23dd7a4a6446582f849e864f1ec355e68692899dc9acc4a57ecdc7fa5c",
+        "signature": "c3c2bc14897768744cdf784b245e0ad5880b6f441c6e47a55a3b4b4458aba867",
+        "affectsGlobalScope": true
+      },
+      "../Source/Planets/PlanetIndustry.ts": {
+        "version": "71b76a294e61bad0974d6b614ea02c7aabda88dca334e8eb260aa6c2e4579f76",
+        "signature": "ecf4900a75b32be02900619a3d23d0a8876e18dc52beac76fd2c3212661501e6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Ships/Device.ts": {
+        "version": "39bc9111311aaa074d50884695cf2de5cc21bf77fe054b6594cee4c3688eee63",
+        "signature": "c5aad90e32e980883d6744cfb514ceb554879fcff244a2974ed2b49e3fa3d202",
+        "affectsGlobalScope": true
+      },
+      "../Source/Ships/DeviceCategory.ts": {
+        "version": "49bec7c56aabc4af49f8d58d8c56112f8c7b22f23946889e4b33c05574ef040c",
+        "signature": "f2c17ffb59fe96af8fb168926637a0c163169f44177f43a98db8f89167f550c6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Ships/DeviceDefn.ts": {
+        "version": "61de72e0ec1de9a341a2e4f4359ee05f2cefa736663a48781f8bc416d63466ba",
+        "signature": "e49efe5a4c77cdccd71ec7ee320d4e4ece811ad22e91e397317f12ae539bc1f7",
+        "affectsGlobalScope": true
+      },
+      "../Source/Ships/Order.ts": {
+        "version": "825d4116715fbb3c3252211fa2d831c0d142c5825e7fd4654f4cffcfa34bf051",
+        "signature": "25fe330b41a32dd22640196698b0e02a28ab8ed6d583873df40a7cb16358d2e1",
+        "affectsGlobalScope": true
+      },
+      "../Source/Ships/OrderDefn.ts": {
+        "version": "ceecc94020f98f1532d70dcdb172bb5a58908dd49a4a5cf58b9bb61df65a67cf",
+        "signature": "37bd342dfc7a71b775227ab1a2b4870c820e7a714243f7dfd09648cfcb1e764d",
+        "affectsGlobalScope": true
+      },
+      "../Source/Ships/Projectile.ts": {
+        "version": "781d4193ab82a57ac118dc86b33cc0a5915efa6593138fda96c8c08e21978671",
+        "signature": "285f1ce5f0fdca7598851a2c6416d0c5c2a102c9dbf158a7a76fd43a4bb8bebb",
+        "affectsGlobalScope": true
+      },
+      "../Source/Ships/Ship.ts": {
+        "version": "a4e0894dc7424c01e8babb2755afebe10230aedeccf5cf31938de3cd8162bcea",
+        "signature": "1447870bd2adb4f920bc8ce9e4cb9fb3af3f90acdef2454fb080af96238f129c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Starsystems/Constraint_Cursor.ts": {
+        "version": "df2ed6e6bbc22e5f4a1558686d537895b5794fd6af4dfdf069d803be629aa5c7",
+        "signature": "d2192b3a04ed5b0c7f656e9e1d84ebb22a136f9529694a38773ce2fad4d31e1e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Starsystems/Cursor.ts": {
+        "version": "5739389bdd6432b4e0ecbd5bf59e4259d87318b58c239a526fc70626843a6db0",
+        "signature": "1692e4700b667f5d499598548cf280c465bf22d6c3ab5f38e7aa149972501293",
+        "affectsGlobalScope": true
+      },
+      "../Source/Starsystems/LinkPortal.ts": {
+        "version": "4eb043b5566b3eec103a9913dc54cde46c8c1557d9d2441a8ef9282215161d25",
+        "signature": "11d082dfbcb67cfabb31db894d49bf4450b3141b5310fb8e11da61d069a25efd",
+        "affectsGlobalScope": true
+      },
+      "../Source/Starsystems/Starsystem.ts": {
+        "version": "9b5484f1382860a830cadf6a7433925073994ccc1ba26228445c65f8b4db6b83",
+        "signature": "6339ff26a2022ab44062812ed3edb704dcdfcff1b3be11ee783bdc33719aec7e",
+        "affectsGlobalScope": true
+      },
+      "../Source/Starsystems/VenueStarsystem.ts": {
+        "version": "1c44774ce331eb144d158e380d76a4a352da3cc5a4b4faadffe3d4b859edb3b0",
+        "signature": "b457acb4ceac57654860c6252d64a6bdd467f408db4f57d47c55859ce9f2ef30",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/DiplomaticAction.ts": {
+        "version": "7b3ac499b4adc07a5968f179d8c4f39f16a3d31b0efa9b78f8c7f2ba1370b4b5",
+        "signature": "739135aba89d836f4c81817c1e3959e01b6ef2c882ae8f4f2c4fd6ac36fa79fc",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/DiplomaticRelationship.ts": {
+        "version": "07e6cc88cc93c8a2448ce2d4626fc46616bdd7bc0e61043999707dcbfcdea631",
+        "signature": "b2d2506b9d668b5dfa5b270f7aa42aa4c53a700d36c24e5699534bdf3d363418",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/DiplomaticSession.ts": {
+        "version": "e8e353a3d332eb8e0af13d0e3862ba2ca567e1a7e009eae1129b45774d40239e",
+        "signature": "b96766c737b96c479da56cf25b56807f03fe2424d224fcdf16eac55307f09733",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/TalkDefn.ts": {
+        "version": "6abf40c0a726d1da9e0fcc0aae377961f2c8b6def20ba5e1efbb4231f718f893",
+        "signature": "0c87c055e7646d060c71a23e53ea18ed27816aef8671c68b835a991e70e18e85",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/TalkNode.ts": {
+        "version": "2a45b2a5c6325f0928b46a880a4494a5d82b39d2ae5d2f7cc2047f6ba4ba4e02",
+        "signature": "6c5883a69a0877b798372fd62630ac8d05b1f470eb51684897b79630610fb9e3",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/TalkNodeDefn.ts": {
+        "version": "25a720b190c98f477177f516eb21cece705e521fbc19062ab9ea52cfe8f2e8c9",
+        "signature": "3ee5584ac6ad3626f5cb945c27d24daa2fd111df2e5c8bcf0deed7d62c1cdba0",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/TalkScope.ts": {
+        "version": "7755506689c88fe7637e1de21dc62153aa6b03e47a013c220ec4d8b342fac6c2",
+        "signature": "86cb1e248e6437450155485336dc071f92468e74d0ca163fc9f0d5315cfed921",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/TalkSession.ts": {
+        "version": "e09fa7d549e077a30a36ed6d76f68c9b7aa9bbca6b92ca14d9e70aaaa351c754",
+        "signature": "fa0dd34e82213883674e380a4768db6c40fd3584cd3ae809e41a30ee6bd1a5ae",
+        "affectsGlobalScope": true
+      },
+      "../Source/Talk/VenueTalkSession.ts": {
+        "version": "c4f4f362f557dc65f09bd6ada6043533f197a610a7a91ac3efabb123c04a2008",
+        "signature": "129f37d5cce712899e26855b18e692f10bcfe3238f556f811cd4f27a6d2aa526",
+        "affectsGlobalScope": true
+      },
+      "../Source/Technology/Technology.ts": {
+        "version": "40f0ad9bf024f904c84cebafd3736aef64a9459c65269c515300ab2ee8369b01",
+        "signature": "37eb220f89d2defdde09737787ab45c6c6f61e719420a50c7f2c1ab23a2a9ab6",
+        "affectsGlobalScope": true
+      },
+      "../Source/Technology/TechnologyResearchSession.ts": {
+        "version": "d3a7890d06c4f664f08a865f32fe98937e92c7f13b4a23f00bdef0e2d0e36e0f",
+        "signature": "87331f77c2d0749e0bdbdec77f567c46754e574252c86442d4efae5f8e26fca4",
+        "affectsGlobalScope": true
+      },
+      "../Source/Technology/TechnologyResearcher.ts": {
+        "version": "0ab31a44eac3a7b34d4f6ba2649b802b5fac0eb98c3465e18219785037712cf6",
+        "signature": "84ff1c088ee785c28af577611d3630c361135ef314a28f18a3ec6fd54f77179c",
+        "affectsGlobalScope": true
+      },
+      "../Source/Technology/TechnologyTree.ts": {
+        "version": "42bd60127624b797b71341550442ae57830fbc6f7878fc1292f0c31d632f6b82",
+        "signature": "424c4ee3b5c399f6cc04e406dba84745723f3b2291a44335684fe295dfc90301",
+        "affectsGlobalScope": true
+      },
+      "../Source/Technology/VenueTechnologyResearchSession.ts": {
+        "version": "b4d5360af7ca453261464eb499ba2302df61035bae27f1ab5b95336030fadefd",
+        "signature": "93c078f5594b57199af9549c0079e88b5c17bec7822de7716ffbb6b06d37f230",
+        "affectsGlobalScope": true
+      },
+      "../Source/Utility/BodyDefn.ts": {
+        "version": "eb3f3acfff25a2bfd8a9ec46eef32deb7c54b1100d1d0e5f269570770b050989",
+        "signature": "8987b0922e2e77d5f9b5b114c7042c6ca3b31fa199671db1223248d17c53cbde",
+        "affectsGlobalScope": true
+      },
+      "../Source/Utility/Collision.ts": {
+        "version": "c35dfe80e5f9c7fbcfc6fb85ea501191575a6076e92d0f619fb21db6e2174b47",
+        "signature": "678fff16d23c6627b220fad1d33f75e7702963540a11934f591f5334328a3159",
+        "affectsGlobalScope": true
+      },
+      "../Source/Utility/NameGenerator.ts": {
+        "version": "f5fd63d9e10b28845ae07b3c2024acfbd3dc0bde00f64e48d1fdda6b3337a7c5",
+        "signature": "8462775dcad88feb628069401680f7a557a627c23f817205930927e396aa2003",
+        "affectsGlobalScope": true
+      }
+    },
+    "options": {
+      "incremental": true,
+      "target": 2,
+      "module": 1,
+      "strict": false,
+      "noImplicitAny": true,
+      "strictFunctionTypes": true,
+      "noImplicitThis": true,
+      "alwaysStrict": true,
+      "noUnusedLocals": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "esModuleInterop": true,
+      "configFilePath": "./tsconfig.json"
+    },
+    "referencedMap": {},
+    "exportedModulesMap": {},
+    "semanticDiagnosticsPerFile": [
+      "../Source/Actions/Action_CameraMove.ts",
+      "../Source/Actions/Action_CylinderMove_DistanceAlongAxis.ts",
+      "../Source/Actions/Action_CylinderMove_Radius.ts",
+      "../Source/Actions/Action_CylinderMove_Reset.ts",
+      "../Source/Actions/Action_CylinderMove_Yaw.ts",
+      "../Source/Actions/ActivityDefn_Instances2.ts",
+      "../Source/Constraints/Constraint_HoldDistanceFromTarget.ts",
+      "../Source/Constraints/Constraint_LookAt.ts",
+      "../Source/Constraints/Constraint_PositionOnCylinder.ts",
+      "../Source/Controls/ControlDynamic.ts",
+      "../Source/Extensions/ControlBuilderExtended.ts",
+      "../Source/Extensions/VenueFaderExtended.ts",
+      "../Source/Factions/Faction.ts",
+      "../Source/Factions/FactionKnowledge.ts",
+      "../Source/Framework/Source/Controls/ControlActionNames.ts",
+      "../Source/Framework/Source/Controls/ControlBase.ts",
+      "../Source/Framework/Source/Controls/ControlBuilder.ts",
+      "../Source/Framework/Source/Controls/ControlButton.ts",
+      "../Source/Framework/Source/Controls/ControlContainer.ts",
+      "../Source/Framework/Source/Controls/ControlContainerTransparent.ts",
+      "../Source/Framework/Source/Controls/ControlLabel.ts",
+      "../Source/Framework/Source/Controls/ControlList.ts",
+      "../Source/Framework/Source/Controls/ControlNone.ts",
+      "../Source/Framework/Source/Controls/ControlScrollbar.ts",
+      "../Source/Framework/Source/Controls/ControlSelect.ts",
+      "../Source/Framework/Source/Controls/ControlSelectOption.ts",
+      "../Source/Framework/Source/Controls/ControlStyle.ts",
+      "../Source/Framework/Source/Controls/ControlTabbed.ts",
+      "../Source/Framework/Source/Controls/ControlTextBox.ts",
+      "../Source/Framework/Source/Controls/ControlTextarea.ts",
+      "../Source/Framework/Source/Controls/ControlVisual.ts",
+      "../Source/Framework/Source/Controls/Controllable.ts",
+      "../Source/Framework/Source/Controls/DataBinding.ts",
+      "../Source/Framework/Source/Controls/VenueControls.ts",
+      "../Source/Framework/Source/Controls/VenueMessage.ts",
+      "../Source/Framework/Source/Display/Animation/Animatable2.ts",
+      "../Source/Framework/Source/Display/Animation/AnimationDefn.ts",
+      "../Source/Framework/Source/Display/Animation/AnimationDefnGroup.ts",
+      "../Source/Framework/Source/Display/Animation/AnimationKeyframe.ts",
+      "../Source/Framework/Source/Display/Animation/Transform_Animate.ts",
+      "../Source/Framework/Source/Display/Color.ts",
+      "../Source/Framework/Source/Display/Colorable.ts",
+      "../Source/Framework/Source/Display/Display.ts",
+      "../Source/Framework/Source/Display/Display2D.ts",
+      "../Source/Framework/Source/Display/Display3D.ts",
+      "../Source/Framework/Source/Display/DisplayRecorder.ts",
+      "../Source/Framework/Source/Display/DisplayTest.ts",
+      "../Source/Framework/Source/Display/Drawable.ts",
+      "../Source/Framework/Source/Display/FaceTextured.ts",
+      "../Source/Framework/Source/Display/Lighting.ts",
+      "../Source/Framework/Source/Display/Material.ts",
+      "../Source/Framework/Source/Display/Matrix.ts",
+      "../Source/Framework/Source/Display/MeshTextured.ts",
+      "../Source/Framework/Source/Display/Texture.ts",
+      "../Source/Framework/Source/Display/VenueFader.ts",
+      "../Source/Framework/Source/Display/VenueLayered.ts",
+      "../Source/Framework/Source/Display/VertexGroup.ts",
+      "../Source/Framework/Source/Display/Visuals/Animation/VisualAnimation.ts",
+      "../Source/Framework/Source/Display/Visuals/Transform_Colorize.ts",
+      "../Source/Framework/Source/Display/Visuals/Visual.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualAnchor.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualArc.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualBar.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualBuffered.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualBuilder.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualCircle.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualCircleGradient.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualControl.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualDirectional.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualDynamic.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualEllipse.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualErase.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualFan.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualGroup.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualImage.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualImageFromLibrary.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualImageImmediate.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualImageMock.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualImageScaled.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualImageScaledPartial.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualInvisible.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualJump2D.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualLine.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualMap.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualMesh.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualNone.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualOffset.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualParticles.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualPath.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualPolars.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualPolygon.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualRectangle.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualRepeating.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualRotate.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualSelect.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualStack.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualText.ts",
+      "../Source/Framework/Source/Display/Visuals/VisualTransform.ts",
+      "../Source/Framework/Source/Display/WebGLContext.ts",
+      "../Source/Framework/Source/Geometry/Camera.ts",
+      "../Source/Framework/Source/Geometry/Collisions/Collision.ts",
+      "../Source/Framework/Source/Geometry/Collisions/CollisionHelper.ts",
+      "../Source/Framework/Source/Geometry/Collisions/CollisionTracker.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_AttachToEntityWithId.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_AttachToEntityWithName.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_Conditional.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_ContainInBox.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_ContainInHemispace.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_FrictionDry.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_FrictionXY.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_Gravity.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_Offset.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_OrientToward.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_SpeedMaxXY.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_StopBelowSpeedMin.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_TrimToPlaceSize.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSize.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSizeX.ts",
+      "../Source/Framework/Source/Geometry/Constraints/Constraint_WrapToPlaceSizeXTrimY.ts",
+      "../Source/Framework/Source/Geometry/Coords.ts",
+      "../Source/Framework/Source/Geometry/Direction.ts",
+      "../Source/Framework/Source/Geometry/Disposition.ts",
+      "../Source/Framework/Source/Geometry/Landscape/Landscape.ts",
+      "../Source/Framework/Source/Geometry/Network/Network.ts",
+      "../Source/Framework/Source/Geometry/Orientation.ts",
+      "../Source/Framework/Source/Geometry/Polar.ts",
+      "../Source/Framework/Source/Geometry/Quaternion.ts",
+      "../Source/Framework/Source/Geometry/RangeExtent.ts",
+      "../Source/Framework/Source/Geometry/Rotation.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Arc.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Box.ts",
+      "../Source/Framework/Source/Geometry/Shapes/BoxRotated.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Cylinder.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Edge.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Face.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Hemispace.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Maps/MapCell.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Maps/MapLocated.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Maps/MapOfCells.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Maze/Maze.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Maze/MazeCell.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Maze/MazeCellNetwork.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Meshes/Mesh.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Meshes/MeshBuilder.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Path.ts",
+      "../Source/Framework/Source/Geometry/Shapes/PathBuilder.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Plane.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Ray.ts",
+      "../Source/Framework/Source/Geometry/Shapes/ShapeBase.ts",
+      "../Source/Framework/Source/Geometry/Shapes/ShapeContainer.ts",
+      "../Source/Framework/Source/Geometry/Shapes/ShapeGroupAll.ts",
+      "../Source/Framework/Source/Geometry/Shapes/ShapeGroupAny.ts",
+      "../Source/Framework/Source/Geometry/Shapes/ShapeHelper.ts",
+      "../Source/Framework/Source/Geometry/Shapes/ShapeInverse.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Shell.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Sphere.ts",
+      "../Source/Framework/Source/Geometry/Shapes/Wedge.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Bones/Bone.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Bones/BoneInfluence.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Bones/Skeleton.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Bones/SkeletonHelper.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Bones/Transform_BonePose.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Bones/Transform_MeshPoseWithSkeleton.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Camera.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_DimensionsSwap.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Dynamic.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Interpolatable.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Locate.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Multiple.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_None.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Orient.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_OrientForCamera.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_OrientRDF.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Overwrite.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Perspective.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Rotate2D.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_RotateRight.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Scale.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_Translate.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transform_TranslateInvert.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transformable.ts",
+      "../Source/Framework/Source/Geometry/Transforms/Transforms.ts",
+      "../Source/Framework/Source/Helpers/ArrayHelper.ts",
+      "../Source/Framework/Source/Helpers/ByteHelper.ts",
+      "../Source/Framework/Source/Helpers/NumberHelper.ts",
+      "../Source/Framework/Source/Helpers/StringHelper.ts",
+      "../Source/Framework/Source/Input/ActionToInputsMapping.ts",
+      "../Source/Framework/Source/Input/Input.ts",
+      "../Source/Framework/Source/Input/InputHelper.ts",
+      "../Source/Framework/Source/Input/UserInputListener.ts",
+      "../Source/Framework/Source/Input/VenueInputCapture.ts",
+      "../Source/Framework/Source/Media/Audible.ts",
+      "../Source/Framework/Source/Media/Font.ts",
+      "../Source/Framework/Source/Media/Image.ts",
+      "../Source/Framework/Source/Media/ImageBuilder.ts",
+      "../Source/Framework/Source/Media/MediaLibrary.ts",
+      "../Source/Framework/Source/Media/Sound.ts",
+      "../Source/Framework/Source/Media/SoundFromAudioContext.ts",
+      "../Source/Framework/Source/Media/SoundHelper.ts",
+      "../Source/Framework/Source/Media/TextString.ts",
+      "../Source/Framework/Source/Media/VenueVideo.ts",
+      "../Source/Framework/Source/Media/Video.ts",
+      "../Source/Framework/Source/Media/VideoHelper.ts",
+      "../Source/Framework/Source/Media/VisualSound.ts",
+      "../Source/Framework/Source/Model/Actors/Action.ts",
+      "../Source/Framework/Source/Model/Actors/Activity.ts",
+      "../Source/Framework/Source/Model/Actors/ActivityDefn.ts",
+      "../Source/Framework/Source/Model/Actors/Actor.ts",
+      "../Source/Framework/Source/Model/Clonable.ts",
+      "../Source/Framework/Source/Model/Combat/Armor.ts",
+      "../Source/Framework/Source/Model/Combat/Damage.ts",
+      "../Source/Framework/Source/Model/Combat/DamageType.ts",
+      "../Source/Framework/Source/Model/Combat/Damager.ts",
+      "../Source/Framework/Source/Model/Combat/Enemy.ts",
+      "../Source/Framework/Source/Model/Combat/Killable.ts",
+      "../Source/Framework/Source/Model/Combat/ProjectileGenerator.ts",
+      "../Source/Framework/Source/Model/Combat/Weapon.ts",
+      "../Source/Framework/Source/Model/Effects/Effect.ts",
+      "../Source/Framework/Source/Model/Effects/Effectable.ts",
+      "../Source/Framework/Source/Model/Entity.ts",
+      "../Source/Framework/Source/Model/EntityBuilder.ts",
+      "../Source/Framework/Source/Model/EntityGenerator.ts",
+      "../Source/Framework/Source/Model/EntityProperty.ts",
+      "../Source/Framework/Source/Model/Items/Crafting/CraftingRecipe.ts",
+      "../Source/Framework/Source/Model/Items/Crafting/ItemCrafter.ts",
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentSocket.ts",
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentSocketDefn.ts",
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentSocketDefnGroup.ts",
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentSocketGroup.ts",
+      "../Source/Framework/Source/Model/Items/Equipment/EquipmentUser.ts",
+      "../Source/Framework/Source/Model/Items/Equipment/Equippable.ts",
+      "../Source/Framework/Source/Model/Items/Equipment/ItemCategory.ts",
+      "../Source/Framework/Source/Model/Items/Item.ts",
+      "../Source/Framework/Source/Model/Items/ItemBarterer.ts",
+      "../Source/Framework/Source/Model/Items/ItemContainer.ts",
+      "../Source/Framework/Source/Model/Items/ItemDefn.ts",
+      "../Source/Framework/Source/Model/Items/ItemHolder.ts",
+      "../Source/Framework/Source/Model/Items/ItemStore.ts",
+      "../Source/Framework/Source/Model/Journal/Journal.ts",
+      "../Source/Framework/Source/Model/Journal/JournalEntry.ts",
+      "../Source/Framework/Source/Model/Journal/JournalKeeper.ts",
+      "../Source/Framework/Source/Model/Loadable.ts",
+      "../Source/Framework/Source/Model/Maps/Terrain.ts",
+      "../Source/Framework/Source/Model/Modellable.ts",
+      "../Source/Framework/Source/Model/Mortality/Ephemeral.ts",
+      "../Source/Framework/Source/Model/Mortality/Phased.ts",
+      "../Source/Framework/Source/Model/Mortality/Starvable.ts",
+      "../Source/Framework/Source/Model/Mortality/Tirable.ts",
+      "../Source/Framework/Source/Model/Namable.ts",
+      "../Source/Framework/Source/Model/Perception/Perceptible.ts",
+      "../Source/Framework/Source/Model/Perception/Perceptor.ts",
+      "../Source/Framework/Source/Model/Physics/Boundable.ts",
+      "../Source/Framework/Source/Model/Physics/Collidable.ts",
+      "../Source/Framework/Source/Model/Physics/Constrainable.ts",
+      "../Source/Framework/Source/Model/Physics/ForceField.ts",
+      "../Source/Framework/Source/Model/Physics/Locatable.ts",
+      "../Source/Framework/Source/Model/Physics/Movable.ts",
+      "../Source/Framework/Source/Model/Physics/Obstacle.ts",
+      "../Source/Framework/Source/Model/Physics/Portal.ts",
+      "../Source/Framework/Source/Model/Physics/Traversable.ts",
+      "../Source/Framework/Source/Model/Physics/Vehicle.ts",
+      "../Source/Framework/Source/Model/Places/Place.ts",
+      "../Source/Framework/Source/Model/Places/PlaceDefn.ts",
+      "../Source/Framework/Source/Model/Places/PlaceZoned.ts",
+      "../Source/Framework/Source/Model/Playable.ts",
+      "../Source/Framework/Source/Model/Routable.ts",
+      "../Source/Framework/Source/Model/Selector.ts",
+      "../Source/Framework/Source/Model/Skills/Skill.ts",
+      "../Source/Framework/Source/Model/Skills/SkillLearner.ts",
+      "../Source/Framework/Source/Model/Talk/ConversationDefn.ts",
+      "../Source/Framework/Source/Model/Talk/ConversationRun.ts",
+      "../Source/Framework/Source/Model/Talk/ConversationScope.ts",
+      "../Source/Framework/Source/Model/Talk/TalkNode.ts",
+      "../Source/Framework/Source/Model/Talk/TalkNodeDefn.ts",
+      "../Source/Framework/Source/Model/Talk/Talker.ts",
+      "../Source/Framework/Source/Model/Talk/WordBubble.ts",
+      "../Source/Framework/Source/Model/Time/Idleable.ts",
+      "../Source/Framework/Source/Model/Time/Recurrent.ts",
+      "../Source/Framework/Source/Model/Universe.ts",
+      "../Source/Framework/Source/Model/UniverseWorldPlaceEntities.ts",
+      "../Source/Framework/Source/Model/Usables/Device.ts",
+      "../Source/Framework/Source/Model/Usables/Usable.ts",
+      "../Source/Framework/Source/Model/Venue.ts",
+      "../Source/Framework/Source/Model/VenueWorld.ts",
+      "../Source/Framework/Source/Model/World.ts",
+      "../Source/Framework/Source/Model/WorldDefn.ts",
+      "../Source/Framework/Source/Profiles/Profile.ts",
+      "../Source/Framework/Source/Profiles/SaveState.ts",
+      "../Source/Framework/Source/Storage/Compressor/BitStream.ts",
+      "../Source/Framework/Source/Storage/Compressor/ByteStream.ts",
+      "../Source/Framework/Source/Storage/Compressor/ByteStreamFromBytes.ts",
+      "../Source/Framework/Source/Storage/Compressor/ByteStreamFromString.ts",
+      "../Source/Framework/Source/Storage/Compressor/CompressorLZW.ts",
+      "../Source/Framework/Source/Storage/FileHelper.ts",
+      "../Source/Framework/Source/Storage/Serializer.ts",
+      "../Source/Framework/Source/Storage/StorageHelper.ts",
+      "../Source/Framework/Source/Storage/TarFiles/TarFile.ts",
+      "../Source/Framework/Source/Storage/TarFiles/TarFileEntry.ts",
+      "../Source/Framework/Source/Storage/TarFiles/TarFileEntryHeader.ts",
+      "../Source/Framework/Source/Storage/TarFiles/TarFileTypeFlag.ts",
+      "../Source/Framework/Source/Storage/VenueFileUpload.ts",
+      "../Source/Framework/Source/Tests/Assert.ts",
+      "../Source/Framework/Source/Tests/TestFixture.ts",
+      "../Source/Framework/Source/Tests/TestSuite.ts",
+      "../Source/Framework/Source/Utility/Base64Encoder.ts",
+      "../Source/Framework/Source/Utility/ClonableHelper.ts",
+      "../Source/Framework/Source/Utility/DateTime.ts",
+      "../Source/Framework/Source/Utility/Debug.ts",
+      "../Source/Framework/Source/Utility/DiceRoll.ts",
+      "../Source/Framework/Source/Utility/IDHelper.ts",
+      "../Source/Framework/Source/Utility/Interpolatable.ts",
+      "../Source/Framework/Source/Utility/InterpolationMode.ts",
+      "../Source/Framework/Source/Utility/PlatformHelper.ts",
+      "../Source/Framework/Source/Utility/Randomizer.ts",
+      "../Source/Framework/Source/Utility/RandomizerLCG.ts",
+      "../Source/Framework/Source/Utility/RandomizerSystem.ts",
+      "../Source/Framework/Source/Utility/Reference.ts",
+      "../Source/Framework/Source/Utility/Stopwatch.ts",
+      "../Source/Framework/Source/Utility/TimerHelper.ts",
+      "../Source/Framework/Source/Utility/TreeHelper.ts",
+      "../Source/Framework/Source/Utility/URLParser.ts",
+      "../Source/Framework/Source/Utility/ValueBreakGroup.ts",
+      "../Source/Framework/Source/Utility/VenueTask.ts",
+      "../Source/Layouts/Buildable.ts",
+      "../Source/Layouts/BuildableDefn.ts",
+      "../Source/Layouts/Layout.ts",
+      "../Source/Layouts/MapCell.ts",
+      "../Source/Layouts/MapCursor.ts",
+      "../Source/Layouts/MapLayout.ts",
+      "../Source/Layouts/MapTerrain.ts",
+      "../Source/Layouts/Resource.ts",
+      "../Source/Layouts/ResourceDefn.ts",
+      "../Source/Layouts/ResourceGroup.ts",
+      "../Source/Layouts/VenueLayout.ts",
+      "../Source/Networks/Network.ts",
+      "../Source/Networks/NetworkLink.ts",
+      "../Source/Networks/NetworkNode.ts",
+      "../Source/Networks/NetworkNodeDefn.ts",
+      "../Source/Notifications/Notification.ts",
+      "../Source/Notifications/NotificationSession.ts",
+      "../Source/Notifications/NotificationType.ts",
+      "../Source/Planets/Planet.ts",
+      "../Source/Planets/PlanetDemographics.ts",
+      "../Source/Planets/PlanetIndustry.ts",
+      "../Source/Ships/Device.ts",
+      "../Source/Ships/DeviceCategory.ts",
+      "../Source/Ships/DeviceDefn.ts",
+      "../Source/Ships/Order.ts",
+      "../Source/Ships/OrderDefn.ts",
+      "../Source/Ships/Projectile.ts",
+      "../Source/Ships/Ship.ts",
+      "../Source/Starsystems/Constraint_Cursor.ts",
+      "../Source/Starsystems/Cursor.ts",
+      "../Source/Starsystems/LinkPortal.ts",
+      "../Source/Starsystems/Starsystem.ts",
+      "../Source/Starsystems/VenueStarsystem.ts",
+      "../Source/Talk/DiplomaticAction.ts",
+      "../Source/Talk/DiplomaticRelationship.ts",
+      "../Source/Talk/DiplomaticSession.ts",
+      "../Source/Talk/TalkDefn.ts",
+      "../Source/Talk/TalkNode.ts",
+      "../Source/Talk/TalkNodeDefn.ts",
+      "../Source/Talk/TalkScope.ts",
+      "../Source/Talk/TalkSession.ts",
+      "../Source/Talk/VenueTalkSession.ts",
+      "../Source/Technology/Technology.ts",
+      "../Source/Technology/TechnologyResearchSession.ts",
+      "../Source/Technology/TechnologyResearcher.ts",
+      "../Source/Technology/TechnologyTree.ts",
+      "../Source/Technology/VenueTechnologyResearchSession.ts",
+      "../Source/Utility/BodyDefn.ts",
+      "../Source/Utility/Collision.ts",
+      "../Source/Utility/NameGenerator.ts",
+      "../Source/VenueWorld.ts",
+      "../Source/World.ts",
+      "../Source/main.ts",
+      "./Imports.ts",
+      "./Mocks/EnvironmentMock.ts",
+      "./Tests/Actions/Action_CameraMoveTests.ts",
+      "./Tests/Actions/Action_CylinderMove_DistanceAlongAxisTests.ts",
+      "./Tests/Actions/Action_CylinderMove_RadiusTests.ts",
+      "./Tests/Actions/Action_CylinderMove_ResetTests.ts",
+      "./Tests/Actions/Action_CylinderMove_YawTests.ts",
+      "./Tests/Constraints/Constraint_HoldDistanceFromTargetTests.ts",
+      "./Tests/Constraints/Constraint_LookAtTests.ts",
+      "./Tests/Constraints/Constraint_PositionOnCylinderTests.ts",
+      "./Tests/Layouts/BuildableTests.ts",
+      "./Tests/Layouts/LayoutTests.ts",
+      "./Tests/Layouts/MapLayoutTests.ts",
+      "./Tests/Layouts/ResourceGroupTests.ts",
+      "./Tests/Layouts/ResourceTests.ts",
+      "./Tests/Layouts/VenueLayoutTests.ts",
+      "./Tests/Networks/NetworkTests.ts",
+      "./Tests/Notifications/NotificationSessionTests.ts",
+      "./Tests/Notifications/NotificationTests.ts",
+      "./Tests/Notifications/NotificationTypeTests.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es5.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es6.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.scripthost.d.ts",
+      "../../../../../../../usr/local/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts"
+    ]
+  },
+  "version": "4.2.3"
+}

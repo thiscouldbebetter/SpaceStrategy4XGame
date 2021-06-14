@@ -46,6 +46,21 @@ class Faction
 		);
 	}
 
+	static fromName(name: string): Faction
+	{
+		return new Faction
+		(
+			name,
+			null, // homestarsystemName,
+			Color.Instances().Red,
+			new Array<DiplomaticRelationship>(),
+			TechnologyResearcher.default(),
+			new Array<Planet>(),
+			new Array<Ship>(),
+			FactionKnowledge.default()
+		);
+	}
+
 	// static methods
 
 	// controls

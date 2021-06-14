@@ -1,9 +1,12 @@
 "use strict";
 class FactionKnowledge {
     constructor(factionNames, starsystemNames, linkNames) {
-        this.factionNames = factionNames;
-        this.starsystemNames = starsystemNames;
-        this.linkNames = linkNames;
+        this.factionNames = factionNames || [];
+        this.starsystemNames = starsystemNames || [];
+        this.linkNames = linkNames || [];
+    }
+    static default() {
+        return new FactionKnowledge(null, null, null);
     }
     worldKnown(universe, worldActual) {
         if (this._worldKnown == null) {

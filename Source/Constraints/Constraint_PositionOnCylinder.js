@@ -8,6 +8,14 @@ class Constraint_PositionOnCylinder {
         this.radius = radius;
         this.distanceFromCenterAlongAxis = distanceFromCenterAlongAxis;
     }
+    static default() {
+        return new Constraint_PositionOnCylinder(Coords.zeroes(), // center
+        Orientation.default(), // orientation
+        0, // yawInTurns
+        1, // radius
+        1 // distanceFromCenterAlongAxis
+        );
+    }
     constrain(universe, world, place, constrainable) {
         var body = constrainable;
         NumberHelper.wrapToRangeMinMax(this.yawInTurns, 0, 1);

@@ -11,7 +11,7 @@ class Notification2 {
     }
     toString() {
         var returnValue = this.turnCreated + " - "
-            + this.locus + " - "
+            + this.locus.toString() + " - "
             + this.message;
         return returnValue;
     }

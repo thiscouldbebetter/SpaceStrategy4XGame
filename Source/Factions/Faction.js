@@ -12,6 +12,10 @@ class Faction {
         this.notificationSession = new NotificationSession(this.name, []);
         this.relationshipsByFactionName = ArrayHelper.addLookups(this.relationships, (x) => x.factionNameOther);
     }
+    static fromName(name) {
+        return new Faction(name, null, // homestarsystemName,
+        Color.Instances().Red, new Array(), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.default());
+    }
     // static methods
     // controls
     static toControl_Intelligence(diplomaticSession, pos, containerSize) {

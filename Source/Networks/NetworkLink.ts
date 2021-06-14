@@ -184,6 +184,13 @@ class NetworkLink2 implements EntityProperty
 		);
 	}
 
+	// Clonable.
+
+	clone(): NetworkLink2
+	{
+		return new NetworkLink2(this.namesOfNodesLinked.slice());
+	}
+
 	// EntityProperty.
 
 	finalize(u: Universe, w: World, p: Place, e: Entity): void {}

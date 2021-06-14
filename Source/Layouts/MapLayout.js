@@ -12,9 +12,9 @@ class MapLayout {
             this.sizeInCells.clone().subtract(new Coords(1, 1, 1));
         this.cellSizeInPixels =
             this.sizeInPixels.clone().divide(this.sizeInCells);
-        this.cursor = new MapCursor(null, Coords.create());
+        this.cursor = new MapCursor(null, Coords.zeroes());
         // Helper variables.
-        this._cellPos = Coords.create();
+        this._cellPos = Coords.zeroes();
         var drawableLocatable = new Locatable(null);
         this._drawable = new Entity("[drawable]", [drawableLocatable]);
         this._neighborOffsets =

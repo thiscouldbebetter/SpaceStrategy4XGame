@@ -27,7 +27,7 @@ class WorldExtended extends World
 		network: Network2,
 		factions: Faction[],
 		ships: Ship[],
-		camera: Camera,
+		camera: Camera
 	)
 	{
 		super
@@ -177,10 +177,10 @@ class WorldExtended extends World
 			universe,
 			worldName,
 			NetworkNodeDefn.Instances()._All,
-			numberOfNetworkNodes,
-			// minAndMaxDistanceOfNodesFromOrigin
-			[ networkRadius / 2, networkRadius ],
-			20 // distanceBetweenNodesMin
+			numberOfNetworkNodes
+		).scale
+		(
+			networkRadius
 		);
 
 		var focalLength = viewDimension;

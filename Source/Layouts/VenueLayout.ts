@@ -126,10 +126,10 @@ class VenueLayout implements Venue
 					Coords.fromXY(1, 1).multiply(margin),
 					listSize,
 					false, // isTextCentered
-					buildableAtCursor.defnName // text
+					DataBinding.fromContext(buildableAtCursor.defnName) // text
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonDemolish",
 					Coords.fromXY(margin.x, containerSize.y - margin.y * 2 - buttonSize.y * 2), //pos,
@@ -137,16 +137,15 @@ class VenueLayout implements Venue
 					"Demolish", // text,
 					fontHeightInPixels,
 					true, // hasBorder,
-					true, // isEnabled,
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled,
+					() => // click
 					{
-						ArrayHelper.remove(layout.map.bodies, buildableAtCursor);
+						ArrayHelper.remove(layout.map.bodies, buildableAtCursorEntity);
 						universe.venueNext = venueThis;
-					},
-					universe // context
+					}
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonDone",
 					Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
@@ -154,12 +153,8 @@ class VenueLayout implements Venue
 					"Done", // text,
 					fontHeightInPixels,
 					true, // hasBorder,
-					true, // isEnabled,
-					(universe: Universe) => // click
-					{
-						universe.venueNext = venueThis;
-					},
-					universe // context
+					DataBinding.fromTrue(), // isEnabled,
+					() => universe.venueNext = venueThis // click
 				),
 			]
 		);
@@ -202,7 +197,7 @@ class VenueLayout implements Venue
 			containerSize.y - buttonHeight * 2 - margin.y * 4
 		);
 
-		var venueThis = this; // hack
+		// var venueThis = this; // hack
 
 		var returnValue = ControlContainer.from4
 		(
@@ -231,7 +226,7 @@ class VenueLayout implements Venue
 					DataBinding.fromContext(null), // bindingForItemValue
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonBuild",
 					Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
@@ -239,9 +234,11 @@ class VenueLayout implements Venue
 					"Build", // text,
 					fontHeightInPixels,
 					true, // hasBorder,
-					true, // isEnabled,
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled,
+					() => // click
 					{
+						alert("todo");
+						/*
 						var venueCurrent =
 							universe.venueCurrent as VenueControls;
 						var container = venueCurrent.controlRoot as ControlContainer;
@@ -258,8 +255,8 @@ class VenueLayout implements Venue
 							layout.map.bodies.push(buildableEntity);
 						}
 						universe.venueNext = venueThis;
-					},
-					universe // context
+						*/
+					}
 				)
 			]
 		);
@@ -288,7 +285,7 @@ class VenueLayout implements Venue
 			containerMainSize,
 			// children
 			[
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonBack",
 					Coords.fromXY
@@ -300,8 +297,8 @@ class VenueLayout implements Venue
 					"Back",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venue = universe.venueCurrent as VenueLayout;
 						var venueNext = venue.venueParent;
@@ -310,8 +307,7 @@ class VenueLayout implements Venue
 							venueNext, universe.venueCurrent
 						);
 						universe.venueNext = venueNext;
-					},
-					universe // context
+					}
 				),
 
 				this.toControl_Vitals
@@ -504,7 +500,7 @@ class VenueLayout implements Venue
 					DataBinding.fromContextAndGet
 					(
 						planet,
-						(c: Planet) => c.industryPerTurn(universe, world, faction)
+						(c: Planet) => "" + c.industryPerTurn(universe, world, faction)
 					)
 				),
 
@@ -517,7 +513,7 @@ class VenueLayout implements Venue
 					DataBinding.fromContextAndGet
 					(
 						planet,
-						(c: Planet) => c.prosperityPerTurn(universe, world, faction)
+						(c: Planet) => "" + c.prosperityPerTurn(universe, world, faction)
 					)
 				),
 
@@ -530,7 +526,7 @@ class VenueLayout implements Venue
 					DataBinding.fromContextAndGet
 					(
 						planet,
-						(c: Planet) => c.researchPerTurn(universe, world, faction)
+						(c: Planet) => "" + c.researchPerTurn(universe, world, faction)
 					)
 				),
 			]

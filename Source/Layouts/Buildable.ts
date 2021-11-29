@@ -1,12 +1,12 @@
 
-class Buildable implements EntityProperty
+class Buildable implements EntityPropertyBase
 {
 	defnName: string;
 	pos: Coords;
 	isComplete: boolean;
 
 	_locatable: Locatable;
-	_visual: Visual;
+	_visual: VisualBase;
 
 	constructor(defnName: string, pos: Coords, isComplete: boolean)
 	{
@@ -31,7 +31,7 @@ class Buildable implements EntityProperty
 		return this._locatable;
 	}
 
-	visual(world: WorldExtended): Visual
+	visual(world: WorldExtended): VisualBase
 	{
 		if (this._visual == null)
 		{
@@ -55,7 +55,10 @@ class Buildable implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Equatable.
+	equals(other: Buildable): boolean { return false; }
 }

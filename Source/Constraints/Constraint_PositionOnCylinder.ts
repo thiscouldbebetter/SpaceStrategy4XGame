@@ -37,9 +37,9 @@ class Constraint_PositionOnCylinder implements Constraint
 		);
 	}
 
-	constrain(universe: Universe, world: World, place: Place, constrainable: Entity)
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var body = constrainable;
+		var body = uwpe.entity;
 
 		NumberHelper.wrapToRangeMinMax(this.yawInTurns, 0, 1);
 		var yawInRadians = this.yawInTurns * Polar.RadiansPerTurn;
@@ -77,4 +77,8 @@ class Constraint_PositionOnCylinder implements Constraint
 
 		bodyOrientation.overwriteWith(this.orientation);
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint) { return this; }
 }

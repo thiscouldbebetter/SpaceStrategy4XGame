@@ -13,7 +13,9 @@ class Constraint_Cursor {
         this._positiveInfinity = 1000000000; // Number.POSITIVE_INFINITY;
         this._negativeInfinity = -1000000000; // Number.NEGATIVE_INFINITY;
     }
-    constrain(universe, world, place, body) {
+    constrain(uwpe) {
+        var universe = uwpe.universe;
+        var body = uwpe.entity;
         var cursor = body;
         var venue = universe.venueCurrent;
         var camera = venue.camera();
@@ -46,4 +48,7 @@ class Constraint_Cursor {
         }
         cursorPos.trimToRangeMinMax(this._boundsToRestrictTo.min(), this._boundsToRestrictTo.max());
     }
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
 }

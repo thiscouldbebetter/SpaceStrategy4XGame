@@ -46,7 +46,7 @@ class OrderDefn_Instances
 
 				if (actor.activity == null)
 				{
-					actor.activity = Activity.fromDefnNameAndTarget
+					actor.activity = Activity.fromDefnNameAndTargetEntity
 					(
 						"MoveToTarget", order.targetEntity
 					);
@@ -101,7 +101,7 @@ class OrderDefn_Instances
 						projectile.distancePerMove = 1000;
 
 						projectile.actor().activity = 
-							Activity.fromDefnNameAndTarget
+							Activity.fromDefnNameAndTargetEntity
 							(
 								"MoveToTarget", order.targetEntity
 							);

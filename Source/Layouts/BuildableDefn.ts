@@ -4,7 +4,7 @@ class BuildableDefn
 {
 	name: string;
 	terrainNamesAllowed: string[];
-	visual: Visual;
+	visual: VisualBase;
 	resourcesToBuild: Resource[];
 	resourcesPerTurn: Resource[];
 
@@ -12,7 +12,7 @@ class BuildableDefn
 	(
 		name: string,
 		terrainNamesAllowed: string[],
-		visual: Visual,
+		visual: VisualBase,
 		resourcesToBuild: Resource[],
 		resourcesPerTurn: Resource[]
 		// todo - use.

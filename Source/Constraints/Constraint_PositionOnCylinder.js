@@ -16,8 +16,8 @@ class Constraint_PositionOnCylinder {
         1 // distanceFromCenterAlongAxis
         );
     }
-    constrain(universe, world, place, constrainable) {
-        var body = constrainable;
+    constrain(uwpe) {
+        var body = uwpe.entity;
         NumberHelper.wrapToRangeMinMax(this.yawInTurns, 0, 1);
         var yawInRadians = this.yawInTurns * Polar.RadiansPerTurn;
         var bodyLoc = body.locatable().loc;
@@ -26,4 +26,7 @@ class Constraint_PositionOnCylinder {
         bodyPos.overwriteWith(this.orientation.down).multiplyScalar(this.distanceFromCenterAlongAxis).add(this.center).add(this.orientation.forward.clone().multiplyScalar(Math.cos(yawInRadians)).add(this.orientation.right.clone().multiplyScalar(Math.sin(yawInRadians))).multiplyScalar(this.radius));
         bodyOrientation.overwriteWith(this.orientation);
     }
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
 }

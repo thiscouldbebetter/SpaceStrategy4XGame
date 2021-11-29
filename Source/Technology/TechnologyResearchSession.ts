@@ -130,8 +130,8 @@ class TechnologyResearchSession
 					// items,
 					DataBinding.fromContextAndGet
 					(
-						this,
-						(c: TechnologyResearchSession) => c.researcher.technologiesAvailable(session)
+						this.researcher,
+						(c: TechnologyResearcher) => c.technologiesAvailable(session)
 					),
 					DataBinding.fromGet
 					(
@@ -189,7 +189,7 @@ class TechnologyResearchSession
 					DataBinding.fromContextAndGet
 					(
 						this.researcher,
-						(c: TechnologyResearcher) => c.researchAccumulated
+						(c: TechnologyResearcher) => "" + c.researchAccumulated
 					) // text
 				),
 
@@ -212,11 +212,11 @@ class TechnologyResearchSession
 					(
 						this,
 						(c: TechnologyResearchSession) =>
-							c.technologyBeingResearched().researchRequired
+							"" + c.technologyBeingResearched().researchRequired
 					) // text
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonResearchPlusOne", //name,
 					Coords.fromXY(margin, 155), //pos,
@@ -224,19 +224,18 @@ class TechnologyResearchSession
 					"Research + 1", // text,
 					labelHeight, // fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var world = universe.world as WorldExtended;
 						var venue = universe.venueCurrent as VenueTechnologyResearchSession;
 						var session = venue.researchSession;
 						var faction = world.factionByName(session.researcher.factionName);
 						session.researchAccumulatedIncrement(world, faction, 1);
-					},
-					universe // context
+					}
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonBack", //name,
 					Coords.fromXY(margin, size.y - margin - buttonHeight), //pos,
@@ -244,8 +243,8 @@ class TechnologyResearchSession
 					"Back", // text,
 					labelHeight, // fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venueNext: Venue = universe.world.toVenue();
 						venueNext = VenueFader.fromVenuesToAndFrom
@@ -253,8 +252,7 @@ class TechnologyResearchSession
 							venueNext, universe.venueCurrent
 							);
 						universe.venueNext = venueNext;
-					},
-					universe // context
+					}
 				)
 
 			]

@@ -31,8 +31,11 @@ class Constraint_Cursor implements Constraint
 		this._negativeInfinity = -1000000000; // Number.NEGATIVE_INFINITY;
 	}
 
-	constrain(universe: Universe, world: World, place: Place, body: Entity): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var universe = uwpe.universe;
+		var body = uwpe.entity;
+
 		var cursor = body as Cursor;
 		var venue = (universe.venueCurrent as VenueStarsystem);
 
@@ -144,4 +147,8 @@ class Constraint_Cursor implements Constraint
 			this._boundsToRestrictTo.min(), this._boundsToRestrictTo.max()
 		);
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
 }

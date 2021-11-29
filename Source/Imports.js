@@ -104,6 +104,7 @@ var Universe = gf.Universe;
 var UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 var VenueWorld = gf.VenueWorld;
 var World = gf.World;
+var WorldDefn = gf.WorldDefn;
 // Model - Actors.
 var Action = gf.Action;
 var Activity = gf.Activity;
@@ -114,6 +115,13 @@ var Killable = gf.Killable;
 // Model - Physics.
 var Constrainable = gf.Constrainable;
 var Locatable = gf.Locatable;
+// Model - Talk.
+var ConversationDefn = gf.ConversationDefn;
+var ConversationRun = gf.ConversationRun;
+var ConversationScope = gf.ConversationScope;
+var TalkNode = gf.TalkNode;
+var TalkNodeDefn = gf.TalkNodeDefn;
+var Talker = gf.Talker;
 // Profiles.
 var Profile = gf.Profile;
 // Storage.

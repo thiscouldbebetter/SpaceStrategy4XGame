@@ -79,10 +79,10 @@ class Planet extends Entity
 					),
 					new VisualDynamic // todo - VisualDynamic2?
 					(
-						(u: Universe, w: World, p: Place, e: Entity) =>
+						(uwpe: UniverseWorldPlaceEntities) =>
 						{
 							var factionName = "todo"; // todo
-							var returnValue: Visual = null;
+							var returnValue: VisualBase = null;
 							if (factionName == null)
 							{
 								returnValue = new VisualNone();

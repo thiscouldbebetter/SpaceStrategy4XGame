@@ -32,8 +32,8 @@ class NetworkNode2 extends Entity {
             ControlButton.from8("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
             buttonSize, // size
             "View", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var venueCurrent = universe.venueCurrent;
                 var starsystemToView = venueCurrent.selection.starsystem;
@@ -68,7 +68,7 @@ class NetworkNode2 extends Entity {
         );
         var locatable = new Locatable(Disposition.fromPos(drawPos));
         var drawableTransformed = new Entity("[drawable]", [locatable]);
-        visual.draw(universe, world, null, drawableTransformed, display);
+        visual.draw(new UniverseWorldPlaceEntities(universe, world, null, drawableTransformed, null), display);
         var starsystem = this.starsystem;
         if (starsystem != null) {
             this.draw_Starsystem(universe, radiusApparent, drawPos, nodeColor, starsystem);
@@ -76,6 +76,7 @@ class NetworkNode2 extends Entity {
     }
     draw_Starsystem(universe, radiusApparent, starsystemDrawPos, nodeColor, starsystem) {
         var world = universe.world;
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null); // todo - Avoid re-instantiating this every time.
         var display = universe.display;
         var factionsPresent = [];
         var planets = starsystem.planets;
@@ -96,7 +97,7 @@ class NetworkNode2 extends Entity {
             var factionColor = faction.color;
             var ringRadius = radiusApparent + (ringThickness * (i + 5));
             var visualRing = new VisualCircle(ringRadius, null, factionColor, null);
-            visualRing.draw(universe, world, null, drawableTransformed, display);
+            visualRing.draw(uwpe.entitySet(drawableTransformed), display);
         }
         var ships = starsystem.ships;
         var shipOffset = Coords.fromXY(0, -2).multiplyScalar(radiusApparent);
@@ -109,13 +110,15 @@ class NetworkNode2 extends Entity {
                 Coords.fromXY(0, 0),
                 Coords.fromXY(.5, -1).multiplyScalar(radiusApparent),
                 Coords.fromXY(-.5, -1).multiplyScalar(radiusApparent),
-            ]), shipColor, null);
-            visualShip.draw(universe, world, null, drawableTransformed, display);
+            ]), shipColor, null, // colorBorder
+            false // shouldUseEntityOrientation
+            );
+            visualShip.draw(uwpe.entitySet(drawableTransformed), display);
         }
         var visualText = VisualText.fromTextAndColor(this.starsystem.name, nodeColor);
         drawablePosTransformed.overwriteWith(starsystemDrawPos);
         drawablePosTransformed.y += radiusApparent * 2;
-        visualText.draw(universe, world, null, drawableTransformed, display);
+        visualText.draw(uwpe.entitySet(drawableTransformed), display);
     }
     static RadiusActual() {
         return 4;

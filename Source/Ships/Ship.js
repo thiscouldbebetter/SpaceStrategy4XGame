@@ -25,7 +25,9 @@ class Ship extends Entity {
                 Coords.fromXY(.5, 0).multiplyScalar(scaleFactor),
                 Coords.fromXY(-.5, .5).multiplyScalar(scaleFactor),
                 Coords.fromXY(-.5, -.5).multiplyScalar(scaleFactor),
-            ]), color, null),
+            ]), color, null, // colorBorder?
+            false // shouldUseEntityOrientation
+            ),
         ]));
         return returnValue;
     }
@@ -186,38 +188,34 @@ class Ship extends Entity {
             DataBinding.fromContext("H:")),
             ControlLabel.from5("textIntegrity", Coords.fromXY(containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
             false, // isTextCentered
-            DataBinding.fromContextAndGet(this, (c) => c.integrity)),
+            DataBinding.fromContextAndGet(this, (c) => "" + c.integrity)),
             ControlLabel.from5("labelEnergy", Coords.fromXY(containerSize.x / 2, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
             false, // isTextCentered
             DataBinding.fromContext("E:")),
             ControlLabel.from5("textEnergy", Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
             false, // isTextCentered
-            DataBinding.fromContextAndGet(this, (c) => c.energyThisTurn)),
-            ControlButton.from9("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
+            DataBinding.fromContextAndGet(this, (c) => "" + c.energyThisTurn)),
+            ControlButton.from8("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
             buttonSize, // size
             "View", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
-             {
-                alert("todo - view");
-            }, universe // context
+            DataBinding.fromTrue(), // isEnabled
+            () => alert("todo - view") // click
             ),
-            ControlButton.from9("buttonMove", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
+            ControlButton.from8("buttonMove", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
             buttonSize, "Move", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var venue = universe.venueCurrent;
                 var ship = venue.selection;
                 var mustTargetBodyFalse = false;
                 var orderDefns = OrderDefn.Instances();
                 venue.cursor.set(ship, orderDefns.Go.name, mustTargetBodyFalse);
-            }, universe // context
-            ),
-            ControlButton.from9("buttonRepeat", Coords.fromXY(margin, margin + controlSpacing * 4), // pos
+            }),
+            ControlButton.from8("buttonRepeat", Coords.fromXY(margin, margin + controlSpacing * 4), // pos
             buttonSize, "Repeat", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var venue = universe.venueCurrent;
                 var ship = venue.selection;
@@ -225,8 +223,7 @@ class Ship extends Entity {
                 if (order != null) {
                     order.obey(universe, null, null, ship);
                 }
-            }, universe // context
-            ),
+            }),
             ControlLabel.from5("labelDevices", Coords.fromXY(margin, margin + controlSpacing * 5), // pos
             Coords.fromXY(containerSize.x, 0), // this.size
             false, // isTextCentered
@@ -238,16 +235,15 @@ class Ship extends Entity {
             fontHeightInPixels, new DataBinding(this, (c) => c.deviceSelected, (c, v) => c.deviceSelected = v), // dataBindingForItemSelected
             DataBinding.fromContext(null) // bindingForItemValue
             ),
-            ControlButton.from9("buttonDeviceUse", Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
+            ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
             buttonSize, "Use Device", fontHeightInPixels, true, // hasBorder
-            DataBinding.fromContextAndGet(this, (c) => (c.deviceSelected != null)), (universe) => // click
+            DataBinding.fromContextAndGet(this, (c) => (c.deviceSelected != null)), () => // click
              {
                 var venue = universe.venueCurrent;
                 var ship = venue.selection;
                 var device = ship.deviceSelected;
                 device.use(universe, universe.world, null, ship);
-            }, universe // context
-            ),
+            }),
         ]);
         return returnValue;
     }
@@ -274,7 +270,8 @@ class Ship extends Entity {
         var shipPos = ship.locatable().loc.pos;
         camera.coordsTransformWorldToView(drawPos.overwriteWith(shipPos));
         var visual = this.visual(world);
-        visual.draw(universe, world, null, ship, display); // todo
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
+        visual.draw(uwpe, display); // todo
     }
     visual(world) {
         if (this._visual == null) {
@@ -289,7 +286,8 @@ class Ship extends Entity {
             Coords.fromXY(0, 0).multiplyScalar(shipSizeMultiplier),
             Coords.fromXY(.5, -1).multiplyScalar(shipSizeMultiplier),
             Coords.fromXY(-.5, -1).multiplyScalar(shipSizeMultiplier)
-        ]), color, null // colorBorder
+        ]), color, null, // colorBorder
+        false // shouldUseEntityOrientation
         );
     }
 }

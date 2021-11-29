@@ -21,9 +21,9 @@ class Constraint_HoldDistanceFromTarget implements Constraint
 		return new Constraint_HoldDistanceFromTarget(1, Coords.zeroes());
 	}
 
-	constrain(universe: Universe, world: World, place: Place, entity: Entity): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var body = entity;
+		var body = uwpe.entity;
 		var bodyPos = body.locatable().loc.pos;
 
 		var directionOfBodyFromTarget = this.displacement.overwriteWith
@@ -45,4 +45,8 @@ class Constraint_HoldDistanceFromTarget implements Constraint
 			this.targetPos
 		).round();
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint) { return this; }
 }

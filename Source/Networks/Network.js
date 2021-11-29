@@ -5,7 +5,6 @@ class Network2 //
         this.name = name;
         this.nodes = nodes;
         this.links = links;
-        this.nodes = nodes;
         this.nodesByName = ArrayHelper.addLookupsByName(this.nodes);
         this.linksByStarsystemNamesFromTo = new Map();
         for (var i = 0; i < this.links.length; i++) {
@@ -198,7 +197,7 @@ class Network2 //
     }
     // Clonable.
     clone() {
-        var nodesCloned = ArrayHelper.clone(this.nodes);
+        var nodesCloned = null; // this.nodes.map(x => x.clone());
         var linksCloned = ArrayHelper.clone(this.links);
         var returnValue = new Network2(this.name, nodesCloned, linksCloned);
         return returnValue;

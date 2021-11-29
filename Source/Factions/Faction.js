@@ -30,7 +30,7 @@ class Faction {
             ControlLabel.from5("labelFaction", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(columnWidth, controlSpacing), // size
             false, // isTextCentered
-            "Faction:"),
+            DataBinding.fromContext("Faction:")),
             ControlLabel.from5("textFaction", Coords.fromXY(margin * 2 + columnWidth, margin), // pos
             Coords.fromXY(columnWidth, controlSpacing), // size,
             false, // isTextCentered
@@ -94,44 +94,42 @@ class Faction {
             ControlLabel.from5("labelFaction", Coords.fromXY(margin, 0), // pos
             Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
             false, // isTextCentered
-            "Faction:"),
+            DataBinding.fromContext("Faction:")),
             ControlLabel.from5("textBoxFaction", Coords.fromXY(margin * 2 + containerInnerSize.x * .3, 0), // pos
             Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
             false, // isTextCentered
-            this.name),
-            ControlButton.from9("buttonTechnology", Coords.fromXY(margin, controlHeight), // pos
+            DataBinding.fromContext(this.name)),
+            ControlButton.from8("buttonTechnology", Coords.fromXY(margin, controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Tech", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            this.researchSessionStart.bind(this), // click
-            universe // context
+            DataBinding.fromTrue(), // isEnabled
+            () => this.researchSessionStart.bind(this) // click
             ),
-            ControlButton.from9("buttonNotifications", Coords.fromXY(margin, controlHeight * 2), // pos
+            ControlButton.from8("buttonNotifications", Coords.fromXY(margin, controlHeight * 2), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Notes", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
+            DataBinding.fromTrue(), // isEnabled
             // click
-            this.notificationSessionStart.bind(this), universe // context
-            ),
+            () => this.notificationSessionStart.bind(this)),
             ControlButton.from8("buttonRelations", Coords.fromXY(margin, controlHeight * 3), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Others", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
+            DataBinding.fromTrue(), // isEnabled
             // click
             this.relationsInitialize.bind(this, universe)),
             ControlButton.from8("buttonPlanets", Coords.fromXY(margin * 2 + buttonWidth, controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Planets", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
+            DataBinding.fromTrue(), // isEnabled
             // click
-            (universe) => { alert("todo"); } // click
+            () => { alert("todo"); } // click
             ),
             ControlButton.from8("buttonShips", Coords.fromXY(margin * 2 + buttonWidth, controlHeight * 2), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Ships", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
+            DataBinding.fromTrue(), // isEnabled
             // click
-            (universe) => { alert("todo"); } // click
+            () => { alert("todo"); } // click
             ),
         ]);
         return returnValue;

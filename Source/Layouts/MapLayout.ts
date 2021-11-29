@@ -146,6 +146,11 @@ class MapLayout
 		var drawPos = drawable.locatable().loc.pos;
 		var cellSizeInPixels = map.cellSizeInPixels;
 
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, null, drawable, null
+		);
+
 		for (var y = 0; y < mapSizeInCells.y; y++)
 		{
 			cellPos.y = y;
@@ -168,14 +173,14 @@ class MapLayout
 				var cellTerrain = map.terrainAtPosInCells(cellPos);
 
 				var terrainVisual = cellTerrain.visual;
-				terrainVisual.draw(universe, world, null, drawable, display);
+				terrainVisual.draw(uwpe, display);
 
 				var cellEntity = map.bodyAtPosInCells(cellPos);
 				if (cellEntity != null)
 				{
 					//var cellBody = Body.fromEntity(cellEntity);
 					var cellBodyVisual = cellEntity.drawable().visual; //(world);
-					cellBodyVisual.draw(universe, world, null, drawable, display);
+					cellBodyVisual.draw(uwpe, display);
 				}
 			}
 		}
@@ -226,12 +231,12 @@ class MapLayout
 						);
 						visualNotAllowed.draw
 						(
-							universe, world, null, drawable, display
+							uwpe, display
 						);
 					}
 				}
 
-				cursorVisual.draw(universe, world, null, drawable, display);
+				cursorVisual.draw(uwpe, display);
 			}
 		}
 	}

@@ -20,10 +20,23 @@ class DiplomaticSession {
     isFactionSelected() {
         return (this.factionSelected != null);
     }
-    talkSessionInitialize(universe) {
-        var talkSession = TalkSession.buildExample(this.factionActing, this.factionSelected);
-        var venueNext = new VenueTalkSession(universe.venueCurrent, talkSession);
-        venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
+    talkSessionInitialize(uwpe) {
+        var universe = uwpe.universe;
+        var entityTalker = uwpe.entity;
+        var entityTalkee = uwpe.entity2;
+        var conversationDefnName = "todo";
+        var conversationDefnAsJSON = universe.mediaLibrary.textStringGetByName(conversationDefnName).value;
+        var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+        var venueToReturnTo = universe.venueCurrent;
+        var conversationQuit = () => // quit
+         {
+            universe.venueNext = venueToReturnTo;
+        };
+        var conversation = new ConversationRun(conversationDefn, conversationQuit, entityTalkee, entityTalker // entityTalker
+        );
+        var conversationSize = universe.display.sizeDefault().clone();
+        var conversationAsControl = conversation.toControl(conversationSize, universe);
+        var venueNext = conversationAsControl.toVenue();
         universe.venueNext = venueNext;
     }
     // controls
@@ -37,24 +50,23 @@ class DiplomaticSession {
         containerSize, 
         // children
         [
-            ControlButton.from9("buttonBack", Coords.fromXY(margin, margin), // pos
+            ControlButton.from8("buttonBack", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
             "<", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var venueNext = universe.world.toVenue();
                 venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
                 universe.venueNext = venueNext;
-            }, universe // context
-            ),
+            }),
             ControlLabel.from5("labelFactions", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(100, controlHeight), // size
             false, // isTextCentered
             DataBinding.fromContext("Factions:")),
             ControlList.from8("listFactions", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
             Coords.fromXY(listWidth, controlHeight * 4), // size
-            DataBinding.fromContext(this.factions), // items
+            DataBinding.fromContextAndGet(this, (c) => c.factions), // items
             DataBinding.fromGet((c) => c.name), // bindingForItemText,
             fontHeightInPixels, 
             // bindingForItemSelected

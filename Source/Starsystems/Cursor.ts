@@ -66,12 +66,11 @@ class Cursor extends Entity
 			]),
 			// selectChildNames
 			(
-				universe: Universe, world: World, place: Place,
-				entity: Entity, display: Display
+				uwpe: UniverseWorldPlaceEntities, display: Display
 			) =>
 			{
 				var returnValue;
-				var cursor = entity as Cursor;
+				var cursor = uwpe.entity as Cursor;
 				if (cursor.entityParent == null)
 				{
 					returnValue = "_0";
@@ -146,19 +145,17 @@ class Cursor extends Entity
 
 	// controls
 
-	toControl(universe: Universe, controlSize: Coords): ControlBase
+	toControl(uwpe: UniverseWorldPlaceEntities): ControlBase
 	{
-		return this.entityParent.controllable().toControl(universe, controlSize);
+		return this.entityParent.controllable().toControl(uwpe);
 	}
 
 	// drawable
 
-	draw
-	(
-		universe: Universe, world: WorldExtended, place: Place, entity: Entity,
-		display: Display
-	): void
+	draw(uwpe: UniverseWorldPlaceEntities, display: Display): void
 	{
+		var universe = uwpe.universe;
+
 		var venue = universe.venueCurrent;
 		var venueTypeName = venue.constructor.name;
 		if (venueTypeName == VenueFader.name)
@@ -168,9 +165,6 @@ class Cursor extends Entity
 
 		var venueStarsystem = venue as VenueStarsystem;
 		var starsystem = venueStarsystem.starsystem;
-		starsystem.draw_Body
-		(
-			universe, world, place, this, display
-		);
+		starsystem.draw_Body(uwpe, display);
 	}
 }

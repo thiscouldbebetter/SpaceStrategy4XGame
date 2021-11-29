@@ -49,6 +49,7 @@ import VenueLayered = gf.VenueLayered;
 // Display - Visuals.
 
 import Visual = gf.Visual;
+import VisualBase = gf.VisualBase;
 import VisualCircle = gf.VisualCircle;
 import VisualCircleGradient = gf.VisualCircleGradient;
 import VisualDirectional = gf.VisualDirectional;
@@ -108,10 +109,12 @@ import Mesh = gf.Mesh;;
 // Geometry - Transforms.
 
 import Transform = gf.Transform;
+import TransformBase = gf.TransformBase;
 import Transform_Locate = gf.Transform_Locate;
 import Transform_Orient = gf.Transform_Orient;
 import Transform_Translate = gf.Transform_Translate;
 import Transformable = gf.Transformable;
+import TransformableBase = gf.TransformableBase;
 import Transforms = gf.Transforms;
 
 // Input.
@@ -136,6 +139,7 @@ import VisualSound = gf.VisualSound;
 
 import Entity = gf.Entity;
 import EntityBuilder = gf.EntityBuilder;
+import EntityPropertyBase = gf.EntityPropertyBase;
 import Namable = gf.Namable;
 import Place = gf.Place;
 import Universe = gf.Universe;
@@ -143,6 +147,7 @@ import UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 import Venue = gf.Venue;
 import VenueWorld = gf.VenueWorld;
 import World = gf.World;
+import WorldDefn = gf.WorldDefn;
 
 // Model - Actors.
 
@@ -160,6 +165,15 @@ import Killable = gf.Killable;
 import Constrainable = gf.Constrainable;
 import Constraint = gf.Constraint;
 import Locatable = gf.Locatable;
+
+// Model - Talk.
+
+import ConversationDefn = gf.ConversationDefn;
+import ConversationRun = gf.ConversationRun;
+import ConversationScope = gf.ConversationScope;
+import TalkNode = gf.TalkNode;
+import TalkNodeDefn = gf.TalkNodeDefn;
+import Talker = gf.Talker;
 
 // Profiles.
 

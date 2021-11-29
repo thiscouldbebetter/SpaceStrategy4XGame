@@ -34,7 +34,12 @@ class WorldExtended extends World
 		(
 			name,
 			dateCreated,
-			null, // worldDefn
+			new WorldDefn
+			(
+				null, // actions
+				activityDefns,
+				null, null, null, null // ?
+			), // worldDefn
 			[] // places
 		);
 
@@ -61,7 +66,7 @@ class WorldExtended extends World
 
 	// static methods
 
-	static create(universe: Universe)
+	static create(universe: Universe): WorldExtended
 	{
 		var worldName = NameGenerator.generateName() + " Cluster";
 
@@ -465,48 +470,52 @@ class WorldExtended extends World
 
 	// instance methods
 
-	activityDefnByName(activityDefnName: string)
+	activityDefnByName(activityDefnName: string): ActivityDefn
 	{
 		return this.activityDefnsByName.get(activityDefnName);
 	}
 
-	buildableDefnByName(buildableDefnName: string)
+	buildableDefnByName(buildableDefnName: string): BuildableDefn
 	{
 		return this.buildableDefnsByName.get(buildableDefnName);
 	}
 
-	factionByName(factionName: string)
+	factionByName(factionName: string): Faction
 	{
 		return this.factionsByName.get(factionName);
 	}
 
-	factionCurrent()
+	factionCurrent(): Faction
 	{
 		return this.factions[this.factionIndexCurrent];
 	}
 
-	factionsOtherThanCurrent()
+	factionsOtherThanCurrent(): Faction[]
 	{
 		var returnValues = this.factions.slice();
 		ArrayHelper.removeAt(returnValues, this.factionIndexCurrent);
 		return returnValues;
 	}
 
-	initialize(universe: Universe)
+	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
 		if (this.turnsSoFar == 0)
 		{
-			this.updateForTurn(universe);
+			this.updateForTurn(uwpe);
 		}
 	}
 
-	toVenue()
+	toVenue(): VenueWorld
 	{
 		return new VenueWorldExtended(this);
 	}
 
-	updateForTurn(universe: Universe)
+	updateForTurn(uwpe: UniverseWorldPlaceEntities): void
 	{
+		uwpe.world = this;
+		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
+
 		var factionForPlayer = this.factions[0];
 		var notifications = factionForPlayer.notificationSession.notifications;
 		if (this.turnsSoFar > 0 && notifications.length > 0)
@@ -520,7 +529,7 @@ class WorldExtended extends World
 			for (var i = 0; i < this.factions.length; i++)
 			{
 				var faction = this.factions[i];
-				faction.updateForTurn(universe, this);
+				faction.updateForTurn(universe, world);
 			}
 
 			if (this.turnsSoFar > 1 && notifications.length > 0)

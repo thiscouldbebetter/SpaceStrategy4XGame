@@ -29,16 +29,14 @@ class VenueStarsystem implements Venue
 		var display = universe.display;
 
 		display.drawBackground(null, null);
-		this.starsystem.draw
-		(
-			universe,
-			world,
-			null, // place
-			null, // entity
-			display
-		);
 
-		this.cursor.draw(universe, world, null, null, display);
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, null, null, null
+		);
+		this.starsystem.draw(uwpe, display);
+
+		this.cursor.draw(uwpe, display);
 
 		this.venueControls.draw(universe);
 	}
@@ -50,6 +48,8 @@ class VenueStarsystem implements Venue
 
 	initialize(universe: Universe): void
 	{
+		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+
 		this.venueControls = this.toControl(universe).toVenue();
 
 		var starsystem = this.starsystem;
@@ -99,7 +99,7 @@ class VenueStarsystem implements Venue
 			[ camera, cameraLocatable, cameraConstrainable ]
 		);
 
-		cameraConstrainable.constrain(universe, universe.world, null, this.cameraEntity);
+		cameraConstrainable.constrain(uwpe.entitySet(this.cameraEntity));
 
 		this.entities = new Array<Entity>();
 		this.entities.push(starsystem.star);
@@ -122,16 +122,21 @@ class VenueStarsystem implements Venue
 	{
 		this.venueControls.updateForTimerTick(universe);
 
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, universe.world, null, null, null
+		);
+
 		this.cameraEntity.constrainable().constrain
 		(
-			universe, universe.world, null, this.cameraEntity
+			uwpe.entitySet(this.cameraEntity)
 		);
 
 		if (this.cursor != null)
 		{
 			this.cursor.constrainable().constrain
 			(
-				universe, universe.world, null, this.cursor
+				uwpe.entitySet(this.cursor)
 			);
 		}
 
@@ -143,7 +148,7 @@ class VenueStarsystem implements Venue
 			var activity = ship.actor().activity;
 			if (activity != null)
 			{
-				activity.perform(universe, universe.world, null, ship);
+				activity.perform(uwpe.entitySet(ship));
 			}
 		}
 
@@ -505,7 +510,7 @@ class VenueStarsystem implements Venue
 			containerMainSize,
 			// children
 			[
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonBack",
 					Coords.fromXY
@@ -517,15 +522,14 @@ class VenueStarsystem implements Venue
 					"Back",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venue = universe.venueCurrent as VenueStarsystem;
 						var venueNext: Venue = venue.venueParent;
 						venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 						universe.venueNext = venueNext;
-					},
-					universe // context
+					}
 				),
 
 				controlBuilder.timeAndPlace

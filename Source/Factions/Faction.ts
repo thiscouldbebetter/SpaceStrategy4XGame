@@ -89,7 +89,7 @@ class Faction
 					Coords.fromXY(margin, margin), // pos
 					Coords.fromXY(columnWidth, controlSpacing), // size
 					false, // isTextCentered
-					"Faction:"
+					DataBinding.fromContext("Faction:")
 				),
 
 				ControlLabel.from5
@@ -147,7 +147,7 @@ class Faction
 					), // items
 					DataBinding.fromGet
 					(
-						(c: DiplomaticSession) => "todo" // bindingForItemText,
+						(c: Planet) => "todo" // bindingForItemText,
 					),
 					fontHeightInPixels,
 					// dataBindingForItemSelected
@@ -189,7 +189,7 @@ class Faction
 					), // options
 					DataBinding.fromGet
 					(
-						(c: DiplomaticSession) => "todo"
+						(c: Ship) => "todo"
 					), // bindingForOptionText,
 					null, // fontHeightInPixels
 					// dataBindingForValueSelected
@@ -263,7 +263,7 @@ class Faction
 						controlHeight
 					), // size
 					false, // isTextCentered
-					"Faction:"
+					DataBinding.fromContext("Faction:")
 				),
 
 				ControlLabel.from5
@@ -276,10 +276,10 @@ class Faction
 						controlHeight
 					), // size
 					false, // isTextCentered
-					this.name
+					DataBinding.fromContext(this.name)
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonTechnology",
 					Coords.fromXY(margin, controlHeight), // pos
@@ -287,12 +287,11 @@ class Faction
 					"Tech",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					this.researchSessionStart.bind(this), // click
-					universe // context
+					DataBinding.fromTrue(), // isEnabled
+					() => this.researchSessionStart.bind(this) // click
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonNotifications",
 					Coords.fromXY
@@ -304,10 +303,9 @@ class Faction
 					"Notes",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
+					DataBinding.fromTrue(), // isEnabled
 					// click
-					this.notificationSessionStart.bind(this),
-					universe // context
+					() => this.notificationSessionStart.bind(this)
 				),
 
 				ControlButton.from8
@@ -322,7 +320,7 @@ class Faction
 					"Others",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
+					DataBinding.fromTrue(), // isEnabled
 					// click
 					this.relationsInitialize.bind(this, universe)
 				),
@@ -339,9 +337,9 @@ class Faction
 					"Planets",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
+					DataBinding.fromTrue(), // isEnabled
 					// click
-					(universe: Universe) => { alert("todo"); } // click
+					() => { alert("todo"); } // click
 				),
 
 				ControlButton.from8
@@ -356,9 +354,9 @@ class Faction
 					"Ships",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
+					DataBinding.fromTrue(), // isEnabled
 					// click
-					(universe: Universe) => { alert("todo"); } // click
+					() => { alert("todo"); } // click
 				),
 			]
 		);
@@ -504,7 +502,7 @@ class Faction
 		return returnValue;
 	}
 
-	updateForTurn(universe: Universe, world: WorldExtended)
+	updateForTurn(universe: Universe, world: WorldExtended): void
 	{
 		for (var i = 0; i < this.planets.length; i++)
 		{

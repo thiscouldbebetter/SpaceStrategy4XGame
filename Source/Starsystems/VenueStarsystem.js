@@ -10,16 +10,16 @@ class VenueStarsystem {
         var world = universe.world;
         var display = universe.display;
         display.drawBackground(null, null);
-        this.starsystem.draw(universe, world, null, // place
-        null, // entity
-        display);
-        this.cursor.draw(universe, world, null, null, display);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+        this.starsystem.draw(uwpe, display);
+        this.cursor.draw(uwpe, display);
         this.venueControls.draw(universe);
     }
     finalize(universe) {
         universe.soundHelper.soundForMusic.pause(universe);
     }
     initialize(universe) {
+        var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
         this.venueControls = this.toControl(universe).toVenue();
         var starsystem = this.starsystem;
         var soundHelper = universe.soundHelper;
@@ -42,7 +42,7 @@ class VenueStarsystem {
         ];
         var cameraConstrainable = new Constrainable(constraints);
         this.cameraEntity = new Entity(Camera.name, [camera, cameraLocatable, cameraConstrainable]);
-        cameraConstrainable.constrain(universe, universe.world, null, this.cameraEntity);
+        cameraConstrainable.constrain(uwpe.entitySet(this.cameraEntity));
         this.entities = new Array();
         this.entities.push(starsystem.star);
         this.entities.push(...starsystem.linkPortals);
@@ -57,16 +57,17 @@ class VenueStarsystem {
     }
     updateForTimerTick(universe) {
         this.venueControls.updateForTimerTick(universe);
-        this.cameraEntity.constrainable().constrain(universe, universe.world, null, this.cameraEntity);
+        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, null, null);
+        this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
         if (this.cursor != null) {
-            this.cursor.constrainable().constrain(universe, universe.world, null, this.cursor);
+            this.cursor.constrainable().constrain(uwpe.entitySet(this.cursor));
         }
         var ships = this.starsystem.ships;
         for (var i = 0; i < ships.length; i++) {
             var ship = ships[i];
             var activity = ship.actor().activity;
             if (activity != null) {
-                activity.perform(universe, universe.world, null, ship);
+                activity.perform(uwpe.entitySet(ship));
             }
         }
         this.draw(universe);
@@ -271,18 +272,17 @@ class VenueStarsystem {
         containerMainSize, 
         // children
         [
-            ControlButton.from9("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
+            ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Back", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var venue = universe.venueCurrent;
                 var venueNext = venue.venueParent;
                 venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
                 universe.venueNext = venueNext;
-            }, universe // context
-            ),
+            }),
             controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight),
             controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight),
             controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, margin), Coords.fromXY(containerInnerSize.x, containerMainSize.y - margin * 2), margin, controlHeight),

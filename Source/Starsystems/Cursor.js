@@ -31,9 +31,9 @@ class Cursor extends Entity {
             ]
         ]), 
         // selectChildNames
-        (universe, world, place, entity, display) => {
+        (uwpe, display) => {
             var returnValue;
-            var cursor = entity;
+            var cursor = uwpe.entity;
             if (cursor.entityParent == null) {
                 returnValue = "_0";
             }
@@ -77,11 +77,12 @@ class Cursor extends Entity {
         this.mustTargetEntity = mustTargetEntity;
     }
     // controls
-    toControl(universe, controlSize) {
-        return this.entityParent.controllable().toControl(universe, controlSize);
+    toControl(uwpe) {
+        return this.entityParent.controllable().toControl(uwpe);
     }
     // drawable
-    draw(universe, world, place, entity, display) {
+    draw(uwpe, display) {
+        var universe = uwpe.universe;
         var venue = universe.venueCurrent;
         var venueTypeName = venue.constructor.name;
         if (venueTypeName == VenueFader.name) {
@@ -89,6 +90,6 @@ class Cursor extends Entity {
         }
         var venueStarsystem = venue;
         var starsystem = venueStarsystem.starsystem;
-        starsystem.draw_Body(universe, world, place, this, display);
+        starsystem.draw_Body(uwpe, display);
     }
 }

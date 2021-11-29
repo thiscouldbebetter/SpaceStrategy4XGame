@@ -18,7 +18,7 @@ class OrderDefn_Instances {
             var orderable = Orderable.fromEntity(e);
             var order = orderable.order;
             if (actor.activity == null) {
-                actor.activity = Activity.fromDefnNameAndTarget("MoveToTarget", order.targetEntity);
+                actor.activity = Activity.fromDefnNameAndTargetEntity("MoveToTarget", order.targetEntity);
             }
             else {
                 var actorLoc = e.locatable().loc;
@@ -46,7 +46,7 @@ class OrderDefn_Instances {
                     projectile.energyPerMove = 0;
                     projectile.distancePerMove = 1000;
                     projectile.actor().activity =
-                        Activity.fromDefnNameAndTarget("MoveToTarget", order.targetEntity);
+                        Activity.fromDefnNameAndTargetEntity("MoveToTarget", order.targetEntity);
                     starsystem.shipAdd(projectile);
                     device.projectile = projectile;
                 }

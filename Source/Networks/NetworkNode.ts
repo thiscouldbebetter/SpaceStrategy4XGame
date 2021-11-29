@@ -9,7 +9,9 @@ class NetworkNode2 extends Entity
 
 	constructor
 	(
-		name: string, defn: NetworkNodeDefn, pos: Coords,
+		name: string,
+		defn: NetworkNodeDefn,
+		pos: Coords,
 		starsystem: Starsystem
 	)
 	{
@@ -81,8 +83,8 @@ class NetworkNode2 extends Entity
 					"View",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venueCurrent =
 							universe.venueCurrent as VenueWorldExtended;
@@ -141,7 +143,14 @@ class NetworkNode2 extends Entity
 		);
 		var locatable = new Locatable(Disposition.fromPos(drawPos));
 		var drawableTransformed = new Entity("[drawable]", [ locatable ]);
-		visual.draw(universe, world, null, drawableTransformed, display);
+		visual.draw
+		(
+			new UniverseWorldPlaceEntities
+			(
+				universe, world, null, drawableTransformed, null
+			),
+			display
+		);
 
 		var starsystem = this.starsystem;
 
@@ -162,6 +171,12 @@ class NetworkNode2 extends Entity
 	): void
 	{
 		var world = universe.world as WorldExtended;
+
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, null, null, null
+		); // todo - Avoid re-instantiating this every time.
+
 		var display = universe.display;
 
 		var factionsPresent = [];
@@ -191,7 +206,7 @@ class NetworkNode2 extends Entity
 			(
 				ringRadius, null, factionColor, null
 			);
-			visualRing.draw(universe, world, null, drawableTransformed, display);
+			visualRing.draw(uwpe.entitySet(drawableTransformed), display);
 		}
 
 		var ships = starsystem.ships;
@@ -218,9 +233,10 @@ class NetworkNode2 extends Entity
 					Coords.fromXY(-.5, -1).multiplyScalar(radiusApparent),
 				]),
 				shipColor,
-				null
+				null, // colorBorder
+				false // shouldUseEntityOrientation
 			);
-			visualShip.draw(universe, world, null, drawableTransformed, display);
+			visualShip.draw(uwpe.entitySet(drawableTransformed), display);
 		}
 
 		var visualText = VisualText.fromTextAndColor
@@ -229,7 +245,10 @@ class NetworkNode2 extends Entity
 		);
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;
-		visualText.draw(universe, world, null, drawableTransformed, display);
+		visualText.draw
+		(
+			uwpe.entitySet(drawableTransformed), display
+		);
 	}
 
 	static RadiusActual(): number

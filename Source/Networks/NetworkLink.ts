@@ -1,5 +1,5 @@
 
-class NetworkLink2 implements EntityProperty
+class NetworkLink2 implements EntityPropertyBase
 {
 	namesOfNodesLinked: string[];
 
@@ -191,9 +191,17 @@ class NetworkLink2 implements EntityProperty
 		return new NetworkLink2(this.namesOfNodesLinked.slice());
 	}
 
+	overwriteWith(other: NetworkLink2): NetworkLink2
+	{
+		return this;
+	}
+
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Equatable
+	equals(other: EntityPropertyBase): boolean { return false; }
 }

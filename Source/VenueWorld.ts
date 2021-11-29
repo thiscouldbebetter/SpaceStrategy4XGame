@@ -143,7 +143,7 @@ class VenueWorldExtended extends VenueWorld
 			containerMainSize,
 			// children
 			[
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonMenu",
 					Coords.fromXY
@@ -155,8 +155,8 @@ class VenueWorldExtended extends VenueWorld
 					"Menu",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venueNext: Venue =
 							universe.controlBuilder.gameAndSettings1(universe).toVenue();
@@ -165,8 +165,7 @@ class VenueWorldExtended extends VenueWorld
 							venueNext, universe.venueCurrent
 						);
 						universe.venueNext = venueNext;
-					},
-					universe // context
+					}
 				),
 
 				controlBuilder.timeAndPlace
@@ -237,7 +236,9 @@ class VenueWorldExtended extends VenueWorld
 
 	initialize(universe: Universe): void
 	{
-		this.world.initialize(universe);
+		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+
+		this.world.initialize(uwpe);
 		this.venueControls = this.toControl(universe).toVenue();
 
 		var soundHelper = universe.soundHelper;
@@ -271,9 +272,15 @@ class VenueWorldExtended extends VenueWorld
 	updateForTimerTick(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
+
+		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld
+		(
+			universe, world
+		);
+
 		this.cameraEntity.constrainable().constrain
 		(
-			universe, world, null, this.cameraEntity
+			uwpe.entitySet(this.cameraEntity)
 		);
 
 		this.draw(universe);

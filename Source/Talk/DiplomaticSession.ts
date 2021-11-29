@@ -38,7 +38,7 @@ class DiplomaticSession
 		factionActing: Faction,
 		factions: Faction[],
 		venueParent: Venue
-	)
+	): DiplomaticSession
 	{
 		var diplomaticActions = DiplomaticAction.Instances()._All;
 
@@ -55,27 +55,45 @@ class DiplomaticSession
 
 	// instance methods
 
-	isFactionSelected()
+	isFactionSelected(): boolean
 	{
 		return (this.factionSelected != null);
 	}
 
-	talkSessionInitialize(universe: Universe)
+	talkSessionInitialize(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var talkSession = TalkSession.buildExample
+		var universe = uwpe.universe;
+		var entityTalker = uwpe.entity;
+		var entityTalkee = uwpe.entity2;
+
+		var conversationDefnName = "todo";
+		var conversationDefnAsJSON =
+			universe.mediaLibrary.textStringGetByName(conversationDefnName).value;
+		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+		var venueToReturnTo = universe.venueCurrent;
+		var conversationQuit = () => // quit
+		{
+			universe.venueNext = venueToReturnTo;
+		};
+		var conversation = new ConversationRun
 		(
-			this.factionActing,
-			this.factionSelected
+			conversationDefn,
+			conversationQuit,
+			entityTalkee,
+			entityTalker // entityTalker
 		);
-		var venueNext: Venue =
-			new VenueTalkSession(universe.venueCurrent, talkSession);
-		venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
+		var conversationSize = universe.display.sizeDefault().clone();
+		var conversationAsControl =
+			conversation.toControl(conversationSize, universe);
+
+		var venueNext = conversationAsControl.toVenue();
+
 		universe.venueNext = venueNext;
 	}
 
 	// controls
 
-	toControl(universe: Universe)
+	toControl(universe: Universe): ControlBase
 	{
 		var containerSize = universe.display.sizeInPixels.clone();
 		var margin = 10;
@@ -90,7 +108,7 @@ class DiplomaticSession
 			containerSize,
 			// children
 			[
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonBack",
 					Coords.fromXY(margin, margin), // pos
@@ -98,8 +116,8 @@ class DiplomaticSession
 					"<",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venueNext: Venue = universe.world.toVenue();
 						venueNext = VenueFader.fromVenuesToAndFrom
@@ -107,8 +125,7 @@ class DiplomaticSession
 							venueNext, universe.venueCurrent
 						);
 						universe.venueNext = venueNext;
-					},
-					universe // context
+					}
 				),
 
 				ControlLabel.from5
@@ -125,7 +142,11 @@ class DiplomaticSession
 					"listFactions",
 					Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
 					Coords.fromXY(listWidth, controlHeight * 4), // size
-					DataBinding.fromContext(this.factions), // items
+					DataBinding.fromContextAndGet
+					(
+						this,
+						(c: DiplomaticSession) => c.factions
+					), // items
 					DataBinding.fromGet((c: Faction) => c.name), // bindingForItemText,
 					fontHeightInPixels,
 					// bindingForItemSelected

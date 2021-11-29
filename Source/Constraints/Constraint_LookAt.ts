@@ -16,8 +16,9 @@ class Constraint_LookAt implements Constraint
 		return new Constraint_LookAt(Coords.zeroes());
 	}
 
-	constrain(universe: Universe, world: World, place: Place, body: Entity): void
+	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
+		var body = uwpe.entity;
 		var bodyLoc = body.locatable().loc;
 		var bodyPos = bodyLoc.pos;
 		var bodyOrientation = bodyLoc.orientation;
@@ -29,4 +30,8 @@ class Constraint_LookAt implements Constraint
 
 		bodyOrientation.forwardSet(bodyOrientationForwardNew);
 	}
+
+	// Clonable.
+	clone(): Constraint { return this; }
+	overwriteWith(other: Constraint): Constraint { return this; }
 }

@@ -102,9 +102,10 @@ class Starsystem {
         var camera = venueAsVenueStarsystem.cameraEntity.camera();
         return camera;
     }
-    draw(universe, world, place, entity, display) {
+    draw(uwpe, display) {
+        var universe = uwpe.universe;
         var camera = this.camera(universe);
-        this.visualGrid.draw(universe, world, place, null, display);
+        this.visualGrid.draw(uwpe, display);
         var bodiesByType = [
             [this.star],
             this.linkPortals,
@@ -133,19 +134,21 @@ class Starsystem {
         }
         for (var i = 0; i < bodiesToDrawSorted.length; i++) {
             var body = bodiesToDrawSorted[i];
-            this.draw_Body(universe, world, place, body, display);
+            this.draw_Body(uwpe.entitySet(body), display);
         }
     }
-    draw_Body(universe, world, place, entity, display) {
+    draw_Body(uwpe, display) {
+        var universe = uwpe.universe;
+        var entity = uwpe.entity;
         var bodyPos = entity.locatable().loc.pos;
         this.posSaved.overwriteWith(bodyPos);
         var camera = this.camera(universe);
         camera.coordsTransformWorldToView(bodyPos);
-        var bodyDefn = BodyDefn.fromEntity(entity);
+        var bodyDefn = BodyDefn.fromEntity(uwpe.entity);
         var bodyVisual = bodyDefn.visual;
-        bodyVisual.draw(universe, world, place, entity, display);
+        bodyVisual.draw(uwpe, display);
         bodyPos.overwriteWith(this.posSaved);
-        this.visualElevationStem.draw(universe, world, place, entity, display);
+        this.visualElevationStem.draw(uwpe, display);
     }
 }
 // Visuals.
@@ -155,18 +158,25 @@ class VisualElevationStem {
         this.drawPosTip = Coords.create();
         this.drawPosPlane = Coords.create();
     }
-    draw(universe, world, place, entity, display) {
+    draw(uwpe, display) {
+        var universe = uwpe.universe;
         var starsystem = universe.venueCurrent.starsystem;
         if (starsystem == null) {
             return;
         }
         var camera = starsystem.camera(universe);
+        var entity = uwpe.entity;
         var drawablePosWorld = entity.locatable().loc.pos;
         var drawPosTip = camera.coordsTransformWorldToView(this.drawPosTip.overwriteWith(drawablePosWorld));
         var drawPosPlane = camera.coordsTransformWorldToView(this.drawPosPlane.overwriteWith(drawablePosWorld).clearZ());
         var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
         display.drawLine(drawPosTip, drawPosPlane, Color.byName(colorName), null);
     }
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
+    // Transformable.
+    transform(transform) { return this; }
 }
 class VisualGrid {
     constructor(gridDimensionInCells, gridCellDimensionInPixels, color) {
@@ -186,7 +196,8 @@ class VisualGrid {
         this.multiplier = Coords.create();
         this.multiplierTimesI = Coords.create();
     }
-    draw(universe, world, place, entity, display) {
+    draw(uwpe, display) {
+        var universe = uwpe.universe;
         var starsystem = universe.venueCurrent.starsystem;
         if (starsystem == null) {
             return;
@@ -216,4 +227,9 @@ class VisualGrid {
             }
         }
     }
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
+    // Transformable.
+    transform(transform) { return this; }
 }

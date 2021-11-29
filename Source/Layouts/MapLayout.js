@@ -74,6 +74,7 @@ class MapLayout {
         var drawable = this._drawable;
         var drawPos = drawable.locatable().loc.pos;
         var cellSizeInPixels = map.cellSizeInPixels;
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, drawable, null);
         for (var y = 0; y < mapSizeInCells.y; y++) {
             cellPos.y = y;
             for (var x = 0; x < mapSizeInCells.x; x++) {
@@ -81,12 +82,12 @@ class MapLayout {
                 drawPos.overwriteWith(cellPos).multiply(cellSizeInPixels).add(mapPos);
                 var cellTerrain = map.terrainAtPosInCells(cellPos);
                 var terrainVisual = cellTerrain.visual;
-                terrainVisual.draw(universe, world, null, drawable, display);
+                terrainVisual.draw(uwpe, display);
                 var cellEntity = map.bodyAtPosInCells(cellPos);
                 if (cellEntity != null) {
                     //var cellBody = Body.fromEntity(cellEntity);
                     var cellBodyVisual = cellEntity.drawable().visual; //(world);
-                    cellBodyVisual.draw(universe, world, null, drawable, display);
+                    cellBodyVisual.draw(uwpe, display);
                 }
             }
         }
@@ -106,10 +107,10 @@ class MapLayout {
                     var isBuildableAllowedOnTerrain = ArrayHelper.contains(buildableDefn.terrainNamesAllowed, terrainName);
                     if (isBuildableAllowedOnTerrain == false) {
                         var visualNotAllowed = VisualText.fromTextAndColor("X", Color.byName("Red"));
-                        visualNotAllowed.draw(universe, world, null, drawable, display);
+                        visualNotAllowed.draw(uwpe, display);
                     }
                 }
-                cursorVisual.draw(universe, world, null, drawable, display);
+                cursorVisual.draw(uwpe, display);
             }
         }
     }

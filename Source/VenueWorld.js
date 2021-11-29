@@ -86,17 +86,16 @@ class VenueWorldExtended extends VenueWorld {
         containerMainSize, 
         // children
         [
-            ControlButton.from9("buttonMenu", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
+            ControlButton.from8("buttonMenu", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Menu", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var venueNext = universe.controlBuilder.gameAndSettings1(universe).toVenue();
                 venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
                 universe.venueNext = venueNext;
-            }, universe // context
-            ),
+            }),
             controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight),
             faction.toControl(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth),
             controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight),
@@ -119,7 +118,8 @@ class VenueWorldExtended extends VenueWorld {
         universe.soundHelper.soundForMusic.pause(universe);
     }
     initialize(universe) {
-        this.world.initialize(universe);
+        var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+        this.world.initialize(uwpe);
         this.venueControls = this.toControl(universe).toVenue();
         var soundHelper = universe.soundHelper;
         soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
@@ -141,7 +141,8 @@ class VenueWorldExtended extends VenueWorld {
     }
     updateForTimerTick(universe) {
         var world = universe.world;
-        this.cameraEntity.constrainable().constrain(universe, world, null, this.cameraEntity);
+        var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
+        this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
         var inputHelper = universe.inputHelper;

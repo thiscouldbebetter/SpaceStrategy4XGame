@@ -16,7 +16,7 @@ class Ship extends Entity
 
 	_devicesUsable: Device[];
 	_displacement: Coords;
-	_visual: Visual;
+	_visual: VisualBase;
 
 	constructor
 	(
@@ -67,7 +67,9 @@ class Ship extends Entity
 						Coords.fromXY(-.5, .5).multiplyScalar(scaleFactor),
 						Coords.fromXY(-.5, -.5).multiplyScalar(scaleFactor),
 					]),
-					color, null
+					color,
+					null, // colorBorder?
+					false // shouldUseEntityOrientation
 				),
 			])
 		);
@@ -344,7 +346,7 @@ class Ship extends Entity
 					false, // isTextCentered
 					DataBinding.fromContextAndGet
 					(
-						this, (c: Ship) => c.integrity
+						this, (c: Ship) => "" + c.integrity
 					)
 				),
 
@@ -365,11 +367,11 @@ class Ship extends Entity
 					false, // isTextCentered
 					DataBinding.fromContextAndGet
 					(
-						this, (c: Ship) => c.energyThisTurn
+						this, (c: Ship) => "" + c.energyThisTurn
 					)
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonView",
 					Coords.fromXY(margin, margin + controlSpacing * 2), // pos
@@ -377,15 +379,11 @@ class Ship extends Entity
 					"View",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
-					{
-						alert("todo - view")
-					},
-					universe // context
+					DataBinding.fromTrue(), // isEnabled
+					() => alert("todo - view") // click
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonMove",
 					Coords.fromXY(margin, margin + controlSpacing * 3), // pos
@@ -393,19 +391,18 @@ class Ship extends Entity
 					"Move",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venue = universe.venueCurrent as VenueStarsystem;
 						var ship = venue.selection;
 						var mustTargetBodyFalse = false;
 						var orderDefns = OrderDefn.Instances();
 						venue.cursor.set(ship, orderDefns.Go.name, mustTargetBodyFalse);
-					},
-					universe // context
+					}
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonRepeat",
 					Coords.fromXY(margin, margin + controlSpacing * 4), // pos
@@ -413,8 +410,8 @@ class Ship extends Entity
 					"Repeat",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venue = universe.venueCurrent as VenueStarsystem;
 						var ship = venue.selection;
@@ -423,8 +420,7 @@ class Ship extends Entity
 						{
 							order.obey(universe, null, null, ship);
 						}
-					},
-					universe // context
+					}
 				),
 
 				ControlLabel.from5
@@ -457,7 +453,7 @@ class Ship extends Entity
 					DataBinding.fromContext(null) // bindingForItemValue
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonDeviceUse",
 					Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
@@ -470,14 +466,13 @@ class Ship extends Entity
 						this,
 						(c) => (c.deviceSelected != null)
 					),
-					(universe: Universe) => // click
+					() => // click
 					{
 						var venue = universe.venueCurrent as VenueStarsystem;
 						var ship = venue.selection as Ship;
 						var device = ship.deviceSelected;
 						device.use(universe, universe.world, null, ship);
-					},
-					universe // context
+					}
 				),
 
 
@@ -514,7 +509,9 @@ class Ship extends Entity
 
 	draw
 	(
-		universe: Universe, nodeRadiusActual: number, camera: Camera,
+		universe: Universe,
+		nodeRadiusActual: number,
+		camera: Camera,
 		drawPos: Coords
 	): void
 	{
@@ -533,10 +530,14 @@ class Ship extends Entity
 		);
 
 		var visual = this.visual(world);
-		visual.draw(universe, world, null, ship, display); // todo
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, null, ship, null
+		);
+		visual.draw(uwpe, display); // todo
 	}
 
-	visual(world: WorldExtended): Visual
+	visual(world: WorldExtended): VisualBase
 	{
 		if (this._visual == null)
 		{
@@ -547,7 +548,7 @@ class Ship extends Entity
 		return this._visual;
 	}
 
-	static visual(color: Color): Visual
+	static visual(color: Color): VisualBase
 	{
 		var shipSizeMultiplier = 4; // hack
 
@@ -560,7 +561,8 @@ class Ship extends Entity
 				Coords.fromXY(-.5, -1).multiplyScalar(shipSizeMultiplier)
 			]),
 			color,
-			null // colorBorder
+			null, // colorBorder
+			false // shouldUseEntityOrientation
 		);
 	}
 }

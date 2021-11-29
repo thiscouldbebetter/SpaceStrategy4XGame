@@ -11,13 +11,13 @@ class ActivityDefn_Instances2
 		this.MoveToTarget = new ActivityDefn
 		(
 			"MoveToTarget",
-			(u: Universe, w: World, p: Place, e: Entity) =>
+			(uwpe: UniverseWorldPlaceEntities) =>
 			{
-				var ship = e as Ship;
-				var activity = e.actor().activity;
+				var ship = uwpe.entity as Ship;
+				var activity = ship.actor().activity;
 				ship.moveTowardTarget
 				(
-					u, activity.target(), ship
+					uwpe.universe, activity.targetEntity(), ship
 				);
 			}
 		);

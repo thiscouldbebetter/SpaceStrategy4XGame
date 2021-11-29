@@ -9,10 +9,13 @@ class Constraint_HoldDistanceFromTarget {
     static default() {
         return new Constraint_HoldDistanceFromTarget(1, Coords.zeroes());
     }
-    constrain(universe, world, place, entity) {
-        var body = entity;
+    constrain(uwpe) {
+        var body = uwpe.entity;
         var bodyPos = body.locatable().loc.pos;
         var directionOfBodyFromTarget = this.displacement.overwriteWith(bodyPos).subtract(this.targetPos).normalize();
         bodyPos.overwriteWith(directionOfBodyFromTarget).multiplyScalar(this.distanceToHold).add(this.targetPos).round();
     }
+    // Clonable.
+    clone() { return this; }
+    overwriteWith(other) { return this; }
 }

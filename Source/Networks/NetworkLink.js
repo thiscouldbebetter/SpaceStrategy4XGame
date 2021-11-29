@@ -97,8 +97,13 @@ class NetworkLink2 {
     clone() {
         return new NetworkLink2(this.namesOfNodesLinked.slice());
     }
+    overwriteWith(other) {
+        return this;
+    }
     // EntityProperty.
-    finalize(u, w, p, e) { }
-    initialize(u, w, p, e) { }
-    updateForTimerTick(u, w, p, e) { }
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) { }
+    // Equatable
+    equals(other) { return false; }
 }

@@ -90,10 +90,14 @@ class NotificationSession
 					"listNotifications",
 					Coords.fromXY(margin, margin + controlHeight), // pos
 					Coords.fromXY(columnWidth, controlHeight * 4), // size
-					DataBinding.fromContext(this.notifications),
+					DataBinding.fromContextAndGet
+					(
+						this,
+						(c: NotificationSession) => c.notifications
+					),
 					DataBinding.fromGet
 					(
-						(c) => c.toString(),
+						(c: Notification) => c.toString(),
 					), // bindingForItemText
 					fontHeightInPixels,
 					// bindingForItemSelected
@@ -131,7 +135,7 @@ class NotificationSession
 					fontHeightInPixels
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonGoTo",
 					Coords.fromXY(margin, margin * 2 + controlHeight * 7), // pos
@@ -139,19 +143,18 @@ class NotificationSession
 					"Go To",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var world = universe.world as WorldExtended;
 						var faction = world.factions[0]; // hack
 						var notificationSession = faction.notificationSession;
 						var notification = notificationSession.notificationSelected;
 						notificationSession.notificationGoTo(universe, notification);
-					},
-					universe // context
+					}
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonDismiss",
 					Coords.fromXY(margin * 2 + buttonWidth, margin * 2 + controlHeight * 7), // pos
@@ -159,36 +162,38 @@ class NotificationSession
 					"Dismiss",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var world = universe.world as WorldExtended;
 						var faction = world.factions[0]; // hack
 						var notificationSession = faction.notificationSession;
 						var notification = notificationSession.notificationSelected;
 						notificationSession.notificationDismiss(notification);
-					},
-					universe // context
+					}
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonDismissAll",
-					Coords.fromXY(margin * 3 + buttonWidth * 2, margin * 2 + controlHeight * 7), // pos
+					Coords.fromXY
+					(
+						margin * 3 + buttonWidth * 2,
+						margin * 2 + controlHeight * 7
+					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Dismiss All",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var world = universe.world as WorldExtended;
 						var faction = world.factions[0]; // hack
 						var notificationSession = faction.notificationSession;
 						var notifications = notificationSession.notifications;
 						notifications.length = 0;
-					},
-					universe // context
+					}
 				),
 
 				new ControlLabel
@@ -197,11 +202,14 @@ class NotificationSession
 					Coords.fromXY(margin, containerSize.y - margin * 2 - controlHeight * 2), // pos
 					Coords.fromXY(columnWidth, controlHeight), // size
 					false, // isTextCentered
-					"All notifications must be dismissed before turn can be ended.",
+					DataBinding.fromContext
+					(
+						"All notifications must be dismissed before turn can be ended."
+					),
 					fontHeightInPixels
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonBack",
 					Coords.fromXY(margin, containerSize.y - margin - controlHeight), // pos
@@ -209,8 +217,8 @@ class NotificationSession
 					"Back",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var world = universe.world;
 						var venueNext: Venue = world.toVenue();
@@ -219,8 +227,7 @@ class NotificationSession
 							venueNext, universe.venueCurrent
 						);
 						universe.venueNext = venueNext;
-					},
-					universe // context
+					}
 				),
 			]
 		);

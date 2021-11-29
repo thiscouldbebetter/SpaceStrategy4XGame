@@ -209,15 +209,13 @@ class Starsystem
 		return camera;
 	}
 
-	draw
-	(
-		universe: Universe, world: World, place: Place, entity: Entity,
-		display: Display
-	)
+	draw(uwpe: UniverseWorldPlaceEntities, display: Display): void
 	{
+		var universe = uwpe.universe;
+
 		var camera = this.camera(universe);
 
-		this.visualGrid.draw(universe, world, place, null, display);
+		this.visualGrid.draw(uwpe, display);
 
 		var bodiesByType =
 		[
@@ -267,34 +265,36 @@ class Starsystem
 		for (var i = 0; i < bodiesToDrawSorted.length; i++)
 		{
 			var body = bodiesToDrawSorted[i];
-			this.draw_Body(universe, world, place, body, display);
+			this.draw_Body(uwpe.entitySet(body), display);
 		}
 	}
 
 	draw_Body
 	(
-		universe: Universe, world: World, place: Place, entity: Entity,
-		display: Display
-	)
+		uwpe: UniverseWorldPlaceEntities, display: Display
+	): void
 	{
+		var universe = uwpe.universe;
+		var entity = uwpe.entity;
+
 		var bodyPos = entity.locatable().loc.pos;
 		this.posSaved.overwriteWith(bodyPos);
 
 		var camera = this.camera(universe);
 		camera.coordsTransformWorldToView(bodyPos);
 
-		var bodyDefn = BodyDefn.fromEntity(entity);
+		var bodyDefn = BodyDefn.fromEntity(uwpe.entity);
 		var bodyVisual = bodyDefn.visual;
-		bodyVisual.draw(universe, world, place, entity, display);
+		bodyVisual.draw(uwpe, display);
 		bodyPos.overwriteWith(this.posSaved);
 
-		this.visualElevationStem.draw(universe, world, place, entity, display);
+		this.visualElevationStem.draw(uwpe, display);
 	}
 }
 
 // Visuals.
 
-class VisualElevationStem
+class VisualElevationStem implements VisualBase
 {
 	drawPosTip: Coords;
 	drawPosPlane: Coords;
@@ -306,12 +306,10 @@ class VisualElevationStem
 		this.drawPosPlane = Coords.create();
 	}
 
-	draw
-	(
-		universe: Universe, world: World, place: Place, entity: Entity,
-		display: Display
-	)
+	draw(uwpe: UniverseWorldPlaceEntities, display: Display)
 	{
+		var universe = uwpe.universe;
+
 		var starsystem = (universe.venueCurrent as VenueStarsystem).starsystem;
 		if (starsystem == null)
 		{
@@ -319,6 +317,7 @@ class VisualElevationStem
 		}
 		var camera = starsystem.camera(universe);
 
+		var entity = uwpe.entity;
 		var drawablePosWorld = entity.locatable().loc.pos;
 		var drawPosTip = camera.coordsTransformWorldToView
 		(
@@ -334,9 +333,16 @@ class VisualElevationStem
 			drawPosTip, drawPosPlane, Color.byName(colorName), null
 		);
 	}
+
+	// Clonable.
+	clone(): VisualBase { return this; }
+	overwriteWith(other: VisualBase): VisualBase { return this; }
+	
+	// Transformable.
+	transform(transform: TransformBase): VisualBase { return this; }
 }
 
-class VisualGrid
+class VisualGrid implements VisualBase
 {
 	gridSizeInCells: Coords;
 	gridCellSizeInPixels: Coords;
@@ -378,8 +384,10 @@ class VisualGrid
 		this.multiplierTimesI = Coords.create();
 	}
 
-	draw(universe: Universe, world: World, place: Place, entity: Entity, display: Display)
+	draw(uwpe: UniverseWorldPlaceEntities, display: Display): void
 	{
+		var universe = uwpe.universe;
+
 		var starsystem = (universe.venueCurrent as VenueStarsystem).starsystem;
 		if (starsystem == null)
 		{
@@ -432,4 +440,11 @@ class VisualGrid
 			}
 		}
 	}
+
+	// Clonable.
+	clone(): VisualBase { return this; }
+	overwriteWith(other: VisualBase): VisualBase { return this; }
+	
+	// Transformable.
+	transform(transform: TransformBase): VisualBase { return this; }
 }

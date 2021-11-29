@@ -31,7 +31,7 @@ class Planet extends Entity {
                 ), null // colorBorder
                 ),
                 new VisualDynamic // todo - VisualDynamic2?
-                ((u, w, p, e) => {
+                ((uwpe) => {
                     var factionName = "todo"; // todo
                     var returnValue = null;
                     if (factionName == null) {

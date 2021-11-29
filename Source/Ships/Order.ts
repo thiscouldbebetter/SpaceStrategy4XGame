@@ -31,7 +31,7 @@ class Order //
 	}
 }
 
-class Orderable implements EntityProperty
+class Orderable implements EntityPropertyBase
 {
 	order: Order;
 
@@ -42,8 +42,10 @@ class Orderable implements EntityProperty
 
 	// EntityProperty.
 
-	finalize(u: Universe, w: World, p: Place, e: Entity): void {}
-	initialize(u: Universe, w: World, p: Place, e: Entity): void {}
-	updateForTimerTick(u: Universe, w: World, p: Place, e: Entity): void {}
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
+	// Equatable.
+	equals(other: EntityPropertyBase): boolean { return false; }
 }

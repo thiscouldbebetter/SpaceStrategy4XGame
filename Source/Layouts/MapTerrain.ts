@@ -3,12 +3,12 @@ class MapTerrain
 {
 	name: string;
 	codeChar: string;
-	visual: Visual;
+	visual: VisualBase;
 	isBlocked: boolean;
 
 	constructor
 	(
-		name: string, codeChar: string, visual: Visual, isBlocked: boolean
+		name: string, codeChar: string, visual: VisualBase, isBlocked: boolean
 	)
 	{
 		this.name = name;

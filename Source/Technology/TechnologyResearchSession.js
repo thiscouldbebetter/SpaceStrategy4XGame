@@ -74,7 +74,7 @@ class TechnologyResearchSession {
             Coords.fromXY(140, 45), // pos,
             Coords.fromXY(110, 50), // size,
             // items,
-            DataBinding.fromContextAndGet(this, (c) => c.researcher.technologiesAvailable(session)), DataBinding.fromGet((c) => c.name), // bindingForItemText
+            DataBinding.fromContextAndGet(this.researcher, (c) => c.technologiesAvailable(session)), DataBinding.fromGet((c) => c.name), // bindingForItemText
             labelHeight, // fontHeightInPixels
             DataBinding.fromContextAndGet(this.researcher, (c) => c.nameOfTechnologyBeingResearched), // bindingForItemSelected
             DataBinding.fromGet((c) => c.name) // bindingForItemValue
@@ -100,7 +100,7 @@ class TechnologyResearchSession {
             Coords.fromXY(120, 140), // pos,
             Coords.fromXY(30, labelHeight), // size,
             true, // isTextCentered,
-            DataBinding.fromContextAndGet(this.researcher, (c) => c.researchAccumulated) // text
+            DataBinding.fromContextAndGet(this.researcher, (c) => "" + c.researchAccumulated) // text
             ),
             ControlLabel.from5("labelSlash", // name,
             Coords.fromXY(130, 140), // pos,
@@ -112,38 +112,36 @@ class TechnologyResearchSession {
             Coords.fromXY(140, 140), // pos,
             Coords.fromXY(30, labelHeight), // size,
             true, // isTextCentered,
-            DataBinding.fromContextAndGet(this, (c) => c.technologyBeingResearched().researchRequired) // text
+            DataBinding.fromContextAndGet(this, (c) => "" + c.technologyBeingResearched().researchRequired) // text
             ),
-            ControlButton.from9("buttonResearchPlusOne", //name,
+            ControlButton.from8("buttonResearchPlusOne", //name,
             Coords.fromXY(margin, 155), //pos,
             Coords.fromXY(buttonHeight * 4, buttonHeight), // size,
             "Research + 1", // text,
             labelHeight, // fontHeightInPixels,
             true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var world = universe.world;
                 var venue = universe.venueCurrent;
                 var session = venue.researchSession;
                 var faction = world.factionByName(session.researcher.factionName);
                 session.researchAccumulatedIncrement(world, faction, 1);
-            }, universe // context
-            ),
-            ControlButton.from9("buttonBack", //name,
+            }),
+            ControlButton.from8("buttonBack", //name,
             Coords.fromXY(margin, size.y - margin - buttonHeight), //pos,
             Coords.fromXY(buttonHeight, buttonHeight), // size,
             "Back", // text,
             labelHeight, // fontHeightInPixels,
             true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var venueNext = universe.world.toVenue();
                 venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
                 universe.venueNext = venueNext;
-            }, universe // context
-            )
+            })
         ]);
         this.control = returnValue;
         return returnValue;

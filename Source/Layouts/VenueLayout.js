@@ -68,26 +68,22 @@ class VenueLayout {
         var returnValue = ControlContainer.from4("containerBuildableDetails", displaySize.clone().subtract(containerSize).half(), // pos
         containerSize, [
             ControlLabel.from5("labelBuildableName", Coords.fromXY(1, 1).multiply(margin), listSize, false, // isTextCentered
-            buildableAtCursor.defnName // text
+            DataBinding.fromContext(buildableAtCursor.defnName) // text
             ),
-            ControlButton.from9("buttonDemolish", Coords.fromXY(margin.x, containerSize.y - margin.y * 2 - buttonSize.y * 2), //pos,
+            ControlButton.from8("buttonDemolish", Coords.fromXY(margin.x, containerSize.y - margin.y * 2 - buttonSize.y * 2), //pos,
             buttonSize, "Demolish", // text,
             fontHeightInPixels, true, // hasBorder,
-            true, // isEnabled,
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled,
+            () => // click
              {
-                ArrayHelper.remove(layout.map.bodies, buildableAtCursor);
+                ArrayHelper.remove(layout.map.bodies, buildableAtCursorEntity);
                 universe.venueNext = venueThis;
-            }, universe // context
-            ),
-            ControlButton.from9("buttonDone", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
+            }),
+            ControlButton.from8("buttonDone", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
             buttonSize, "Done", // text,
             fontHeightInPixels, true, // hasBorder,
-            true, // isEnabled,
-            (universe) => // click
-             {
-                universe.venueNext = venueThis;
-            }, universe // context
+            DataBinding.fromTrue(), // isEnabled,
+            () => universe.venueNext = venueThis // click
             ),
         ]);
         return returnValue;
@@ -115,7 +111,7 @@ class VenueLayout {
         var buttonHeight = fontHeightInPixels * 2;
         var buttonSize = Coords.fromXY(columnWidth, buttonHeight);
         var listSize = Coords.fromXY(columnWidth, containerSize.y - buttonHeight * 2 - margin.y * 4);
-        var venueThis = this; // hack
+        // var venueThis = this; // hack
         var returnValue = ControlContainer.from4("containerBuild", displaySize.clone().subtract(containerSize).half(), // pos
         containerSize, [
             ControlLabel.from5("labelFacilityToBuild", margin, listSize, false, // isTextCentered
@@ -124,27 +120,32 @@ class VenueLayout {
             ControlList.from8("listBuildables", Coords.fromXY(margin.x, margin.y * 2 + buttonSize.y), listSize, DataBinding.fromContext(buildableDefnsAllowedOnTerrain), DataBinding.fromGet((c) => c.name), //bindingForItemText,
             fontHeightInPixels, DataBinding.fromContext(null), // bindingForItemSelected,
             DataBinding.fromContext(null)),
-            ControlButton.from9("buttonBuild", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
+            ControlButton.from8("buttonBuild", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
             buttonSize, "Build", // text,
             fontHeightInPixels, true, // hasBorder,
-            true, // isEnabled,
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled,
+            () => // click
              {
-                var venueCurrent = universe.venueCurrent;
-                var container = venueCurrent.controlRoot;
-                var controlList = container.childByName("listBuildables");
+                alert("todo");
+                /*
+                var venueCurrent =
+                    universe.venueCurrent as VenueControls;
+                var container = venueCurrent.controlRoot as ControlContainer;
+                var controlList =
+                    container.childByName("listBuildables") as ControlList;
                 var itemSelected = controlList.itemSelected(null);
-                if (itemSelected != null) {
+                if (itemSelected != null)
+                {
                     var buildableDefnName = itemSelected.name;
                     var layout = venueThis.layout;
                     var cursorPos = layout.map.cursor.pos;
                     var buildable = new Buildable(buildableDefnName, cursorPos.clone(), null);
-                    var buildableEntity = new Entity(buildableDefnName, [buildable]);
+                    var buildableEntity = new Entity(buildableDefnName, [ buildable ] );
                     layout.map.bodies.push(buildableEntity);
                 }
                 universe.venueNext = venueThis;
-            }, universe // context
-            )
+                */
+            })
         ]);
         return returnValue;
     }
@@ -162,18 +163,17 @@ class VenueLayout {
         containerMainSize, 
         // children
         [
-            ControlButton.from9("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
+            ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Back", fontHeightInPixels, true, // hasBorder
-            true, // isEnabled
-            (universe) => // click
+            DataBinding.fromTrue(), // isEnabled
+            () => // click
              {
                 var venue = universe.venueCurrent;
                 var venueNext = venue.venueParent;
                 venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
                 universe.venueNext = venueNext;
-            }, universe // context
-            ),
+            }),
             this.toControl_Vitals(universe, containerMainSize, containerInnerSize, margin, controlHeight),
         ]);
         var planet = this.modelParent;
@@ -235,15 +235,15 @@ class VenueLayout {
             ControlLabel.from5("textIndustry", Coords.fromXY(margin, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCentered
-            DataBinding.fromContextAndGet(planet, (c) => c.industryPerTurn(universe, world, faction))),
+            DataBinding.fromContextAndGet(planet, (c) => "" + c.industryPerTurn(universe, world, faction))),
             ControlLabel.from5("textProsperity", Coords.fromXY(margin, margin + controlHeight * 2), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCentered
-            DataBinding.fromContextAndGet(planet, (c) => c.prosperityPerTurn(universe, world, faction))),
+            DataBinding.fromContextAndGet(planet, (c) => "" + c.prosperityPerTurn(universe, world, faction))),
             ControlLabel.from5("labelResearch", Coords.fromXY(margin, margin + controlHeight * 3), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCentered
-            DataBinding.fromContextAndGet(planet, (c) => c.researchPerTurn(universe, world, faction))),
+            DataBinding.fromContextAndGet(planet, (c) => "" + c.researchPerTurn(universe, world, faction))),
         ]);
         return returnValue;
     }

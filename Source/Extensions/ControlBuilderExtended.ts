@@ -27,7 +27,7 @@ class ControlBuilderExtended extends ControlBuilder
 					Coords.fromXY(margin, margin), // pos
 					Coords.fromXY(size.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
-					"Selection:" // text
+					DataBinding.fromContext("Selection:") // text
 				),
 
 				ControlLabel.from5
@@ -70,7 +70,7 @@ class ControlBuilderExtended extends ControlBuilder
 					)
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonCenter", // name,
 					Coords.fromXY(margin, size.y - margin - controlHeight), // pos
@@ -78,15 +78,14 @@ class ControlBuilderExtended extends ControlBuilder
 					"Center", // text,
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						(universe.venueCurrent as VenueStarsystem).cameraCenterOnSelection();
 					},
-					universe // context
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonDetails", // name,
 					Coords.fromXY
@@ -98,8 +97,8 @@ class ControlBuilderExtended extends ControlBuilder
 					"Details", // text,
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var venueCurrent = universe.venueCurrent;
 						var selection = (venueCurrent as VenueStarsystem).selection;
@@ -133,8 +132,7 @@ class ControlBuilderExtended extends ControlBuilder
 								universe.venueNext = venueNext;
 							}
 						}
-					},
-					universe // context
+					}
 				)
 			],
 			null, null // actions, actionToInputsMappings
@@ -150,6 +148,8 @@ class ControlBuilderExtended extends ControlBuilder
 		controlHeight: number
 	)
 	{
+		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+
 		var fontHeightInPixels = 10; //universe.display.fontHeightInPixels;
 
 		var returnValue = ControlContainer.from4
@@ -187,7 +187,7 @@ class ControlBuilderExtended extends ControlBuilder
 					Coords.fromXY(margin, margin + controlHeight), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
-					"Turn:"
+					DataBinding.fromContext("Turn:")
 				),
 
 				ControlLabel.from5
@@ -203,11 +203,11 @@ class ControlBuilderExtended extends ControlBuilder
 					DataBinding.fromContextAndGet
 					(
 						universe,
-						(c: Universe) => (c.world as WorldExtended).turnsSoFar
+						(c: Universe) => "" + (c.world as WorldExtended).turnsSoFar
 					)
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonTurnNext", // name,
 					Coords.fromXY(margin + 50, margin + controlHeight), // pos
@@ -215,15 +215,14 @@ class ControlBuilderExtended extends ControlBuilder
 					">", // text,
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
-						(universe.world as WorldExtended).updateForTurn(universe);
-					},
-					universe // context
+						(universe.world as WorldExtended).updateForTurn(uwpe);
+					}
 				),
 
-				ControlButton.from9
+				ControlButton.from8
 				(
 					"buttonTurnFastForward", // name,
 					Coords.fromXY(margin + 50 + controlHeight, margin + controlHeight), // pos
@@ -231,8 +230,8 @@ class ControlBuilderExtended extends ControlBuilder
 					">>", // text,
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						var world = universe.world as WorldExtended;
 						var faction = world.factions[0];
@@ -240,17 +239,16 @@ class ControlBuilderExtended extends ControlBuilder
 						var notifications = notificationSession.notifications;
 						if (notifications.length > 0)
 						{
-							(world as WorldExtended).updateForTurn(universe);
+							(world as WorldExtended).updateForTurn(uwpe);
 						}
 						else
 						{
 							while (notifications.length == 0)
 							{
-								(world as WorldExtended).updateForTurn(universe);
+								(world as WorldExtended).updateForTurn(uwpe);
 							}
 						}
-					},
-					universe // context
+					}
 				)
 
 			]
@@ -261,8 +259,10 @@ class ControlBuilderExtended extends ControlBuilder
 
 	view
 	(
-		universe: Universe, containerMainSize: Coords,
-		containerInnerSize: Coords, margin: number,
+		universe: Universe,
+		containerMainSize: Coords,
+		containerInnerSize: Coords,
+		margin: number,
 		controlHeight: number
 	)
 	{
@@ -288,7 +288,7 @@ class ControlBuilderExtended extends ControlBuilder
 					Coords.fromXY(margin, 0),// pos
 					Coords.fromXY(containerInnerSize.x, controlHeight), // size
 					false, // isTextCentered
-					"View"
+					DataBinding.fromContext("View")
 				),
 
 				new ControlButton
@@ -303,12 +303,11 @@ class ControlBuilderExtended extends ControlBuilder
 					"^",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						(universe.venueCurrent as VenueStarsystem).cameraUp(cameraSpeed);
 					},
-					universe, // context
 					true // canBeHeldDown
 				),
 
@@ -324,12 +323,11 @@ class ControlBuilderExtended extends ControlBuilder
 					"v",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						(universe.venueCurrent as VenueStarsystem).cameraDown(cameraSpeed);
 					},
-					universe, // context,
 					true // canBeHeldDown
 				),
 
@@ -345,12 +343,11 @@ class ControlBuilderExtended extends ControlBuilder
 					"<",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						(universe.venueCurrent as VenueStarsystem).cameraLeft(cameraSpeed);
 					},
-					universe, // context
 					true // canBeHeldDown
 				),
 
@@ -366,12 +363,11 @@ class ControlBuilderExtended extends ControlBuilder
 					">",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						(universe.venueCurrent as VenueStarsystem).cameraRight(cameraSpeed);
 					},
-					universe, // context
 					true // canBeHeldDown
 				),
 
@@ -387,12 +383,11 @@ class ControlBuilderExtended extends ControlBuilder
 					"In",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						(universe.venueCurrent as VenueStarsystem).cameraIn(cameraSpeed);
 					},
-					universe, // context,
 					true // canBeHeldDown
 				),
 
@@ -408,12 +403,11 @@ class ControlBuilderExtended extends ControlBuilder
 					"Out",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						(universe.venueCurrent as VenueStarsystem).cameraOut(cameraSpeed);
 					},
-					universe, // context
 					true // canBeHeldDown
 				),
 
@@ -429,13 +423,12 @@ class ControlBuilderExtended extends ControlBuilder
 					"x",
 					fontHeightInPixels,
 					true, // hasBorder
-					true, // isEnabled
-					(universe: Universe) => // click
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
 					{
 						(universe.venueCurrent as VenueStarsystem).cameraReset();
 					},
-					universe, // context
-					null // canBeHeldDown
+					false // canBeHeldDown
 				),
 			]
 		);

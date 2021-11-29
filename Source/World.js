@@ -1,7 +1,9 @@
 "use strict";
 class WorldExtended extends World {
     constructor(name, dateCreated, activityDefns, buildableDefns, technologyTree, network, factions, ships, camera) {
-        super(name, dateCreated, null, // worldDefn
+        super(name, dateCreated, new WorldDefn(null, // actions
+        activityDefns, null, null, null, null // ?
+        ), // worldDefn
         [] // places
         );
         this.activityDefns = activityDefns;
@@ -250,15 +252,18 @@ class WorldExtended extends World {
         ArrayHelper.removeAt(returnValues, this.factionIndexCurrent);
         return returnValues;
     }
-    initialize(universe) {
+    initialize(uwpe) {
         if (this.turnsSoFar == 0) {
-            this.updateForTurn(universe);
+            this.updateForTurn(uwpe);
         }
     }
     toVenue() {
         return new VenueWorldExtended(this);
     }
-    updateForTurn(universe) {
+    updateForTurn(uwpe) {
+        uwpe.world = this;
+        var universe = uwpe.universe;
+        var world = uwpe.world;
         var factionForPlayer = this.factions[0];
         var notifications = factionForPlayer.notificationSession.notifications;
         if (this.turnsSoFar > 0 && notifications.length > 0) {
@@ -268,7 +273,7 @@ class WorldExtended extends World {
             this.network.updateForTurn(universe, this);
             for (var i = 0; i < this.factions.length; i++) {
                 var faction = this.factions[i];
-                faction.updateForTurn(universe, this);
+                faction.updateForTurn(universe, world);
             }
             if (this.turnsSoFar > 1 && notifications.length > 0) {
                 factionForPlayer.notificationSessionStart(universe);

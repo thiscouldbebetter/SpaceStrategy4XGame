@@ -14,7 +14,12 @@ class Network2 //
 	drawPosTo: Coords;
 	drawablesSortedByZ: Entity[];
 
-	constructor(name: string, nodes: NetworkNode2[], links: NetworkLink2[])
+	constructor
+	(
+		name: string,
+		nodes: NetworkNode2[],
+		links: NetworkLink2[]
+	)
 	{
 		this.name = name;
 		this.nodes = nodes;
@@ -153,29 +158,7 @@ class Network2 //
 		ArrayHelper.removeAt(nodesNotYetLinked, 0);
 		var links = [];
 
-		var bodyDefnLinkPortal = new BodyDefn
-		(
-			"LinkPortal",
-			Coords.fromXY(10, 10), // size
-			new VisualGroup
-			([
-				new VisualCircleGradient
-				(
-					10, // radius
-					new ValueBreakGroup
-					(
-						[
-							new ValueBreak(0, Color.byName("Black") ),
-							new ValueBreak(.5, Color.byName("Black") ),
-							new ValueBreak(.75, Color.byName("Violet") ),
-							new ValueBreak(1, Color.byName("Blue") )
-						],
-						null // interpolationMode
-					),
-					null // colorBorder
-				)
-			])
-		);
+		var bodyDefnLinkPortal = LinkPortal.bodyDefn();
 
 		var tempPos = Coords.create();
 
@@ -268,6 +251,11 @@ class Network2 //
 		return this.linksByStarsystemNamesFromTo.get(starsystemFromName).get(starsystemToName);
 	}
 
+	nodeByName(nodeName: string): NetworkNode2
+	{
+		return this.nodesByName.get(nodeName);
+	}
+
 	nodesAsEntities(): Entity[]
 	{
 		if (this._nodesAsEntities == null)
@@ -294,7 +282,7 @@ class Network2 //
 
 	// turns
 
-	updateForTurn(universe: Universe, world: WorldExtended)
+	updateForTurn(universe: Universe, world: WorldExtended): void
 	{
 		for (var i = 0; i < this.links.length; i++)
 		{
@@ -305,7 +293,7 @@ class Network2 //
 
 	// drawing
 
-	draw(universe: Universe, camera: Camera)
+	draw(universe: Universe, camera: Camera): void
 	{
 		var drawPos = this.drawPos;
 		var drawPosFrom = this.drawPosFrom;
@@ -382,7 +370,7 @@ class Network2 //
 
 	clone(): Network2
 	{
-		var nodesCloned = null; // this.nodes.map(x => x.clone());
+		var nodesCloned = this.nodes.map(x => x.clone()) as NetworkNode2[];
 		var linksCloned = ArrayHelper.clone(this.links);
 		var returnValue = new Network2(this.name, nodesCloned, linksCloned);
 		return returnValue;

@@ -140,10 +140,9 @@ class Planet extends Entity
 		return (this.factionName == null ? null : world.factionByName(this.factionName));
 	}
 
-	_entity: Entity;
 	toEntity(): Entity
 	{
-		return this._entity;
+		return this;
 	}
 
 	shipAdd(shipToAdd: Ship): void
@@ -192,10 +191,13 @@ class Planet extends Entity
 
 	updateForTurn(universe: Universe, world: WorldExtended, faction: Faction): void
 	{
-		this._resourcesPerTurn = null;
-		this.layout.updateForTurn(universe, world, faction, null);
-		this.industry.updateForTurn(universe, world, faction, this);
-		this.demographics.updateForTurn(universe, world, faction, this);
+		if (faction != null)
+		{
+			this._resourcesPerTurn = null;
+			this.layout.updateForTurn(universe, world, faction, null);
+			this.industry.updateForTurn(universe, world, faction, this);
+			this.demographics.updateForTurn(universe, world, faction, this);
+		}
 	}
 
 	// resources

@@ -72,18 +72,7 @@ class Network2 //
         var nodesLinked = [nodesNotYetLinked[0]];
         ArrayHelper.removeAt(nodesNotYetLinked, 0);
         var links = [];
-        var bodyDefnLinkPortal = new BodyDefn("LinkPortal", Coords.fromXY(10, 10), // size
-        new VisualGroup([
-            new VisualCircleGradient(10, // radius
-            new ValueBreakGroup([
-                new ValueBreak(0, Color.byName("Black")),
-                new ValueBreak(.5, Color.byName("Black")),
-                new ValueBreak(.75, Color.byName("Violet")),
-                new ValueBreak(1, Color.byName("Blue"))
-            ], null // interpolationMode
-            ), null // colorBorder
-            )
-        ]));
+        var bodyDefnLinkPortal = LinkPortal.bodyDefn();
         var tempPos = Coords.create();
         while (nodesLinked.length < numberOfNodes) {
             var nodePairClosestSoFar = null;
@@ -130,6 +119,9 @@ class Network2 //
     }
     linkByStarsystemNamesFromTo(starsystemFromName, starsystemToName) {
         return this.linksByStarsystemNamesFromTo.get(starsystemFromName).get(starsystemToName);
+    }
+    nodeByName(nodeName) {
+        return this.nodesByName.get(nodeName);
     }
     nodesAsEntities() {
         if (this._nodesAsEntities == null) {
@@ -197,7 +189,7 @@ class Network2 //
     }
     // Clonable.
     clone() {
-        var nodesCloned = null; // this.nodes.map(x => x.clone());
+        var nodesCloned = this.nodes.map(x => x.clone());
         var linksCloned = ArrayHelper.clone(this.links);
         var returnValue = new Network2(this.name, nodesCloned, linksCloned);
         return returnValue;

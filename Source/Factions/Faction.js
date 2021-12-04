@@ -1,8 +1,9 @@
 "use strict";
 class Faction {
-    constructor(name, homestarsystemName, color, relationships, technology, planets, ships, knowledge) {
+    constructor(name, homeStarsystemName, homePlanetName, color, relationships, technology, planets, ships, knowledge) {
         this.name = name;
-        this.homestarsystemName = homestarsystemName;
+        this.homeStarsystemName = homeStarsystemName;
+        this.homePlanetName = homePlanetName;
         this.color = color;
         this.relationships = relationships;
         this.technology = technology;
@@ -13,7 +14,8 @@ class Faction {
         this.relationshipsByFactionName = ArrayHelper.addLookups(this.relationships, (x) => x.factionNameOther);
     }
     static fromName(name) {
-        return new Faction(name, null, // homestarsystemName,
+        return new Faction(name, null, // homeStarsystemName,
+        null, // homePlanetName,
         Color.Instances().Red, new Array(), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.default());
     }
     // static methods
@@ -79,6 +81,12 @@ class Faction {
         var venueNext = new VenueTechnologyResearchSession(researchSession);
         venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
         universe.venueNext = venueNext;
+    }
+    planetHome(world) {
+        return this.starsystemHome(world).planets.find(x => x.name == this.homePlanetName);
+    }
+    starsystemHome(world) {
+        return world.network.nodeByName(this.homeStarsystemName).starsystem;
     }
     toString() {
         return this.name;
@@ -188,7 +196,7 @@ class Faction {
             var planet = planets[i];
             returnValue += planet.strength(world);
         }
-        returnValue += this.technologyResearcher.strength(world);
+        returnValue += this.technology.strength(world);
         return returnValue;
     }
     warThreatOfferConcessionsTo(factionOther) {

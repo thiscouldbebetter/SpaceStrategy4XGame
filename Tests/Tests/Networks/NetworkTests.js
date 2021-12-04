@@ -37,7 +37,7 @@ class Network2Tests extends TestFixture {
     nodesAsEntities() {
         var nodesAsEntities = this.network.nodesAsEntities();
         Assert.isNotNull(nodesAsEntities);
-        Assert.areEqual(this.network.nodes.length, nodesAsEntities.length);
+        Assert.areNumbersEqual(this.network.nodes.length, nodesAsEntities.length);
     }
     scale() {
         var networkBeforeScaling = this.networkBuildRandom();

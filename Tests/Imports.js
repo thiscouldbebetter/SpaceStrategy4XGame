@@ -91,8 +91,8 @@ var InputHelper = gf.InputHelper;
 var Font = gf.Font;
 var Image2 = gf.Image2;
 var MediaLibrary = gf.MediaLibrary;
-var Sound = gf.Sound;
-var SoundHelper = gf.SoundHelper;
+var SoundFromFile = gf.SoundFromFile;
+var SoundHelperLive = gf.SoundHelperLive;
 var VenueVideo = gf.VenueVideo;
 var Video = gf.Video;
 var VideoHelper = gf.VideoHelper;
@@ -105,6 +105,7 @@ var Universe = gf.Universe;
 var UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 var VenueWorld = gf.VenueWorld;
 var World = gf.World;
+var WorldDefn = gf.WorldDefn;
 // Model - Actors.
 var Action = gf.Action;
 var Activity = gf.Activity;
@@ -126,6 +127,9 @@ var VenueFileUpload = gf.VenueFileUpload;
 var BitStream = gf.BitStream;
 var ByteStreamFromString = gf.ByteStreamFromString;
 var CompressorLZW = gf.CompressorLZW;
+// Talk.
+var ConversationDefn = gf.ConversationDefn;
+var ConversationRun = gf.ConversationRun;
 // Tests.
 var Assert = gf.Assert;
 var TestFixture = gf.TestFixture;

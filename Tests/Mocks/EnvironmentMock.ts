@@ -6,7 +6,7 @@ class EnvironmentMock
 		var timerHelper = new TimerHelper(0);
 		var display = DisplayTest.default();
 		var mediaLibrary = MediaLibrary.default();
-		var controlBuilder = ControlBuilder.default();
+		var controlBuilder = new ControlBuilderExtended();
 
 		var universe = new Universe
 		(
@@ -21,7 +21,9 @@ class EnvironmentMock
 		);
 
 		universe.initialize(() => {});
-		universe.worldCreate().initialize(universe);
+		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+		universe.worldCreate().initialize(uwpe);
+		universe.updateForTimerTick();
 
 		return universe;
 	}

@@ -8,7 +8,7 @@ class Projectile
 		this.shipParent = shipParent;
 	}
 
-	bodyDefnBuild()
+	static bodyDefnBuild()
 	{
 		var scaleFactor = 10;
 		var bodyDefn = new BodyDefn

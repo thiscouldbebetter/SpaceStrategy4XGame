@@ -23,7 +23,7 @@ class ResourceTests extends TestFixture {
         var resources1 = [resource1];
         Resource.add(resources0, resources1);
         var resource0QuantityAfterExpected = resource0QuantityBefore + resource1.quantity;
-        Assert.areEqual(resource0QuantityAfterExpected, resource0.quantity);
+        Assert.areNumbersEqual(resource0QuantityAfterExpected, resource0.quantity);
     }
     isSupersetOf() {
         var resource = this.resourceBuild();
@@ -35,7 +35,7 @@ class ResourceTests extends TestFixture {
         var resource = this.resourceBuild();
         var resources = [resource];
         Resource.subtract(resources, resources);
-        Assert.areEqual(0, resource.quantity);
+        Assert.areNumbersEqual(0, resource.quantity);
     }
     // instance methods
     toString() {

@@ -7,7 +7,6 @@ class Starsystem {
         this.linkPortals = linkPortals;
         this.planets = planets;
         this.factionName = factionName;
-        this.linkPortalsByStarsystemSourceName = ArrayHelper.addLookups(this.linkPortals, x => x.starsystemNamesFromAndTo[0]);
         this.ships = new Array();
         // Helper variables
         this.posSaved = Coords.create();
@@ -56,8 +55,11 @@ class Starsystem {
     linkPortalAdd(linkPortalToAdd) {
         this.linkPortals.push(linkPortalToAdd);
     }
-    linkPortalByStarsystemSourceName(starsystemSourceName) {
-        return this.linkPortalsByStarsystemSourceName.get(starsystemSourceName);
+    linkPortalByStarsystemName(starsystemName) {
+        if (this._linkPortalsByStarsystemName == null) {
+            this._linkPortalsByStarsystemName = ArrayHelper.addLookups(this.linkPortals, x => x.starsystemNamesFromAndTo[1]);
+        }
+        return this._linkPortalsByStarsystemName.get(starsystemName);
     }
     links(cluster) {
         var returnValues = [];
@@ -82,11 +84,13 @@ class Starsystem {
     updateForTurn(universe, world) {
         for (var i = 0; i < this.planets.length; i++) {
             var planet = this.planets[i];
-            planet.updateForTurn(universe, world, planet.faction(world));
+            var faction = planet.faction(world);
+            planet.updateForTurn(universe, world, faction);
         }
         for (var i = 0; i < this.ships.length; i++) {
             var ship = this.ships[i];
-            ship.updateForTurn(universe, world, ship.faction(world));
+            var faction = ship.faction(world);
+            ship.updateForTurn(universe, world, faction);
         }
     }
     // drawing

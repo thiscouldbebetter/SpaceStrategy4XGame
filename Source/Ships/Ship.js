@@ -5,7 +5,8 @@ class Ship extends Entity {
             Actor.create(),
             defn,
             Killable.fromIntegrityMax(10),
-            Locatable.fromPos(pos)
+            Locatable.fromPos(pos),
+            new Orderable()
         ]);
         this.defn = defn;
         this.factionName = factionName;
@@ -35,10 +36,19 @@ class Ship extends Entity {
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
     }
+    link(world) {
+        var linkFound = world.network.links.find(x => (x.ships.indexOf(this) >= 0));
+        return linkFound;
+    }
     nameWithFaction() {
         return this.factionName + this.name;
     }
-    // devices
+    starsystem(world) {
+        var networkNodeFound = world.network.nodes.find(x => (x.starsystem.ships.indexOf(this) >= 0));
+        var starsystemFound = (networkNodeFound == null ? null : networkNodeFound.starsystem);
+        return starsystemFound;
+    }
+    // Devices.
     devicesUsable(world) {
         if (this._devicesUsable == null) {
             this._devicesUsable = [];
@@ -89,7 +99,7 @@ class Ship extends Entity {
         var nodeSource = nodesLinked[indexOfNodeSource];
         var starsystemDestination = nodeDestination.starsystem;
         var starsystemSource = nodeSource.starsystem;
-        var portalToExitFrom = starsystemDestination.linkPortalByStarsystemSourceName(starsystemSource.name);
+        var portalToExitFrom = starsystemDestination.linkPortalByStarsystemName(starsystemSource.name);
         var exitPos = portalToExitFrom.locatable().loc.pos;
         shipPos.overwriteWith(exitPos).add(Coords.Instances().Ones);
         starsystemDestination.shipAdd(ship);
@@ -250,6 +260,10 @@ class Ship extends Entity {
     // diplomacy
     strength(world) {
         return 1; // todo
+    }
+    // Entity.
+    orderable() {
+        return Orderable.fromEntity(this);
     }
     // turns
     updateForTurn(universe, world, faction) {

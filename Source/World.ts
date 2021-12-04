@@ -412,6 +412,7 @@ class WorldExtended extends World
 			(
 				factionName,
 				factionHomeStarsystem.name,
+				factionHomePlanet.name,
 				factionColor,
 				[], // relationships
 				new TechnologyResearcher

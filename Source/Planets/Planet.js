@@ -65,7 +65,7 @@ class Planet extends Entity {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
     }
     toEntity() {
-        return this._entity;
+        return this;
     }
     shipAdd(shipToAdd) {
         this.ships.push(shipToAdd);
@@ -91,10 +91,12 @@ class Planet extends Entity {
     }
     // turns
     updateForTurn(universe, world, faction) {
-        this._resourcesPerTurn = null;
-        this.layout.updateForTurn(universe, world, faction, null);
-        this.industry.updateForTurn(universe, world, faction, this);
-        this.demographics.updateForTurn(universe, world, faction, this);
+        if (faction != null) {
+            this._resourcesPerTurn = null;
+            this.layout.updateForTurn(universe, world, faction, null);
+            this.industry.updateForTurn(universe, world, faction, this);
+            this.demographics.updateForTurn(universe, world, faction, this);
+        }
     }
     // resources
     buildableInProgress() {

@@ -30,9 +30,9 @@ function main()
 		],
 		// sounds
 		[
-			new Sound("Music_Title", contentPathAudio + "Music/Music.mp3"),
-			new Sound("Music_Producer", contentPathAudio + "Music/Producer.mp3"),
-			new Sound("Sound", contentPathAudio + "Effects/Sound.wav"),
+			new SoundFromFile("Music_Title", contentPathAudio + "Music/Music.mp3"),
+			new SoundFromFile("Music_Producer", contentPathAudio + "Music/Producer.mp3"),
+			new SoundFromFile("Sound", contentPathAudio + "Effects/Sound.wav"),
 		],
 		// videos
 		[
@@ -51,7 +51,7 @@ function main()
 	var universe = Universe.create
 	(
 		"Space_Strategy_4X",
-		"0.0.0-20210321-2030",
+		"0.0.0-20211204",
 		new TimerHelper(20),
 		display,
 		mediaLibrary,

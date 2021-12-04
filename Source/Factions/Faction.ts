@@ -2,7 +2,8 @@
 class Faction
 {
 	name: string;
-	homestarsystemName: string;
+	homeStarsystemName: string;
+	homePlanetName: string;
 	color: Color;
 	relationships: DiplomaticRelationship[];
 	technology: TechnologyResearcher;
@@ -20,7 +21,8 @@ class Faction
 	constructor
 	(
 		name: string,
-		homestarsystemName: string,
+		homeStarsystemName: string,
+		homePlanetName: string,
 		color: Color,
 		relationships: DiplomaticRelationship[],
 		technology: TechnologyResearcher,
@@ -30,7 +32,8 @@ class Faction
 	)
 	{
 		this.name = name;
-		this.homestarsystemName = homestarsystemName;
+		this.homeStarsystemName = homeStarsystemName;
+		this.homePlanetName = homePlanetName;
 		this.color = color;
 		this.relationships = relationships;
 		this.technology = technology;
@@ -51,7 +54,8 @@ class Faction
 		return new Faction
 		(
 			name,
-			null, // homestarsystemName,
+			null, // homeStarsystemName,
+			null, // homePlanetName,
 			Color.Instances().Red,
 			new Array<DiplomaticRelationship>(),
 			TechnologyResearcher.default(),
@@ -67,8 +71,10 @@ class Faction
 
 	static toControl_Intelligence
 	(
-		diplomaticSession: DiplomaticSession, pos: Coords, containerSize: Coords
-	)
+		diplomaticSession: DiplomaticSession,
+		pos: Coords,
+		containerSize: Coords
+	): ControlBase
 	{
 		var margin = 10;
 		var controlSpacing = 20;
@@ -208,7 +214,7 @@ class Faction
 
 	// instance methods
 
-	researchSessionStart(universe: Universe)
+	researchSessionStart(universe: Universe): void
 	{
 		var researchSession = new TechnologyResearchSession
 		(
@@ -220,7 +226,17 @@ class Faction
 		universe.venueNext = venueNext;
 	}
 
-	toString()
+	planetHome(world: WorldExtended): Planet
+	{
+		return this.starsystemHome(world).planets.find(x => x.name == this.homePlanetName);
+	}
+
+	starsystemHome(world: WorldExtended): Starsystem
+	{
+		return world.network.nodeByName(this.homeStarsystemName).starsystem;
+	}
+
+	toString(): string
 	{
 		return this.name;
 	}
@@ -235,7 +251,7 @@ class Faction
 		margin: number,
 		controlHeight: number,
 		buttonWidth: number
-	)
+	): ControlBase
 	{
 		var fontHeightInPixels = 10;
 
@@ -366,12 +382,12 @@ class Faction
 
 	// diplomacy
 
-	allianceProposalAcceptFrom(factionOther: Faction)
+	allianceProposalAcceptFrom(factionOther: Faction): boolean
 	{
 		return true;
 	}
 
-	allies(world: WorldExtended)
+	allies(world: WorldExtended): Faction[]
 	{
 		return this.factionsMatchingRelationshipState
 		(
@@ -379,7 +395,7 @@ class Faction
 		);
 	}
 
-	enemies(world: WorldExtended)
+	enemies(world: WorldExtended): Faction[]
 	{
 		return this.factionsMatchingRelationshipState
 		(
@@ -387,7 +403,10 @@ class Faction
 		);
 	}
 
-	factionsMatchingRelationshipState(world: WorldExtended, stateToMatch: string)
+	factionsMatchingRelationshipState
+	(
+		world: WorldExtended, stateToMatch: string
+	): Faction[]
 	{
 		var returnValues = [];
 
@@ -404,12 +423,12 @@ class Faction
 		return returnValues;
 	}
 
-	peaceOfferAcceptFrom(factionOther: Faction)
+	peaceOfferAcceptFrom(factionOther: Faction): boolean
 	{
 		return true;
 	}
 
-	relationsInitialize(universe: Universe)
+	relationsInitialize(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
 		var factionCurrent = world.factionCurrent();
@@ -427,12 +446,12 @@ class Faction
 		universe.venueNext = venueNext;
 	}
 
-	relationshipByFactionName(factionName: string)
+	relationshipByFactionName(factionName: string): DiplomaticRelationship
 	{
 		return this.relationshipsByFactionName.get(factionName);
 	}
 
-	selfAndAllies(world: WorldExtended)
+	selfAndAllies(world: WorldExtended): Faction[]
 	{
 		var returnValues = this.factionsMatchingRelationshipState
 		(
@@ -444,7 +463,7 @@ class Faction
 		return returnValues;
 	}
 
-	strength(world: WorldExtended)
+	strength(world: WorldExtended): number
 	{
 		var returnValue = 0;
 
@@ -462,19 +481,19 @@ class Faction
 			returnValue += planet.strength(world);
 		}
 
-		returnValue += this.technologyResearcher.strength(world);
+		returnValue += this.technology.strength(world);
 
 		return returnValue;
 	}
 
-	warThreatOfferConcessionsTo(factionOther: Faction)
+	warThreatOfferConcessionsTo(factionOther: Faction): boolean
 	{
 		return true;
 	}
 
 	// notifications
 
-	notificationSessionStart(universe: Universe)
+	notificationSessionStart(universe: Universe): void
 	{
 		var notificationSession = this.notificationSession;
 		var notificationSessionAsControl = notificationSession.toControl(universe);
@@ -485,7 +504,7 @@ class Faction
 
 	// turns
 
-	researchPerTurn(universe: Universe, world: WorldExtended)
+	researchPerTurn(universe: Universe, world: WorldExtended): number
 	{
 		var returnValue = 0;
 

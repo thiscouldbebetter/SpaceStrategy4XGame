@@ -35,7 +35,8 @@ class VenueLayoutTests extends TestFixture
 	venueLayoutBuild(universe: Universe): VenueLayout
 	{
 		var world = universe.world as WorldExtended;
-		var planet = world.network.nodes[0].starsystem.planets[0];
+		var faction = world.factions[0];
+		var planet = faction.planetHome(world);
 		var layout = Layout.planet(universe, planet);
 		var map = layout.map;
 		var mapCursorPos = map.cursor.pos;

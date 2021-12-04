@@ -90,10 +90,11 @@ class BuildableTests extends TestFixture
 		var universe = this.universeBuild();
 		var buildable = this.buildableBuild(universe);
 		var buildableAsEntity = new Entity("[name]", [ buildable ] );
-		buildable.finalize
+		var uwpe = new UniverseWorldPlaceEntities
 		(
-			universe, universe.world, null, buildableAsEntity
-		)
+			universe, universe.world, null, buildableAsEntity, null
+		);
+		buildable.finalize(uwpe);
 	}
 
 	initialize(): void
@@ -101,10 +102,11 @@ class BuildableTests extends TestFixture
 		var universe = this.universeBuild();
 		var buildable = this.buildableBuild(universe);
 		var buildableAsEntity = new Entity("[name]", [ buildable ] );
-		buildable.initialize
+		var uwpe = new UniverseWorldPlaceEntities
 		(
-			universe, universe.world, null, buildableAsEntity
-		)
+			universe, universe.world, null, buildableAsEntity, null
+		);
+		buildable.initialize(uwpe);
 	}
 
 	updateForTimerTick(): void
@@ -112,9 +114,10 @@ class BuildableTests extends TestFixture
 		var universe = this.universeBuild();
 		var buildable = this.buildableBuild(universe);
 		var buildableAsEntity = new Entity("[name]", [ buildable ] );
-		buildable.updateForTimerTick
+		var uwpe = new UniverseWorldPlaceEntities
 		(
-			universe, universe.world, null, buildableAsEntity
-		)
+			universe, universe.world, null, buildableAsEntity, null
+		);
+		buildable.updateForTimerTick(uwpe);
 	}
 }

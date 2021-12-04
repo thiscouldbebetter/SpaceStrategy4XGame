@@ -13,6 +13,7 @@
 <script type="text/javascript" src="../Source/Framework/Source/Controls/ControlBase.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Controls/ControlBuilder.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Controls/ControlButton.js"></script>
+<script type="text/javascript" src="../Source/Framework/Source/Controls/ControlColorScheme.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Controls/ControlContainer.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Controls/ControlContainerTransparent.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Controls/ControlLabel.js"></script>
@@ -111,6 +112,7 @@
 <script type="text/javascript" src="../Source/Framework/Source/Model/UniverseWorldPlaceEntities.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Model/VenueWorld.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Model/World.js"></script>
+<script type="text/javascript" src="../Source/Framework/Source/Model/WorldDefn.js"></script>
 
 <script type="text/javascript" src="../Source/Framework/Source/Model/Actors/Action.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Model/Actors/Activity.js"></script>
@@ -121,6 +123,8 @@
 
 <script type="text/javascript" src="../Source/Framework/Source/Model/Physics/Constrainable.js"></script>
 <script type="text/javascript" src="../Source/Framework/Source/Model/Physics/Locatable.js"></script>
+
+<script type="text/javascript" src="../Source/Framework/Source/Model/Talk/ConversationDefn.js"></script>
 
 <script type="text/javascript" src="../Source/Framework/Source/Profiles/Profile.js"></script>
 
@@ -206,12 +210,6 @@
 <script type="text/javascript" src="../Source/Talk/DiplomaticAction.js"></script>
 <script type="text/javascript" src="../Source/Talk/DiplomaticRelationship.js"></script>
 <script type="text/javascript" src="../Source/Talk/DiplomaticSession.js"></script>
-<script type="text/javascript" src="../Source/Talk/TalkDefn.js"></script>
-<script type="text/javascript" src="../Source/Talk/TalkNode.js"></script>
-<script type="text/javascript" src="../Source/Talk/TalkNodeDefn.js"></script>
-<script type="text/javascript" src="../Source/Talk/TalkSession.js"></script>
-<script type="text/javascript" src="../Source/Talk/TalkScope.js"></script>
-<script type="text/javascript" src="../Source/Talk/VenueTalkSession.js"></script>
 
 <script type="text/javascript" src="../Source/Technology/Technology.js"></script>
 <script type="text/javascript" src="../Source/Technology/TechnologyResearcher.js"></script>
@@ -235,6 +233,7 @@
 <script type="text/javascript" src="Imports.js"></script>
 
 <script type="text/javascript" src="Mocks/EnvironmentMock.js"></script>
+<script type="text/javascript" src="Mocks/SoundHelperMock.js"></script>
 
 <!-- Tests. -->
 
@@ -249,6 +248,9 @@
 <script type="text/javascript" src="Tests/Constraints/Constraint_HoldDistanceFromTargetTests.js"></script>
 <script type="text/javascript" src="Tests/Constraints/Constraint_LookAtTests.js"></script>
 <script type="text/javascript" src="Tests/Constraints/Constraint_PositionOnCylinderTests.js"></script>
+
+<!-- Factions. -->
+<script type="text/javascript" src="Tests/Factions/FactionTests.js"></script>
 
 <!-- Layouts. -->
 <script type="text/javascript" src="Tests/Layouts/BuildableTests.js"></script>
@@ -266,6 +268,21 @@
 <script type="text/javascript" src="Tests/Notifications/NotificationSessionTests.js"></script>
 <script type="text/javascript" src="Tests/Notifications/NotificationTypeTests.js"></script>
 
+<!-- Planets. -->
+<script type="text/javascript" src="Tests/Planets/PlanetTests.js"></script>
+<script type="text/javascript" src="Tests/Planets/PlanetDemographicsTests.js"></script>
+<script type="text/javascript" src="Tests/Planets/PlanetIndustryTests.js"></script>
+
+<!-- Ships. -->
+<script type="text/javascript" src="Tests/Ships/DeviceTests.js"></script>
+<script type="text/javascript" src="Tests/Ships/OrderTests.js"></script>
+<script type="text/javascript" src="Tests/Ships/OrderDefnTests.js"></script>
+<script type="text/javascript" src="Tests/Ships/ProjectileTests.js"></script>
+<script type="text/javascript" src="Tests/Ships/ShipTests.js"></script>
+
+<!-- Starsystems. -->
+<script type="text/javascript" src="Tests/Starsystems/StarsystemTests.js"></script>
+
 <script type="text/javascript">
 
 	var testSuite = new TestSuite
@@ -282,6 +299,9 @@
 		new Constraint_LookAtTests(),
 		new Constraint_PositionOnCylinderTests(),
 
+		// Factions.
+		new FactionTests(),
+
 		// Layouts.
 		new BuildableTests(),
 		new LayoutTests(),
@@ -296,7 +316,22 @@
 		// Notifications.
 		new Notification2Tests(),
 		new NotificationSessionTests(),
-		new NotificationTypeTests()
+		new NotificationTypeTests(),
+
+		// Planets.
+		new PlanetTests(),
+		new PlanetDemographicsTests(),
+		new PlanetIndustryTests(),
+
+		// Ships.
+		new DeviceTests(),
+		new OrderTests(),
+		new OrderDefnTests(),
+		new ProjectileTests(),
+		new ShipTests(),
+
+		// Starsystems.
+		new StarsystemTests()
 	]);
 
 	testSuite.run();

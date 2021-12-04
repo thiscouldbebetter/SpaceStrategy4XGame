@@ -23,6 +23,7 @@ class Constraint_HoldDistanceFromTargetTests extends TestFixture
 		var locatable = Locatable.fromPos(Coords.random(universe.randomizer));
 		var entity = new Entity("test", [ constrainable, locatable ] );
 
-		constraint.constrain(universe, world, place, entity);
+		var uwpe = new UniverseWorldPlaceEntities(universe, world, place, entity, null);
+		constraint.constrain(uwpe);
 	}
 }

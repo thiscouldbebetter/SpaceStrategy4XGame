@@ -7,7 +7,10 @@ class LinkPortal extends Entity
 
 	constructor
 	(
-		name: string, defn: BodyDefn, pos: Coords, starsystemNamesFromAndTo: string[]
+		name: string,
+		defn: BodyDefn,
+		pos: Coords,
+		starsystemNamesFromAndTo: string[]
 	)
 	{
 		super
@@ -22,6 +25,35 @@ class LinkPortal extends Entity
 		this.defn = defn;
 
 		this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
+	}
+
+	static bodyDefn(): BodyDefn
+	{
+		var bodyDefnLinkPortal = new BodyDefn
+		(
+			"LinkPortal",
+			Coords.fromXY(10, 10), // size
+			new VisualGroup
+			([
+				new VisualCircleGradient
+				(
+					10, // radius
+					new ValueBreakGroup
+					(
+						[
+							new ValueBreak(0, Color.byName("Black") ),
+							new ValueBreak(.5, Color.byName("Black") ),
+							new ValueBreak(.75, Color.byName("Violet") ),
+							new ValueBreak(1, Color.byName("Blue") )
+						],
+						null // interpolationMode
+					),
+					null // colorBorder
+				)
+			])
+		);
+
+		return bodyDefnLinkPortal;
 	}
 
 	link(cluster: Network2): NetworkLink2

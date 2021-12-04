@@ -93,7 +93,8 @@ class VenueLayout {
         var layout = this.layout;
         var map = layout.map;
         var faction = this.modelParent.faction(world);
-        var buildableDefnsAvailable = faction.technology.buildablesAvailable(world);
+        // todo - Allow ships to colonize planets with no faction.
+        var buildableDefnsAvailable = (faction == null ? [] : faction.technology.buildablesAvailable(world));
         var terrainName = map.terrainAtCursor().name;
         var buildableDefnsAllowedOnTerrain = [];
         for (var i = 0; i < buildableDefnsAvailable.length; i++) {

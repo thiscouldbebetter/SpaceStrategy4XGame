@@ -63,7 +63,7 @@
     "../Source/Imports.ts",
     "../Source/Framework/Source/Imports.ts",
     "../Source/Framework/Source/Demo/",
-    "../Source/Framework/Source/Stub/",
+    "../Source/Framework/Stub/",
     "../Source/Framework/Tests/"
   ]
 }

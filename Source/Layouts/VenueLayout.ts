@@ -14,12 +14,12 @@ class VenueLayout implements Venue
 		this.layout = layout;
 	}
 
-	finalize(universe: Universe)
+	finalize(universe: Universe): void
 	{
 		// Do nothing.
 	}
 
-	initialize(universe: Universe)
+	initialize(universe: Universe): void
 	{
 		var controlRoot = this.toControl(universe);
 		this.venueControls = new VenueControls(controlRoot, null);
@@ -27,12 +27,12 @@ class VenueLayout implements Venue
 		this.layout.initialize(universe);
 	}
 
-	model()
+	model(): any
 	{
 		return this.layout;
 	}
 
-	updateForTimerTick(universe: Universe)
+	updateForTimerTick(universe: Universe): void
 	{
 		this.venueControls.updateForTimerTick(universe);
 
@@ -98,7 +98,7 @@ class VenueLayout implements Venue
 
 	// controls
 
-	controlBuildableDetailsBuild(universe: Universe)
+	controlBuildableDetailsBuild(universe: Universe): ControlBase
 	{
 		var layout = this.layout;
 
@@ -162,14 +162,18 @@ class VenueLayout implements Venue
 		return returnValue;
 	}
 
-	controlBuildableSelectBuild(universe: Universe, cursorPos: Coords)
+	controlBuildableSelectBuild(universe: Universe, cursorPos: Coords): ControlBase
 	{
 		var world = universe.world;
 		var layout = this.layout;
 		var map = layout.map;
 
 		var faction = this.modelParent.faction(world);
-		var buildableDefnsAvailable = faction.technology.buildablesAvailable(world);
+		// todo - Allow ships to colonize planets with no faction.
+		var buildableDefnsAvailable =
+		(
+			faction == null ? [] : faction.technology.buildablesAvailable(world)
+		);
 
 		var terrainName = map.terrainAtCursor().name;
 		var buildableDefnsAllowedOnTerrain = [];
@@ -264,7 +268,7 @@ class VenueLayout implements Venue
 		return returnValue;
 	}
 
-	toControl(universe: Universe)
+	toControl(universe: Universe): ControlBase
 	{
 		var world = universe.world as WorldExtended;
 		var controlBuilder = universe.controlBuilder as ControlBuilderExtended;

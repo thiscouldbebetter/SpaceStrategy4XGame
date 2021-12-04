@@ -219,7 +219,7 @@ class WorldExtended extends World {
                 factionShips.push(ship);
                 factionHomeStarsystem.shipAdd(ship);
             }
-            var faction = new Faction(factionName, factionHomeStarsystem.name, factionColor, [], // relationships
+            var faction = new Faction(factionName, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, [], // relationships
             new TechnologyResearcher(factionName, null, // nameOfTechnologyBeingResearched,
             0, // researchAccumulated
             // namesOfTechnologiesKnown

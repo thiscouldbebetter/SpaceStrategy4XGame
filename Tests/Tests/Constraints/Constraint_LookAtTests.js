@@ -14,6 +14,7 @@ class Constraint_LookAtTests extends TestFixture {
         var constrainable = Constrainable.fromConstraint(constraint);
         var locatable = Locatable.fromPos(Coords.random(universe.randomizer));
         var entity = new Entity("test", [constrainable, locatable]);
-        constraint.constrain(universe, world, place, entity);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, place, entity, null);
+        constraint.constrain(uwpe);
     }
 }

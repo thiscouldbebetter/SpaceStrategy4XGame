@@ -59,18 +59,21 @@ class BuildableTests extends TestFixture {
         var universe = this.universeBuild();
         var buildable = this.buildableBuild(universe);
         var buildableAsEntity = new Entity("[name]", [buildable]);
-        buildable.finalize(universe, universe.world, null, buildableAsEntity);
+        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, buildableAsEntity, null);
+        buildable.finalize(uwpe);
     }
     initialize() {
         var universe = this.universeBuild();
         var buildable = this.buildableBuild(universe);
         var buildableAsEntity = new Entity("[name]", [buildable]);
-        buildable.initialize(universe, universe.world, null, buildableAsEntity);
+        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, buildableAsEntity, null);
+        buildable.initialize(uwpe);
     }
     updateForTimerTick() {
         var universe = this.universeBuild();
         var buildable = this.buildableBuild(universe);
         var buildableAsEntity = new Entity("[name]", [buildable]);
-        buildable.updateForTimerTick(universe, universe.world, null, buildableAsEntity);
+        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, buildableAsEntity, null);
+        buildable.updateForTimerTick(uwpe);
     }
 }

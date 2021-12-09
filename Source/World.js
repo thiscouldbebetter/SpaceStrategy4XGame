@@ -45,7 +45,7 @@ class WorldExtended extends World {
         viewSize.z = focalLength;
         var deviceDefns = WorldExtended.create_DeviceDefns();
         var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
-        var factionsAndShips = WorldExtended.create_FactionsAndShips(universe, network, technologiesFree, deviceDefnsByName);
+        var factionsAndShips = WorldExtended.create_FactionsAndShips(universe, network, technologiesFree, buildableDefns, deviceDefnsByName);
         var factions = factionsAndShips[0];
         var ships = factionsAndShips[1];
         DiplomaticRelationship.initializeForFactions(factions);
@@ -59,7 +59,7 @@ class WorldExtended extends World {
         var terrainNamesOrbit = ["Orbit"];
         var terrainNamesSurface = ["Surface"];
         var buildableDefns = [
-            new BuildableDefn("Hub", true, // isItem
+            new BuildableDefn("Colony Hub", true, // isItem
             terrainNamesSurface, new VisualGroup([
                 new VisualRectangle(mapCellSizeInPixels, Color.byName("Gray"), null, null),
                 VisualText.fromTextAndColor("H", Color.byName("White"))
@@ -245,7 +245,7 @@ class WorldExtended extends World {
         ];
         return deviceDefns;
     }
-    static create_FactionsAndShips(universe, network, technologiesFree, deviceDefnsByName) {
+    static create_FactionsAndShips(universe, network, technologiesFree, buildableDefns, deviceDefnsByName) {
         var numberOfFactions = 6;
         var factions = new Array();
         var ships = new Array();
@@ -259,6 +259,15 @@ class WorldExtended extends World {
             colors.Violet,
         ];
         var numberOfNetworkNodes = network.nodes.length;
+        var worldDummy = new WorldExtended("WorldDummy", // name
+        DateTime.now(), // dateCreated
+        [], // activityDefns
+        buildableDefns, [], // deviceDefns
+        null, // technologyTree
+        null, // network
+        [], // factions
+        [], // ships
+        null);
         for (var i = 0; i < numberOfFactions; i++) {
             var factionHomeStarsystem = null;
             var random = Math.random();
@@ -288,8 +297,8 @@ class WorldExtended extends World {
             var planetIndexRandom = Math.floor(planets.length * Math.random());
             var factionHomePlanet = planets[planetIndexRandom];
             factionHomePlanet.factionName = factionName;
-            var buildable = new Buildable("Hub", Coords.fromXY(4, 4), true);
-            var buildableAsEntity = buildable.toEntity(null);
+            var buildable = new Buildable("Colony Hub", Coords.fromXY(4, 4), true);
+            var buildableAsEntity = buildable.toEntity(worldDummy);
             factionHomePlanet.layout.map.bodies.push(buildableAsEntity);
             var factionShips = [];
             var shipDefn = Ship.bodyDefnBuild(factionColor);

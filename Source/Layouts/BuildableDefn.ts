@@ -37,7 +37,8 @@ class BuildableDefn
 			this.name,
 			[
 				buildable,
-				buildable.locatable()
+				buildable.locatable(),
+				Drawable.fromVisual(this.visual)
 			]
 		);
 

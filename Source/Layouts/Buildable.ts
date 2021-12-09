@@ -46,22 +46,8 @@ class Buildable implements EntityPropertyBase
 	{
 		if (this._entity == null)
 		{
-			if (world == null)
-			{
-				this._entity = new Entity
-				(
-					this.defnName,
-					[
-						this,
-						this.locatable()
-					]
-				);
-			}
-			else
-			{
-				var defn = this.defn(world);
-				this._entity = defn.buildableToEntity(this);
-			}
+			var defn = this.defn(world);
+			this._entity = defn.buildableToEntity(this);
 		}
 		return this._entity;
 	}

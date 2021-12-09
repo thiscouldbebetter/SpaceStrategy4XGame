@@ -23,6 +23,9 @@ class TechnologyResearcher {
         }
         return returnValues;
     }
+    faction(world) {
+        return world.factionByName(this.factionName);
+    }
     researchAccumulatedIncrement(world, faction, amountToIncrement) {
         var technologyBeingResearched = this.technologyBeingResearched(world);
         if (technologyBeingResearched == null) {
@@ -39,6 +42,11 @@ class TechnologyResearcher {
                 this.researchAccumulated = 0;
             }
         }
+    }
+    researchPerTurn(universe, world) {
+        var faction = this.faction(world);
+        var returnValue = faction.researchPerTurn(universe, world);
+        return returnValue;
     }
     strength(world) {
         var returnValue = 0;
@@ -106,7 +114,7 @@ class TechnologyResearcher {
     }
     // turns
     updateForTurn(universe, world, faction) {
-        var researchThisTurn = faction.researchPerTurn(universe, world);
+        var researchThisTurn = this.researchPerTurn(universe, world);
         this.researchAccumulatedIncrement(world, faction, researchThisTurn);
     }
 }

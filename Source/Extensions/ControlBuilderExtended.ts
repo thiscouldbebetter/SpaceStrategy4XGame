@@ -105,22 +105,28 @@ class ControlBuilderExtended extends ControlBuilder
 						if (selection != null)
 						{
 							var venueNext: Venue;
-							var selectionAsNetworkNode = selection as NetworkNode2;
-							var selectionAsPlanet = selection as Planet;
-							if (selectionAsNetworkNode != null)
+							var selectionTypeName = selection.constructor.name;
+
+							if (selectionTypeName == NetworkNode2.name)
 							{
+								var selectionAsNetworkNode = selection as NetworkNode2;
 								var starsystem = selectionAsNetworkNode.starsystem;
 								if (starsystem != null)
 								{
 									venueNext = new VenueStarsystem(venueCurrent, starsystem);
 								}
 							}
-							else if (selectionAsPlanet != null)
+							else if (selectionTypeName == Planet.name)
 							{
+								var selectionAsPlanet = selection as Planet;
 								venueNext = new VenueLayout
 								(
 									venueCurrent, selectionAsPlanet, selectionAsPlanet.layout
 								);
+							}
+							else if (selectionTypeName == Ship.name)
+							{
+								throw new Error("Not yet implemented!");
 							}
 
 							if (venueNext != null)

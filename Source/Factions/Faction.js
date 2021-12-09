@@ -72,7 +72,11 @@ class Faction {
             DataBinding.fromGet((c) => "todo"), // bindingForOptionText,
             null, // fontHeightInPixels
             // dataBindingForValueSelected
-            new DataBinding(diplomaticSession, (c) => c.factionSelected.shipSelected, (c, v) => c.factionSelected.shipSelected = v)),
+            new DataBinding(diplomaticSession, (c) => (c.factionSelected == null ? null : c.factionSelected.shipSelected), (c, v) => {
+                if (c.factionSelected != null) {
+                    c.factionSelected.shipSelected = v;
+                }
+            })),
         ]);
         return returnValue;
     }
@@ -98,6 +102,7 @@ class Faction {
     // controls
     toControl(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth) {
         var fontHeightInPixels = 10;
+        var faction = this;
         var returnValue = ControlContainer.from4("containerFaction", Coords.fromXY(containerMainSize.x
             - margin
             - containerInnerSize.x, margin), containerInnerSize.clone().multiply(Coords.fromXY(1, 1.25)), 
@@ -110,25 +115,25 @@ class Faction {
             ControlLabel.from5("textBoxFaction", Coords.fromXY(margin * 2 + containerInnerSize.x * .3, 0), // pos
             Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
             false, // isTextCentered
-            DataBinding.fromContext(this.name)),
+            DataBinding.fromContext(faction.name)),
             ControlButton.from8("buttonTechnology", Coords.fromXY(margin, controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Tech", fontHeightInPixels, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
-            () => this.researchSessionStart.bind(this) // click
+            () => faction.researchSessionStart(universe) // click
             ),
             ControlButton.from8("buttonNotifications", Coords.fromXY(margin, controlHeight * 2), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Notes", fontHeightInPixels, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             // click
-            () => this.notificationSessionStart.bind(this)),
+            () => faction.notificationSessionStart(universe)),
             ControlButton.from8("buttonRelations", Coords.fromXY(margin, controlHeight * 3), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Others", fontHeightInPixels, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             // click
-            this.relationsInitialize.bind(this, universe)),
+            () => faction.relationsInitialize(universe)),
             ControlButton.from8("buttonPlanets", Coords.fromXY(margin * 2 + buttonWidth, controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
             "Planets", fontHeightInPixels, true, // hasBorder

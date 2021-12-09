@@ -206,8 +206,15 @@ class Faction
 					new DataBinding
 					(
 						diplomaticSession,
-						(c: DiplomaticSession) => c.factionSelected.shipSelected,
-						(c: DiplomaticSession, v: Ship) => c.factionSelected.shipSelected = v
+						(c: DiplomaticSession) =>
+							(c.factionSelected == null ? null : c.factionSelected.shipSelected),
+						(c: DiplomaticSession, v: Ship) =>
+						{
+							if (c.factionSelected != null)
+							{
+								c.factionSelected.shipSelected = v;
+							}
+						}
 					)
 				),
 			]
@@ -264,6 +271,8 @@ class Faction
 	{
 		var fontHeightInPixels = 10;
 
+		var faction = this;
+
 		var returnValue = ControlContainer.from4
 		(
 			"containerFaction",
@@ -301,7 +310,7 @@ class Faction
 						controlHeight
 					), // size
 					false, // isTextCentered
-					DataBinding.fromContext(this.name)
+					DataBinding.fromContext(faction.name)
 				),
 
 				ControlButton.from8
@@ -313,7 +322,7 @@ class Faction
 					fontHeightInPixels,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
-					() => this.researchSessionStart.bind(this) // click
+					() => faction.researchSessionStart(universe) // click
 				),
 
 				ControlButton.from8
@@ -330,7 +339,7 @@ class Faction
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					// click
-					() => this.notificationSessionStart.bind(this)
+					() => faction.notificationSessionStart(universe)
 				),
 
 				ControlButton.from8
@@ -347,7 +356,7 @@ class Faction
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					// click
-					this.relationsInitialize.bind(this, universe)
+					() => faction.relationsInitialize(universe)
 				),
 
 				ControlButton.from8

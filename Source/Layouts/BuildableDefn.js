@@ -12,7 +12,8 @@ class BuildableDefn {
     buildableToEntity(buildable) {
         var returnValue = new Entity(this.name, [
             buildable,
-            buildable.locatable()
+            buildable.locatable(),
+            Drawable.fromVisual(this.visual)
         ]);
         if (this.isItem) {
             returnValue.propertyAdd(new Item(this.name, 1));

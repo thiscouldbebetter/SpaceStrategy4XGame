@@ -65,6 +65,8 @@ class TechnologyResearchSession
 		var labelHeight = display.fontHeightInPixels;
 		var buttonHeight = labelHeight * 2.5;
 
+		var researcher = this.researcher;
+
 		var returnValue = ControlContainer.from4
 		(
 			"containerResearchSession", // name,
@@ -84,7 +86,7 @@ class TechnologyResearchSession
 				ControlLabel.from5
 				(
 					"textResearcher", // name,
-					Coords.fromXY(70, margin), // pos,
+					Coords.fromXY(100, margin), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
 					false, // isTextCentered,
 					DataBinding.fromContext(this.researcher.name) //text
@@ -92,8 +94,30 @@ class TechnologyResearchSession
 
 				ControlLabel.from5
 				(
+					"labelResearchPerDay", // name,
+					Coords.fromXY(margin, 25), // pos,
+					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
+					false, // isTextCentered,
+					DataBinding.fromContext("Research per Turn:") //text
+				),
+
+				ControlLabel.from5
+				(
+					"textResearchPerTurn", // name,
+					Coords.fromXY(100, 25), // pos,
+					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
+					false, // isTextCentered,
+					DataBinding.fromContextAndGet
+					(
+						this.researcher,
+						(c: TechnologyResearcher) => "" + c.researchPerTurn(universe, world)
+					) //text
+				),
+
+				ControlLabel.from5
+				(
 					"labelTechnologiesKnown", // name,
-					Coords.fromXY(margin, 30), // pos,
+					Coords.fromXY(margin, 40), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
 					false, // isTextCentered,
 					DataBinding.fromContext("Technologies Known:") //text
@@ -102,7 +126,7 @@ class TechnologyResearchSession
 				ControlList.from6
 				(
 					"listTechnologiesKnown",
-					Coords.fromXY(margin, 45), // pos
+					Coords.fromXY(margin, 55), // pos
 					Coords.fromXY(110, 50), // size
 					// items
 					DataBinding.fromContext
@@ -116,7 +140,7 @@ class TechnologyResearchSession
 				ControlLabel.from5
 				(
 					"labelTechnologiesAvailable", // name,
-					Coords.fromXY(140, 30), // pos,
+					Coords.fromXY(140, 40), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
 					false, // isTextCentered,
 					DataBinding.fromContext("Technologies Available:") // text
@@ -125,12 +149,12 @@ class TechnologyResearchSession
 				ControlList.from8
 				(
 					"listTechnologiesAvailable", // name,
-					Coords.fromXY(140, 45), // pos,
+					Coords.fromXY(140, 55), // pos,
 					Coords.fromXY(110, 50), // size,
 					// items,
 					DataBinding.fromContextAndGet
 					(
-						this.researcher,
+						researcher,
 						(c: TechnologyResearcher) =>
 							c.technologiesAvailableForResearch(world)
 					),
@@ -139,10 +163,11 @@ class TechnologyResearchSession
 						(c: Technology) => c.name
 					), // bindingForItemText
 					labelHeight, // fontHeightInPixels
-					DataBinding.fromContextAndGet
+					new DataBinding
 					(
-						this.researcher,
-						(c: TechnologyResearcher) => c.technologyBeingResearched(world)
+						researcher,
+						(c: TechnologyResearcher) => c.technologyBeingResearched(world),
+						(c: TechnologyResearcher, v: Technology) => c.technologyResearch(v)
 					), // bindingForItemSelected
 					DataBinding.fromGet
 					(
@@ -213,27 +238,11 @@ class TechnologyResearchSession
 					(
 						this,
 						(c: TechnologyResearchSession) =>
-							"" + c.technologyBeingResearched().researchRequired
+						{
+							var tech = c.technologyBeingResearched();
+							return (tech == null ? "-" : "" + tech.researchRequired);
+						}
 					) // text
-				),
-
-				ControlButton.from8
-				(
-					"buttonResearchPlusOne", //name,
-					Coords.fromXY(margin, 155), //pos,
-					Coords.fromXY(buttonHeight * 4, buttonHeight), // size,
-					"Research + 1", // text,
-					labelHeight, // fontHeightInPixels,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => // click
-					{
-						var world = universe.world as WorldExtended;
-						var venue = universe.venueCurrent as VenueTechnologyResearchSession;
-						var session = venue.researchSession;
-						var faction = world.factionByName(session.researcher.factionName);
-						session.researchAccumulatedIncrement(world, faction, 1);
-					}
 				),
 
 				ControlButton.from8

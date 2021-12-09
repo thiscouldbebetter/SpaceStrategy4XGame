@@ -1,8 +1,10 @@
 "use strict";
-class Starsystem {
+class Starsystem extends Place {
     constructor(name, size, star, linkPortals, planets, factionName) {
-        this.name = name;
-        this.size = size;
+        super(name, Starsystem.name, // defnName
+        size, 
+        // entities
+        ArrayHelper.flattenArrayOfArrays(new Array([star], linkPortals, planets)));
         this.star = star;
         this.linkPortals = linkPortals;
         this.planets = planets;
@@ -101,7 +103,7 @@ class Starsystem {
         }
     }
     // drawing
-    camera(universe) {
+    camera2(universe) {
         // hack - Get a camera, without a Place.
         var venue = universe.venueCurrent;
         var venueTypeName = venue.constructor.name;
@@ -113,9 +115,9 @@ class Starsystem {
         var camera = venueAsVenueStarsystem.cameraEntity.camera();
         return camera;
     }
-    draw(uwpe, display) {
-        var universe = uwpe.universe;
-        var camera = this.camera(universe);
+    draw(universe, world, display) {
+        var camera = this.camera2(universe);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, this, null, null);
         this.visualGrid.draw(uwpe, display);
         var bodiesByType = [
             [this.star],
@@ -153,7 +155,7 @@ class Starsystem {
         var entity = uwpe.entity;
         var bodyPos = entity.locatable().loc.pos;
         this.posSaved.overwriteWith(bodyPos);
-        var camera = this.camera(universe);
+        var camera = this.camera2(universe);
         camera.coordsTransformWorldToView(bodyPos);
         var bodyDefn = BodyDefn.fromEntity(uwpe.entity);
         var bodyVisual = bodyDefn.visual;
@@ -175,7 +177,7 @@ class VisualElevationStem {
         if (starsystem == null) {
             return;
         }
-        var camera = starsystem.camera(universe);
+        var camera = starsystem.camera2(universe);
         var entity = uwpe.entity;
         var drawablePosWorld = entity.locatable().loc.pos;
         var drawPosTip = camera.coordsTransformWorldToView(this.drawPosTip.overwriteWith(drawablePosWorld));
@@ -213,7 +215,7 @@ class VisualGrid {
         if (starsystem == null) {
             return;
         }
-        var camera = starsystem.camera(universe);
+        var camera = starsystem.camera2(universe);
         var drawPosFrom = this.drawPosFrom;
         var drawPosTo = this.drawPosTo;
         var multiplier = this.multiplier;

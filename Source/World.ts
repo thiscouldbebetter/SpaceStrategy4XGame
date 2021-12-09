@@ -112,7 +112,8 @@ class WorldExtended extends World
 
 		var factionsAndShips = WorldExtended.create_FactionsAndShips
 		(
-			universe, network, technologiesFree, deviceDefnsByName
+			universe, network,  technologiesFree,
+			buildableDefns, deviceDefnsByName
 		);
 
 		var factions = factionsAndShips[0];
@@ -159,7 +160,7 @@ class WorldExtended extends World
 		[
 			new BuildableDefn
 			(
-				"Hub",
+				"Colony Hub",
 				true, // isItem
 				terrainNamesSurface,
 				new VisualGroup
@@ -479,6 +480,7 @@ class WorldExtended extends World
 		universe: Universe,
 		network: Network2,
 		technologiesFree: Technology[],
+		buildableDefns: BuildableDefn[],
 		deviceDefnsByName: Map<string, DeviceDefn>
 	): [ Faction[], Ship[] ]
 	{
@@ -499,6 +501,20 @@ class WorldExtended extends World
 		];
 
 		var numberOfNetworkNodes = network.nodes.length;
+
+		var worldDummy = new WorldExtended
+		(
+			"WorldDummy", // name
+			DateTime.now(), // dateCreated
+			[], // activityDefns
+			buildableDefns,
+			[], // deviceDefns
+			null, // technologyTree
+			null, // network
+			[], // factions
+			[], // ships
+			null, // camera
+		);
 
 		for (var i = 0; i < numberOfFactions; i++)
 		{
@@ -547,8 +563,8 @@ class WorldExtended extends World
 			var factionHomePlanet = planets[planetIndexRandom];
 			factionHomePlanet.factionName = factionName;
 
-			var buildable = new Buildable("Hub", Coords.fromXY(4, 4), true);
-			var buildableAsEntity = buildable.toEntity(null);
+			var buildable = new Buildable("Colony Hub", Coords.fromXY(4, 4), true);
+			var buildableAsEntity = buildable.toEntity(worldDummy);
 
 			factionHomePlanet.layout.map.bodies.push
 			(

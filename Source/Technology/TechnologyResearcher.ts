@@ -52,6 +52,11 @@ class TechnologyResearcher
 		return returnValues;
 	}
 
+	faction(world: WorldExtended): Faction
+	{
+		return world.factionByName(this.factionName);
+	}
+
 	researchAccumulatedIncrement
 	(
 		world: WorldExtended, faction: Faction, amountToIncrement: number
@@ -82,6 +87,13 @@ class TechnologyResearcher
 				this.researchAccumulated = 0;
 			}
 		}
+	}
+
+	researchPerTurn(universe: Universe, world: WorldExtended): number
+	{
+		var faction = this.faction(world);
+		var returnValue = faction.researchPerTurn(universe, world);
+		return returnValue;
 	}
 
 	strength(world: WorldExtended): number
@@ -212,7 +224,7 @@ class TechnologyResearcher
 		universe: Universe, world: WorldExtended, faction: Faction
 	): void
 	{
-		var researchThisTurn = faction.researchPerTurn(universe, world);
+		var researchThisTurn = this.researchPerTurn(universe, world);
 		this.researchAccumulatedIncrement(world, faction, researchThisTurn);
 	}
 }

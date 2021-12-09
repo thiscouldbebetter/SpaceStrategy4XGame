@@ -30,12 +30,14 @@ class VenueStarsystem implements Venue
 
 		display.drawBackground(null, null);
 
+		this.starsystem.draw(universe, world, display);
+
 		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, world, null, null, null
 		);
-		this.starsystem.draw(uwpe, display);
 
+		uwpe.entitySet(this.cursor);
 		this.cursor.draw(uwpe, display);
 
 		this.venueControls.draw(universe);

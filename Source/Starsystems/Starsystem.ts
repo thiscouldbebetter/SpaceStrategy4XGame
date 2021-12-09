@@ -1,5 +1,5 @@
 
-class Starsystem
+class Starsystem extends Place
 {
 	name: string;
 	size: Coords;
@@ -27,8 +27,20 @@ class Starsystem
 		factionName: string
 	)
 	{
-		this.name = name;
-		this.size = size;
+		super
+		(
+			name,
+			Starsystem.name, // defnName
+			size,
+			// entities
+			ArrayHelper.flattenArrayOfArrays
+			(
+				new Array<Entity[]>
+				(
+					[star], linkPortals, planets
+				)
+			)
+		);
 
 		this.star = star;
 		this.linkPortals = linkPortals;
@@ -214,7 +226,7 @@ class Starsystem
 
 	// drawing
 
-	camera(universe: Universe)
+	camera2(universe: Universe): Camera
 	{
 		// hack - Get a camera, without a Place.
 		var venue = universe.venueCurrent;
@@ -229,11 +241,14 @@ class Starsystem
 		return camera;
 	}
 
-	draw(uwpe: UniverseWorldPlaceEntities, display: Display): void
+	draw(universe: Universe, world: World, display: Display): void
 	{
-		var universe = uwpe.universe;
+		var camera = this.camera2(universe);
 
-		var camera = this.camera(universe);
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, this, null, null
+		);
 
 		this.visualGrid.draw(uwpe, display);
 
@@ -300,7 +315,7 @@ class Starsystem
 		var bodyPos = entity.locatable().loc.pos;
 		this.posSaved.overwriteWith(bodyPos);
 
-		var camera = this.camera(universe);
+		var camera = this.camera2(universe);
 		camera.coordsTransformWorldToView(bodyPos);
 
 		var bodyDefn = BodyDefn.fromEntity(uwpe.entity);
@@ -335,7 +350,7 @@ class VisualElevationStem implements VisualBase
 		{
 			return;
 		}
-		var camera = starsystem.camera(universe);
+		var camera = starsystem.camera2(universe);
 
 		var entity = uwpe.entity;
 		var drawablePosWorld = entity.locatable().loc.pos;
@@ -413,7 +428,7 @@ class VisualGrid implements VisualBase
 		{
 			return;
 		}
-		var camera = starsystem.camera(universe);
+		var camera = starsystem.camera2(universe);
 
 		var drawPosFrom = this.drawPosFrom;
 		var drawPosTo = this.drawPosTo;

@@ -16,7 +16,7 @@ class TechnologyTree {
             ]),
             new Technology("Drives", 5, ["Default"], ["Ship Drive, Basic"]),
             new Technology("Generators", 5, ["Default"], ["Ship Generator, Basic"]),
-            new Technology("Hubs", 5, ["Default"], ["Hub"]),
+            new Technology("Hubs", 5, ["Default"], ["Colony Hub"]),
             new Technology("Hulls", 5, ["Default"], ["Ship Hull, Small"]),
             new Technology("Shields", 5, ["Default"], ["Ship Shield, Basic"]),
             new Technology("Weapons", 5, ["Default"], ["Ship Weapon, Basic"]),

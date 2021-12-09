@@ -184,7 +184,7 @@ class Ship extends Entity
 		{
 			var itemHolder = this.itemHolder();
 
-			var itemDefnNameHub = world.defn.itemDefnByName("Hub").name;
+			var itemDefnNameHub = world.defn.itemDefnByName("Colony Hub").name;
 
 			var hasHub =
 				itemHolder.hasItemWithDefnName(itemDefnNameHub);

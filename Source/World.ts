@@ -1,18 +1,18 @@
 
 class WorldExtended extends World
 {
-	activityDefns: ActivityDefn[];
 	buildableDefns: BuildableDefn[];
+	deviceDefns: DeviceDefn[];
 	technologyTree: TechnologyTree;
 	network: Network2;
 	factions: Faction[];
 	ships: Ship[];
 	camera: Camera;
 
-	activityDefnsByName: Map<string,ActivityDefn>;
-	buildableDefnsByName: Map<string,BuildableDefn>;
-	factionsByName: Map<string,Faction>;
-	shipsByName: Map<string,Ship>;
+	buildableDefnsByName: Map<string, BuildableDefn>;
+	deviceDefnsByName: Map<string, DeviceDefn>;
+	factionsByName: Map<string, Faction>;
+	shipsByName: Map<string, Ship>;
 
 	factionIndexCurrent: number;
 	turnsSoFar: number;
@@ -23,6 +23,7 @@ class WorldExtended extends World
 		dateCreated: DateTime,
 		activityDefns: ActivityDefn[],
 		buildableDefns: BuildableDefn[],
+		deviceDefns: DeviceDefn[],
 		technologyTree: TechnologyTree,
 		network: Network2,
 		factions: Faction[],
@@ -43,12 +44,8 @@ class WorldExtended extends World
 			[] // places
 		);
 
-		this.activityDefns = activityDefns;
-		this.activityDefnsByName =
-			ArrayHelper.addLookupsByName(this.activityDefns);
 		this.buildableDefns = buildableDefns;
-		this.buildableDefnsByName =
-			ArrayHelper.addLookupsByName(this.buildableDefns);
+		this.deviceDefns = deviceDefns;
 		this.technologyTree = technologyTree;
 		this.network = network;
 		this.factions = factions;
@@ -57,8 +54,18 @@ class WorldExtended extends World
 
 		this.dateSaved = this.dateCreated;
 
+		this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
+		this.deviceDefnsByName = ArrayHelper.addLookupsByName(this.deviceDefns);
 		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
 		this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
+
+		this.defn.itemDefns.push(...deviceDefns);
+		var buildableDefnsNonDevice = this.buildableDefns.filter(
+			x => this.deviceDefnsByName.has(x.name) == false
+		);
+		var itemDefns = buildableDefnsNonDevice.map(x => ItemDefn.fromName(x.name) );
+		this.defn.itemDefns.push(...itemDefns);
+		this.defn.itemDefnsByName = ArrayHelper.addLookupsByName(this.defn.itemDefns);
 
 		this.turnsSoFar = 0;
 		this.factionIndexCurrent = 0;
@@ -70,107 +77,16 @@ class WorldExtended extends World
 	{
 		var worldName = NameGenerator.generateName() + " Cluster";
 
-		var mapCellSizeInPixels = Coords.fromXY(20, 20); // hack
+		var activityDefns = ArrayHelper.flattenArrayOfArrays
+		([
+			new ActivityDefn_Instances2()._All,
+			ActivityDefn.Instances()._All
+		]);
 
-		var terrainNamesOrbit = [ "Orbit" ];
-		var terrainNamesSurface = [ "Surface" ];
-
-		var buildableDefns =
-		[
-			new BuildableDefn
-			(
-				"Hub",
-				terrainNamesSurface,
-				new VisualGroup
-				([
-					new VisualRectangle
-					(
-						mapCellSizeInPixels, Color.byName("Gray"), null, null
-					),
-					VisualText.fromTextAndColor("H", Color.byName("White"))
-				]),
-				[ new Resource("Industry", 100) ], // resourcesToBuild
-				// resourcesProducedPerTurn
-				[
-					new Resource("Industry", 1),
-					new Resource("Prosperity", 1)
-				]
-			),
-			new BuildableDefn
-			(
-				"Factory",
-				terrainNamesSurface,
-				new VisualGroup
-				([
-					new VisualRectangle
-					(
-						mapCellSizeInPixels, Color.byName("Red"), null, null
-					),
-					VisualText.fromTextAndColor("F", Color.byName("White"))
-				]),
-				[ new Resource("Industry", 30) ], // resourcesToBuild
-				[ new Resource("Industry", 1) ] // resourcesPerTurn
-			),
-
-			new BuildableDefn
-			(
-				"Laboratory",
-				terrainNamesSurface,
-				new VisualGroup
-				([
-					new VisualRectangle
-					(
-						mapCellSizeInPixels, Color.byName("Blue"), null, null
-					),
-					VisualText.fromTextAndColor("L", Color.byName("White"))
-				]),
-				[ new Resource("Industry", 30) ], // resourcesToBuild
-				[ new Resource("Research", 1) ] // resourcesPerTurn
-			),
-
-			new BuildableDefn
-			(
-				"Plantation",
-				terrainNamesSurface,
-				new VisualGroup
-				([
-					new VisualRectangle
-					(
-						mapCellSizeInPixels, Color.byName("Green"), null, null
-					),
-					VisualText.fromTextAndColor("P", Color.byName("White"))
-				]),
-				[ new Resource("Industry", 30) ], // resourcesToBuild
-				[ new Resource("Prosperity", 1) ] // resourcesPerTurn
-			),
-
-			new BuildableDefn
-			(
-				"Ship",
-				terrainNamesOrbit,
-				new VisualGroup
-				([
-					Ship.visual(Color.byName("Gray") ),
-					VisualText.fromTextAndColor("Ship", Color.byName("White"))
-				]),
-				[ new Resource("Industry", 1) ], // resourcesToBuild
-				[] // resourcesPerTurn
-			),
-
-			new BuildableDefn
-			(
-				"Shipyard",
-				terrainNamesOrbit,
-				new VisualGroup
-				([
-					new VisualRectangle(mapCellSizeInPixels, Color.byName("Orange"), null, null)
-				]),
-				[ new Resource("Industry", 1) ], // resourcesToBuild
-				[] // resourcesPerTurn
-			),
-		];
+		var buildableDefns = WorldExtended.create_BuildableDefns();
 
 		var technologyTree = TechnologyTree.demo();
+		var technologiesFree = technologyTree.technologiesFree();
 
 		var viewSize = universe.display.sizeInPixels.clone();
 		var viewDimension = viewSize.y;
@@ -191,84 +107,314 @@ class WorldExtended extends World
 		var focalLength = viewDimension;
 		viewSize.z = focalLength;
 
-		var numberOfFactions = 6;
-		var factions = [];
-		var ships = [];
+		var deviceDefns = WorldExtended.create_DeviceDefns();
+		var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
 
-		var colors = Color.Instances();
-		var colorsForFactions =
+		var factionsAndShips = WorldExtended.create_FactionsAndShips
+		(
+			universe, network, technologiesFree, deviceDefnsByName
+		);
+
+		var factions = factionsAndShips[0];
+		var ships = factionsAndShips[1];
+
+		DiplomaticRelationship.initializeForFactions(factions);
+
+		var camera = new Camera
+		(
+			viewSize,
+			focalLength,
+			Disposition.fromPos
+			(
+				new Coords(-viewDimension, 0, 0), //pos,
+			),
+			null // entitiesInViewSort
+		);
+
+		var returnValue = new WorldExtended
+		(
+			worldName,
+			DateTime.now(),
+			activityDefns,
+			buildableDefns,
+			deviceDefns,
+			technologyTree,
+			network,
+			factions,
+			ships,
+			camera
+		);
+
+		return returnValue;
+	}
+
+	static create_BuildableDefns(): BuildableDefn[]
+	{
+		var mapCellSizeInPixels = Coords.fromXY(20, 20); // hack
+
+		var terrainNamesOrbit = [ "Orbit" ];
+		var terrainNamesSurface = [ "Surface" ];
+
+		var buildableDefns =
 		[
-			colors.Red,
-			colors.Orange,
-			colors.YellowDark,
-			colors.Green,
-			colors.Cyan,
-			colors.Violet,
+			new BuildableDefn
+			(
+				"Hub",
+				true, // isItem
+				terrainNamesSurface,
+				new VisualGroup
+				([
+					new VisualRectangle
+					(
+						mapCellSizeInPixels, Color.byName("Gray"), null, null
+					),
+					VisualText.fromTextAndColor("H", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 100) ], // resourcesToBuild
+				// resourcesProducedPerTurn
+				[
+					new Resource("Industry", 1),
+					new Resource("Prosperity", 1)
+				],
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Factory",
+				false, // isItem
+				terrainNamesSurface,
+				new VisualGroup
+				([
+					new VisualRectangle
+					(
+						mapCellSizeInPixels, Color.byName("Red"), null, null
+					),
+					VisualText.fromTextAndColor("F", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[ new Resource("Industry", 1) ], // resourcesPerTurn
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Laboratory",
+				false, // isItem
+				terrainNamesSurface,
+				new VisualGroup
+				([
+					new VisualRectangle
+					(
+						mapCellSizeInPixels, Color.byName("Blue"), null, null
+					),
+					VisualText.fromTextAndColor("L", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[ new Resource("Research", 1) ], // resourcesPerTurn
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Plantation",
+				false, // isItem
+				terrainNamesSurface,
+				new VisualGroup
+				([
+					new VisualRectangle
+					(
+						mapCellSizeInPixels, Color.byName("Green"), null, null
+					),
+					VisualText.fromTextAndColor("P", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[ new Resource("Prosperity", 1) ], // resourcesPerTurn
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Ship Drive, Basic",
+				true, // isItem
+				terrainNamesOrbit,
+				new VisualGroup
+				([
+					Ship.visual(Color.byName("Gray") ),
+					VisualText.fromTextAndColor("Small", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[], // resourcesPerTurn
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Ship Generator, Basic",
+				true, // isItem
+				terrainNamesOrbit,
+				new VisualGroup
+				([
+					Ship.visual(Color.byName("Gray") ),
+					VisualText.fromTextAndColor("Small", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[], // resourcesPerTurn
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Ship Hull, Small",
+				true, // isItem
+				terrainNamesOrbit,
+				new VisualGroup
+				([
+					Ship.visual(Color.byName("Gray") ),
+					VisualText.fromTextAndColor("Small", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 50) ], // resourcesToBuild
+				[], // resourcesPerTurn
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Ship Shield, Basic",
+				true, // isItem
+				terrainNamesOrbit,
+				new VisualGroup
+				([
+					Ship.visual(Color.byName("Gray") ),
+					VisualText.fromTextAndColor("Small", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[], // resourcesPerTurn
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Ship Weapon, Basic",
+				true, // isItem
+				terrainNamesOrbit,
+				new VisualGroup
+				([
+					Ship.visual(Color.byName("Gray") ),
+					VisualText.fromTextAndColor("Small", Color.byName("White"))
+				]),
+				[ new Resource("Industry", 30) ], // resourcesToBuild
+				[], // resourcesPerTurn
+				null // entityModifyOnBuild
+			),
+
+			new BuildableDefn
+			(
+				"Shipyard",
+				false, // isItem
+				terrainNamesOrbit,
+				new VisualGroup
+				([
+					new VisualRectangle(mapCellSizeInPixels, Color.byName("Orange"), null, null)
+				]),
+				[ new Resource("Industry", 1) ], // resourcesToBuild
+				[], // resourcesPerTurn
+				// entityModifyOnBuild
+				(entity: Entity) =>
+					entity.propertyAdd(new Shipyard() )
+			),
 		];
 
+		return buildableDefns;
+	}
+
+	static create_DeviceDefns(): DeviceDefn[]
+	{
 		var deviceDefns =
 		[
 			new DeviceDefn
 			(
-				"Drive",
+				"Colony Hub",
+				false, // isActive
+				false, // needsTarget
+				[], // categoryNames
+				(uwpe: UniverseWorldPlaceEntities) => // init
+				{},
+				(uwpe: UniverseWorldPlaceEntities) => // updateForTurn
+				{},
+				(uwpe: UniverseWorldPlaceEntities) => // use
+				{
+					var ship = uwpe.entity as Ship;
+					ship.planetColonize(uwpe.universe, uwpe.world as WorldExtended);
+				}
+			),
+
+			new DeviceDefn
+			(
+				"Ship Drive, Basic",
 				false, // isActive
 				false, // needsTarget
 				[ "Drive" ], // categoryNames
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) => // init
+				(uwpe: UniverseWorldPlaceEntities) => // init
 				{},
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) => // updateForTurn
+				(uwpe: UniverseWorldPlaceEntities) => // updateForTurn
 				{
-					var ship = e as Ship;
+					var ship = uwpe.entity as Ship;
 					ship.distancePerMove += 50;
 					ship.energyPerMove += 1;
 				},
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) => // use
+				(uwpe: UniverseWorldPlaceEntities) => // use
 				{
-					var ship = e as Ship;
+					var ship = uwpe.entity as Ship;
 					ship.energyThisTurn -= ship.energyPerMove;
 				}
 			),
 			new DeviceDefn
 			(
-				"Generator",
+				"Ship Generator, Basic",
 				false, // isActive
 				false, // needsTarget
 				[ "Generator" ], // categoryNames
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // init
+				(uwpe: UniverseWorldPlaceEntities) =>  // init
 				{},
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // updateForTurn
+				(uwpe: UniverseWorldPlaceEntities) =>  // updateForTurn
 				{
-					var ship = e as Ship;
+					var ship = uwpe.entity as Ship;
 					ship.energyThisTurn += 10;
 				},
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // use
+				(uwpe: UniverseWorldPlaceEntities) =>  // use
 				{
 					// Do nothing.
 				}
 			),
+
 			new DeviceDefn
 			(
-				"Shield",
+				"Ship Shield, Basic",
 				true, // isActive
 				false, // needsTarget
 				[ "Shield" ], // categoryNames
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // intialize
+				(uwpe: UniverseWorldPlaceEntities) =>  // intialize
 				{
+					var device = Device.fromEntity(uwpe.entity2);
 					device.isActive = false;
 				},
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // updateForTurn
+				(uwpe: UniverseWorldPlaceEntities) =>  // updateForTurn
 				{
-					var ship = e as Ship;
+					var ship = uwpe.entity as Ship;
+					var device = Device.fromEntity(uwpe.entity2);
+
 					if (device.isActive)
 					{
 						ship.energyThisTurn -= 1;
 						ship.shieldingThisTurn = 0;
 					}
 				},
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) => // use
+				(uwpe: UniverseWorldPlaceEntities) => // use
 				{
-					var ship = e as Ship;
-					var device = ship.deviceSelected;
+					var ship = uwpe.entity as Ship;
+					var device = Device.fromEntity(uwpe.entity2);
+
 					if (device.isActive)
 					{
 						device.isActive = false;
@@ -283,28 +429,32 @@ class WorldExtended extends World
 			),
 			new DeviceDefn
 			(
-				"Weapon",
+				"Ship Weapon, Basic",
 				true, // isActive
 				true, // needsTarget
 				[ "Weapon" ], // categoryNames
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // initialize
+				(uwpe: UniverseWorldPlaceEntities) =>  // initialize
 				{
 					// todo
 				},
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // updateForTurn
+				(uwpe: UniverseWorldPlaceEntities) =>  // updateForTurn
 				{
+					var device = Device.fromEntity(uwpe.entity2);
 					device.usesThisTurn = 3;
 				},
-				(u: Universe, w: World, p: Place, e: Entity, device: Device) =>  // use
+				(uwpe: UniverseWorldPlaceEntities) =>  // use
 				{
+					var ship = uwpe.entity as Ship;
+					var device = Device.fromEntity(uwpe.entity2);
+
 					if (device.usesThisTurn > 0)
 					{
-						var target = device.target; // todo
+						var target = device.targetEntity; // todo
 						if (target == null)
 						{
 							var mustTargetBody = true;
-							var venue = universe.venueCurrent as VenueStarsystem;
-							venue.cursor.set(e, "UseDevice", mustTargetBody);
+							var venue = uwpe.universe.venueCurrent as VenueStarsystem;
+							venue.cursor.set(ship, "UseDevice", mustTargetBody);
 						}
 						else // if (target != null)
 						{
@@ -320,7 +470,35 @@ class WorldExtended extends World
 				}
 			),
 		];
-		var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
+
+		return deviceDefns;
+	}
+
+	static create_FactionsAndShips
+	(
+		universe: Universe,
+		network: Network2,
+		technologiesFree: Technology[],
+		deviceDefnsByName: Map<string, DeviceDefn>
+	): [ Faction[], Ship[] ]
+	{
+		var numberOfFactions = 6;
+
+		var factions = new Array<Faction>();
+		var ships = new Array<Ship>();
+
+		var colors = Color.Instances();
+		var colorsForFactions =
+		[
+			colors.Red,
+			colors.Orange,
+			colors.YellowDark,
+			colors.Green,
+			colors.Cyan,
+			colors.Violet,
+		];
+
+		var numberOfNetworkNodes = network.nodes.length;
 
 		for (var i = 0; i < numberOfFactions; i++)
 		{
@@ -338,6 +516,7 @@ class WorldExtended extends World
 			{
 				factionHomeStarsystem =
 					network.nodes[starsystemIndex].starsystem;
+
 				if (factionHomeStarsystem.planets.length == 0)
 				{
 					factionHomeStarsystem = null;
@@ -369,7 +548,7 @@ class WorldExtended extends World
 			factionHomePlanet.factionName = factionName;
 
 			var buildable = new Buildable("Hub", Coords.fromXY(4, 4), true);
-			var buildableAsEntity = new Entity(buildable.defnName, [ buildable ]);
+			var buildableAsEntity = buildable.toEntity(null);
 
 			factionHomePlanet.layout.map.bodies.push
 			(
@@ -397,10 +576,10 @@ class WorldExtended extends World
 					),
 					factionName,
 					[
-						new Device(deviceDefnsByName.get("Generator") ),
-						new Device(deviceDefnsByName.get("Drive") ),
-						new Device(deviceDefnsByName.get("Shield") ),
-						new Device(deviceDefnsByName.get("Weapon") ),
+						new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
+						new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
+						new Device(deviceDefnsByName.get("Ship Shield, Basic") ),
+						new Device(deviceDefnsByName.get("Ship Weapon, Basic") ),
 					]
 				);
 				ships.push(ship);
@@ -421,11 +600,9 @@ class WorldExtended extends World
 					null, // nameOfTechnologyBeingResearched,
 					0, // researchAccumulated
 					// namesOfTechnologiesKnown
-					[ "A" ]
+					technologiesFree.map(x => x.name)
 				),
-				[
-					factionHomeStarsystem.planets[0]
-				],
+				[ factionHomePlanet ],
 				factionShips,
 				new FactionKnowledge
 				(
@@ -440,45 +617,39 @@ class WorldExtended extends World
 			factions.push(faction);
 		}
 
-		DiplomaticRelationship.initializeForFactions(factions);
+		var factionsAndShips: [Faction[], Ship[]] = 
+			[ factions, ships ];
 
-		var camera = new Camera
-		(
-			viewSize,
-			focalLength,
-			Disposition.fromPos
-			(
-				new Coords(-viewDimension, 0, 0), //pos,
-			),
-			null // entitiesInViewSort
-		);
-
-		var returnValue = new WorldExtended
-		(
-			worldName,
-			DateTime.now(),
-			ActivityDefn.Instances()._All,
-			buildableDefns,
-			technologyTree,
-			network,
-			factions,
-			ships,
-			camera
-		);
-
-		return returnValue;
+		return factionsAndShips;
 	}
 
 	// instance methods
 
 	activityDefnByName(activityDefnName: string): ActivityDefn
 	{
-		return this.activityDefnsByName.get(activityDefnName);
+		return this.defn.activityDefnByName(activityDefnName);
+	}
+
+	buildableDefnAdd(buildableDefn: BuildableDefn): void
+	{
+		this.buildableDefns.push(buildableDefn);
+		this.buildableDefnsByName.set(buildableDefn.name, buildableDefn);
 	}
 
 	buildableDefnByName(buildableDefnName: string): BuildableDefn
 	{
 		return this.buildableDefnsByName.get(buildableDefnName);
+	}
+
+	buildableDefnRemove(buildableDefn: BuildableDefn): void
+	{
+		this.buildableDefns.splice(this.buildableDefns.indexOf(buildableDefn), 1);
+		this.buildableDefnsByName.delete(buildableDefn.name);
+	}
+
+	deviceDefnByName(deviceDefnName: string): DeviceDefn
+	{
+		return this.deviceDefnsByName.get(deviceDefnName);
 	}
 
 	factionByName(factionName: string): Faction
@@ -506,6 +677,11 @@ class WorldExtended extends World
 		}
 	}
 
+	placeForEntityLocatable(entityLocatable: Entity): any
+	{
+		return this.network.placeForEntityLocatable(entityLocatable);
+	}
+
 	toVenue(): VenueWorld
 	{
 		return new VenueWorldExtended(this);
@@ -515,7 +691,6 @@ class WorldExtended extends World
 	{
 		uwpe.world = this;
 		var universe = uwpe.universe;
-		var world = uwpe.world as WorldExtended;
 
 		var factionForPlayer = this.factions[0];
 		var notifications = factionForPlayer.notificationSession.notifications;
@@ -525,20 +700,20 @@ class WorldExtended extends World
 		}
 		else
 		{
-			this.network.updateForTurn(universe, this);
-
-			for (var i = 0; i < this.factions.length; i++)
-			{
-				var faction = this.factions[i];
-				faction.updateForTurn(universe, world);
-			}
-
-			if (this.turnsSoFar > 1 && notifications.length > 0)
-			{
-				factionForPlayer.notificationSessionStart(universe);
-			}
-
-			this.turnsSoFar++;
+			this.updateForTurn_IgnoringNotifications(universe);
 		}
+	}
+
+	updateForTurn_IgnoringNotifications(universe: Universe): void
+	{
+		this.network.updateForTurn(universe, this);
+
+		for (var i = 0; i < this.factions.length; i++)
+		{
+			var faction = this.factions[i];
+			faction.updateForTurn(universe, this);
+		}
+
+		this.turnsSoFar++;
 	}
 }

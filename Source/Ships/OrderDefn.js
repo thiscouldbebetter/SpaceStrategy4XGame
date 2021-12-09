@@ -26,8 +26,9 @@ class OrderDefn_Instances {
         var actor = e.actor();
         var orderable = Orderable.fromEntity(e);
         var order = orderable.order;
-        if (actor.activity == null) {
-            actor.activity = Activity.fromDefnNameAndTargetEntity("MoveToTarget", order.targetEntity);
+        var activity = actor.activity;
+        if (activity.defnName == ActivityDefn.Instances().DoNothing.name) {
+            activity.defnNameAndTargetEntitySet("MoveToTarget", order.targetEntity);
         }
         else {
             var actorLoc = e.locatable().loc;
@@ -45,24 +46,23 @@ class OrderDefn_Instances {
         var ship = entity;
         var device = ship.deviceSelected;
         if (device != null) {
-            var projectile = device.projectile;
+            var projectileEntity = device.projectileEntity; // hack - Replace with dedicated Projectile class.
             var venue = universe.venueCurrent;
             var starsystem = venue.starsystem;
-            if (projectile == null) {
-                // hack - Replace with dedicated Projectile class.
-                projectile = new Ship(ship.name + "_projectile", Projectile.bodyDefnBuild(), ship.locatable().loc.pos.clone(), ship.factionName, null // devices
+            if (projectileEntity == null) {
+                projectileEntity = new Ship(ship.name + "_projectile", Projectile.bodyDefnBuild(), ship.locatable().loc.pos.clone(), ship.factionName, null // devices
                 );
-                projectile.energyPerMove = 0;
-                projectile.distancePerMove = 1000;
-                projectile.actor().activity =
+                projectileEntity.energyPerMove = 0;
+                projectileEntity.distancePerMove = 1000;
+                projectileEntity.actor().activity =
                     Activity.fromDefnNameAndTargetEntity("MoveToTarget", order.targetEntity);
-                starsystem.shipAdd(projectile);
-                device.projectile = projectile;
+                starsystem.shipAdd(projectileEntity);
+                device.projectileEntity = projectileEntity;
             }
             else {
-                ArrayHelper.remove(starsystem.ships, projectile);
-                device.projectile = null;
-                var projectilePos = projectile.locatable().loc.pos;
+                ArrayHelper.remove(starsystem.ships, projectileEntity);
+                device.projectileEntity = null;
+                var projectilePos = projectileEntity.locatable().loc.pos;
                 var targetPos = order.targetEntity.locatable().loc.pos;
                 if (projectilePos.equals(targetPos)) {
                     order.isComplete = true;

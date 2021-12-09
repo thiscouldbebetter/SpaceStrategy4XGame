@@ -11,6 +11,8 @@ class Starsystem
 
 	ships: Ship[];
 
+	planetsByName: Map<string, Planet>;
+
 	posSaved: Coords;
 	visualElevationStem: VisualElevationStem;
 	visualGrid: VisualGrid;
@@ -34,6 +36,8 @@ class Starsystem
 		this.factionName = factionName;
 
 		this.ships = new Array<Ship>();
+
+		this.planetsByName = ArrayHelper.addLookupsByName(this.planets);
 
 		// Helper variables
 		this.posSaved = Coords.create();
@@ -161,6 +165,11 @@ class Starsystem
 		return returnValues;
 	}
 
+	planetByName(planetName: string): Planet
+	{
+		return this.planetsByName.get(planetName);
+	}
+
 	shipAdd(shipToAdd: Ship)
 	{
 		this.ships.push(shipToAdd);
@@ -169,6 +178,11 @@ class Starsystem
 	shipRemove(shipToRemove: Ship)
 	{
 		ArrayHelper.remove(this.ships, shipToRemove);
+	}
+
+	toVenue(): VenueStarsystem
+	{
+		return new VenueStarsystem(null, this);
 	}
 
 	// moves

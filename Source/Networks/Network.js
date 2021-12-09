@@ -6,6 +6,7 @@ class Network2 //
         this.nodes = nodes;
         this.links = links;
         this.nodesByName = ArrayHelper.addLookupsByName(this.nodes);
+        this.linksByName = ArrayHelper.addLookupsByName(this.links);
         this.linksByStarsystemNamesFromTo = new Map();
         for (var i = 0; i < this.links.length; i++) {
             var link = this.links[i];
@@ -117,6 +118,9 @@ class Network2 //
         var returnValue = new Network2(name, nodesLinked, links);
         return returnValue;
     }
+    linkByName(linkName) {
+        return this.linksByName.get(linkName);
+    }
     linkByStarsystemNamesFromTo(starsystemFromName, starsystemToName) {
         return this.linksByStarsystemNamesFromTo.get(starsystemFromName).get(starsystemToName);
     }
@@ -129,12 +133,34 @@ class Network2 //
         }
         return this._nodesAsEntities;
     }
+    placeForEntityLocatable(entityLocatable) {
+        var returnPlace = null;
+        var placeTypeColonName = entityLocatable.locatable().loc.placeName;
+        var placeTypeAndName = placeTypeColonName.split(":");
+        var placeType = placeTypeAndName[0];
+        var placeName = placeTypeAndName[1];
+        if (placeType == NetworkLink2.name) {
+            returnPlace = this.linkByName(placeName);
+        }
+        else if (placeType == Planet.name) {
+            var starsystemName = placeName.split(" ")[0];
+            var starsystem = this.starsystemByName(starsystemName);
+            returnPlace = starsystem.planetByName(placeName);
+        }
+        else if (placeType == Starsystem.name) {
+            returnPlace = this.starsystemByName(placeName);
+        }
+        return returnPlace;
+    }
     scale(scaleFactor) {
         for (var i = 0; i < this.nodes.length; i++) {
             var node = this.nodes[i];
             node.locatable().loc.pos.multiplyScalar(scaleFactor);
         }
         return this;
+    }
+    starsystemByName(starsystemName) {
+        return this.nodesByName.get(starsystemName).starsystem;
     }
     // turns
     updateForTurn(universe, world) {

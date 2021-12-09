@@ -14,13 +14,13 @@ class TechnologyResearchSession
 
 	// instance methods
 
-	isResearchNotInProgress()
+	isResearchNotInProgress(): boolean
 	{
 		var returnValue = (this.researcher.researchAccumulated == 0);
 		return returnValue;
 	}
 
-	isTechnologyBeingResearched()
+	isTechnologyBeingResearched(): boolean
 	{
 		return (this.researcher.nameOfTechnologyBeingResearched != null);
 	}
@@ -28,12 +28,12 @@ class TechnologyResearchSession
 	researchAccumulatedIncrement
 	(
 		world: WorldExtended, faction: Faction, amountToIncrement: number
-	)
+	): void
 	{
 		this.researcher.researchAccumulatedIncrement(world, faction, amountToIncrement);
 	}
 
-	researchRequired()
+	researchRequired(): number
 	{
 		var technologyBeingResearched = this.technologyBeingResearched();
 		var returnValue =
@@ -45,7 +45,7 @@ class TechnologyResearchSession
 		return returnValue;
 	}
 
-	technologyBeingResearched()
+	technologyBeingResearched(): Technology
 	{
 		var techName = this.researcher.nameOfTechnologyBeingResearched;
 		var returnValue = this.technologyTree.technologyByName(techName);
@@ -55,15 +55,15 @@ class TechnologyResearchSession
 
 	// controls
 
-	toControl(universe: Universe)
+	toControl(universe: Universe): ControlBase
 	{
+		var world = universe.world as WorldExtended;
+
 		var display = universe.display;
 		var size = display.sizeInPixels;
 		var margin = display.fontHeightInPixels;
 		var labelHeight = display.fontHeightInPixels;
 		var buttonHeight = labelHeight * 2.5;
-
-		var session = this;
 
 		var returnValue = ControlContainer.from4
 		(
@@ -131,7 +131,8 @@ class TechnologyResearchSession
 					DataBinding.fromContextAndGet
 					(
 						this.researcher,
-						(c: TechnologyResearcher) => c.technologiesAvailable(session)
+						(c: TechnologyResearcher) =>
+							c.technologiesAvailableForResearch(world)
 					),
 					DataBinding.fromGet
 					(
@@ -141,7 +142,7 @@ class TechnologyResearchSession
 					DataBinding.fromContextAndGet
 					(
 						this.researcher,
-						(c: TechnologyResearcher) => c.nameOfTechnologyBeingResearched
+						(c: TechnologyResearcher) => c.technologyBeingResearched(world)
 					), // bindingForItemSelected
 					DataBinding.fromGet
 					(

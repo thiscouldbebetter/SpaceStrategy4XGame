@@ -3,7 +3,6 @@ class Ship extends Entity
 {
 	defn: BodyDefn;
 	factionName: string;
-	devices: Device[];
 
 	deviceSelected: Device;
 	distanceLeftThisMove: number;
@@ -11,7 +10,6 @@ class Ship extends Entity
 	energyPerMove: number;
 	energyThisTurn: number;
 	integrity: number;
-	order: Order;
 	shieldingThisTurn: number;
 
 	_devicesUsable: Device[];
@@ -24,7 +22,7 @@ class Ship extends Entity
 		defn: BodyDefn,
 		pos: Coords,
 		factionName: string,
-		devices: Device[]
+		items: Item[]
 	)
 	{
 		super
@@ -33,6 +31,7 @@ class Ship extends Entity
 			[
 				Actor.create(),
 				defn,
+				ItemHolder.fromItems(items),
 				Killable.fromIntegrityMax(10),
 				Locatable.fromPos(pos),
 				new Orderable()
@@ -41,7 +40,6 @@ class Ship extends Entity
 
 		this.defn = defn;
 		this.factionName = factionName;
-		this.devices = devices;
 
 		this.energyThisTurn = 0;
 		this.distancePerMove = 0;
@@ -49,11 +47,13 @@ class Ship extends Entity
 
 		// Helper variables.
 		this._displacement = Coords.create();
+
+		this.buildable(); // hack
 	}
 
 	// static methods
 
-	static bodyDefnBuild(color: Color)
+	static bodyDefnBuild(color: Color): BodyDefn
 	{
 		var scaleFactor = 10;
 
@@ -83,9 +83,47 @@ class Ship extends Entity
 
 	// instance methods
 
+	private _buildable: Buildable;
+	buildable(): Buildable
+	{
+		if (this._buildable == null)
+		{
+			this._buildable = new Buildable
+			(
+				this.defn.name, Coords.create(), false
+			);
+			this.propertyAdd(this._buildable);
+		}
+		return this._buildable;
+	}
+
+	devices(): Device[]
+	{
+		var items = this.itemHolder().items;
+
+		var returnDevices = items.filter
+		(
+			x => x.constructor.name == Device.name
+		) as Device[];
+
+		return returnDevices;
+	}
+
+	devicesByDefnName(deviceDefnName: string): Device[]
+	{
+		return this.devices().filter(x => x.defnName == deviceDefnName);
+	}
+
 	faction(world: WorldExtended): Faction
 	{
-		return (this.factionName == null ? null : world.factionByName(this.factionName));
+		var returnValue =
+		(
+			this.factionName == null
+			? null
+			: world.factionByName(this.factionName)
+		);
+
+		return returnValue;
 	}
 
 	link(world: WorldExtended): NetworkLink2
@@ -101,6 +139,92 @@ class Ship extends Entity
 	nameWithFaction(): string
 	{
 		return this.factionName + this.name;
+	}
+
+	order(): Order
+	{
+		return this.orderable().order;
+	}
+
+	orderSet(order: Order): void
+	{
+		var orderable = Orderable.fromEntity(this);
+		orderable.order = order;
+	}
+
+	orderable(): Orderable
+	{
+		return Orderable.fromEntity(this);
+	}
+
+	planet(world: WorldExtended): Planet
+	{
+		var planetName = this.locatable().loc.placeName.split(":")[1];
+		var starsystemName = planetName.split(" ")[0];
+		var starsystem = world.network.starsystemByName(starsystemName);
+
+		var planet = starsystem.planets.find
+		(
+			x => x.ships.indexOf(this) >= 0
+		);
+		return planet;
+	}
+
+	planetColonize(universe: Universe, world: WorldExtended): boolean
+	{
+		var wasColonizationSuccessful = false;
+
+		var planetBeingOrbited = this.planet(world);
+
+		if
+		(
+			planetBeingOrbited != null
+			&& planetBeingOrbited.factionName == null
+		)
+		{
+			var itemHolder = this.itemHolder();
+
+			var itemDefnNameHub = world.defn.itemDefnByName("Hub").name;
+
+			var hasHub =
+				itemHolder.hasItemWithDefnName(itemDefnNameHub);
+
+			if (hasHub)
+			{
+				var itemForHub =
+					itemHolder.itemsByDefnName(itemDefnNameHub)[0];
+				
+				var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
+				var entityForHub = itemForHub.toEntity(uwpe);
+
+				var planetMap = planetBeingOrbited.layout.map;
+				var posToBuildAt =
+					planetMap.sizeInCells.clone().half().clearZ();
+
+				var entityForHubLocatable = Locatable.fromPos(posToBuildAt);
+				entityForHub.propertyAdd(entityForHubLocatable);
+
+				planetBeingOrbited.buildableEntityBuild(entityForHub);
+
+				planetBeingOrbited.factionName = this.factionName;
+				var shipFaction = this.faction(world);
+				shipFaction.planetAdd(planetBeingOrbited);
+
+				wasColonizationSuccessful = true;
+
+				var starsystem = this.planet(world).starsystem(world);
+				if (starsystem.factionName == null)
+				{
+					starsystem.factionName = this.factionName;
+				}
+				else if (starsystem.factionName != this.factionName)
+				{
+					// todo - Diplomatic incident.
+				}
+			}
+		}
+
+		return wasColonizationSuccessful;
 	}
 
 	starsystem(world: WorldExtended): Starsystem
@@ -125,10 +249,11 @@ class Ship extends Entity
 		{
 			this._devicesUsable = [];
 
-			for (var i = 0; i < this.devices.length; i++)
+			var devices = this.devices();
+			for (var i = 0; i < devices.length; i++)
 			{
-				var device = this.devices[i];
-				var deviceDefn = device.defn;
+				var device = devices[i];
+				var deviceDefn = device.deviceDefn(world);
 				if (deviceDefn.isActive)
 				{
 					this._devicesUsable.push(device);
@@ -141,7 +266,10 @@ class Ship extends Entity
 
 	// movement
 
-	linkPortalEnter(cluster: Network2, linkPortal: LinkPortal, ship: Ship): void
+	linkPortalEnter
+	(
+		cluster: Network2, linkPortal: LinkPortal, ship: Ship
+	): void
 	{
 		var starsystemFrom = linkPortal.starsystemFrom(cluster);
 		var starsystemTo = linkPortal.starsystemTo(cluster);
@@ -157,6 +285,8 @@ class Ship extends Entity
 		var isLinkForward = (starsystemTo == linkStarsystem1);
 
 		var shipLoc = this.locatable().loc;
+
+		shipLoc.placeName = NetworkLink2.name + ":" + link.name;
 
 		var nodeFrom = (isLinkForward ? linkNode0 : linkNode1);
 		shipLoc.pos.overwriteWith(nodeFrom.locatable().loc.pos);
@@ -176,6 +306,7 @@ class Ship extends Entity
 
 		var cluster = world.network;
 		var shipLoc = ship.locatable().loc;
+
 		var shipPos = shipLoc.pos;
 		var shipVel = shipLoc.vel;
 
@@ -190,6 +321,8 @@ class Ship extends Entity
 
 		var starsystemDestination = nodeDestination.starsystem;
 		var starsystemSource = nodeSource.starsystem;
+
+		shipLoc.placeName = Starsystem.name + ":" + starsystemDestination.name;
 
 		var portalToExitFrom =
 			starsystemDestination.linkPortalByStarsystemName(starsystemSource.name);
@@ -260,9 +393,9 @@ class Ship extends Entity
 
 				// hack
 				this.distanceLeftThisMove = null;
-				this.actor().activity = null;
+				this.actor().activity.doNothing();
 				universe.inputHelper.isEnabled = true;
-				this.order = null;
+				this.order().complete();
 
 				var targetBodyDefn = BodyDefn.fromEntity(target);
 				var targetDefnName = targetBodyDefn.name;
@@ -278,7 +411,7 @@ class Ship extends Entity
 					var planet = target as Planet;
 					var venue = universe.venueCurrent as VenueStarsystem;
 					var starsystem = venue.starsystem;
-					this.planetOrbitEnter(universe, starsystem, planet, null);
+					this.planetOrbitEnter(universe, starsystem, planet);
 				}
 			}
 			else
@@ -304,7 +437,7 @@ class Ship extends Entity
 				{
 					// hack
 					this.distanceLeftThisMove = null;
-					this.actor().activity = null;
+					this.actor().activity.doNothing();
 					universe.inputHelper.isEnabled = true;
 				}
 			}
@@ -319,11 +452,27 @@ class Ship extends Entity
 	planetOrbitEnter
 	(
 		universe: Universe, starsystem: Starsystem,
-		planet: Planet, ship: Ship
+		planet: Planet
 	): void
 	{
-		ArrayHelper.remove(starsystem.ships, ship);
-		planet.shipAdd(ship);
+		starsystem.shipRemove(this);
+		planet.shipAdd(this);
+
+		this.locatable().loc.placeName =
+			Planet.name + ":" + planet.name;
+	}
+
+	planetOrbitExit
+	(
+		universe: Universe, starsystem: Starsystem,
+		planet: Planet
+	): void
+	{
+		planet.shipRemove(this);
+		starsystem.shipAdd(this);
+
+		this.locatable().loc.placeName =
+			Starsystem.name + ":" + starsystem.name;
 	}
 
 	// controls
@@ -340,6 +489,11 @@ class Ship extends Entity
 			15
 		);
 		var fontHeightInPixels = margin;
+
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, universe.world, null, this, null
+		);
 
 		var returnValue = ControlContainer.from4
 		(
@@ -499,7 +653,7 @@ class Ship extends Entity
 						var venue = universe.venueCurrent as VenueStarsystem;
 						var ship = venue.selection as Ship;
 						var device = ship.deviceSelected;
-						device.use(universe, universe.world, null, ship);
+						device.use(uwpe);
 					}
 				),
 
@@ -517,13 +671,6 @@ class Ship extends Entity
 		return 1; // todo
 	}
 
-	// Entity.
-
-	orderable(): Orderable
-	{
-		return Orderable.fromEntity(this);
-	}
-
 	// turns
 
 	updateForTurn(universe: Universe, world: World, faction: Faction): void
@@ -533,10 +680,17 @@ class Ship extends Entity
 		this.energyPerMove = 0;
 		this.shieldingThisTurn = 0;
 
-		for (var i = 0; i < this.devices.length; i++)
+		var devices = this.devices();
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, null, this, null
+		);
+
+		for (var i = 0; i < devices.length; i++)
 		{
-			var device = this.devices[i];
-			device.updateForTurn(universe, world, null, this);
+			var device = devices[i];
+			uwpe.entity2Set(device.toEntity(uwpe));
+			device.updateForTurn(uwpe);
 		}
 	}
 

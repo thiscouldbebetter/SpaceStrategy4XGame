@@ -1,14 +1,20 @@
 
 class PlanetIndustry
 {
-	updateForTurn(universe: Universe, world: WorldExtended, faction: Faction, planet: Planet)
+	updateForTurn
+	(
+		universe: Universe,
+		world: WorldExtended,
+		faction: Faction,
+		planet: Planet
+	): void
 	{
 		var resourcesAccumulated = planet.resourcesAccumulated;
 		var resourcesProduced = planet.resourcesPerTurn(universe, world, faction);
 		Resource.add(resourcesAccumulated, resourcesProduced);
 
-		var buildableInProgress = planet.buildableInProgress();
-		if (buildableInProgress == null)
+		var buildableEntityInProgress = planet.buildableEntityInProgress();
+		if (buildableEntityInProgress == null)
 		{
 			var notification = new Notification2
 			(
@@ -18,6 +24,8 @@ class PlanetIndustry
 		}
 		else
 		{
+			var buildableInProgress =
+				Buildable.fromEntity(buildableEntityInProgress);
 			var buildableDefn = buildableInProgress.defn(world);
 			var resourcesToBuild = buildableDefn.resourcesToBuild;
 			if (Resource.isSupersetOf(resourcesAccumulated, resourcesToBuild))
@@ -25,6 +33,12 @@ class PlanetIndustry
 				Resource.subtract(resourcesAccumulated, resourcesToBuild);
 				buildableInProgress.isComplete = true;
 				buildableInProgress._visual = null;
+
+				var buildableAsItem = buildableEntityInProgress.item();
+				if (buildableAsItem != null)
+				{
+					planet.itemHolder().itemAdd(buildableAsItem);
+				}
 			}
 		}
 	}

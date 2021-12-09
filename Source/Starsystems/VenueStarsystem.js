@@ -168,9 +168,8 @@ class VenueStarsystem {
                 universe.inputHelper.isEnabled = false;
                 var targetEntity = bodyClicked;
                 if (this.cursor.orderName != null) {
-                    var shipOrderable = Orderable.fromEntity(ship);
                     var order = new Order(this.cursor.orderName, targetEntity);
-                    shipOrderable.order = order;
+                    ship.orderSet(order);
                     order.obey(universe, universe.world, null, ship);
                 }
                 this.cursor.clear();

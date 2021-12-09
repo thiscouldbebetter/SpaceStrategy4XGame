@@ -98,66 +98,23 @@ class TechnologyResearcher
 		return returnValue;
 	}
 
-	technologiesAvailable
+	technologiesAvailableForResearch
 	(
-		technologyResearchSession: TechnologyResearchSession
-	): any[]
+		world: WorldExtended
+	): Technology[]
 	{
-		var technologyTree = technologyResearchSession.technologyTree;
-		var technologies = technologyTree.technologies;
-		var technologiesKnown = this.namesOfTechnologiesKnown;
-		var technologiesUnknown = [];
+		var technologyTree = world.technologyTree;
+		var technologiesAll = technologyTree.technologies;
 
-		for (var i = 0; i < technologies.length; i++)
-		{
-			var technology = technologies[i];
-			var technologyName = technology.name;
+		var returnValues = technologiesAll.filter
+		(
+			x => this.technologyIsAvailableForResearch(x)
+		);
 
-			var isAlreadyKnown = (technologiesKnown.indexOf(technologyName) >= 0);
-
-			if (isAlreadyKnown == false)
-			{
-				technologiesUnknown.push(technology);
-			}
-		}
-
-		var technologiesUnknownWithKnownPrerequisites = [];
-
-		for (var i = 0; i < technologiesUnknown.length; i++)
-		{
-			var technology = technologiesUnknown[i];
-			var prerequisites = technology.namesOfPrerequisiteTechnologies;
-
-			var areAllPrerequisitesKnown = true;
-
-			for (var p = 0; p < prerequisites.length; p++)
-			{
-				var prerequisite = prerequisites[p];
-				var isPrerequisiteKnown =
-				(
-					technologiesKnown.indexOf(prerequisite) >= 0
-				);
-
-				if (isPrerequisiteKnown == false)
-				{
-					areAllPrerequisitesKnown = false;
-					break;
-				}
-			}
-
-			if (areAllPrerequisitesKnown)
-			{
-				technologiesUnknownWithKnownPrerequisites.push
-				(
-					technology
-				);
-			}
-		}
-
-		return technologiesUnknownWithKnownPrerequisites;
+		return returnValues;
 	}
 
-	technologiesKnown(world: WorldExtended): any[]
+	technologiesKnown(world: WorldExtended): Technology[]
 	{
 		var returnValues = [];
 
@@ -179,6 +136,73 @@ class TechnologyResearcher
 			technologyTree.technologyByName(this.nameOfTechnologyBeingResearched);
 
 		return returnValue;
+	}
+
+	technologyIsAvailableForResearch(technologyToCheck: Technology): boolean
+	{
+		var returnValue = false;
+
+		var technologyToCheckName = technologyToCheck.name;
+
+		var isAlreadyKnown =
+			(this.namesOfTechnologiesKnown.indexOf(technologyToCheckName) >= 0);
+
+		if (isAlreadyKnown == false)
+		{
+			var prerequisites =
+				technologyToCheck.namesOfPrerequisiteTechnologies;
+
+			var areAllPrerequisitesKnownSoFar = true;
+
+			for (var p = 0; p < prerequisites.length; p++)
+			{
+				var prerequisite = prerequisites[p];
+				var isPrerequisiteKnown =
+				(
+					this.namesOfTechnologiesKnown.indexOf(prerequisite) >= 0
+				);
+
+				if (isPrerequisiteKnown == false)
+				{
+					areAllPrerequisitesKnownSoFar = false;
+					break;
+				}
+			}
+
+			if (areAllPrerequisitesKnownSoFar)
+			{
+				returnValue = true;
+			}
+		}
+
+		return returnValue;
+	}
+
+	technologyIsKnown(technologyToCheck: Technology): boolean
+	{
+		var technologyToCheckName = technologyToCheck.name;
+		var isKnown = this.namesOfTechnologiesKnown.some
+		(
+			x => x == technologyToCheckName
+		);
+		return isKnown;
+	}
+
+	technologyResearch(technologyToResearch: Technology): void
+	{
+		var isAvailable = this.technologyIsAvailableForResearch
+		(
+			technologyToResearch
+		);
+
+		if (isAvailable)
+		{
+			this.nameOfTechnologyBeingResearched = technologyToResearch.name;
+		}
+		else
+		{
+			throw Error("Technology not available for research!");
+		}
 	}
 
 	// turns

@@ -16,6 +16,16 @@ class Buildable implements EntityPropertyBase
 		this.isComplete = (isComplete || false);
 	}
 
+	static fromDefnName(defnName: string): Buildable
+	{
+		return new Buildable(defnName, null, false);
+	}
+
+	static fromDefnNameAndPos(defnName: string, pos: Coords): Buildable
+	{
+		return new Buildable(defnName, pos, false);
+	}
+
 	static fromEntity(entity: Entity): Buildable
 	{
 		return entity.propertyByName(Buildable.name) as Buildable;
@@ -29,6 +39,31 @@ class Buildable implements EntityPropertyBase
 	locatable(): Locatable
 	{
 		return this._locatable;
+	}
+
+	_entity: Entity;
+	toEntity(world: WorldExtended): Entity
+	{
+		if (this._entity == null)
+		{
+			if (world == null)
+			{
+				this._entity = new Entity
+				(
+					this.defnName,
+					[
+						this,
+						this.locatable()
+					]
+				);
+			}
+			else
+			{
+				var defn = this.defn(world);
+				this._entity = defn.buildableToEntity(this);
+			}
+		}
+		return this._entity;
 	}
 
 	visual(world: WorldExtended): VisualBase

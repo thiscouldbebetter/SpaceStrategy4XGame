@@ -29,7 +29,7 @@ class PlanetTests extends TestFixture
 			this.toControl,
 			this.strength,
 			this.updateForTurn,
-			this.buildableInProgress,
+			this.buildableEntityInProgress,
 			this.industryPerTurn,
 			this.prosperityPerTurn,
 			this.researchPerTurn,
@@ -148,9 +148,9 @@ class PlanetTests extends TestFixture
 
 	// resources
 
-	buildableInProgress(): void
+	buildableEntityInProgress(): void
 	{
-		var buildable = this.planet.buildableInProgress;
+		var buildable = this.planet.buildableEntityInProgress;
 		Assert.isNotNull(buildable);
 	}
 

@@ -109,7 +109,7 @@ class ShipTests extends TestFixture
 
 		this.ship.planetOrbitEnter
 		(
-			this.universe, starsystem, planet, this.ship
+			this.universe, starsystem, planet
 		);
 	}
 

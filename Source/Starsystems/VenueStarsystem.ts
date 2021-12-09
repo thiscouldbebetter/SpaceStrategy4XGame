@@ -315,7 +315,7 @@ class VenueStarsystem implements Venue
 		}
 		else if (selectionTypeName == Ship.name)
 		{
-			var ship = this.selection;
+			var ship = this.selection as Ship;
 
 			if (bodyClicked != null) // && bodyClicked.defn.name != "Cursor")
 			{
@@ -325,9 +325,8 @@ class VenueStarsystem implements Venue
 				var targetEntity = bodyClicked;
 				if (this.cursor.orderName != null)
 				{
-					var shipOrderable = Orderable.fromEntity(ship);
 					var order = new Order(this.cursor.orderName, targetEntity);
-					shipOrderable.order = order;
+					ship.orderSet(order);
 					order.obey(universe, universe.world, null, ship);
 				}
 

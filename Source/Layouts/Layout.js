@@ -43,17 +43,6 @@ class Layout {
     }
     updateForTurn(universe, world, faction, parentModel) {
         // todo
-        /*
-        var bodies = this.map.bodies;
-        for (var i = 0; i < bodies.length; i++)
-        {
-            var body = Body.fromEntity(bodies[i]);
-            if (body.updateForTurn != null)
-            {
-                body.updateForTurn(universe, world, faction, parentModel, this);
-            }
-        }
-        */
     }
     // drawable
     draw(universe, display) {

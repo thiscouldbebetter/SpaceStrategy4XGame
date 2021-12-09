@@ -36,6 +36,10 @@ class NotificationSession {
             throw "Unrecognized notification type.";
         }
     }
+    notificationsDismissAll() {
+        var notifications = this.notifications;
+        notifications.length = 0;
+    }
     // controls
     toControl(universe) {
         var display = universe.display;
@@ -101,8 +105,7 @@ class NotificationSession {
                 var world = universe.world;
                 var faction = world.factions[0]; // hack
                 var notificationSession = faction.notificationSession;
-                var notifications = notificationSession.notifications;
-                notifications.length = 0;
+                notificationSession.notificationsDismissAll();
             }),
             new ControlLabel("textMessage", Coords.fromXY(margin, containerSize.y - margin * 2 - controlHeight * 2), // pos
             Coords.fromXY(columnWidth, controlHeight), // size

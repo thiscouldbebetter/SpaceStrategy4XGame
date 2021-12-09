@@ -3,6 +3,7 @@ class Planet extends Entity {
     constructor(name, bodyDefn, pos, factionName, demographics, industry, layout) {
         super(name, [
             bodyDefn,
+            ItemHolder.create(),
             Locatable.fromPos(pos)
         ]);
         this.bodyDefn = bodyDefn;
@@ -61,6 +62,55 @@ class Planet extends Entity {
         return Planet._bodyDefnStar;
     }
     // instance methods
+    cellPositionsAvailableToBuildOnSurface() {
+        var returnValues = new Array();
+        var map = this.layout.map;
+        var mapSizeInCells = map.sizeInCells;
+        var cellPosInCells = Coords.create();
+        var terrainSurface = this.layout.map.terrainByName("Surface");
+        for (var y = 0; y < mapSizeInCells.y; y++) {
+            cellPosInCells.y = y;
+            for (var x = 0; x < mapSizeInCells.x; x++) {
+                cellPosInCells.x = x;
+                var terrainAtPos = map.terrainAtPosInCells(cellPosInCells);
+                var isSurface = (terrainAtPos == terrainSurface);
+                if (isSurface) {
+                    var bodyAtPos = map.bodyAtPosInCells(cellPosInCells);
+                    var isVacant = (bodyAtPos == null);
+                    if (isVacant) {
+                        var bodiesNeighboring = map.bodiesNeighboringPosInCells(cellPosInCells);
+                        if (bodiesNeighboring.length > 0) {
+                            returnValues.push(cellPosInCells.clone());
+                        }
+                    }
+                }
+            }
+        }
+        return returnValues;
+    }
+    cellPositionsAvailableToOccupyInOrbit() {
+        var returnValues = new Array();
+        var map = this.layout.map;
+        var mapSizeInCells = map.sizeInCells;
+        var cellPosInCells = Coords.create();
+        var terrainOrbit = this.layout.map.terrainByName("Orbit");
+        for (var y = 0; y < mapSizeInCells.y; y++) {
+            cellPosInCells.y = y;
+            for (var x = 0; x < mapSizeInCells.x; x++) {
+                cellPosInCells.x = x;
+                var terrainAtPos = map.terrainAtPosInCells(cellPosInCells);
+                var isOrbit = (terrainAtPos == terrainOrbit);
+                if (isOrbit == false) {
+                    var bodyAtPos = map.bodyAtPosInCells(cellPosInCells);
+                    var isVacant = (bodyAtPos == null);
+                    if (isVacant) {
+                        returnValues.push(cellPosInCells.clone());
+                    }
+                }
+            }
+        }
+        return returnValues;
+    }
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
     }
@@ -72,6 +122,11 @@ class Planet extends Entity {
     }
     shipRemove(shipToRemove) {
         ArrayHelper.remove(this.ships, shipToRemove);
+    }
+    starsystem(world) {
+        var networkNodeFound = world.network.nodes.find(x => (x.starsystem.planets.indexOf(this) >= 0));
+        var starsystemFound = (networkNodeFound == null ? null : networkNodeFound.starsystem);
+        return starsystemFound;
     }
     // controls
     toControl(universe, size) {
@@ -93,23 +148,32 @@ class Planet extends Entity {
     updateForTurn(universe, world, faction) {
         if (faction != null) {
             this._resourcesPerTurn = null;
+            this._resourcesPerTurnByName = null;
             this.layout.updateForTurn(universe, world, faction, null);
             this.industry.updateForTurn(universe, world, faction, this);
             this.demographics.updateForTurn(universe, world, faction, this);
         }
     }
     // resources
-    buildableInProgress() {
-        var returnValue = null;
-        var buildables = this.layout.map.bodies;
-        for (var i = 0; i < buildables.length; i++) {
-            var buildable = Buildable.fromEntity(buildables[i]);
-            if (buildable.isComplete == false) {
-                returnValue = buildable;
-                break;
+    buildableEntitiesRemove(buildableEntitiesToRemove) {
+        buildableEntitiesToRemove.forEach(x => this.buildableEntityRemove(x));
+    }
+    buildableEntityBuild(buildableEntityToBuild) {
+        var buildableEntityInProgress = this.buildableEntityInProgress();
+        if (buildableEntityInProgress != null) {
+            if (buildableEntityInProgress != buildableEntityToBuild) {
+                this.buildableEntityRemove(buildableEntityInProgress);
             }
         }
-        return returnValue;
+        var buildables = this.layout.map.bodies;
+        buildables.push(buildableEntityToBuild);
+    }
+    buildableEntityInProgress() {
+        return this.layout.map.bodies.find(x => Buildable.fromEntity(x).isComplete == false);
+    }
+    buildableEntityRemove(buildableEntityToRemove) {
+        var bodies = this.layout.map.bodies;
+        bodies.splice(bodies.indexOf(buildableEntityToRemove), 1);
     }
     industryPerTurn(universe, world, faction) {
         var resource = this.resourcesPerTurnByName(universe, world, faction).get("Industry");

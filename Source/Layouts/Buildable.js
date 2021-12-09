@@ -6,6 +6,12 @@ class Buildable {
         this._locatable = new Locatable(loc);
         this.isComplete = (isComplete || false);
     }
+    static fromDefnName(defnName) {
+        return new Buildable(defnName, null, false);
+    }
+    static fromDefnNameAndPos(defnName, pos) {
+        return new Buildable(defnName, pos, false);
+    }
     static fromEntity(entity) {
         return entity.propertyByName(Buildable.name);
     }
@@ -14,6 +20,21 @@ class Buildable {
     }
     locatable() {
         return this._locatable;
+    }
+    toEntity(world) {
+        if (this._entity == null) {
+            if (world == null) {
+                this._entity = new Entity(this.defnName, [
+                    this,
+                    this.locatable()
+                ]);
+            }
+            else {
+                var defn = this.defn(world);
+                this._entity = defn.buildableToEntity(this);
+            }
+        }
+        return this._entity;
     }
     visual(world) {
         if (this._visual == null) {

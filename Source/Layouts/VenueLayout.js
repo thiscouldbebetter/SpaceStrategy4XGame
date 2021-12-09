@@ -30,8 +30,8 @@ class VenueLayout {
                 inputHelper.isMouseClicked(false);
                 var bodyAtCursor = this.layout.map.bodyAtCursor();
                 if (bodyAtCursor == null) {
-                    var buildableInProgress = planet.buildableInProgress();
-                    if (buildableInProgress == null) {
+                    var buildableEntityInProgress = planet.buildableEntityInProgress();
+                    if (buildableEntityInProgress == null) {
                         var neighboringBodies = map.bodiesNeighboringCursor();
                         if (neighboringBodies.length == 0) {
                             universe.venueNext = VenueMessage.fromText("Cannot build there.");
@@ -209,14 +209,14 @@ class VenueLayout {
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size,
             false, // isTextCentered
             DataBinding.fromContextAndGet(planet, (c) => {
-                var buildable = c.buildableInProgress();
+                var buildable = c.buildableEntityInProgress();
                 return (buildable == null ? "[none]" : buildable.defnName);
             })),
             ControlLabel.from5("labelResourcesRequired", Coords.fromXY(margin, controlHeight * 2 + margin), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCentered
             DataBinding.fromContextAndGet(planet, (c) => {
-                var buildable = c.buildableInProgress();
+                var buildable = c.buildableEntityInProgress();
                 return (buildable == null ? "-" : buildable.defn(world).resourcesToBuild.toString());
             })),
         ]);

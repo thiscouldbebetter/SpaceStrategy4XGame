@@ -5,8 +5,9 @@ class Network2 //
 	nodes: NetworkNode2[];
 	links: NetworkLink2[];
 
-	linksByStarsystemNamesFromTo: Map<string,Map<string,NetworkLink2> >
-	nodesByName: Map<string,NetworkNode2>;
+	linksByName: Map<string, NetworkLink2>;
+	linksByStarsystemNamesFromTo: Map<string, Map<string, NetworkLink2> >
+	nodesByName: Map<string, NetworkNode2>;
 	_nodesAsEntities: Entity[];
 
 	drawPos: Coords;
@@ -26,6 +27,8 @@ class Network2 //
 		this.links = links;
 
 		this.nodesByName = ArrayHelper.addLookupsByName(this.nodes);
+
+		this.linksByName = ArrayHelper.addLookupsByName(this.links);
 
 		this.linksByStarsystemNamesFromTo = new Map<string,Map<string,NetworkLink2>>();
 		for (var i = 0; i < this.links.length; i++)
@@ -243,6 +246,11 @@ class Network2 //
 		return returnValue;
 	}
 
+	linkByName(linkName: string): NetworkLink2
+	{
+		return this.linksByName.get(linkName);
+	}
+
 	linkByStarsystemNamesFromTo
 	(
 		starsystemFromName: string, starsystemToName: string
@@ -269,6 +277,34 @@ class Network2 //
 		return this._nodesAsEntities;
 	}
 
+	placeForEntityLocatable(entityLocatable: Entity): any
+	{
+		var returnPlace = null;
+
+		var placeTypeColonName =
+			entityLocatable.locatable().loc.placeName;
+		var placeTypeAndName = placeTypeColonName.split(":");
+		var placeType = placeTypeAndName[0];
+		var placeName = placeTypeAndName[1];
+
+		if (placeType == NetworkLink2.name)
+		{
+			returnPlace = this.linkByName(placeName);
+		}
+		else if (placeType == Planet.name)
+		{
+			var starsystemName = placeName.split(" ")[0];
+			var starsystem = this.starsystemByName(starsystemName);
+			returnPlace = starsystem.planetByName(placeName);
+		}
+		else if (placeType == Starsystem.name)
+		{
+			returnPlace = this.starsystemByName(placeName);
+		}
+
+		return returnPlace;
+	}
+
 	scale(scaleFactor: number): Network2
 	{
 		for (var i = 0; i < this.nodes.length; i++)
@@ -278,6 +314,11 @@ class Network2 //
 		}
 
 		return this;
+	}
+
+	starsystemByName(starsystemName: string): Starsystem
+	{
+		return this.nodesByName.get(starsystemName).starsystem;
 	}
 
 	// turns

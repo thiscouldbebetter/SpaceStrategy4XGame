@@ -1,35 +1,42 @@
 
-class Device //
+class Device extends Item
 {
-	defn: DeviceDefn;
+	_deviceDefn: DeviceDefn;
 
 	energyThisTurn: number;
 	isActive: boolean;
 	shieldingThisTurn: number;
 	usesThisTurn: number;
 
-	projectile: Ship;
+	projectileEntity: Entity;
 
-	target: Entity;
+	targetEntity: Entity;
 
 	constructor(defn: DeviceDefn)
 	{
-		this.defn = defn;
+		super(defn.name, 1);
+		this._deviceDefn = defn;
 	}
 
-	updateForTurn
-	(
-		universe: Universe, world: World, place: Place, entity: Entity
-	): void
+	static fromEntity(deviceAsEntity: Entity): Device
 	{
-		this.defn.updateForTurn(universe, world, place, entity, this);
+		return deviceAsEntity.propertyByName(Device.name) as Device;
 	}
 
-	use
-	(
-		universe: Universe, world: World, place: Place, entity: Entity
-	): void
+	deviceDefn(world: World): DeviceDefn
 	{
-		this.defn.use(universe, world, place, entity, this);
+		return this._deviceDefn;
+	}
+
+	updateForTurn(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var defn = this.deviceDefn(uwpe.world);
+		defn.updateForTurn(uwpe);
+	}
+
+	use(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var defn = this.deviceDefn(uwpe.world);
+		defn.use(uwpe);
 	}
 }

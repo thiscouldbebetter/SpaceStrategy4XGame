@@ -29,12 +29,12 @@ class TechnologyResearchSession {
     }
     // controls
     toControl(universe) {
+        var world = universe.world;
         var display = universe.display;
         var size = display.sizeInPixels;
         var margin = display.fontHeightInPixels;
         var labelHeight = display.fontHeightInPixels;
         var buttonHeight = labelHeight * 2.5;
-        var session = this;
         var returnValue = ControlContainer.from4("containerResearchSession", // name,
         Coords.fromXY(0, 0), // pos,
         size, 
@@ -74,9 +74,9 @@ class TechnologyResearchSession {
             Coords.fromXY(140, 45), // pos,
             Coords.fromXY(110, 50), // size,
             // items,
-            DataBinding.fromContextAndGet(this.researcher, (c) => c.technologiesAvailable(session)), DataBinding.fromGet((c) => c.name), // bindingForItemText
+            DataBinding.fromContextAndGet(this.researcher, (c) => c.technologiesAvailableForResearch(world)), DataBinding.fromGet((c) => c.name), // bindingForItemText
             labelHeight, // fontHeightInPixels
-            DataBinding.fromContextAndGet(this.researcher, (c) => c.nameOfTechnologyBeingResearched), // bindingForItemSelected
+            DataBinding.fromContextAndGet(this.researcher, (c) => c.technologyBeingResearched(world)), // bindingForItemSelected
             DataBinding.fromGet((c) => c.name) // bindingForItemValue
             ),
             ControlLabel.from5("labelTechnologyBeingResearched", // name,

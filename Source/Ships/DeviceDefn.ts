@@ -1,13 +1,11 @@
 
-class DeviceDefn
+class DeviceDefn extends ItemDefn
 {
-	name: string;
 	isActive: boolean;
 	needsTarget: boolean;
 	categoryNames: string[];
-	initialize: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void;
-	updateForTurn: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void;
-	use: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void;
+	_initialize: (uwpe: UniverseWorldPlaceEntities) => void;
+	updateForTurn: (uwpe: UniverseWorldPlaceEntities) => void;
 
 	constructor
 	(
@@ -15,17 +13,38 @@ class DeviceDefn
 		isActive: boolean,
 		needsTarget: boolean,
 		categoryNames: string[],
-		initialize: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void,
-		updateForTurn: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void,
-		use: (u: Universe, w: World, p: Place, e: Entity, d: Device)=>void
+		initialize: (uwpe: UniverseWorldPlaceEntities) => void,
+		updateForTurn: (uwpe: UniverseWorldPlaceEntities) => void,
+		use: (uwpe: UniverseWorldPlaceEntities) => void
 	)
 	{
-		this.name = name;
+		super
+		(
+			name,
+			name, // appearance
+			name, // description
+			null, // mass
+			null, // tradeValue
+			null, // stackSizeMax
+			categoryNames,
+			use,
+			null, // visual
+			null, // toEntity
+		);
 		this.isActive = isActive;
 		this.needsTarget = needsTarget;
-		this.categoryNames = categoryNames;
-		this.initialize = initialize;
+		this._initialize = initialize;
 		this.updateForTurn = updateForTurn;
 		this.use = use;
+	}
+
+	initialize(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this._initialize(uwpe);
+	}
+
+	toItem(): Device
+	{
+		return new Device(this);
 	}
 }

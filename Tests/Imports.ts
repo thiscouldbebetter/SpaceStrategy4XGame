@@ -162,6 +162,13 @@ import Actor = gf.Actor;
 
 import Killable = gf.Killable;
 
+// Model - Items.
+
+import Item = gf.Item;
+import ItemDefn = gf.ItemDefn;
+import ItemCategory = gf.ItemCategory;
+import ItemHolder = gf.ItemHolder;
+
 // Model - Physics.
 
 import Constrainable = gf.Constrainable;

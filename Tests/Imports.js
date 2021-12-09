@@ -113,6 +113,11 @@ var ActivityDefn = gf.ActivityDefn;
 var Actor = gf.Actor;
 // Model - Combat.
 var Killable = gf.Killable;
+// Model - Items.
+var Item = gf.Item;
+var ItemDefn = gf.ItemDefn;
+var ItemCategory = gf.ItemCategory;
+var ItemHolder = gf.ItemHolder;
 // Model - Physics.
 var Constrainable = gf.Constrainable;
 var Locatable = gf.Locatable;

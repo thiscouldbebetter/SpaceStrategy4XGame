@@ -72,7 +72,7 @@ class ShipTests extends TestFixture {
     planetOrbitEnter() {
         var starsystem = this.ship.starsystem(this.world);
         var planet = starsystem.planets[0];
-        this.ship.planetOrbitEnter(this.universe, starsystem, planet, this.ship);
+        this.ship.planetOrbitEnter(this.universe, starsystem, planet);
     }
     // controls
     toControl() {

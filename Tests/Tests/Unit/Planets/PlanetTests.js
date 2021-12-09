@@ -19,7 +19,7 @@ class PlanetTests extends TestFixture {
             this.toControl,
             this.strength,
             this.updateForTurn,
-            this.buildableInProgress,
+            this.buildableEntityInProgress,
             this.industryPerTurn,
             this.prosperityPerTurn,
             this.researchPerTurn,
@@ -88,8 +88,8 @@ class PlanetTests extends TestFixture {
         this.planet.updateForTurn(this.universe, this.world, faction);
     }
     // resources
-    buildableInProgress() {
-        var buildable = this.planet.buildableInProgress;
+    buildableEntityInProgress() {
+        var buildable = this.planet.buildableEntityInProgress;
         Assert.isNotNull(buildable);
     }
     industryPerTurn() {

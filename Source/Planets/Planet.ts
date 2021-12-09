@@ -10,7 +10,7 @@ class Planet extends Entity
 
 	bodyDefn: BodyDefn;
 	_resourcesPerTurn: Resource[];
-	_resourcesPerTurnByName: Map<string,Resource>;
+	_resourcesPerTurnByName: Map<string, Resource>;
 
 	constructor
 	(
@@ -28,6 +28,7 @@ class Planet extends Entity
 			name,
 			[
 				bodyDefn,
+				ItemHolder.create(),
 				Locatable.fromPos(pos)
 			]
 		);
@@ -135,6 +136,87 @@ class Planet extends Entity
 
 	// instance methods
 
+	cellPositionsAvailableToBuildOnSurface(): Coords[]
+	{
+		var returnValues = new Array<Coords>();
+
+		var map = this.layout.map;
+		var mapSizeInCells = map.sizeInCells;
+		var cellPosInCells = Coords.create();
+
+		var terrainSurface = this.layout.map.terrainByName("Surface");
+
+		for (var y = 0; y < mapSizeInCells.y; y++)
+		{
+			cellPosInCells.y = y;
+
+			for (var x = 0; x < mapSizeInCells.x; x++)
+			{
+				cellPosInCells.x = x;
+
+				var terrainAtPos = map.terrainAtPosInCells(cellPosInCells);
+				var isSurface = (terrainAtPos == terrainSurface);
+
+				if (isSurface)
+				{
+					var bodyAtPos = map.bodyAtPosInCells(cellPosInCells);
+
+					var isVacant = (bodyAtPos == null);
+
+					if (isVacant)
+					{
+						var bodiesNeighboring =
+							map.bodiesNeighboringPosInCells(cellPosInCells);
+						if (bodiesNeighboring.length > 0)
+						{
+							returnValues.push(cellPosInCells.clone());
+						}
+					}
+				}
+			}
+		}
+
+		return returnValues;
+	}
+
+	cellPositionsAvailableToOccupyInOrbit(): Coords[]
+	{
+		var returnValues = new Array<Coords>();
+
+		var map = this.layout.map;
+		var mapSizeInCells = map.sizeInCells;
+		var cellPosInCells = Coords.create();
+
+		var terrainOrbit = this.layout.map.terrainByName("Orbit");
+
+		for (var y = 0; y < mapSizeInCells.y; y++)
+		{
+			cellPosInCells.y = y;
+
+			for (var x = 0; x < mapSizeInCells.x; x++)
+			{
+				cellPosInCells.x = x;
+
+				var terrainAtPos = map.terrainAtPosInCells(cellPosInCells);
+				var isOrbit = (terrainAtPos == terrainOrbit);
+
+				if (isOrbit == false)
+				{
+					var bodyAtPos = map.bodyAtPosInCells(cellPosInCells);
+
+					var isVacant = (bodyAtPos == null);
+
+					if (isVacant)
+					{
+						returnValues.push(cellPosInCells.clone());
+					}
+				}
+			}
+		}
+
+		return returnValues;
+	}
+
 	faction(world: WorldExtended): Faction
 	{
 		return (this.factionName == null ? null : world.factionByName(this.factionName));
@@ -153,6 +235,20 @@ class Planet extends Entity
 	shipRemove(shipToRemove: Ship): void
 	{
 		ArrayHelper.remove(this.ships, shipToRemove);
+	}
+
+	starsystem(world: WorldExtended): Starsystem
+	{
+		var networkNodeFound = world.network.nodes.find
+		(
+			x => (x.starsystem.planets.indexOf(this) >= 0)
+		);
+
+		var starsystemFound =
+		(
+			networkNodeFound == null ? null : networkNodeFound.starsystem
+		);
+		return starsystemFound;
 	}
 
 	// controls
@@ -189,11 +285,16 @@ class Planet extends Entity
 
 	// turns
 
-	updateForTurn(universe: Universe, world: WorldExtended, faction: Faction): void
+	updateForTurn
+	(
+		universe: Universe, world: WorldExtended, faction: Faction
+	): void
 	{
 		if (faction != null)
 		{
 			this._resourcesPerTurn = null;
+			this._resourcesPerTurnByName = null;
+
 			this.layout.updateForTurn(universe, world, faction, null);
 			this.industry.updateForTurn(universe, world, faction, this);
 			this.demographics.updateForTurn(universe, world, faction, this);
@@ -202,22 +303,41 @@ class Planet extends Entity
 
 	// resources
 
-	buildableInProgress(): Buildable
+	buildableEntitiesRemove(buildableEntitiesToRemove: Entity[]): void
 	{
-		var returnValue = null;
+		buildableEntitiesToRemove.forEach(x => this.buildableEntityRemove(x));
+	}
 
-		var buildables = this.layout.map.bodies;
-		for (var i = 0; i < buildables.length; i++)
+	buildableEntityBuild(buildableEntityToBuild: Entity): void
+	{
+		var buildableEntityInProgress = this.buildableEntityInProgress();
+		if (buildableEntityInProgress != null)
 		{
-			var buildable = Buildable.fromEntity(buildables[i]);
-			if (buildable.isComplete == false)
+			if (buildableEntityInProgress != buildableEntityToBuild)
 			{
-				returnValue = buildable;
-				break;
+				this.buildableEntityRemove(buildableEntityInProgress);
 			}
 		}
 
-		return returnValue;
+		var buildables = this.layout.map.bodies;
+		buildables.push(buildableEntityToBuild);
+	}
+
+	buildableEntityInProgress(): Entity
+	{
+		return this.layout.map.bodies.find
+		(
+			x => Buildable.fromEntity(x).isComplete == false
+		);
+	}
+
+	buildableEntityRemove(buildableEntityToRemove: Entity): void
+	{
+		var bodies = this.layout.map.bodies;
+		bodies.splice
+		(
+			bodies.indexOf(buildableEntityToRemove), 1
+		);
 	}
 
 	industryPerTurn

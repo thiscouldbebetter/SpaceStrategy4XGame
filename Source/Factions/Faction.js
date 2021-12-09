@@ -12,6 +12,7 @@ class Faction {
         this.knowledge = knowledge;
         this.notificationSession = new NotificationSession(this.name, []);
         this.relationshipsByFactionName = ArrayHelper.addLookups(this.relationships, (x) => x.factionNameOther);
+        this.shipsBuiltSoFarCount = 0;
     }
     static fromName(name) {
         return new Faction(name, null, // homeStarsystemName,
@@ -81,6 +82,9 @@ class Faction {
         var venueNext = new VenueTechnologyResearchSession(researchSession);
         venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
         universe.venueNext = venueNext;
+    }
+    planetAdd(planet) {
+        this.planets.push(planet);
     }
     planetHome(world) {
         return this.starsystemHome(world).planets.find(x => x.name == this.homePlanetName);

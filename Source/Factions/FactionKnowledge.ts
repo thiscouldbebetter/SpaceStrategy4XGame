@@ -86,8 +86,9 @@ class FactionKnowledge
 			(
 				worldActual.name,
 				worldActual.dateCreated,
-				worldActual.activityDefns,
+				worldActual.defn.activityDefns,
 				worldActual.buildableDefns,
+				worldActual.deviceDefns,
 				worldActual.technologyTree,
 				networkKnown,
 				factionsKnown,

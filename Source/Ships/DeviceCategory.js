@@ -23,7 +23,7 @@ class DeviceCategory_Instances {
                 this.Generator,
                 this.Shield,
                 this.Special,
-                this.Weapon,
+                this.Weapon
             ];
         this._AllByName = ArrayHelper.addLookupsByName(this._All);
     }

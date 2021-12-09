@@ -64,8 +64,9 @@ class VenueLayout implements Venue
 
 				if (bodyAtCursor == null)
 				{
-					var buildableInProgress = planet.buildableInProgress();
-					if (buildableInProgress == null)
+					var buildableEntityInProgress =
+						planet.buildableEntityInProgress();
+					if (buildableEntityInProgress == null)
 					{
 						var neighboringBodies = map.bodiesNeighboringCursor();
 						if (neighboringBodies.length == 0)
@@ -431,7 +432,7 @@ class VenueLayout implements Venue
 						planet,
 						(c) =>
 						{
-							var buildable = c.buildableInProgress();
+							var buildable = c.buildableEntityInProgress();
 							return (buildable == null ? "[none]" : buildable.defnName);
 						}
 					)
@@ -448,7 +449,7 @@ class VenueLayout implements Venue
 						planet,
 						(c) =>
 						{
-							var buildable = c.buildableInProgress();
+							var buildable = c.buildableEntityInProgress();
 							return (buildable == null ? "-" : buildable.defn(world).resourcesToBuild.toString() );
 						}
 					)

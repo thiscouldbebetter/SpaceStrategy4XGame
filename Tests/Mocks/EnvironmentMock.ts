@@ -21,6 +21,8 @@ class EnvironmentMock
 		);
 
 		universe.initialize(() => {});
+		universe.soundHelper = new SoundHelperMock();
+
 		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
 		universe.worldCreate().initialize(uwpe);
 		universe.updateForTimerTick();

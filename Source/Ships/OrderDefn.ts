@@ -60,9 +60,10 @@ class OrderDefn_Instances
 		var orderable = Orderable.fromEntity(e);
 		var order = orderable.order;
 
-		if (actor.activity == null)
+		var activity = actor.activity;
+		if (activity.defnName == ActivityDefn.Instances().DoNothing.name)
 		{
-			actor.activity = Activity.fromDefnNameAndTargetEntity
+			activity.defnNameAndTargetEntitySet
 			(
 				"MoveToTarget", order.targetEntity
 			);
@@ -97,14 +98,14 @@ class OrderDefn_Instances
 		var device = ship.deviceSelected;
 		if (device != null)
 		{
-			var projectile = device.projectile;
+			var projectileEntity =
+				device.projectileEntity as Ship; // hack - Replace with dedicated Projectile class.
 			var venue = universe.venueCurrent as VenueStarsystem;
 			var starsystem = venue.starsystem;
 
-			if (projectile == null)
+			if (projectileEntity == null)
 			{
-				// hack - Replace with dedicated Projectile class.
-				projectile = new Ship
+				projectileEntity = new Ship
 				(
 					ship.name + "_projectile",
 					Projectile.bodyDefnBuild(),
@@ -112,25 +113,25 @@ class OrderDefn_Instances
 					ship.factionName,
 					null // devices
 				);
-				projectile.energyPerMove = 0;
-				projectile.distancePerMove = 1000;
+				projectileEntity.energyPerMove = 0;
+				projectileEntity.distancePerMove = 1000;
 
-				projectile.actor().activity = 
+				projectileEntity.actor().activity = 
 					Activity.fromDefnNameAndTargetEntity
 					(
 						"MoveToTarget", order.targetEntity
 					);
 
-				starsystem.shipAdd(projectile);
+				starsystem.shipAdd(projectileEntity);
 
-				device.projectile = projectile;
+				device.projectileEntity = projectileEntity;
 			}
 			else
 			{
-				ArrayHelper.remove(starsystem.ships, projectile);
-				device.projectile = null;
+				ArrayHelper.remove(starsystem.ships, projectileEntity);
+				device.projectileEntity = null;
 
-				var projectilePos = projectile.locatable().loc.pos;
+				var projectilePos = projectileEntity.locatable().loc.pos;
 				var targetPos = order.targetEntity.locatable().loc.pos;
 
 				if (projectilePos.equals(targetPos))

@@ -1,13 +1,21 @@
 "use strict";
-class Device //
- {
+class Device extends Item {
     constructor(defn) {
-        this.defn = defn;
+        super(defn.name, 1);
+        this._deviceDefn = defn;
     }
-    updateForTurn(universe, world, place, entity) {
-        this.defn.updateForTurn(universe, world, place, entity, this);
+    static fromEntity(deviceAsEntity) {
+        return deviceAsEntity.propertyByName(Device.name);
     }
-    use(universe, world, place, entity) {
-        this.defn.use(universe, world, place, entity, this);
+    deviceDefn(world) {
+        return this._deviceDefn;
+    }
+    updateForTurn(uwpe) {
+        var defn = this.deviceDefn(uwpe.world);
+        defn.updateForTurn(uwpe);
+    }
+    use(uwpe) {
+        var defn = this.deviceDefn(uwpe.world);
+        defn.use(uwpe);
     }
 }

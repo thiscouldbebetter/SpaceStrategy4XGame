@@ -5,6 +5,7 @@ class MapLayout {
         this.pos = pos;
         this.terrains = terrains;
         this.terrainsByCodeChar = ArrayHelper.addLookups(this.terrains, (x) => x.codeChar);
+        this.terrainsByName = ArrayHelper.addLookupsByName(this.terrains);
         this.cellsAsStrings = cellsAsStrings;
         this.bodies = bodies;
         this.sizeInCells = new Coords(this.cellsAsStrings[0].length, this.cellsAsStrings.length, 1);
@@ -59,10 +60,17 @@ class MapLayout {
     }
     terrainAtPosInCells(cellPos) {
         var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
-        return this.terrainsByCodeChar.get(terrainCode);
+        var returnValue = this.terrainByCode(terrainCode);
+        return returnValue;
     }
     terrainAtCursor() {
         return this.terrainAtPosInCells(this.cursor.pos);
+    }
+    terrainByCode(terrainCode) {
+        return this.terrainsByCodeChar.get(terrainCode);
+    }
+    terrainByName(terrainName) {
+        return this.terrainsByName.get(terrainName);
     }
     // drawable
     draw(universe, display) {

@@ -14,19 +14,19 @@ class NotificationSession
 		this.notificationSelected = null;
 	}
 
-	notificationAdd(notification: Notification2)
+	notificationAdd(notification: Notification2): void
 	{
 		this.notifications.push(notification);
 	}
 
-	notificationDismiss(notification: Notification2)
+	notificationDismiss(notification: Notification2): void
 	{
 		var notificationIndex = this.notifications.indexOf(notification);
 		ArrayHelper.remove(this.notifications, notification);
 		this.notificationSelected = this.notifications[notificationIndex];
 	}
 
-	notificationGoTo(universe: Universe, notification: Notification2)
+	notificationGoTo(universe: Universe, notification: Notification2): void
 	{
 		var notificationLoc = notification.locus;
 		var notificationLocType = notificationLoc.constructor.name;
@@ -56,9 +56,15 @@ class NotificationSession
 		}
 	}
 
+	notificationsDismissAll(): void
+	{
+		var notifications = this.notifications;
+		notifications.length = 0;
+	}
+
 	// controls
 
-	toControl(universe: Universe)
+	toControl(universe: Universe): ControlBase
 	{
 		var display = universe.display;
 		var containerSize = display.sizeInPixels.clone();
@@ -191,8 +197,7 @@ class NotificationSession
 						var world = universe.world as WorldExtended;
 						var faction = world.factions[0]; // hack
 						var notificationSession = faction.notificationSession;
-						var notifications = notificationSession.notifications;
-						notifications.length = 0;
+						notificationSession.notificationsDismissAll();
 					}
 				),
 

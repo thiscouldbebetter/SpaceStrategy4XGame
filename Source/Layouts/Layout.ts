@@ -12,7 +12,7 @@ class Layout
 
 	// static methods
 
-	static planet(universe: Universe, planet: Planet)
+	static planet(universe: Universe, planet: Planet): Layout
 	{
 		var viewSize = universe.display.sizeInPixels;
 		var mapSizeInPixels = viewSize.clone().half();
@@ -84,35 +84,24 @@ class Layout
 
 	// turnable
 
-	facilities()
+	facilities(): Entity[]
 	{
 		return this.map.bodies;
 	}
 
-	initialize(universe: Universe)
+	initialize(universe: Universe): void
 	{
 		// todo
 	}
 
-	updateForTurn(universe: Universe, world: World, faction: Faction, parentModel: Entity)
+	updateForTurn(universe: Universe, world: World, faction: Faction, parentModel: Entity): void
 	{
 		// todo
-		/*
-		var bodies = this.map.bodies;
-		for (var i = 0; i < bodies.length; i++)
-		{
-			var body = Body.fromEntity(bodies[i]);
-			if (body.updateForTurn != null)
-			{
-				body.updateForTurn(universe, world, faction, parentModel, this);
-			}
-		}
-		*/
 	}
 
 	// drawable
 
-	draw(universe: Universe, display: Display)
+	draw(universe: Universe, display: Display): void
 	{
 		display.drawBackground(null, null);
 		this.map.draw(universe, display);

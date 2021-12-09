@@ -45,7 +45,7 @@ class FactionKnowledge {
                 // todo
             }
             */
-            this._worldKnown = new WorldExtended(worldActual.name, worldActual.dateCreated, worldActual.activityDefns, worldActual.buildableDefns, worldActual.technologyTree, networkKnown, factionsKnown, worldActual.ships, // todo
+            this._worldKnown = new WorldExtended(worldActual.name, worldActual.dateCreated, worldActual.defn.activityDefns, worldActual.buildableDefns, worldActual.deviceDefns, worldActual.technologyTree, networkKnown, factionsKnown, worldActual.ships, // todo
             worldActual.camera);
         }
         return this._worldKnown;

@@ -18,6 +18,8 @@ class Faction
 	planetSelected: Planet;
 	shipSelected: Ship;
 
+	shipsBuiltSoFarCount: number;
+
 	constructor
 	(
 		name: string,
@@ -47,6 +49,8 @@ class Faction
 			this.relationships,
 			(x: DiplomaticRelationship) => x.factionNameOther
 		);
+
+		this.shipsBuiltSoFarCount = 0;
 	}
 
 	static fromName(name: string): Faction
@@ -224,6 +228,11 @@ class Faction
 		var venueNext: Venue = new VenueTechnologyResearchSession(researchSession);
 		venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
+	}
+
+	planetAdd(planet: Planet): void
+	{
+		this.planets.push(planet);
 	}
 
 	planetHome(world: WorldExtended): Planet

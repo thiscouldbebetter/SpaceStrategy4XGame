@@ -16,7 +16,8 @@ class MapLayout
 	_cellPos: Coords;
 	_drawable: any;
 	_neighborOffsets: Coords[];
-	terrainsByCodeChar: Map<string,MapTerrain>;
+	terrainsByCodeChar: Map<string, MapTerrain>;
+	terrainsByName: Map<string, MapTerrain>;
 
 	constructor
 	(
@@ -34,6 +35,7 @@ class MapLayout
 		(
 			this.terrains, (x) => x.codeChar
 		);
+		this.terrainsByName = ArrayHelper.addLookupsByName(this.terrains);
 
 		this.cellsAsStrings = cellsAsStrings;
 		this.bodies = bodies;
@@ -123,12 +125,23 @@ class MapLayout
 	terrainAtPosInCells(cellPos: Coords): MapTerrain
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
-		return this.terrainsByCodeChar.get(terrainCode);
+		var returnValue = this.terrainByCode(terrainCode);
+		return returnValue;
 	}
 
 	terrainAtCursor(): MapTerrain
 	{
 		return this.terrainAtPosInCells(this.cursor.pos);
+	}
+
+	terrainByCode(terrainCode: string): MapTerrain
+	{
+		return this.terrainsByCodeChar.get(terrainCode);
+	}
+
+	terrainByName(terrainName: string): MapTerrain
+	{
+		return this.terrainsByName.get(terrainName);
 	}
 
 	// drawable

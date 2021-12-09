@@ -6,8 +6,31 @@ class Order //
         this.targetEntity = targetEntity;
         this.isComplete = false;
     }
+    assignToEntityOrderable(entityOrderable) {
+        var orderable = Orderable.fromEntity(entityOrderable);
+        orderable.order = this;
+        return this;
+    }
+    clear() {
+        // This method seems linked to odd compile-time errors
+        // in SystemTests.playFromStart().
+        this.defnName = null;
+        this.targetEntity = null;
+        this.isComplete = false;
+        return this;
+    }
+    complete() {
+        this.isComplete = true;
+        return this;
+    }
     defn() {
-        return OrderDefn.Instances()._AllByName.get(this.defnName);
+        var returnValue = OrderDefn.Instances()._AllByName.get(this.defnName);
+        return returnValue;
+    }
+    defnNameAndTargetEntitySet(defnName, targetEntity) {
+        this.defnName = defnName;
+        this.targetEntity = targetEntity;
+        return this;
     }
     obey(universe, world, place, entity) {
         var orderable = Orderable.fromEntity(entity);
@@ -15,7 +38,8 @@ class Order //
             orderable.order = null;
         }
         else {
-            this.defn().obey(universe, world, place, entity);
+            var defn = this.defn();
+            defn.obey(universe, world, place, entity);
         }
     }
 }

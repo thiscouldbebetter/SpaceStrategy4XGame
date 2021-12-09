@@ -8,6 +8,7 @@ class Starsystem {
         this.planets = planets;
         this.factionName = factionName;
         this.ships = new Array();
+        this.planetsByName = ArrayHelper.addLookupsByName(this.planets);
         // Helper variables
         this.posSaved = Coords.create();
         this.visualElevationStem = new VisualElevationStem();
@@ -70,11 +71,17 @@ class Starsystem {
         }
         return returnValues;
     }
+    planetByName(planetName) {
+        return this.planetsByName.get(planetName);
+    }
     shipAdd(shipToAdd) {
         this.ships.push(shipToAdd);
     }
     shipRemove(shipToRemove) {
         ArrayHelper.remove(this.ships, shipToRemove);
+    }
+    toVenue() {
+        return new VenueStarsystem(null, this);
     }
     // moves
     updateForMove() {

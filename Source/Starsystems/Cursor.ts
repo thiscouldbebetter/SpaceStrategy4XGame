@@ -4,7 +4,6 @@ class Cursor extends Entity
 	entityUnderneath: Entity;
 	entityParent: Entity;
 	orderName: string;
-	mustTargetEntity: boolean;
 	hasXYPositionBeenSpecified: boolean;
 	hasZPositionBeenSpecified: boolean;
 
@@ -32,7 +31,6 @@ class Cursor extends Entity
 
 		this.entityParent = null;
 		this.orderName = null;
-		this.mustTargetEntity = null;
 		this.hasXYPositionBeenSpecified = false;
 		this.hasZPositionBeenSpecified = false;
 
@@ -47,9 +45,9 @@ class Cursor extends Entity
 		(
 			new Map
 			([
-				[ "_0", new VisualNone() ],
+				[ "None", new VisualNone() ],
 				[
-					"_1",
+					"Crosshairs",
 					new VisualGroup
 					([
 						new VisualCircle(radius, null, color, null),
@@ -73,15 +71,11 @@ class Cursor extends Entity
 				var cursor = uwpe.entity as Cursor;
 				if (cursor.entityParent == null)
 				{
-					returnValue = "_0";
-				}
-				else if (cursor.mustTargetEntity)
-				{
-					returnValue = "_1";
+					returnValue = "None";
 				}
 				else
 				{
-					returnValue = "_1";
+					returnValue = "Crosshairs";
 				}
 				return [ returnValue ];
 			}
@@ -106,7 +100,6 @@ class Cursor extends Entity
 					return returnValue;
 				} 
 			),
-			false, // shouldTextContextBeReset
 			null, // heightInPixels
 			Color.byName("Gray"),
 			Color.byName("White")
@@ -136,18 +129,18 @@ class Cursor extends Entity
 		this.hasZPositionBeenSpecified = false;
 	}
 
-	set(entity: Entity, orderName: string, mustTargetEntity: boolean): void
+	entityAndOrderNameSet(entity: Entity, orderName: string): Cursor
 	{
 		this.entityParent = entity;
 		this.orderName = orderName;
-		this.mustTargetEntity = mustTargetEntity;
+		return this;
 	}
 
 	// controls
 
-	toControl(uwpe: UniverseWorldPlaceEntities): ControlBase
+	toControl(uwpe: UniverseWorldPlaceEntities, size: Coords): ControlBase
 	{
-		return this.entityParent.controllable().toControl(uwpe);
+		return this.entityParent.controllable().toControl(uwpe, size, null);
 	}
 
 	// drawable

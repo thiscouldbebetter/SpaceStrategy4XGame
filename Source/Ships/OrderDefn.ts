@@ -2,15 +2,18 @@
 class OrderDefn
 {
 	name: string;
+	description: string;
 	obey: (u: Universe, w: World, p: Place, e: Entity)=>void;
 
 	constructor
 	(
 		name: string,
+		description: string,
 		obey: (u: Universe, w: World, p: Place, e: Entity)=>void
 	)
 	{
 		this.name = name;
+		this.description = description;
 		this.obey = obey;
 	}
 
@@ -37,12 +40,12 @@ class OrderDefn_Instances
 	{
 		this.Go = new OrderDefn
 		(
-			"Go", this.go
+			"Go", "moving to", this.go
 		);
 
 		this.UseDevice = new OrderDefn
 		(
-			"UseDevice", this.useDevice
+			"UseDevice", "using", this.useDevice
 		);
 
 		this._All =

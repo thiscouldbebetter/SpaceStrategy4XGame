@@ -201,11 +201,12 @@ class Network2 //
         }
         for (var i = 0; i < drawablesSortedByZ.length; i++) {
             var entity = drawablesSortedByZ[i];
-            var node = entity;
-            if (node != null) {
+            var entityTypeName = entity.constructor.name;
+            if (entityTypeName == NetworkNode2.name) {
+                var node = entity;
                 node.draw(universe, nodeRadiusActual, camera);
             }
-            else {
+            else if (entityTypeName == Ship.name) {
                 var ship = entity;
                 if (ship != null) {
                     ship.draw(universe, nodeRadiusActual, camera, this.drawPos);

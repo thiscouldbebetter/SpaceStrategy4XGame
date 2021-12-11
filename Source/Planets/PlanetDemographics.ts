@@ -8,7 +8,12 @@ class PlanetDemographics
 		this.population = population;
 	}
 
-	updateForTurn(universe: Universe, world: World, faction: Faction, planet: Planet)
+	toStringDescription(): string
+	{
+		return "Population " + this.population;
+	}
+
+	updateForTurn(universe: Universe, world: World, faction: Faction, planet: Planet): void
 	{
 		// todo
 	}

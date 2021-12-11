@@ -117,9 +117,13 @@ class ShipTests extends TestFixture
 
 	toControl(): void
 	{
-		var control = this.ship.toControl
+		var uwpe = new UniverseWorldPlaceEntities
 		(
-			this.universe, this.universe.display.sizeInPixels
+			this.universe, null, null, this.ship, null
+		);
+		var control = Ship.toControl
+		(
+			uwpe, this.universe.display.sizeInPixels, Starsystem.name
 		);
 		Assert.isNotNull(control);
 	}

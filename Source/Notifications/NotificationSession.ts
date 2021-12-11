@@ -64,11 +64,15 @@ class NotificationSession
 
 	// controls
 
-	toControl(universe: Universe): ControlBase
+	toControl
+	(
+		universe: Universe, containerSize: Coords
+	): ControlBase
 	{
+		var notificationSession = this;
+
 		var display = universe.display;
-		var containerSize = display.sizeInPixels.clone();
-		var controlHeight = containerSize.y / 12;
+		var controlHeight = containerSize.y / 16;
 		var margin = 10;
 		var columnWidth = containerSize.x - margin * 2;
 		var buttonWidth = (containerSize.x - margin * 4) / 3;
@@ -76,7 +80,7 @@ class NotificationSession
 
 		var returnValue = ControlContainer.from4
 		(
-			"containerNotificationSession",
+			"Alerts",
 			Coords.fromXY(0, 0), // pos
 			containerSize,
 			// children
@@ -152,11 +156,8 @@ class NotificationSession
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						var world = universe.world as WorldExtended;
-						var faction = world.factions[0]; // hack
-						var notificationSession = faction.notificationSession;
 						var notification = notificationSession.notificationSelected;
-						notificationSession.notificationGoTo(universe, notification);
+						notification.jumpTo(universe);
 					}
 				),
 

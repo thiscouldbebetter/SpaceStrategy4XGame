@@ -1,10 +1,11 @@
 
-class ControlDynamic extends ControlBase
+class ControlDynamic<TBoundValue> extends ControlBase
 {
-	binding: DataBinding<any,any>;
+	binding: DataBinding<any, TBoundValue>;
+	boundValueToControl: (v: TBoundValue) => ControlBase;
 
-	boundValuePrev: any;
-	child: any;
+	boundValuePrev: TBoundValue;
+	child: ControlBase;
 	drawLoc: Disposition;
 	drawPos: Coords;
 	mouseClickPos: Coords;
@@ -15,7 +16,8 @@ class ControlDynamic extends ControlBase
 		name: string,
 		pos: Coords,
 		size: Coords,
-		binding: DataBinding<any,any>
+		binding: DataBinding<any, TBoundValue>,
+		boundValueToControl: (v: TBoundValue) => ControlBase
 	)
 	{
 		super(name, pos, size, null); //fontHeightInPixels
@@ -24,6 +26,7 @@ class ControlDynamic extends ControlBase
 		this.pos = pos;
 		this.size = size;
 		this.binding = binding;
+		this.boundValueToControl = boundValueToControl;
 
 		this.boundValuePrev = null;
 		this.child = null;
@@ -36,22 +39,28 @@ class ControlDynamic extends ControlBase
 		this.mouseMovePos = Coords.create();
 	}
 
-	actionHandle(actionNameToHandle: string)
+	actionHandle
+	(
+		actionNameToHandle: string, universe: Universe
+	): boolean
 	{
 		var wasActionHandled = false;
 		if (this.child != null)
 		{
-			wasActionHandled = this.child.actionHandle(actionNameToHandle);
+			wasActionHandled = this.child.actionHandle
+			(
+				actionNameToHandle, universe
+			);
 		}
 		return wasActionHandled;
 	}
 
-	childWithFocus()
+	childWithFocus(): ControlBase
 	{
 		return (this.child == null ? null : this.child.childWithFocus());
 	}
 
-	focusGain()
+	focusGain(): void
 	{
 		if (this.child != null && this.child.focusGain != null)
 		{
@@ -59,7 +68,7 @@ class ControlDynamic extends ControlBase
 		}
 	}
 
-	focusLose()
+	focusLose(): void
 	{
 		if (this.child != null && this.child.focusLose != null)
 		{
@@ -67,12 +76,12 @@ class ControlDynamic extends ControlBase
 		}
 	}
 
-	isEnabled()
+	isEnabled(): boolean
 	{
 		return true;
 	}
 
-	mouseClick(mouseClickPos: Coords)
+	mouseClick(mouseClickPos: Coords): boolean
 	{
 		var wasHandledByChild = false;
 		if (this.child != null && this.child.mouseClick != null)
@@ -84,34 +93,45 @@ class ControlDynamic extends ControlBase
 		return wasHandledByChild;
 	}
 
-	mouseEnter()
+	mouseEnter(): void
 	{
 		if (this.child != null && this.child.mouseEnter != null)
 		{
-			return this.child.mouseEnter();
+			this.child.mouseEnter();
 		}
 	}
 
-	mouseExit()
+	mouseExit(): void
 	{
 		if (this.child != null && this.child.mouseExit != null)
 		{
-			return this.child.mouseExit();
+			this.child.mouseExit();
 		}
 	}
 
 	mouseMove(mouseMovePos: Coords)
 	{
+		var wasHandled = false;
+
 		if (this.child != null && this.child.mouseMove != null)
 		{
-			mouseMovePos = this.mouseMovePos.overwriteWith(mouseMovePos).subtract(this.pos);
-			return this.child.mouseMove(mouseMovePos);
+			var mouseMovePos =
+				this.mouseMovePos.overwriteWith(mouseMovePos).subtract(this.pos);
+			wasHandled = this.child.mouseMove(mouseMovePos);
 		}
+
+		return wasHandled;
 	}
 
 	// drawable
 
-	draw(universe: Universe, display: Display, drawLoc: Disposition, style: ControlStyle)
+	draw
+	(
+		universe: Universe,
+		display: Display,
+		drawLoc: Disposition,
+		style: ControlStyle
+	): void
 	{
 		var boundValue = this.binding.get();
 		if (boundValue != this.boundValuePrev)
@@ -121,9 +141,10 @@ class ControlDynamic extends ControlBase
 			{
 				this.child = null;
 			}
-			else if (boundValue.toControl != null)
+			else
 			{
-				this.child = boundValue.toControl(universe, this.size);
+				var child = this.boundValueToControl(boundValue);
+				this.child = child;
 			}
 		}
 
@@ -131,7 +152,7 @@ class ControlDynamic extends ControlBase
 		{
 			var drawLoc = this.drawLoc.overwriteWith(drawLoc);
 			drawLoc.pos.add(this.pos);
-			this.child.draw(universe, display, drawLoc);
+			this.child.draw(universe, display, drawLoc, style);
 		}
 	}
 }

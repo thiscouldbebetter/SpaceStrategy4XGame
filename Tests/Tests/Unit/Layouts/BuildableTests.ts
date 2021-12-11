@@ -1,7 +1,7 @@
 
 class BuildableTests extends TestFixture
 {
-	constructor() //defnName: string, pos: Coords, isComplete: boolean)
+	constructor()
 	{
 		super(BuildableTests.name);
 	}
@@ -14,7 +14,7 @@ class BuildableTests extends TestFixture
 
 			this.defn,
 			this.locatable,
-			this.visual,
+			this.toEntity,
 
 			this.finalize,
 			this.initialize,
@@ -74,13 +74,13 @@ class BuildableTests extends TestFixture
 		Assert.isNotNull(locatable);
 	}
 
-	visual(): void // world: WorldExtended): Visual
+	toEntity(): void
 	{
 		var universe = this.universeBuild();
 		var world = universe.world as WorldExtended;
 		var buildable = this.buildableBuild(universe);
-		var visual = buildable.visual(world);
-		Assert.isNotNull(visual);
+		var entity = buildable.toEntity(world);
+		Assert.isNotNull(entity);
 	}
 
 	// EntityProperty.

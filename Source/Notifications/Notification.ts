@@ -6,7 +6,10 @@ class Notification2
 	message: string;
 	locus: any;
 
-	constructor(defnName: string, turnCreated: number, message: string, locus: any)
+	constructor
+	(
+		defnName: string, turnCreated: number, message: string, locus: any
+	)
 	{
 		this.defnName = defnName;
 		this.turnCreated = turnCreated;
@@ -19,11 +22,16 @@ class Notification2
 		return NotificationType.Instances()._AllByName.get(this.defnName);
 	}
 
+	jumpTo(universe: Universe): void
+	{
+		this.locus.jumpTo(universe);
+	}
+
 	toString(): string
 	{
 		var returnValue =
 			this.turnCreated + " - "
-			+ this.locus.toString() + " - "
+			+ this.locus.name + " - "
 			+ this.message;
 		return returnValue;
 	}

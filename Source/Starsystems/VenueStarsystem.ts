@@ -5,7 +5,7 @@ class VenueStarsystem implements Venue
 	starsystem: Starsystem;
 
 	cursor: Cursor;
-	selection: Entity;
+	selectedEntity: Entity;
 
 	_mouseClickPos: Coords;
 
@@ -117,7 +117,7 @@ class VenueStarsystem implements Venue
 
 	selectionName(): string
 	{
-		return (this.selection == null ? "[none]" : this.selection.name);
+		return (this.selectedEntity == null ? "[none]" : this.selectedEntity.name);
 	}
 
 	updateForTimerTick(universe: Universe): void
@@ -269,7 +269,7 @@ class VenueStarsystem implements Venue
 			}
 
 			var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
-			if (this.selection == null || numberOfCollisions == 1)
+			if (this.selectedEntity == null || numberOfCollisions == 1)
 			{
 				bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
 			}
@@ -280,7 +280,7 @@ class VenueStarsystem implements Venue
 					var collision = bodiesClickedAsCollisionsSorted[c];
 					bodyClicked = collision.colliders[0];
 
-					if (bodyClicked == this.selection)
+					if (bodyClicked == this.selectedEntity)
 					{
 						var cNext = c + 1;
 						if (cNext >= numberOfCollisions)
@@ -307,81 +307,120 @@ class VenueStarsystem implements Venue
 	{
 		var selectionTypeName =
 		(
-			this.selection == null ? null : this.selection.constructor.name
+			this.selectedEntity == null
+			? null
+			: this.selectedEntity.constructor.name
 		);
 
-		// todo - Fix.
-		if (this.selection == null)
+		if (this.selectedEntity == null)
 		{
-			this.selection = bodyClicked;
-		}
-		else if (selectionTypeName == Ship.name)
-		{
-			var ship = this.selection as Ship;
-
-			if (bodyClicked != null) // && bodyClicked.defn.name != "Cursor")
-			{
-				// Targeting an existing body, not an arbitrary point.
-				universe.inputHelper.isEnabled = false;
-
-				var targetEntity = bodyClicked;
-				if (this.cursor.orderName != null)
-				{
-					var order = new Order(this.cursor.orderName, targetEntity);
-					ship.orderSet(order);
-					order.obey(universe, universe.world, null, ship);
-				}
-
-				this.cursor.clear();
-			}
-			else if (this.cursor.hasXYPositionBeenSpecified == false)
-			{
-				this.cursor.hasXYPositionBeenSpecified = true;
-			}
-			else if (this.cursor.hasZPositionBeenSpecified == false)
-			{
-				universe.inputHelper.isEnabled = false;
-
-				var targetPos = Coords.create();
-				var target = new Entity
-				(
-					"Target",
-					[
-						new BodyDefn("MoveTarget", targetPos, null),
-						this.cursor.locatable().clone()
-					]
-				);
-
-				var order = new Order(this.cursor.orderName, target);
-				Orderable.fromEntity(ship).order = order;
-				order.obey(universe, universe.world, null, ship);
-
-				this.cursor.clear();
-			}
+			this.selectedEntity = bodyClicked;
 		}
 		else if (selectionTypeName == Planet.name)
 		{
-			if (bodyClicked == this.selection)
-			{
-				var planet = bodyClicked as Planet;
-				if (planet != null)
-				{
-					var layout = planet.layout;
-					var venueNext: Venue =
-						new VenueLayout(this, bodyClicked, layout);
-					venueNext = VenueFader.fromVenuesToAndFrom
-					(
-						venueNext, universe.venueCurrent
-					);
-					universe.venueNext = venueNext;
-				}
-			}
+			this.updateForTimerTick_Input_Mouse_Selection_Planet
+			(
+				universe, bodyClicked
+			);
+		}
+		else if (selectionTypeName == Ship.name)
+		{
+			this.updateForTimerTick_Input_Mouse_Selection_Ship
+			(
+				universe, bodyClicked
+			);
 		}
 		else
 		{
-			this.selection = bodyClicked;
+			this.selectedEntity = bodyClicked;
 		}
 	}
+
+	updateForTimerTick_Input_Mouse_Selection_Planet
+	(
+		universe: Universe, bodyClicked: Entity
+	): void
+	{
+		var planetSelected = this.selectedEntity as Planet;
+
+		if (bodyClicked == null)
+		{
+			this.selectedEntity = null;
+		}
+		else if (bodyClicked == planetSelected)
+		{
+			var layout = planetSelected.layout;
+			var venueNext: Venue =
+				new VenueLayout(this, bodyClicked, layout);
+			venueNext = VenueFader.fromVenuesToAndFrom
+			(
+				venueNext, universe.venueCurrent
+			);
+			universe.venueNext = venueNext;
+		}
+		else if (planetSelected.isAwaitingTarget())
+		{
+			// todo
+		}
+		else
+		{
+			this.selectedEntity = bodyClicked;
+		}
+	}
+
+	updateForTimerTick_Input_Mouse_Selection_Ship
+	(
+		universe: Universe, bodyClicked: Entity
+	): void
+	{
+		var ship = this.selectedEntity as Ship;
+
+		if (ship.isAwaitingTarget() == false)
+		{
+			this.selectedEntity = bodyClicked;
+		}
+		else if (bodyClicked != null)
+		{
+			// Targeting an existing body, not an arbitrary point.
+			universe.inputHelper.isEnabled = false;
+
+			var targetEntity = bodyClicked;
+			if (this.cursor.orderName != null)
+			{
+				var order = new Order(this.cursor.orderName, targetEntity);
+				ship.orderSet(order);
+				order.obey(universe, universe.world, null, ship);
+			}
+
+			this.cursor.clear();
+		}
+		else if (this.cursor.hasXYPositionBeenSpecified == false)
+		{
+			this.cursor.hasXYPositionBeenSpecified = true;
+		}
+		else if (this.cursor.hasZPositionBeenSpecified == false)
+		{
+			universe.inputHelper.isEnabled = false;
+
+			var targetPos = Coords.create();
+			var target = new Entity
+			(
+				"Target",
+				[
+					new BodyDefn("MoveTarget", targetPos, null),
+					this.cursor.locatable().clone()
+				]
+			);
+
+			var order = new Order(this.cursor.orderName, target);
+			Orderable.fromEntity(ship).order = order;
+			order.obey(universe, universe.world, null, ship);
+
+			this.cursor.clear();
+		}
+
+	}
+
 
 	updateForTimerTick_Input_MouseMove(universe: Universe): void
 	{
@@ -442,7 +481,7 @@ class VenueStarsystem implements Venue
 
 	cameraCenterOnSelection(): void
 	{
-		if (this.selection != null)
+		if (this.selectedEntity != null)
 		{
 			var constraint =
 				this.cameraEntity.constrainable().constraintByClassName
@@ -450,7 +489,7 @@ class VenueStarsystem implements Venue
 					Constraint_PositionOnCylinder.name
 				);
 			var constraintPosition = constraint as Constraint_PositionOnCylinder;
-			var selectionPos = this.selection.locatable().loc.pos;
+			var selectionPos = this.selectedEntity.locatable().loc.pos;
 			constraintPosition.center.overwriteWith(selectionPos);
 		}
 	}
@@ -539,7 +578,8 @@ class VenueStarsystem implements Venue
 					containerMainSize,
 					containerInnerSize,
 					margin,
-					controlHeight
+					controlHeight,
+					false // includeTurnAdvanceButtons
 				),
 
 				controlBuilder.view

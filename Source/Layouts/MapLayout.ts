@@ -159,6 +159,8 @@ class MapLayout
 		var drawPos = drawable.locatable().loc.pos;
 		var cellSizeInPixels = map.cellSizeInPixels;
 
+		//var posSaved = Coords.create();
+
 		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, world, null, drawable, null
@@ -191,8 +193,8 @@ class MapLayout
 				var cellEntity = map.bodyAtPosInCells(cellPos);
 				if (cellEntity != null)
 				{
-					//var cellBody = Body.fromEntity(cellEntity);
-					var cellBodyVisual = cellEntity.drawable().visual; //(world);
+					uwpe.entity2Set(cellEntity);
+					var cellBodyVisual = cellEntity.drawable().visual;
 					cellBodyVisual.draw(uwpe, display);
 				}
 			}
@@ -238,9 +240,9 @@ class MapLayout
 						ArrayHelper.contains(buildableDefn.terrainNamesAllowed, terrainName);
 					if (isBuildableAllowedOnTerrain == false)
 					{
-						var visualNotAllowed = VisualText.fromTextAndColor
+						var visualNotAllowed = VisualText.fromTextHeightAndColor
 						(
-							"X", Color.byName("Red"),
+							"X", this.cellSizeInPixels.y, Color.byName("Red"),
 						);
 						visualNotAllowed.draw
 						(

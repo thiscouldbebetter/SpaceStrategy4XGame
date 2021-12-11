@@ -93,13 +93,14 @@ class LinkPortal extends Entity
 
 	toControl(): ControlBase
 	{
-		var returnValue = ControlLabel.from5
+		var returnValue = new ControlLabel
 		(
 			"labelLinkPortalAsSelection",
 			Coords.fromXY(0, 0),
 			Coords.fromXY(0, 0), // this.size
 			false, // isTextCentered
-			DataBinding.fromContext("Link to " + this.starsystemNamesFromAndTo[1])
+			DataBinding.fromContext("Link to " + this.starsystemNamesFromAndTo[1]),
+			10 // fontHeightInPixels
 		);
 
 		return returnValue;

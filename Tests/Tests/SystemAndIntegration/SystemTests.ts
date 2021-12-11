@@ -41,7 +41,7 @@ class SystemTests extends TestFixture
 
 		Assert.isTrue(buildableLaboratory.isComplete);
 
-		var researcher = factionUser.technology;
+		var researcher = factionUser.technologyResearcher;
 
 		var technologiesNeededToBuildShipNames =
 		[
@@ -105,8 +105,8 @@ class SystemTests extends TestFixture
 			"Ship Hull, Small",
 			"Ship Drive, Basic",
 			"Ship Generator, Basic",
-			"Hub",
-			"Hub"
+			"Colony Hub",
+			"Colony Hub"
 		];
 
 		for (var i = 0; i < shipComponentNames.length; i++)

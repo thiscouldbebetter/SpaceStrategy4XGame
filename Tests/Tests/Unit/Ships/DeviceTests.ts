@@ -5,6 +5,7 @@ class DeviceTests extends TestFixture
 	world: WorldExtended;
 	ship: Ship;
 	device: Device;
+	uwpe: UniverseWorldPlaceEntities;
 
 	constructor()
 	{
@@ -14,7 +15,12 @@ class DeviceTests extends TestFixture
 		this.world = this.universe.world as WorldExtended;
 		var starsystem = this.world.factions[0].starsystemHome(this.world);
 		this.ship = starsystem.ships[0];
-		this.device = this.ship.devices[0];
+		var devices = this.ship.devices();
+		this.device = devices[0];
+		this.uwpe = new UniverseWorldPlaceEntities
+		(
+			this.universe, this.world, starsystem, this.ship, null
+		);
 	}
 
 	tests(): ( () => void )[]
@@ -26,17 +32,11 @@ class DeviceTests extends TestFixture
 
 	updateForTurn(): void
 	{
-		this.device.updateForTurn
-		(
-			this.universe, this.world, null, this.ship
-		);
+		this.device.updateForTurn(this.uwpe);
 	}
 
 	use(): void
 	{
-		this.device.use
-		(
-			this.universe, this.world, null, this.ship
-		);
+		this.device.use(this.uwpe);
 	}
 }

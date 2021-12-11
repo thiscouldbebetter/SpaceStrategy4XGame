@@ -14,7 +14,7 @@ class FactionTests extends TestFixture {
             this.researchSessionStart,
             this.starsystemHome,
             this.toString,
-            this.toControl,
+            this.toControl_ClusterOverlay,
             this.allianceProposalAcceptFrom,
             this.allies,
             this.enemies,
@@ -52,8 +52,8 @@ class FactionTests extends TestFixture {
         Assert.isNotNull(factionAsString);
     }
     // controls
-    toControl() {
-        var factionAsControl = this.faction.toControl(this.universe, this.universe.display.sizeInPixels, // containerMainSize,
+    toControl_ClusterOverlay() {
+        var factionAsControl = this.faction.toControl_ClusterOverlay(this.universe, this.universe.display.sizeInPixels, // containerMainSize,
         this.universe.display.sizeInPixels.clone().half(), // containerInnerSize
         10, // margin,
         10, // controlHeight,

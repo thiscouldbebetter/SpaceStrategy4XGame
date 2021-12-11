@@ -9,9 +9,12 @@ class Notification2 {
     defn() {
         return NotificationType.Instances()._AllByName.get(this.defnName);
     }
+    jumpTo(universe) {
+        this.locus.jumpTo(universe);
+    }
     toString() {
         var returnValue = this.turnCreated + " - "
-            + this.locus.toString() + " - "
+            + this.locus.name + " - "
             + this.message;
         return returnValue;
     }

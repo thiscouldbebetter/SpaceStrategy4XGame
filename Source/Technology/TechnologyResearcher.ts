@@ -66,11 +66,15 @@ class TechnologyResearcher
 
 		if (technologyBeingResearched == null)
 		{
-			var notification = new Notification2
-			(
-				"Default", world.turnsSoFar, "Nothing being researched.", "research" // locus
-			);
-			faction.notificationSession.notifications.push(notification);
+			if (amountToIncrement > 0)
+			{
+				var notification = new Notification2
+				(
+					"Default", world.turnsSoFar,
+					"Nothing being researched.", "research" // locus
+				);
+				faction.notificationSession.notifications.push(notification);
+			}
 		}
 		else
 		{

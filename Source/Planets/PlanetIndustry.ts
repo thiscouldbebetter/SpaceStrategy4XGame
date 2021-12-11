@@ -1,6 +1,37 @@
 
 class PlanetIndustry
 {
+	toStringDescription(world: WorldExtended, planet: Planet): string
+	{
+		var buildableEntityInProgress =
+			planet.buildableEntityInProgress();
+
+		var buildableString = "building ";
+
+		if (buildableEntityInProgress == null)
+		{
+			buildableString += "nothing";
+		}
+		else
+		{
+			var buildableInProgress =
+				Buildable.fromEntity(buildableEntityInProgress);
+			var buildableDefn = buildableInProgress.defn(world);
+			var resourcesToBuild = buildableDefn.resourcesToBuild;
+
+			var resourcesAccumulatedOverNeeded =
+				planet.resourcesAccumulated + "/" + resourcesToBuild;
+
+			buildableString +=
+				buildableDefn.name
+				+ "(" + resourcesAccumulatedOverNeeded + ")";
+		}
+
+		var returnValue = buildableString;
+
+		return returnValue;
+	}
+
 	updateForTurn
 	(
 		universe: Universe,
@@ -10,7 +41,7 @@ class PlanetIndustry
 	): void
 	{
 		var resourcesAccumulated = planet.resourcesAccumulated;
-		var resourcesProduced = planet.resourcesPerTurn(universe, world, faction);
+		var resourcesProduced = planet.resourcesPerTurn(world);
 		Resource.add(resourcesAccumulated, resourcesProduced);
 
 		var buildableEntityInProgress = planet.buildableEntityInProgress();
@@ -18,7 +49,7 @@ class PlanetIndustry
 		{
 			var notification = new Notification2
 			(
-				"Default", world.turnsSoFar, "Nothing being built.", planet.name
+				"Default", world.turnsSoFar, "Nothing being built.", planet
 			);
 			faction.notificationSession.notificationAdd(notification);
 		}

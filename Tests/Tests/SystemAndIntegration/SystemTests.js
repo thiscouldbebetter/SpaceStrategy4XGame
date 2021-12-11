@@ -25,7 +25,7 @@ class SystemTests extends TestFixture {
             world.updateForTurn_IgnoringNotifications(universe);
         }
         Assert.isTrue(buildableLaboratory.isComplete);
-        var researcher = factionUser.technology;
+        var researcher = factionUser.technologyResearcher;
         var technologiesNeededToBuildShipNames = [
             "Drives",
             "Hulls",
@@ -63,8 +63,8 @@ class SystemTests extends TestFixture {
             "Ship Hull, Small",
             "Ship Drive, Basic",
             "Ship Generator, Basic",
-            "Hub",
-            "Hub"
+            "Colony Hub",
+            "Colony Hub"
         ];
         for (var i = 0; i < shipComponentNames.length; i++) {
             var shipComponentName = shipComponentNames[i];

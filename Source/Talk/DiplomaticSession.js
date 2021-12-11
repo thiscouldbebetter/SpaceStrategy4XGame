@@ -40,13 +40,12 @@ class DiplomaticSession {
         universe.venueNext = venueNext;
     }
     // controls
-    toControl(universe) {
-        var containerSize = universe.display.sizeInPixels.clone();
+    toControl(universe, containerSize) {
         var margin = 10;
         var controlHeight = 20;
         var listWidth = 100;
         var fontHeightInPixels = margin;
-        var returnValue = ControlContainer.from4("containerProfileSelect", Coords.fromXY(0, 0), // pos
+        var returnValue = ControlContainer.from4("Diplomacy", Coords.fromXY(0, 0), // pos
         containerSize, 
         // children
         [
@@ -60,10 +59,10 @@ class DiplomaticSession {
                 venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
                 universe.venueNext = venueNext;
             }),
-            ControlLabel.from5("labelFactions", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+            new ControlLabel("labelFactions", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(100, controlHeight), // size
             false, // isTextCentered
-            DataBinding.fromContext("Factions:")),
+            DataBinding.fromContext("Factions:"), fontHeightInPixels),
             ControlList.from8("listFactions", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
             Coords.fromXY(listWidth, controlHeight * 4), // size
             DataBinding.fromContextAndGet(this, (c) => c.factions), // items

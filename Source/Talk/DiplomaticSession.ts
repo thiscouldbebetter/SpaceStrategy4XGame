@@ -93,9 +93,11 @@ class DiplomaticSession
 
 	// controls
 
-	toControl(universe: Universe): ControlBase
+	toControl
+	(
+		universe: Universe, containerSize: Coords
+	): ControlBase
 	{
-		var containerSize = universe.display.sizeInPixels.clone();
 		var margin = 10;
 		var controlHeight = 20;
 		var listWidth = 100;
@@ -103,7 +105,7 @@ class DiplomaticSession
 
 		var returnValue = ControlContainer.from4
 		(
-			"containerProfileSelect",
+			"Diplomacy",
 			Coords.fromXY(0, 0), // pos
 			containerSize,
 			// children
@@ -128,13 +130,14 @@ class DiplomaticSession
 					}
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelFactions",
 					Coords.fromXY(margin, margin * 2 + controlHeight), // pos
 					Coords.fromXY(100, controlHeight), // size
 					false, // isTextCentered
-					DataBinding.fromContext("Factions:")
+					DataBinding.fromContext("Factions:"),
+					fontHeightInPixels
 				),
 
 				ControlList.from8

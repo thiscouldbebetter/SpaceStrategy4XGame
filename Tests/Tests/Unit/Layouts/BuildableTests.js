@@ -8,7 +8,7 @@ class BuildableTests extends TestFixture {
             this.fromEntity,
             this.defn,
             this.locatable,
-            this.visual,
+            this.toEntity,
             this.finalize,
             this.initialize,
             this.updateForTimerTick
@@ -47,12 +47,12 @@ class BuildableTests extends TestFixture {
         var locatable = buildable.locatable();
         Assert.isNotNull(locatable);
     }
-    visual() {
+    toEntity() {
         var universe = this.universeBuild();
         var world = universe.world;
         var buildable = this.buildableBuild(universe);
-        var visual = buildable.visual(world);
-        Assert.isNotNull(visual);
+        var entity = buildable.toEntity(world);
+        Assert.isNotNull(entity);
     }
     // EntityProperty.
     finalize() {

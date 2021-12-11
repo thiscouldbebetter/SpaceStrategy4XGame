@@ -19,6 +19,7 @@ class NetworkNode2 extends Entity
 		(
 			name,
 			[
+				new Controllable(NetworkNode2.toControl),
 				Locatable.fromPos(pos)
 			]
 		);
@@ -32,11 +33,19 @@ class NetworkNode2 extends Entity
 
 	// Controls.
 
-	toControl(universe: Universe): ControlBase
+	static toControl
+	(
+		uwpe: UniverseWorldPlaceEntities,
+		size: Coords,
+		controlTypeName: string
+	): ControlBase
 	{
+		var universe = uwpe.universe;
 		var world = universe.world as WorldExtended;
+		var networkNode = uwpe.entity as NetworkNode2;
+
 		var viewSize = universe.display.sizeInPixels;
-		var containerSize = Coords.fromXY(100, 80);
+		var containerSize = size;
 		var margin = 10;
 		var controlSpacing = 8;
 		var fontHeightInPixels = margin;
@@ -53,16 +62,17 @@ class NetworkNode2 extends Entity
 			Coords.fromXY(containerSize.x - margin * 2, 40), // size
 			// children
 			[
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelStarsystemName",
 					Coords.fromXY(margin, margin),
 					Coords.fromXY(0, 0), // this.size
 					false, // isTextCentered
-					DataBinding.fromContext(this.name)
+					DataBinding.fromContext(this.name),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelStarsystemHolder",
 					Coords.fromXY(margin, margin + controlSpacing),
@@ -70,9 +80,10 @@ class NetworkNode2 extends Entity
 					false, // isTextCentered
 					DataBinding.fromContextAndGet
 					(
-						this.starsystem,
-						(c) => c.faction(world).name
-					)
+						networkNode,
+						(c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)
+					),
+					fontHeightInPixels
 				),
 
 				ControlButton.from8
@@ -89,7 +100,7 @@ class NetworkNode2 extends Entity
 						var venueCurrent =
 							universe.venueCurrent as VenueWorldExtended;
 						var starsystemToView =
-							(venueCurrent.selection as NetworkNode2).starsystem;
+							(venueCurrent.selectedEntity as NetworkNode2).starsystem;
 						if (starsystemToView != null)
 						{
 							universe.venueNext =
@@ -239,9 +250,9 @@ class NetworkNode2 extends Entity
 			visualShip.draw(uwpe.entitySet(drawableTransformed), display);
 		}
 
-		var visualText = VisualText.fromTextAndColor
+		var visualText = VisualText.fromTextHeightAndColor
 		(
-			this.starsystem.name, nodeColor
+			this.starsystem.name, radiusApparent, nodeColor
 		);
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;

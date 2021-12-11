@@ -120,9 +120,13 @@ class PlanetTests extends TestFixture
 
 	toControl(): void
 	{
-		var planetAsControl =-this.planet.toControl
+		var uwpe = new UniverseWorldPlaceEntities
 		(
-			this.universe, this.universe.display.sizeInPixels
+			this.universe, null, null, this.planet, null
+		);
+		var planetAsControl =-Planet.toControl
+		(
+			uwpe, this.universe.display.sizeInPixels, null
 		);
 		Assert.isNotNull(planetAsControl);
 	}
@@ -186,20 +190,18 @@ class PlanetTests extends TestFixture
 
 	resourcesPerTurn(): void
 	{
-		var faction = this.planet.faction(this.world);
 		var resources = this.planet.resourcesPerTurn
 		(
-			this.universe, this.world, faction
+			this.world
 		);
 		Assert.isNotNull(resources);
 	}
 
 	resourcesPerTurnByName(): void
 	{
-		var faction = this.planet.faction(this.world);
 		var resourcesByName = this.planet.resourcesPerTurnByName
 		(
-			this.universe, this.world, faction
+			this.world
 		);
 		Assert.isNotNull(resourcesByName);
 	}

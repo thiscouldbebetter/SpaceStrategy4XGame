@@ -42,6 +42,9 @@ class Order //
             defn.obey(universe, world, place, entity);
         }
     }
+    toStringDescription() {
+        return this.defn().description + " " + this.targetEntity.name;
+    }
 }
 class Orderable {
     static fromEntity(entity) {

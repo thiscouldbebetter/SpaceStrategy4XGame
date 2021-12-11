@@ -61,6 +61,11 @@ class Order //
 			defn.obey(universe, world, place, entity);
 		}
 	}
+
+	toStringDescription(): string
+	{
+		return this.defn().description + " " + this.targetEntity.name;
+	}
 }
 
 class Orderable implements EntityPropertyBase

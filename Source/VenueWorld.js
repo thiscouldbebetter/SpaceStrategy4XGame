@@ -10,8 +10,8 @@ class VenueWorldExtended extends VenueWorld {
     }
     // camera
     cameraCenterOnSelection() {
-        if (this.selection != null) {
-            var targetPosNew = this.selection.locatable().loc.pos;
+        if (this.selectedEntity != null) {
+            var targetPosNew = this.selectedEntity.locatable().loc.pos;
             var cameraConstrainable = this.cameraEntity.constrainable();
             var constraint = cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
             var constraintDistance = constraint;
@@ -31,7 +31,6 @@ class VenueWorldExtended extends VenueWorld {
         var cameraConstrainable = this.cameraEntity.constrainable();
         var constraint = cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
         var constraintDistance = constraint;
-        constraintDistance.distanceToHold += cameraSpeed / 2;
         constraintDistance.distanceToHold -= cameraSpeed / 2;
         if (constraintDistance.distanceToHold < 1) {
             constraintDistance.distanceToHold = 1;
@@ -74,8 +73,8 @@ class VenueWorldExtended extends VenueWorld {
     // controls
     toControl(universe) {
         var containerMainSize = universe.display.sizeInPixels.clone();
-        var controlHeight = 16;
-        var margin = 10;
+        var controlHeight = 14;
+        var margin = 8;
         var fontHeightInPixels = 10; //universe.display.fontHeightInPixels;
         var containerInnerSize = Coords.fromXY(100, 60);
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
@@ -96,8 +95,9 @@ class VenueWorldExtended extends VenueWorld {
                 venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
                 universe.venueNext = venueNext;
             }),
-            controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight),
-            faction.toControl(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth),
+            controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, true // includeTurnAdvanceButtons
+            ),
+            faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth),
             controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight),
             controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, containerMainSize.y - margin - containerInnerSize.y), containerInnerSize, margin, controlHeight),
         ]);
@@ -137,7 +137,8 @@ class VenueWorldExtended extends VenueWorld {
         this.cameraEntity.propertyAdd(cameraConstrainable);
     }
     selectionName() {
-        return (this.selection == null ? "[none]" : this.selection.name);
+        var returnValue = (this.selectedEntity == null ? "[none]" : this.selectedEntity.name);
+        return returnValue;
     }
     updateForTimerTick(universe) {
         var world = universe.world;
@@ -166,7 +167,7 @@ class VenueWorldExtended extends VenueWorld {
                     }
                 }
                 var bodyClicked = collisionNearest.colliders[0]; // todo
-                if (bodyClicked == this.selection) {
+                if (bodyClicked == this.selectedEntity) {
                     var venueCurrent = universe.venueCurrent;
                     var bodyClickedNetworkNode = bodyClicked;
                     var starsystem = bodyClickedNetworkNode.starsystem;
@@ -177,7 +178,7 @@ class VenueWorldExtended extends VenueWorld {
                         universe.venueNext = venueNext;
                     }
                 }
-                this.selection = bodyClicked;
+                this.selectedEntity = bodyClicked;
             }
         }
         var inputsActive = inputHelper.inputsPressed;
@@ -189,8 +190,11 @@ class VenueWorldExtended extends VenueWorld {
                 universe.venueNext = venueNext;
             }
             var cameraSpeed = 20;
-            if (inputActive.startsWith("Mouse")) {
+            if (inputActive == "MouseMove") {
                 // Do nothing.
+            }
+            else if (inputActive == "MouseClick") {
+                inputHelper.isMouseClicked(false);
             }
             else if (inputActive == "a") {
                 this.cameraLeft(cameraSpeed);

@@ -78,6 +78,8 @@ class Starsystem extends Place {
     }
     shipAdd(shipToAdd) {
         this.ships.push(shipToAdd);
+        shipToAdd.locatable().loc.placeName =
+            Starsystem.name + ":" + this.name;
     }
     shipRemove(shipToRemove) {
         ArrayHelper.remove(this.ships, shipToRemove);

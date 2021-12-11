@@ -41,15 +41,15 @@ class NotificationSession {
         notifications.length = 0;
     }
     // controls
-    toControl(universe) {
+    toControl(universe, containerSize) {
+        var notificationSession = this;
         var display = universe.display;
-        var containerSize = display.sizeInPixels.clone();
-        var controlHeight = containerSize.y / 12;
+        var controlHeight = containerSize.y / 16;
         var margin = 10;
         var columnWidth = containerSize.x - margin * 2;
         var buttonWidth = (containerSize.x - margin * 4) / 3;
         var fontHeightInPixels = display.fontHeightInPixels;
-        var returnValue = ControlContainer.from4("containerNotificationSession", Coords.fromXY(0, 0), // pos
+        var returnValue = ControlContainer.from4("Alerts", Coords.fromXY(0, 0), // pos
         containerSize, 
         // children
         [
@@ -78,11 +78,8 @@ class NotificationSession {
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
-                var world = universe.world;
-                var faction = world.factions[0]; // hack
-                var notificationSession = faction.notificationSession;
                 var notification = notificationSession.notificationSelected;
-                notificationSession.notificationGoTo(universe, notification);
+                notification.jumpTo(universe);
             }),
             ControlButton.from8("buttonDismiss", Coords.fromXY(margin * 2 + buttonWidth, margin * 2 + controlHeight * 7), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size

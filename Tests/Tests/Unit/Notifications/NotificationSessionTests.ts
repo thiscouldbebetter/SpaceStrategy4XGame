@@ -81,7 +81,7 @@ class NotificationSessionTests extends TestFixture
 		var session = this.sessionBuild();
 		var universe = this.universeBuild();
 
-		var sessionAsControl = session.toControl(universe);
+		var sessionAsControl = session.toControl(universe, Coords.zeroes());
 		Assert.isNotNull(sessionAsControl);
 	}
 }

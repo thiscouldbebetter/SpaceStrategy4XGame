@@ -129,11 +129,10 @@ class StarsystemTests extends TestFixture
 
 	draw(): void
 	{
-		var uwpe = new UniverseWorldPlaceEntities(
-			this.universe, this.world, null, null, null
-		)
-
-		this.starsystem.draw(uwpe, this.universe.display);
+		this.starsystem.draw
+		(
+			this.universe, this.world, this.universe.display
+		);
 	}
 
 }

@@ -24,7 +24,7 @@ class FactionTests extends TestFixture
 			this.researchSessionStart,
 			this.starsystemHome,
 			this.toString,
-			this.toControl,
+			this.toControl_ClusterOverlay,
 			this.allianceProposalAcceptFrom,
 			this.allies,
 			this.enemies,
@@ -76,9 +76,9 @@ class FactionTests extends TestFixture
 
 	// controls
 
-	toControl(): void
+	toControl_ClusterOverlay(): void
 	{
-		var factionAsControl = this.faction.toControl
+		var factionAsControl = this.faction.toControl_ClusterOverlay
 		(
 			this.universe,
 			this.universe.display.sizeInPixels, // containerMainSize,

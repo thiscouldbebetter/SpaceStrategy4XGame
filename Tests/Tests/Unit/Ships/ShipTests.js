@@ -76,7 +76,8 @@ class ShipTests extends TestFixture {
     }
     // controls
     toControl() {
-        var control = this.ship.toControl(this.universe, this.universe.display.sizeInPixels);
+        var uwpe = new UniverseWorldPlaceEntities(this.universe, null, null, this.ship, null);
+        var control = Ship.toControl(uwpe, this.universe.display.sizeInPixels, Starsystem.name);
         Assert.isNotNull(control);
     }
     // diplomacy

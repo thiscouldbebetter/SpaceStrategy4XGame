@@ -10,7 +10,7 @@ class VenueTechnologyResearchSession {
         // Do nothing.
     }
     initialize(universe) {
-        this.venueControls = new VenueControls(this.researchSession.toControl(universe), null);
+        this.venueControls = new VenueControls(this.researchSession.toControl(universe, universe.display.sizeInPixels), null);
     }
     updateForTimerTick(universe) {
         this.venueControls.updateForTimerTick(universe);

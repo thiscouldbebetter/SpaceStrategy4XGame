@@ -24,7 +24,10 @@ class VenueTechnologyResearchSession implements Venue
 	{
 		this.venueControls = new VenueControls
 		(
-			this.researchSession.toControl(universe), null
+			this.researchSession.toControl
+			(
+				universe, universe.display.sizeInPixels
+			), null
 		);
 	}
 

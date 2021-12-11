@@ -56,13 +56,14 @@ class WorldExtended extends World {
     }
     static create_BuildableDefns() {
         var mapCellSizeInPixels = Coords.fromXY(20, 20); // hack
+        var fontHeight = mapCellSizeInPixels.y / 2;
         var terrainNamesOrbit = ["Orbit"];
         var terrainNamesSurface = ["Surface"];
         var buildableDefns = [
             new BuildableDefn("Colony Hub", true, // isItem
-            terrainNamesSurface, new VisualGroup([
+            terrainNamesSurface, mapCellSizeInPixels, new VisualGroup([
                 new VisualRectangle(mapCellSizeInPixels, Color.byName("Gray"), null, null),
-                VisualText.fromTextAndColor("H", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("H", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 100)], // resourcesToBuild
             // resourcesProducedPerTurn
             [
@@ -71,72 +72,72 @@ class WorldExtended extends World {
             ], null // entityModifyOnBuild
             ),
             new BuildableDefn("Factory", false, // isItem
-            terrainNamesSurface, new VisualGroup([
+            terrainNamesSurface, mapCellSizeInPixels, new VisualGroup([
                 new VisualRectangle(mapCellSizeInPixels, Color.byName("Red"), null, null),
-                VisualText.fromTextAndColor("F", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("F", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 30)], // resourcesToBuild
             [new Resource("Industry", 1)], // resourcesPerTurn
             null // entityModifyOnBuild
             ),
             new BuildableDefn("Laboratory", false, // isItem
-            terrainNamesSurface, new VisualGroup([
+            terrainNamesSurface, mapCellSizeInPixels, new VisualGroup([
                 new VisualRectangle(mapCellSizeInPixels, Color.byName("Blue"), null, null),
-                VisualText.fromTextAndColor("L", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("L", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 30)], // resourcesToBuild
             [new Resource("Research", 1)], // resourcesPerTurn
             null // entityModifyOnBuild
             ),
             new BuildableDefn("Plantation", false, // isItem
-            terrainNamesSurface, new VisualGroup([
+            terrainNamesSurface, mapCellSizeInPixels, new VisualGroup([
                 new VisualRectangle(mapCellSizeInPixels, Color.byName("Green"), null, null),
-                VisualText.fromTextAndColor("P", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("P", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 30)], // resourcesToBuild
             [new Resource("Prosperity", 1)], // resourcesPerTurn
             null // entityModifyOnBuild
             ),
             new BuildableDefn("Ship Drive, Basic", true, // isItem
-            terrainNamesOrbit, new VisualGroup([
+            terrainNamesOrbit, mapCellSizeInPixels, new VisualGroup([
                 Ship.visual(Color.byName("Gray")),
-                VisualText.fromTextAndColor("Small", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("Drive", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 30)], // resourcesToBuild
             [], // resourcesPerTurn
             null // entityModifyOnBuild
             ),
             new BuildableDefn("Ship Generator, Basic", true, // isItem
-            terrainNamesOrbit, new VisualGroup([
+            terrainNamesOrbit, mapCellSizeInPixels, new VisualGroup([
                 Ship.visual(Color.byName("Gray")),
-                VisualText.fromTextAndColor("Small", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("Generator", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 30)], // resourcesToBuild
             [], // resourcesPerTurn
             null // entityModifyOnBuild
             ),
             new BuildableDefn("Ship Hull, Small", true, // isItem
-            terrainNamesOrbit, new VisualGroup([
+            terrainNamesOrbit, mapCellSizeInPixels, new VisualGroup([
                 Ship.visual(Color.byName("Gray")),
-                VisualText.fromTextAndColor("Small", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("Hull", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 50)], // resourcesToBuild
             [], // resourcesPerTurn
             null // entityModifyOnBuild
             ),
             new BuildableDefn("Ship Shield, Basic", true, // isItem
-            terrainNamesOrbit, new VisualGroup([
+            terrainNamesOrbit, mapCellSizeInPixels, new VisualGroup([
                 Ship.visual(Color.byName("Gray")),
-                VisualText.fromTextAndColor("Small", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("Shield", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 30)], // resourcesToBuild
             [], // resourcesPerTurn
             null // entityModifyOnBuild
             ),
             new BuildableDefn("Ship Weapon, Basic", true, // isItem
-            terrainNamesOrbit, new VisualGroup([
+            terrainNamesOrbit, mapCellSizeInPixels, new VisualGroup([
                 Ship.visual(Color.byName("Gray")),
-                VisualText.fromTextAndColor("Small", Color.byName("White"))
+                VisualText.fromTextHeightAndColor("Small", fontHeight, Color.byName("White"))
             ]), [new Resource("Industry", 30)], // resourcesToBuild
             [], // resourcesPerTurn
             null // entityModifyOnBuild
             ),
             new BuildableDefn("Shipyard", false, // isItem
-            terrainNamesOrbit, new VisualGroup([
-                new VisualRectangle(mapCellSizeInPixels, Color.byName("Orange"), null, null)
+            terrainNamesOrbit, mapCellSizeInPixels, new VisualGroup([
+                VisualRectangle.fromSizeAndColorFill(mapCellSizeInPixels, Color.byName("Orange"))
             ]), [new Resource("Industry", 1)], // resourcesToBuild
             [], // resourcesPerTurn
             // entityModifyOnBuild
@@ -227,9 +228,8 @@ class WorldExtended extends World {
                 if (device.usesThisTurn > 0) {
                     var target = device.targetEntity; // todo
                     if (target == null) {
-                        var mustTargetBody = true;
                         var venue = uwpe.universe.venueCurrent;
-                        venue.cursor.set(ship, "UseDevice", mustTargetBody);
+                        venue.cursor.entityAndOrderNameSet(ship, "UseDevice");
                     }
                     else // if (target != null)
                      {
@@ -297,6 +297,7 @@ class WorldExtended extends World {
             var planetIndexRandom = Math.floor(planets.length * Math.random());
             var factionHomePlanet = planets[planetIndexRandom];
             factionHomePlanet.factionName = factionName;
+            factionHomePlanet.demographics.population = 1;
             var buildable = new Buildable("Colony Hub", Coords.fromXY(4, 4), true);
             var buildableAsEntity = buildable.toEntity(worldDummy);
             factionHomePlanet.layout.map.bodies.push(buildableAsEntity);
@@ -304,7 +305,7 @@ class WorldExtended extends World {
             var shipDefn = Ship.bodyDefnBuild(factionColor);
             var shipCount = 2;
             for (var s = 0; s < shipCount; s++) {
-                var ship = new Ship(factionName + " Ship" + s, shipDefn, Coords.create().randomize(universe.randomizer).multiply(factionHomeStarsystem.size).multiplyScalar(2).subtract(factionHomeStarsystem.size), factionName, [
+                var ship = new Ship("Ship" + s, shipDefn, Coords.create().randomize(universe.randomizer).multiply(factionHomeStarsystem.size).multiplyScalar(2).subtract(factionHomeStarsystem.size), factionName, [
                     new Device(deviceDefnsByName.get("Ship Generator, Basic")),
                     new Device(deviceDefnsByName.get("Ship Drive, Basic")),
                     new Device(deviceDefnsByName.get("Ship Shield, Basic")),
@@ -349,9 +350,10 @@ class WorldExtended extends World {
         return this.factions[this.factionIndexCurrent];
     }
     factionsOtherThanCurrent() {
-        var returnValues = this.factions.slice();
-        ArrayHelper.removeAt(returnValues, this.factionIndexCurrent);
-        return returnValues;
+        return this.factionsOtherThan(this.factionCurrent());
+    }
+    factionsOtherThan(faction) {
+        return this.factions.filter(x => x.name != faction.name);
     }
     initialize(uwpe) {
         if (this.turnsSoFar == 0) {
@@ -363,6 +365,20 @@ class WorldExtended extends World {
     }
     toVenue() {
         return new VenueWorldExtended(this);
+    }
+    turnAdvanceUntilNotification(uwpe) {
+        var world = this;
+        var factionForPlayer = world.factions[0];
+        var notificationSession = factionForPlayer.notificationSession;
+        var notifications = notificationSession.notifications;
+        if (notifications.length > 0) {
+            world.updateForTurn(uwpe);
+        }
+        else {
+            while (notifications.length == 0) {
+                world.updateForTurn(uwpe);
+            }
+        }
     }
     updateForTurn(uwpe) {
         uwpe.world = this;

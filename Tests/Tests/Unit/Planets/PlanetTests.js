@@ -74,7 +74,8 @@ class PlanetTests extends TestFixture {
     }
     // controls
     toControl() {
-        var planetAsControl = -this.planet.toControl(this.universe, this.universe.display.sizeInPixels);
+        var uwpe = new UniverseWorldPlaceEntities(this.universe, null, null, this.planet, null);
+        var planetAsControl = -Planet.toControl(uwpe, this.universe.display.sizeInPixels, null);
         Assert.isNotNull(planetAsControl);
     }
     // diplomacy
@@ -108,13 +109,11 @@ class PlanetTests extends TestFixture {
         Assert.isNotNull(researchPerTurn);
     }
     resourcesPerTurn() {
-        var faction = this.planet.faction(this.world);
-        var resources = this.planet.resourcesPerTurn(this.universe, this.world, faction);
+        var resources = this.planet.resourcesPerTurn(this.world);
         Assert.isNotNull(resources);
     }
     resourcesPerTurnByName() {
-        var faction = this.planet.faction(this.world);
-        var resourcesByName = this.planet.resourcesPerTurnByName(this.universe, this.world, faction);
+        var resourcesByName = this.planet.resourcesPerTurnByName(this.world);
         Assert.isNotNull(resourcesByName);
     }
 }

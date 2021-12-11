@@ -3,6 +3,7 @@ class Ship extends Entity {
     constructor(name, defn, pos, factionName, items) {
         super(name, [
             Actor.create(),
+            new Controllable(Ship.toControl),
             defn,
             ItemHolder.fromItems(items),
             Killable.fromIntegrityMax(10),
@@ -53,6 +54,19 @@ class Ship extends Entity {
             ? null
             : world.factionByName(this.factionName));
         return returnValue;
+    }
+    integrityCurrentOverMax() {
+        return this.killable().integrityCurrentOverMax();
+    }
+    isAwaitingTarget() {
+        return (this.deviceSelected != null);
+    }
+    jumpTo(universe) {
+        var starsystem = this.starsystem(universe.world);
+        var venueStarsystem = new VenueStarsystem(universe.venueCurrent, // venueToReturnTo
+        starsystem // modelParent
+        );
+        universe.venueNext = venueStarsystem;
     }
     link(world) {
         var linkFound = world.network.links.find(x => (x.ships.indexOf(this) >= 0));
@@ -115,7 +129,32 @@ class Ship extends Entity {
         var starsystemFound = (networkNodeFound == null ? null : networkNodeFound.starsystem);
         return starsystemFound;
     }
+    toStringDescription() {
+        var returnValue = this.name
+            + " - " + this.locatable().loc.placeName
+            + " - Integrity: " + this.integrityCurrentOverMax()
+            + ", Energy: " + this.energyThisTurn;
+        var order = this.order();
+        var orderAsString = (order == null ? "Doing nothing." : order.toStringDescription());
+        returnValue +=
+            " - " + orderAsString;
+        return returnValue;
+    }
     // Devices.
+    devicesDrives(world) {
+        if (this._devicesDrives == null) {
+            this._devicesDrives = [];
+            var devices = this.devices();
+            for (var i = 0; i < devices.length; i++) {
+                var device = devices[i];
+                var deviceDefn = device.deviceDefn(world);
+                if (deviceDefn.categoryNames.indexOf("Drive") >= 0) {
+                    this._devicesDrives.push(device);
+                }
+            }
+        }
+        return this._devicesDrives;
+    }
     devicesUsable(world) {
         if (this._devicesUsable == null) {
             this._devicesUsable = [];
@@ -258,32 +297,62 @@ class Ship extends Entity {
             Starsystem.name + ":" + starsystem.name;
     }
     // controls
-    toControl(universe, containerSize) {
+    static toControl(uwpe, size, controlTypeName) {
+        var returnValue = null;
+        var ship = uwpe.entity;
+        if (controlTypeName == Starsystem.name) {
+            var universe = uwpe.universe;
+            returnValue = ship.toControl_Starsystem(universe, size);
+        }
+        else if (controlTypeName == "Status") {
+            returnValue = ship.toControl_Status(uwpe);
+        }
+        else {
+            throw new Error("Unrecognized controlTypeName: " + controlTypeName);
+        }
+        return returnValue;
+    }
+    toControl_Status(uwpe) {
+        var containerSize = uwpe.universe.display.sizeInPixels;
+        var margin = 8;
+        var fontHeightInPixels = 10;
+        var returnControl = ControlContainer.from4("containerShipStatus", Coords.fromXY(0, 0), // pos
+        containerSize, 
+        // children
+        [
+            new ControlLabel("headingShip", Coords.fromXY(margin, margin), Coords.fromXY(containerSize.x, 0), // this.size
+            false, // isTextCentered
+            DataBinding.fromContext(Ship.name), fontHeightInPixels)
+        ]);
+        return returnControl;
+    }
+    toControl_Starsystem(universe, containerSize) {
+        var ship = this;
         var world = universe.world;
         var margin = 8;
         var controlSpacing = 16;
         var buttonSize = Coords.fromXY(containerSize.x - margin * 2, 15);
         var fontHeightInPixels = margin;
-        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, this, null);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
         var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(0, 0), // pos
         containerSize, 
         // children
         [
-            ControlLabel.from5("textShipAsSelection", Coords.fromXY(margin, margin), Coords.fromXY(containerSize.x, 0), // this.size
+            new ControlLabel("textShipAsSelection", Coords.fromXY(margin, margin), Coords.fromXY(containerSize.x, 0), // this.size
             false, // isTextCentered
-            DataBinding.fromContext(this.name)),
-            ControlLabel.from5("labelIntegrity", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
+            DataBinding.fromContext(this.name), fontHeightInPixels),
+            new ControlLabel("labelIntegrity", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
             false, // isTextCentered
-            DataBinding.fromContext("H:")),
-            ControlLabel.from5("textIntegrity", Coords.fromXY(containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
+            DataBinding.fromContext("H:"), fontHeightInPixels),
+            new ControlLabel("textIntegrity", Coords.fromXY(containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
             false, // isTextCentered
-            DataBinding.fromContextAndGet(this, (c) => "" + c.integrity)),
-            ControlLabel.from5("labelEnergy", Coords.fromXY(containerSize.x / 2, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
+            DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontHeightInPixels),
+            new ControlLabel("labelEnergy", Coords.fromXY(containerSize.x / 2, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
             false, // isTextCentered
-            DataBinding.fromContext("E:")),
-            ControlLabel.from5("textEnergy", Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
+            DataBinding.fromContext("E:"), fontHeightInPixels),
+            new ControlLabel("textEnergy", Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
             false, // isTextCentered
-            DataBinding.fromContextAndGet(this, (c) => "" + c.energyThisTurn)),
+            DataBinding.fromContextAndGet(ship, (c) => "" + c.energyThisTurn), fontHeightInPixels),
             ControlButton.from8("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
             buttonSize, // size
             "View", fontHeightInPixels, true, // hasBorder
@@ -296,10 +365,10 @@ class Ship extends Entity {
             () => // click
              {
                 var venue = universe.venueCurrent;
-                var ship = venue.selection;
-                var mustTargetBodyFalse = false;
+                var ship = venue.selectedEntity;
+                ship.deviceSelected = ship.devicesDrives(world)[0];
                 var orderDefns = OrderDefn.Instances();
-                venue.cursor.set(ship, orderDefns.Go.name, mustTargetBodyFalse);
+                venue.cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
             }),
             ControlButton.from8("buttonRepeat", Coords.fromXY(margin, margin + controlSpacing * 4), // pos
             buttonSize, "Repeat", fontHeightInPixels, true, // hasBorder
@@ -307,29 +376,29 @@ class Ship extends Entity {
             () => // click
              {
                 var venue = universe.venueCurrent;
-                var ship = venue.selection;
+                var ship = venue.selectedEntity;
                 var order = Orderable.fromEntity(ship).order;
                 if (order != null) {
                     order.obey(universe, null, null, ship);
                 }
             }),
-            ControlLabel.from5("labelDevices", Coords.fromXY(margin, margin + controlSpacing * 5), // pos
+            new ControlLabel("labelDevices", Coords.fromXY(margin, margin + controlSpacing * 5), // pos
             Coords.fromXY(containerSize.x, 0), // this.size
             false, // isTextCentered
-            DataBinding.fromContext("Devices:")),
+            DataBinding.fromContext("Devices:"), fontHeightInPixels),
             ControlList.from8("listDevices", Coords.fromXY(margin, margin + controlSpacing * 6), // pos
             Coords.fromXY(buttonSize.x, controlSpacing * 2), // size
             // dataBindingForItems
-            DataBinding.fromContextAndGet(this, (c) => c.devicesUsable(world)), DataBinding.fromGet((c) => c.defn.name), // bindingForOptionText
-            fontHeightInPixels, new DataBinding(this, (c) => c.deviceSelected, (c, v) => c.deviceSelected = v), // dataBindingForItemSelected
+            DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable(world)), DataBinding.fromGet((c) => c.defn.name), // bindingForOptionText
+            fontHeightInPixels, new DataBinding(ship, (c) => c.deviceSelected, (c, v) => c.deviceSelected = v), // dataBindingForItemSelected
             DataBinding.fromContext(null) // bindingForItemValue
             ),
             ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
             buttonSize, "Use Device", fontHeightInPixels, true, // hasBorder
-            DataBinding.fromContextAndGet(this, (c) => (c.deviceSelected != null)), () => // click
+            DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected != null)), () => // click
              {
                 var venue = universe.venueCurrent;
-                var ship = venue.selection;
+                var ship = venue.selectedEntity;
                 var device = ship.deviceSelected;
                 device.use(uwpe);
             }),

@@ -1,11 +1,12 @@
 "use strict";
 class ControlDynamic extends ControlBase {
-    constructor(name, pos, size, binding) {
+    constructor(name, pos, size, binding, boundValueToControl) {
         super(name, pos, size, null); //fontHeightInPixels
         this.name = name;
         this.pos = pos;
         this.size = size;
         this.binding = binding;
+        this.boundValueToControl = boundValueToControl;
         this.boundValuePrev = null;
         this.child = null;
         // Helper variables.
@@ -14,10 +15,10 @@ class ControlDynamic extends ControlBase {
         this.mouseClickPos = Coords.create();
         this.mouseMovePos = Coords.create();
     }
-    actionHandle(actionNameToHandle) {
+    actionHandle(actionNameToHandle, universe) {
         var wasActionHandled = false;
         if (this.child != null) {
-            wasActionHandled = this.child.actionHandle(actionNameToHandle);
+            wasActionHandled = this.child.actionHandle(actionNameToHandle, universe);
         }
         return wasActionHandled;
     }
@@ -47,19 +48,21 @@ class ControlDynamic extends ControlBase {
     }
     mouseEnter() {
         if (this.child != null && this.child.mouseEnter != null) {
-            return this.child.mouseEnter();
+            this.child.mouseEnter();
         }
     }
     mouseExit() {
         if (this.child != null && this.child.mouseExit != null) {
-            return this.child.mouseExit();
+            this.child.mouseExit();
         }
     }
     mouseMove(mouseMovePos) {
+        var wasHandled = false;
         if (this.child != null && this.child.mouseMove != null) {
-            mouseMovePos = this.mouseMovePos.overwriteWith(mouseMovePos).subtract(this.pos);
-            return this.child.mouseMove(mouseMovePos);
+            var mouseMovePos = this.mouseMovePos.overwriteWith(mouseMovePos).subtract(this.pos);
+            wasHandled = this.child.mouseMove(mouseMovePos);
         }
+        return wasHandled;
     }
     // drawable
     draw(universe, display, drawLoc, style) {
@@ -69,14 +72,15 @@ class ControlDynamic extends ControlBase {
             if (boundValue == null) {
                 this.child = null;
             }
-            else if (boundValue.toControl != null) {
-                this.child = boundValue.toControl(universe, this.size);
+            else {
+                var child = this.boundValueToControl(boundValue);
+                this.child = child;
             }
         }
         if (this.child != null) {
             var drawLoc = this.drawLoc.overwriteWith(drawLoc);
             drawLoc.pos.add(this.pos);
-            this.child.draw(universe, display, drawLoc);
+            this.child.draw(universe, display, drawLoc, style);
         }
     }
 }

@@ -4,7 +4,7 @@ class VenueWorldExtended extends VenueWorld
 	world: WorldExtended;
 	cameraEntity: Entity;
 
-	selection: Entity;
+	selectedEntity: Entity;
 
 	constructor(world: WorldExtended)
 	{
@@ -24,9 +24,9 @@ class VenueWorldExtended extends VenueWorld
 
 	cameraCenterOnSelection(): void
 	{
-		if (this.selection != null)
+		if (this.selectedEntity != null)
 		{
-			var targetPosNew = this.selection.locatable().loc.pos;
+			var targetPosNew = this.selectedEntity.locatable().loc.pos;
 
 			var cameraConstrainable = this.cameraEntity.constrainable();
 			var constraint =
@@ -58,7 +58,6 @@ class VenueWorldExtended extends VenueWorld
 		var constraint =
 			cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
 		var constraintDistance = constraint as Constraint_HoldDistanceFromTarget;
-		constraintDistance.distanceToHold += cameraSpeed / 2;
 		constraintDistance.distanceToHold -= cameraSpeed / 2;
 		if (constraintDistance.distanceToHold < 1)
 		{
@@ -122,9 +121,9 @@ class VenueWorldExtended extends VenueWorld
 	toControl(universe: Universe): ControlBase
 	{
 		var containerMainSize = universe.display.sizeInPixels.clone();
-		var controlHeight = 16;
+		var controlHeight = 14;
 
-		var margin = 10;
+		var margin = 8;
 		var fontHeightInPixels = 10;//universe.display.fontHeightInPixels;
 
 		var containerInnerSize = Coords.fromXY(100, 60);
@@ -174,10 +173,11 @@ class VenueWorldExtended extends VenueWorld
 					containerMainSize,
 					containerInnerSize,
 					margin,
-					controlHeight
+					controlHeight,
+					true // includeTurnAdvanceButtons
 				),
 
-				faction.toControl
+				faction.toControl_ClusterOverlay
 				(
 					universe,
 					containerMainSize,
@@ -266,7 +266,11 @@ class VenueWorldExtended extends VenueWorld
 
 	selectionName(): string
 	{
-		return (this.selection == null ? "[none]" : this.selection.name);
+		var returnValue =
+		(
+			this.selectedEntity == null ? "[none]" : this.selectedEntity.name
+		);
+		return returnValue;
 	}
 
 	updateForTimerTick(universe: Universe): void
@@ -337,7 +341,7 @@ class VenueWorldExtended extends VenueWorld
 
 				var bodyClicked = collisionNearest.colliders[0]; // todo
 
-				if (bodyClicked == this.selection)
+				if (bodyClicked == this.selectedEntity)
 				{
 					var venueCurrent = universe.venueCurrent;
 					var bodyClickedNetworkNode = bodyClicked as NetworkNode2;
@@ -352,7 +356,7 @@ class VenueWorldExtended extends VenueWorld
 					}
 				}
 
-				this.selection = bodyClicked;
+				this.selectedEntity = bodyClicked;
 			}
 		}
 
@@ -371,9 +375,13 @@ class VenueWorldExtended extends VenueWorld
 
 			var cameraSpeed = 20;
 
-			if (inputActive.startsWith("Mouse"))
+			if (inputActive == "MouseMove")
 			{
 				// Do nothing.
+			}
+			else if (inputActive == "MouseClick")
+			{
+				inputHelper.isMouseClicked(false);
 			}
 			else if (inputActive == "a")
 			{

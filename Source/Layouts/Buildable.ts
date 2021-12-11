@@ -52,28 +52,6 @@ class Buildable implements EntityPropertyBase
 		return this._entity;
 	}
 
-	visual(world: WorldExtended): VisualBase
-	{
-		if (this._visual == null)
-		{
-			var defnVisual = this.defn(world).visual;
-			if (this.isComplete)
-			{
-				this._visual = defnVisual;
-			}
-			else
-			{
-				this._visual = new VisualGroup
-				([
-					defnVisual,
-					VisualText.fromTextAndColor("X", Color.byName("White"))
-				]);
-			}
-		}
-
-		return this._visual;
-	}
-
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}

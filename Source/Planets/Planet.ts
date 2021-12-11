@@ -9,6 +9,8 @@ class Planet extends Entity
 	ships: Ship[];
 
 	bodyDefn: BodyDefn;
+	deviceSelected: Device;
+
 	_resourcesPerTurn: Resource[];
 	_resourcesPerTurnByName: Map<string, Resource>;
 
@@ -28,6 +30,7 @@ class Planet extends Entity
 			name,
 			[
 				bodyDefn,
+				new Controllable(Planet.toControl),
 				ItemHolder.create(),
 				Locatable.fromPos(pos)
 			]
@@ -56,33 +59,38 @@ class Planet extends Entity
 	{
 		if (Planet._bodyDefnPlanet == null)
 		{
+			var planetDimension = 10;
+
+			var visualForPlanetType = new VisualCircleGradient
+			(
+				planetDimension, // radius
+				new ValueBreakGroup
+				(
+					[
+						new ValueBreak(0, Color.byName("White")),
+						new ValueBreak(.2, Color.byName("White")),
+						new ValueBreak(.3, Color.byName("Cyan")),
+						new ValueBreak(.75, Color.byName("Cyan")),
+						new ValueBreak(1, Color.byName("Black")),
+					],
+					null // ?
+				),
+				null // colorBorder
+			);
+
 			Planet._bodyDefnPlanet = new BodyDefn
 			(
 				"Planet",
-				Coords.fromXY(10, 10), // size
+				Coords.fromXY(1, 1).multiplyScalar(planetDimension), // size
 				new VisualGroup
 				([
-					new VisualCircleGradient
-					(
-						10, // radius
-						new ValueBreakGroup
-						(
-							[
-								new ValueBreak(0, Color.byName("White")),
-								new ValueBreak(.2, Color.byName("White")),
-								new ValueBreak(.3, Color.byName("Cyan")),
-								new ValueBreak(.75, Color.byName("Cyan")),
-								new ValueBreak(1, Color.byName("Black")),
-							],
-							null // ?
-						),
-						null // colorBorder
-					),
+					visualForPlanetType,
 					new VisualDynamic // todo - VisualDynamic2?
 					(
 						(uwpe: UniverseWorldPlaceEntities) =>
 						{
-							var factionName = "todo"; // todo
+							var planet = uwpe.entity as Planet;
+							var factionName = planet.factionName; // todo
 							var returnValue: VisualBase = null;
 							if (factionName == null)
 							{
@@ -92,9 +100,9 @@ class Planet extends Entity
 							{
 								returnValue = new VisualOffset
 								(
-									VisualText.fromTextAndColor
+									VisualText.fromTextHeightAndColor
 									(
-										factionName, Color.byName("White"),
+										factionName, planetDimension, Color.byName("White"),
 									),
 									Coords.fromXY(0, 16)
 								)
@@ -126,7 +134,10 @@ class Planet extends Entity
 					new VisualGroup
 					([
 						new VisualCircle(starRadius, starColor, starColor, null),
-						VisualText.fromTextAndColor(starName, Color.byName("Gray"))
+						VisualText.fromTextHeightAndColor
+						(
+							starName, 10, Color.byName("Gray")
+						)
 					])
 				);
 		}
@@ -222,14 +233,26 @@ class Planet extends Entity
 		return (this.factionName == null ? null : world.factionByName(this.factionName));
 	}
 
-	toEntity(): Entity
+	isAwaitingTarget(): boolean
 	{
-		return this;
+		return (this.deviceSelected != null);
+	}
+
+	jumpTo(universe: Universe): void
+	{
+		var venuePlanet = new VenueLayout
+		(
+			universe.venueCurrent,
+			this, // modelParent
+			this.layout
+		);
+		universe.venueNext = venuePlanet;
 	}
 
 	shipAdd(shipToAdd: Ship): void
 	{
 		this.ships.push(shipToAdd);
+		shipToAdd.locatable().loc.placeName = Planet.name + ":" + this.name;
 	}
 
 	shipRemove(shipToRemove: Ship): void
@@ -251,9 +274,43 @@ class Planet extends Entity
 		return starsystemFound;
 	}
 
+	toEntity(): Entity
+	{
+		return this;
+	}
+
+	toStringDescription(world: WorldExtended): string
+	{
+		var resourcesPerTurnAsString =
+			this.resourcesPerTurn(world).join(", ");
+
+		var returnValue =
+			this.name
+			+ " - " + this.demographics.toStringDescription()
+			+ " - " + resourcesPerTurnAsString
+			+ " - " + this.industry.toStringDescription(world, this)
+			+ ".";
+
+		return returnValue;
+	}
+
 	// controls
 
-	toControl(universe: Universe, size: Coords): ControlBase
+	static toControl
+	(
+		uwpe: UniverseWorldPlaceEntities,
+		size: Coords,
+		controlTypeName: string
+	): ControlBase
+	{
+		var universe = uwpe.universe;
+		var planet = uwpe.entity as Planet;
+		var returnValue =
+			planet.toControl_Starsystem(universe, size);
+		return returnValue;
+	}
+
+	toControl_Starsystem(universe: Universe, size: Coords): ControlBase
 	{
 		var returnValue = ControlContainer.from4
 		(
@@ -303,41 +360,33 @@ class Planet extends Entity
 
 	// resources
 
-	buildableEntitiesRemove(buildableEntitiesToRemove: Entity[]): void
+	buildableEntitiesRemove(entities: Entity[]): void
 	{
-		buildableEntitiesToRemove.forEach(x => this.buildableEntityRemove(x));
+		this.layout.buildableEntitiesRemove(entities);
 	}
 
-	buildableEntityBuild(buildableEntityToBuild: Entity): void
+	buildableEntityBuild(entity: Entity): void
 	{
-		var buildableEntityInProgress = this.buildableEntityInProgress();
-		if (buildableEntityInProgress != null)
-		{
-			if (buildableEntityInProgress != buildableEntityToBuild)
-			{
-				this.buildableEntityRemove(buildableEntityInProgress);
-			}
-		}
-
-		var buildables = this.layout.map.bodies;
-		buildables.push(buildableEntityToBuild);
+		this.layout.buildableEntityBuild(entity);
 	}
 
 	buildableEntityInProgress(): Entity
 	{
-		return this.layout.map.bodies.find
-		(
-			x => Buildable.fromEntity(x).isComplete == false
-		);
+		return this.layout.buildableEntityInProgress();
 	}
 
-	buildableEntityRemove(buildableEntityToRemove: Entity): void
+	buildableInProgress(): Buildable
 	{
-		var bodies = this.layout.map.bodies;
-		bodies.splice
+		var buildableEntityInProgress = this.buildableEntityInProgress();
+
+		var returnValue =
 		(
-			bodies.indexOf(buildableEntityToRemove), 1
+			buildableEntityInProgress == null
+			? null
+			: Buildable.fromEntity(buildableEntityInProgress)
 		);
+
+		return returnValue;
 	}
 
 	industryPerTurn
@@ -347,7 +396,7 @@ class Planet extends Entity
 	{
 		var resource = this.resourcesPerTurnByName
 		(
-			universe, world, faction
+			world
 		).get("Industry");
 		return (resource == null ? 0: resource.quantity);
 	}
@@ -359,7 +408,7 @@ class Planet extends Entity
 	{
 		var resource = this.resourcesPerTurnByName
 		(
-			universe, world, faction
+			world
 		).get("Prosperity");
 		return (resource == null ? 0: resource.quantity);
 	}
@@ -371,15 +420,12 @@ class Planet extends Entity
 	{
 		var resource = this.resourcesPerTurnByName
 		(
-			universe, world, faction
+			world
 		).get("Research");
 		return (resource == null ? 0: resource.quantity);
 	}
 
-	resourcesPerTurn
-	(
-		universe: Universe, world: WorldExtended, faction: Faction
-	): Resource[]
+	resourcesPerTurn(world: WorldExtended): Resource[]
 	{
 		if (this._resourcesPerTurn == null)
 		{
@@ -403,15 +449,13 @@ class Planet extends Entity
 		return this._resourcesPerTurn;
 	}
 
-	resourcesPerTurnByName
-	(
-		universe: Universe, world: WorldExtended, faction: Faction
-	): Map<string,Resource>
+	resourcesPerTurnByName(world: WorldExtended): Map<string,Resource>
 	{
 		if (this._resourcesPerTurnByName == null)
 		{
 			var resourcesPerTurn =
-				this.resourcesPerTurn(universe, world, faction);
+				this.resourcesPerTurn(world);
+
 			this._resourcesPerTurnByName = ArrayHelper.addLookups
 			(
 				resourcesPerTurn, (x: Resource) => x.defnName

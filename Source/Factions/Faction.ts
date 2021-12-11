@@ -6,14 +6,13 @@ class Faction
 	homePlanetName: string;
 	color: Color;
 	relationships: DiplomaticRelationship[];
-	technology: TechnologyResearcher;
+	technologyResearcher: TechnologyResearcher;
 	planets: Planet[];
 	ships: Ship[];
 	knowledge: FactionKnowledge
 
 	notificationSession: NotificationSession;
 	relationshipsByFactionName: Map<string,DiplomaticRelationship>;
-	technologyResearcher: TechnologyResearcher;
 
 	planetSelected: Planet;
 	shipSelected: Ship;
@@ -27,7 +26,7 @@ class Faction
 		homePlanetName: string,
 		color: Color,
 		relationships: DiplomaticRelationship[],
-		technology: TechnologyResearcher,
+		technologyResearcher: TechnologyResearcher,
 		planets: Planet[],
 		ships: Ship[],
 		knowledge: FactionKnowledge
@@ -38,7 +37,7 @@ class Faction
 		this.homePlanetName = homePlanetName;
 		this.color = color;
 		this.relationships = relationships;
-		this.technology = technology;
+		this.technologyResearcher = technologyResearcher;
 		this.planets = planets;
 		this.ships = ships;
 		this.knowledge = knowledge;
@@ -69,9 +68,131 @@ class Faction
 		);
 	}
 
-	// static methods
+	detailsView(universe: Universe): void
+	{
+		var factionDetailsAsControl = this.toControl_Details(universe);
+		var venueNext = new VenueControls(factionDetailsAsControl, false);
+		universe.venueNext = venueNext;
+	}
+
+	researchSessionStart(universe: Universe): void
+	{
+		var researchSession = new TechnologyResearchSession
+		(
+			(universe.world as WorldExtended).technologyTree,
+			this.technologyResearcher
+		);
+		var venueNext: Venue = new VenueTechnologyResearchSession(researchSession);
+		venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
+		universe.venueNext = venueNext;
+	}
+
+	planetAdd(planet: Planet): void
+	{
+		this.planets.push(planet);
+	}
+
+	planetHome(world: WorldExtended): Planet
+	{
+		return this.starsystemHome(world).planets.find(x => x.name == this.homePlanetName);
+	}
+
+	starsystemHome(world: WorldExtended): Starsystem
+	{
+		return world.network.nodeByName(this.homeStarsystemName).starsystem;
+	}
+
+	toString(): string
+	{
+		return this.name;
+	}
 
 	// controls
+
+	toControl_ClusterOverlay
+	(
+		universe: Universe,
+		containerOuterSize: Coords,
+		containerInnerSize: Coords,
+		margin: number,
+		controlHeight: number,
+		buttonWidth: number
+	): ControlBase
+	{
+		var fontHeightInPixels = 10;
+
+		var faction = this;
+
+		var size = Coords.fromXY
+		(
+			containerInnerSize.x,
+			controlHeight * 2 + margin * 3
+		);
+
+		var returnValue = ControlContainer.from4
+		(
+			"containerFaction",
+			Coords.fromXY
+			(
+				containerOuterSize.x
+					- margin
+					- containerInnerSize.x,
+				margin
+			), // pos
+			size,
+			// children
+			[
+				new ControlLabel
+				(
+					"labelFaction",
+					Coords.fromXY(margin, margin),// pos
+					Coords.fromXY
+					(
+						containerInnerSize.x - margin * 3,
+						controlHeight
+					), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Faction:"),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
+				(
+					"textFaction",
+					Coords.fromXY
+					(
+						margin * 2 + containerInnerSize.x * .3, margin
+					), // pos
+					Coords.fromXY
+					(
+						containerInnerSize.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCentered
+					DataBinding.fromContext(faction.name),
+					fontHeightInPixels
+				),
+
+				ControlButton.from8
+				(
+					"buttonDetails",
+					Coords.fromXY
+					(
+						margin, margin * 2 + controlHeight
+					), // pos
+					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+					"Details",
+					fontHeightInPixels,
+					true, // hasBorder
+					DataBinding.fromTrue(), // isEnabled
+					// click
+					() => faction.detailsView(universe) // click
+				)
+			]
+		);
+
+		return returnValue;
+	}
 
 	static toControl_Intelligence
 	(
@@ -93,16 +214,17 @@ class Faction
 			containerSize,
 			// children
 			[
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelFaction",
 					Coords.fromXY(margin, margin), // pos
 					Coords.fromXY(columnWidth, controlSpacing), // size
 					false, // isTextCentered
-					DataBinding.fromContext("Faction:")
+					DataBinding.fromContext("Faction:"),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"textFaction",
 					Coords.fromXY(margin * 2 + columnWidth, margin), // pos
@@ -113,34 +235,38 @@ class Faction
 						diplomaticSession,
 						(c: DiplomaticSession) =>
 							(c.factionSelected == null ? "[none]" : c.factionSelected.name)
-					)
+					),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelRelationship",
 					Coords.fromXY(margin, margin + controlSpacing), // pos
 					Coords.fromXY(columnWidth, controlSpacing), // size
 					false, // isTextCentered
-					DataBinding.fromContext("Relationship:")
+					DataBinding.fromContext("Relationship:"),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"textRelationship",
 					Coords.fromXY(margin + columnWidth, margin + controlSpacing), // pos
 					Coords.fromXY(columnWidth, controlSpacing), // size,
 					false, // isTextCentered
-					DataBinding.fromContext("[relationship]")
+					DataBinding.fromContext("[relationship]"),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelPlanets",
 					Coords.fromXY(margin, margin + controlSpacing * 2), // pos
 					Coords.fromXY(columnWidth, controlSpacing), // size
 					false, // isTextCentered
-					DataBinding.fromContext("Planets:")
+					DataBinding.fromContext("Planets:"),
+					fontHeightInPixels
 				),
 
 				ControlList.from8
@@ -177,13 +303,14 @@ class Faction
 					null // bindingForItemValue
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelShips",
 					Coords.fromXY(margin, margin + controlSpacing * 7), // pos
 					Coords.fromXY(columnWidth, controlSpacing), // size
 					false, // isTextCentered
-					DataBinding.fromContext("Ships:")
+					DataBinding.fromContext("Ships:"),
+					fontHeightInPixels
 				),
 
 				ControlList.from7
@@ -223,179 +350,359 @@ class Faction
 		return returnValue;
 	}
 
-	// instance methods
+	toControl_Details(universe: Universe): ControlBase
+	{
+		var size = universe.display.sizeInPixels;
+		var margin = 8;
+		var fontHeightInPixels = 10;
+		var controlHeight = 12;
 
-	researchSessionStart(universe: Universe): void
+		var tabButtonSize =
+			Coords.fromXY(4, 2).multiplyScalar(controlHeight);
+
+		var tabbedControlSize = Coords.fromXY
+		(
+			size.x,
+			size.y - tabButtonSize.y - margin
+		);
+
+		var faction = this;
+
+		var containerStatus = ControlContainer.from4
+		(
+			"Status",
+			Coords.create(),
+			tabbedControlSize,
+			// children
+			[
+				new ControlLabel
+				(
+					"labelFaction",
+					Coords.fromXY(margin, margin),// pos
+					Coords.fromXY
+					(
+						tabbedControlSize.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Faction:"),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
+				(
+					"textBoxFaction",
+					Coords.fromXY(margin * 8, margin), // pos
+					Coords.fromXY
+					(
+						tabbedControlSize.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCentered
+					DataBinding.fromContext(faction.name),
+					fontHeightInPixels
+				),
+
+			]
+		);
+
+		var containerNotifications =
+			this.toControl_Details_Notifications(universe, tabbedControlSize);
+
+		var containerDiplomacy =
+			this.toControl_Details_Diplomacy(universe, tabbedControlSize);
+
+		var containerTechnology =
+			this.toControl_Details_Technology(universe, tabbedControlSize);
+
+		var containerPlanets = this.toControl_Details_Planets
+		(
+			universe, tabbedControlSize, margin, controlHeight, fontHeightInPixels
+		);
+
+		var containerShips = this.toControl_Details_Ships
+		(
+			universe, tabbedControlSize, margin, controlHeight, fontHeightInPixels
+		);
+
+		var controlsForTabs =
+		[
+			containerStatus,
+			containerNotifications,
+			containerDiplomacy,
+			containerTechnology,
+			containerPlanets,
+			containerShips
+		];
+
+		var venueToReturnTo = universe.venueCurrent;
+		var back = () => universe.venueNext = venueToReturnTo;
+
+		var returnControl = new ControlTabbed<Faction>
+		(
+			"tabbedItems",
+			Coords.create(), // pos
+			size,
+			tabButtonSize,
+			controlsForTabs,
+			fontHeightInPixels,
+			back,
+			faction // context
+		);
+
+		return returnControl;
+	}
+
+	toControl_Details_Diplomacy
+	(
+		universe: Universe, size: Coords
+	): ControlBase
+	{
+		var world = universe.world as WorldExtended;
+		var factionCurrent = this;
+		var factionsOther = world.factionsOtherThan(factionCurrent);
+		var diplomaticSession = DiplomaticSession.demo
+		(
+			factionCurrent,
+			factionsOther,
+			universe.venueCurrent
+		);
+		var diplomaticSessionAsControl =
+			diplomaticSession.toControl(universe, size);
+
+		return diplomaticSessionAsControl;
+	}
+
+	toControl_Details_Notifications
+	(
+		universe: Universe, size: Coords
+	): ControlBase
+	{
+		return this.notificationSession.toControl(universe, size);
+	}
+
+	toControl_Details_Planets
+	(
+		universe: Universe,
+		size: Coords,
+		margin: number,
+		controlHeight: number,
+		fontHeightInPixels: number
+	): ControlBase
+	{
+		var world = universe.world as WorldExtended;
+		var faction = this;
+
+		var containerPlanets = ControlContainer.from4
+		(
+			"Planets",
+			Coords.create(),
+			size,
+			// children
+			[
+				new ControlLabel
+				(
+					"labelPlanets",
+					Coords.fromXY(margin, margin),// pos
+					Coords.fromXY
+					(
+						size.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Planets:"),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
+				(
+					"textPlanetCount",
+					Coords.fromXY(margin * 8, margin), // pos
+					Coords.fromXY
+					(
+						size.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCentered
+					DataBinding.fromContextAndGet
+					(
+						faction,
+						(c: Faction) => "" + c.planets.length
+					),
+					fontHeightInPixels
+				),
+
+				ControlList.from8
+				(
+					"listPlanets",
+					Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+					Coords.fromXY
+					(
+						size.x - margin * 2,
+						size.y - margin * 4 - controlHeight * 2
+					), // size
+					DataBinding.fromContextAndGet
+					(
+						faction,
+						(c: Faction) => faction.planets
+					), // items
+					DataBinding.fromGet
+					(
+						(c: Planet) => c.toStringDescription(world)
+					), // bindingForItemText
+					fontHeightInPixels,
+					// dataBindingForItemSelected
+					new DataBinding
+					(
+						faction,
+						(c: Faction) => c.planetSelected,
+						(c: Faction, v: Planet) =>
+						{
+							c.planetSelected = v;
+						}
+					),
+					null // bindingForItemValue
+				),
+
+				ControlButton.from8
+				(
+					"buttonGoToSelected",
+					Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+					Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
+					"Go To",
+					fontHeightInPixels,
+					true, // hasBorder
+					DataBinding.fromContextAndGet
+					(
+						faction, (c: Faction) => (c.planetSelected != null)
+					), // isEnabled
+					() => faction.planetSelected.jumpTo(universe) // click
+				),
+
+			]
+		);
+
+		return containerPlanets;
+	}
+
+	toControl_Details_Ships
+	(
+		universe: Universe,
+		size: Coords,
+		margin: number,
+		controlHeight: number,
+		fontHeightInPixels: number
+	): ControlBase
+	{
+		var faction = this;
+
+		var containerShips = ControlContainer.from4
+		(
+			"Ships",
+			Coords.create(),
+			size,
+			// children
+			[
+				new ControlLabel
+				(
+					"labelShips",
+					Coords.fromXY(margin, margin),// pos
+					Coords.fromXY
+					(
+						size.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Ships:"),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
+				(
+					"textShipCount",
+					Coords.fromXY(margin * 8, margin), // pos
+					Coords.fromXY
+					(
+						size.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCentered
+					DataBinding.fromContextAndGet
+					(
+						faction,
+						(c: Faction) => "" + c.ships.length
+					),
+					fontHeightInPixels
+				),
+
+				ControlList.from8
+				(
+					"listShips",
+					Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+					Coords.fromXY
+					(
+						size.x - margin * 2,
+						size.y - margin * 4 - controlHeight * 2
+					), // size
+					DataBinding.fromContextAndGet
+					(
+						faction,
+						(c: Faction) => faction.ships
+					), // items
+					DataBinding.fromGet
+					(
+						(c: Ship) => c.toStringDescription()
+					), // bindingForItemText
+					fontHeightInPixels,
+					// dataBindingForItemSelected
+					new DataBinding
+					(
+						faction,
+						(c: Faction) => c.shipSelected,
+						(c: Faction, v: Ship) =>
+						{
+							c.shipSelected = v;
+						}
+					),
+					null // bindingForItemValue
+				),
+
+				ControlButton.from8
+				(
+					"buttonGoToSelected",
+					Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+					Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
+					"Go To",
+					fontHeightInPixels,
+					true, // hasBorder
+					DataBinding.fromContextAndGet
+					(
+						faction, (c: Faction) => (c.shipSelected != null)
+					), // isEnabled
+					() => faction.shipSelected.jumpTo(universe) // click
+				),
+
+			]
+		);
+
+		return containerShips;
+	}
+
+	toControl_Details_Technology
+	(
+		universe: Universe, size: Coords
+	): ControlBase
 	{
 		var researchSession = new TechnologyResearchSession
 		(
 			(universe.world as WorldExtended).technologyTree,
-			this.technology
-		);
-		var venueNext: Venue = new VenueTechnologyResearchSession(researchSession);
-		venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-		universe.venueNext = venueNext;
-	}
-
-	planetAdd(planet: Planet): void
-	{
-		this.planets.push(planet);
-	}
-
-	planetHome(world: WorldExtended): Planet
-	{
-		return this.starsystemHome(world).planets.find(x => x.name == this.homePlanetName);
-	}
-
-	starsystemHome(world: WorldExtended): Starsystem
-	{
-		return world.network.nodeByName(this.homeStarsystemName).starsystem;
-	}
-
-	toString(): string
-	{
-		return this.name;
-	}
-
-	// controls
-
-	toControl
-	(
-		universe: Universe,
-		containerMainSize: Coords,
-		containerInnerSize: Coords,
-		margin: number,
-		controlHeight: number,
-		buttonWidth: number
-	): ControlBase
-	{
-		var fontHeightInPixels = 10;
-
-		var faction = this;
-
-		var returnValue = ControlContainer.from4
-		(
-			"containerFaction",
-			Coords.fromXY
-			(
-				containerMainSize.x
-					- margin
-					- containerInnerSize.x,
-				margin
-			),
-			containerInnerSize.clone().multiply(Coords.fromXY(1, 1.25)),
-			// children
-			[
-
-				ControlLabel.from5
-				(
-					"labelFaction",
-					Coords.fromXY(margin, 0),// pos
-					Coords.fromXY
-					(
-						containerInnerSize.x - margin * 3,
-						controlHeight
-					), // size
-					false, // isTextCentered
-					DataBinding.fromContext("Faction:")
-				),
-
-				ControlLabel.from5
-				(
-					"textBoxFaction",
-					Coords.fromXY(margin * 2 + containerInnerSize.x * .3, 0), // pos
-					Coords.fromXY
-					(
-						containerInnerSize.x - margin * 3,
-						controlHeight
-					), // size
-					false, // isTextCentered
-					DataBinding.fromContext(faction.name)
-				),
-
-				ControlButton.from8
-				(
-					"buttonTechnology",
-					Coords.fromXY(margin, controlHeight), // pos
-					Coords.fromXY(buttonWidth, controlHeight), // size
-					"Tech",
-					fontHeightInPixels,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => faction.researchSessionStart(universe) // click
-				),
-
-				ControlButton.from8
-				(
-					"buttonNotifications",
-					Coords.fromXY
-					(
-						margin,
-						controlHeight * 2
-					), // pos
-					Coords.fromXY(buttonWidth, controlHeight), // size
-					"Notes",
-					fontHeightInPixels,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					// click
-					() => faction.notificationSessionStart(universe)
-				),
-
-				ControlButton.from8
-				(
-					"buttonRelations",
-					Coords.fromXY
-					(
-						margin,
-						controlHeight * 3
-					), // pos
-					Coords.fromXY(buttonWidth, controlHeight), // size
-					"Others",
-					fontHeightInPixels,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					// click
-					() => faction.relationsInitialize(universe)
-				),
-
-				ControlButton.from8
-				(
-					"buttonPlanets",
-					Coords.fromXY
-					(
-						margin * 2 + buttonWidth,
-						controlHeight
-					), // pos
-					Coords.fromXY(buttonWidth, controlHeight), // size
-					"Planets",
-					fontHeightInPixels,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					// click
-					() => { alert("todo"); } // click
-				),
-
-				ControlButton.from8
-				(
-					"buttonShips",
-					Coords.fromXY
-					(
-						margin * 2 + buttonWidth,
-						controlHeight * 2
-					), // pos
-					Coords.fromXY(buttonWidth, controlHeight), // size
-					"Ships",
-					fontHeightInPixels,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					// click
-					() => { alert("todo"); } // click
-				),
-			]
+			this.technologyResearcher
 		);
 
-		return returnValue;
+		var researchSessionAsControl =
+			researchSession.toControl(universe, size);
+
+		return researchSessionAsControl;
 	}
 
 	// diplomacy
@@ -448,17 +755,10 @@ class Faction
 
 	relationsInitialize(universe: Universe): void
 	{
-		var world = universe.world as WorldExtended;
-		var factionCurrent = world.factionCurrent();
-		var factionsOther = world.factionsOtherThanCurrent();
-		var diplomaticSession = DiplomaticSession.demo
+		var diplomaticSessionAsControl = this.toControl_Details_Diplomacy
 		(
-			factionCurrent,
-			factionsOther,
-			universe.venueCurrent
+			universe, universe.display.sizeInPixels
 		);
-		var diplomaticSessionAsControl =
-			diplomaticSession.toControl(universe);
 		var venueNext: Venue = diplomaticSessionAsControl.toVenue();
 		venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
@@ -499,7 +799,7 @@ class Faction
 			returnValue += planet.strength(world);
 		}
 
-		returnValue += this.technology.strength(world);
+		returnValue += this.technologyResearcher.strength(world);
 
 		return returnValue;
 	}
@@ -513,8 +813,11 @@ class Faction
 
 	notificationSessionStart(universe: Universe): void
 	{
-		var notificationSession = this.notificationSession;
-		var notificationSessionAsControl = notificationSession.toControl(universe);
+		var notificationSessionAsControl =
+			this.toControl_Details_Notifications
+			(
+				universe, universe.display.sizeInPixels
+			);
 		var venueNext: Venue = notificationSessionAsControl.toVenue();
 		venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
 		universe.venueNext = venueNext;
@@ -553,6 +856,9 @@ class Faction
 			ship.updateForTurn(universe, world, this);
 		}
 
-		this.technology.updateForTurn(universe, world, this);
+		this.technologyResearcher.updateForTurn
+		(
+			universe, world, this
+		);
 	}
 }

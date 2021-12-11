@@ -5,6 +5,7 @@ class VenueLayout implements Venue
 	modelParent: any;
 	layout: Layout;
 
+	buildableDefnSelected: BuildableDefn;
 	venueControls: VenueControls;
 
 	constructor(venueParent: Venue, modelParent: any, layout: Layout)
@@ -12,6 +13,20 @@ class VenueLayout implements Venue
 		this.venueParent = venueParent;
 		this.modelParent = modelParent;
 		this.layout = layout;
+	}
+
+	buildableDefnsAllowedOnTerrain
+	(
+		buildableDefnsToCheck: BuildableDefn[],
+		terrain: MapTerrain
+	): BuildableDefn[]
+	{
+		var returnValues = buildableDefnsToCheck.filter
+		(
+			x => x.isAllowedOnTerrain(terrain)
+		);
+
+		return returnValues;
 	}
 
 	finalize(universe: Universe): void
@@ -34,6 +49,8 @@ class VenueLayout implements Venue
 
 	updateForTimerTick(universe: Universe): void
 	{
+		var venueLayout = this;
+
 		this.venueControls.updateForTimerTick(universe);
 
 		var inputHelper = universe.inputHelper;
@@ -66,12 +83,16 @@ class VenueLayout implements Venue
 				{
 					var buildableEntityInProgress =
 						planet.buildableEntityInProgress();
+					var acknowledge = () => universe.venueNext = venueLayout;
 					if (buildableEntityInProgress == null)
 					{
 						var neighboringBodies = map.bodiesNeighboringCursor();
 						if (neighboringBodies.length == 0)
 						{
-							universe.venueNext = VenueMessage.fromText("Cannot build there.");
+							universe.venueNext = VenueMessage.fromTextAndAcknowledge
+							(
+								"Cannot build there.", acknowledge
+							);
 						}
 						else
 						{
@@ -82,7 +103,10 @@ class VenueLayout implements Venue
 					}
 					else
 					{
-						universe.venueNext = VenueMessage.fromText("Already building.");
+						universe.venueNext = VenueMessage.fromTextAndAcknowledge
+						(
+							"Already building something.", acknowledge
+						);
 					}
 				}
 				else
@@ -121,13 +145,14 @@ class VenueLayout implements Venue
 			displaySize.clone().subtract(containerSize).half(), // pos
 			containerSize,
 			[
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelBuildableName",
 					Coords.fromXY(1, 1).multiply(margin),
 					listSize,
 					false, // isTextCentered
-					DataBinding.fromContext(buildableAtCursor.defnName) // text
+					DataBinding.fromContext(buildableAtCursor.defnName), // text
+					fontHeightInPixels
 				),
 
 				ControlButton.from8
@@ -163,9 +188,14 @@ class VenueLayout implements Venue
 		return returnValue;
 	}
 
-	controlBuildableSelectBuild(universe: Universe, cursorPos: Coords): ControlBase
+	controlBuildableSelectBuild
+	(
+		universe: Universe, cursorPos: Coords
+	): ControlBase
 	{
-		var world = universe.world;
+		var venueLayout = this;
+
+		var world = universe.world as WorldExtended;
 		var layout = this.layout;
 		var map = layout.map;
 
@@ -173,21 +203,10 @@ class VenueLayout implements Venue
 		// todo - Allow ships to colonize planets with no faction.
 		var buildableDefnsAvailable =
 		(
-			faction == null ? [] : faction.technology.buildablesAvailable(world)
+			faction == null ? [] : faction.technologyResearcher.buildablesAvailable(world)
 		);
 
-		var terrainName = map.terrainAtCursor().name;
-		var buildableDefnsAllowedOnTerrain = [];
-		for (var i = 0; i < buildableDefnsAvailable.length; i++)
-		{
-			var buildableDefn = buildableDefnsAvailable[i];
-			var isBuildableDefnAllowedOnTerrain =
-				ArrayHelper.contains(buildableDefn.terrainNamesAllowed, terrainName);
-			if (isBuildableDefnAllowedOnTerrain)
-			{
-				buildableDefnsAllowedOnTerrain.push(buildableDefn);
-			}
-		}
+		var terrain = map.terrainAtCursor();
 
 		var displaySize = universe.display.sizeInPixels.clone().clearZ();
 		var containerSize = displaySize.clone().half();
@@ -195,14 +214,60 @@ class VenueLayout implements Venue
 		var fontHeightInPixels = 10; // hack
 		var columnWidth = containerSize.x - margin.x * 2;
 		var buttonHeight = fontHeightInPixels * 2;
-		var buttonSize = Coords.fromXY(columnWidth, buttonHeight);
+		var buttonSize = Coords.fromXY
+		(
+			(columnWidth - margin.x) / 2, buttonHeight
+		);
 		var listSize = Coords.fromXY
 		(
 			columnWidth,
 			containerSize.y - buttonHeight * 2 - margin.y * 4
 		);
 
-		// var venueThis = this; // hack
+		var listBuildables = ControlList.from8
+		(
+			"listBuildables",
+			Coords.fromXY(margin.x, margin.y * 2 + buttonSize.y),
+			listSize,
+			DataBinding.fromContextAndGet
+			(
+				this,
+				(c: VenueLayout) =>
+					c.buildableDefnsAllowedOnTerrain(buildableDefnsAvailable, terrain)
+			),
+			DataBinding.fromGet
+			(
+				(c: BuildableDefn) => c.name
+			), //bindingForItemText,
+			fontHeightInPixels,
+			new DataBinding
+			(
+				this,
+				(c: VenueLayout) => c.buildableDefnSelected,
+				(c: VenueLayout, v: BuildableDefn) => c.buildableDefnSelected = v
+			), // bindingForItemSelected,
+			DataBinding.fromGet( (c: BuildableDefn) => c.name) // bindingForItemValue
+		);
+
+		var buttonBuild_Clicked = () =>
+		{
+			var buildableDefnSelected = venueLayout.buildableDefnSelected;
+			if (buildableDefnSelected != null)
+			{
+				var buildableDefnName = buildableDefnSelected.name;
+				var layout = venueLayout.layout;
+				var cursorPos = layout.map.cursor.pos;
+				var buildable = new Buildable(buildableDefnName, cursorPos.clone(), false);
+				var buildableEntity = buildable.toEntity(world);
+				this.modelParent.buildableEntityBuild(buildableEntity)
+			}
+			universe.venueNext = venueLayout;
+		}
+
+		var buttonCancel_Clicked = () =>
+		{
+			universe.venueNext = venueLayout;
+		}
 
 		var returnValue = ControlContainer.from4
 		(
@@ -210,58 +275,47 @@ class VenueLayout implements Venue
 			displaySize.clone().subtract(containerSize).half(), // pos
 			containerSize,
 			[
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelFacilityToBuild",
 					margin,
 					listSize,
 					false, // isTextCentered
-					DataBinding.fromContext("Facility to Build:") // text
+					DataBinding.fromContext("Facility to Build:"), // text
+					fontHeightInPixels
 				),
 
-				ControlList.from8
-				(
-					"listBuildables",
-					Coords.fromXY(margin.x, margin.y * 2 + buttonSize.y),
-					listSize,
-					DataBinding.fromContext(buildableDefnsAllowedOnTerrain),
-					DataBinding.fromGet( (c: BuildableDefn) => c.name ), //bindingForItemText,
-					fontHeightInPixels,
-					DataBinding.fromContext(null), // bindingForItemSelected,
-					DataBinding.fromContext(null), // bindingForItemValue
-				),
+				listBuildables,
 
 				ControlButton.from8
 				(
 					"buttonBuild",
-					Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
+					Coords.fromXY(
+						margin.x,
+						containerSize.y - margin.y - buttonSize.y
+					), //pos,
 					buttonSize,
 					"Build", // text,
 					fontHeightInPixels,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
-					() => // click
-					{
-						alert("todo");
-						/*
-						var venueCurrent =
-							universe.venueCurrent as VenueControls;
-						var container = venueCurrent.controlRoot as ControlContainer;
-						var controlList =
-							container.childByName("listBuildables") as ControlList;
-						var itemSelected = controlList.itemSelected(null);
-						if (itemSelected != null)
-						{
-							var buildableDefnName = itemSelected.name;
-							var layout = venueThis.layout;
-							var cursorPos = layout.map.cursor.pos;
-							var buildable = new Buildable(buildableDefnName, cursorPos.clone(), null);
-							var buildableEntity = new Entity(buildableDefnName, [ buildable ] );
-							layout.map.bodies.push(buildableEntity);
-						}
-						universe.venueNext = venueThis;
-						*/
-					}
+					buttonBuild_Clicked
+				),
+
+				ControlButton.from8
+				(
+					"buttonCancel",
+					Coords.fromXY
+					(
+						margin.x * 2 + buttonSize.x,
+						containerSize.y - margin.y - buttonSize.y
+					), //pos,
+					buttonSize,
+					"Cancel", // text,
+					fontHeightInPixels,
+					true, // hasBorder,
+					DataBinding.fromTrue(), // isEnabled,
+					buttonCancel_Clicked
 				)
 			]
 		);
@@ -276,8 +330,8 @@ class VenueLayout implements Venue
 
 		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
-		var controlHeight = 16;
-		var margin = 10;
+		var controlHeight = 14;
+		var margin = 8;
 		var fontHeightInPixels = display.fontHeightInPixels;
 
 		var containerInnerSize = Coords.fromXY(100, 60);
@@ -335,7 +389,7 @@ class VenueLayout implements Venue
 			{
 				var faction = factionCurrent;
 
-				var controlFaction = faction.toControl
+				var controlFaction = faction.toControl_ClusterOverlay
 				(
 					universe,
 					containerMainSize,
@@ -394,6 +448,7 @@ class VenueLayout implements Venue
 	{
 		var world = universe.world as WorldExtended;
 		var planet = this.modelParent;
+		var fontHeightInPixels = margin;
 
 		var returnValue = ControlContainer.from4
 		(
@@ -408,7 +463,7 @@ class VenueLayout implements Venue
 			containerInnerSize,
 			// children
 			[
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelBuilding",
 					Coords.fromXY(margin, margin), // pos
@@ -418,10 +473,11 @@ class VenueLayout implements Venue
 						controlHeight
 					), // size
 					false, // isTextCentered
-					DataBinding.fromContext("Building:")
+					DataBinding.fromContext("Building:"),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelBuildable",
 					Coords.fromXY(margin, controlHeight + margin), // pos
@@ -432,13 +488,20 @@ class VenueLayout implements Venue
 						planet,
 						(c) =>
 						{
-							var buildable = c.buildableEntityInProgress();
-							return (buildable == null ? "[none]" : buildable.defnName);
+							var buildable = c.buildableInProgress();
+							var returnValue =
+							(
+								buildable == null
+								? "[none]"
+								: buildable.defnName
+							);
+							return returnValue;
 						}
-					)
+					),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelResourcesRequired",
 					Coords.fromXY(margin, controlHeight * 2 + margin), // pos
@@ -449,10 +512,17 @@ class VenueLayout implements Venue
 						planet,
 						(c) =>
 						{
-							var buildable = c.buildableEntityInProgress();
-							return (buildable == null ? "-" : buildable.defn(world).resourcesToBuild.toString() );
+							var buildable = c.buildableInProgress();
+							var returnValue =
+							(
+								buildable == null
+								? "-"
+								: buildable.defn(world).resourcesToBuild.toString()
+							);
+							return returnValue;
 						}
-					)
+					),
+					fontHeightInPixels
 				),
 			]
 		);
@@ -473,14 +543,20 @@ class VenueLayout implements Venue
 		var world  = universe.world as WorldExtended;
 		var faction = planet.faction(world);
 
+		var column1PosX = margin * 8;
+		controlHeight = 10;
+		var fontHeightInPixels = controlHeight;
+
+		var size = containerInnerSize;
+
 		var returnValue = ControlContainer.from4
 		(
 			"containerTimeAndPlace",
 			Coords.fromXY(margin, margin),
-			containerInnerSize,
+			size,
 			// children
 			[
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"textPlace",
 					Coords.fromXY(margin,  margin), // pos
@@ -493,46 +569,104 @@ class VenueLayout implements Venue
 					DataBinding.fromContextAndGet
 					(
 						planet, (c: Planet) => c.name
-					)
+					),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
+				(
+					"labelPopulation",
+					Coords.fromXY(margin, margin + controlHeight), // pos
+					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Population:"),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
+				(
+					"textPopulation",
+					Coords.fromXY(column1PosX, margin + controlHeight), // pos
+					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					DataBinding.fromContextAndGet
+					(
+						planet,
+						(c: Planet) => "" + c.demographics.population
+					),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
+				(
+					"labelIndustry",
+					Coords.fromXY(margin, margin + controlHeight * 2), // pos
+					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Industry:"),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
 				(
 					"textIndustry",
-					Coords.fromXY(margin, margin + controlHeight), // pos
+					Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
 					DataBinding.fromContextAndGet
 					(
 						planet,
 						(c: Planet) => "" + c.industryPerTurn(universe, world, faction)
-					)
+					),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
+				(
+					"labelProsperity",
+					Coords.fromXY(margin, margin + controlHeight * 3), // pos
+					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Prosperity:"),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
 				(
 					"textProsperity",
-					Coords.fromXY(margin, margin + controlHeight * 2), // pos
+					Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
 					DataBinding.fromContextAndGet
 					(
 						planet,
 						(c: Planet) => "" + c.prosperityPerTurn(universe, world, faction)
-					)
+					),
+					fontHeightInPixels
 				),
 
-				ControlLabel.from5
+				new ControlLabel
 				(
 					"labelResearch",
-					Coords.fromXY(margin, margin + controlHeight * 3), // pos
+					Coords.fromXY(margin, margin + controlHeight * 4), // pos
+					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCentered
+					DataBinding.fromContext("Research:"),
+					fontHeightInPixels
+				),
+
+				new ControlLabel
+				(
+					"textResearch",
+					Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCentered
 					DataBinding.fromContextAndGet
 					(
 						planet,
 						(c: Planet) => "" + c.researchPerTurn(universe, world, faction)
-					)
+					),
+					fontHeightInPixels
 				),
 			]
 		);

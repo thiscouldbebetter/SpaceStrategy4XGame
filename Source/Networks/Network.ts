@@ -391,12 +391,13 @@ class Network2 //
 		for (var i = 0; i < drawablesSortedByZ.length; i++)
 		{
 			var entity = drawablesSortedByZ[i];
-			var node = entity as NetworkNode2;
-			if (node != null)
+			var entityTypeName = entity.constructor.name;
+			if (entityTypeName == NetworkNode2.name)
 			{
+				var node = entity as NetworkNode2;
 				node.draw(universe, nodeRadiusActual, camera);
 			}
-			else
+			else if (entityTypeName == Ship.name)
 			{
 				var ship = entity as Ship;
 				if (ship != null)

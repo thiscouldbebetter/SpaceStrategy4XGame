@@ -54,7 +54,7 @@ class VenueStarsystem {
         return this.starsystem;
     }
     selectionName() {
-        return (this.selection == null ? "[none]" : this.selection.name);
+        return (this.selectedEntity == null ? "[none]" : this.selectedEntity.name);
     }
     updateForTimerTick(universe) {
         this.venueControls.updateForTimerTick(universe);
@@ -133,14 +133,14 @@ class VenueStarsystem {
                 ArrayHelper.insertElementAt(bodiesClickedAsCollisionsSorted, collisionToSort, j);
             }
             var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
-            if (this.selection == null || numberOfCollisions == 1) {
+            if (this.selectedEntity == null || numberOfCollisions == 1) {
                 bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
             }
             else {
                 for (var c = 0; c < numberOfCollisions; c++) {
                     var collision = bodiesClickedAsCollisionsSorted[c];
                     bodyClicked = collision.colliders[0];
-                    if (bodyClicked == this.selection) {
+                    if (bodyClicked == this.selectedEntity) {
                         var cNext = c + 1;
                         if (cNext >= numberOfCollisions) {
                             cNext = 0;
@@ -156,54 +156,70 @@ class VenueStarsystem {
         inputHelper.isMouseClicked(false);
     }
     updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked) {
-        var selectionTypeName = (this.selection == null ? null : this.selection.constructor.name);
-        // todo - Fix.
-        if (this.selection == null) {
-            this.selection = bodyClicked;
-        }
-        else if (selectionTypeName == Ship.name) {
-            var ship = this.selection;
-            if (bodyClicked != null) // && bodyClicked.defn.name != "Cursor")
-             {
-                // Targeting an existing body, not an arbitrary point.
-                universe.inputHelper.isEnabled = false;
-                var targetEntity = bodyClicked;
-                if (this.cursor.orderName != null) {
-                    var order = new Order(this.cursor.orderName, targetEntity);
-                    ship.orderSet(order);
-                    order.obey(universe, universe.world, null, ship);
-                }
-                this.cursor.clear();
-            }
-            else if (this.cursor.hasXYPositionBeenSpecified == false) {
-                this.cursor.hasXYPositionBeenSpecified = true;
-            }
-            else if (this.cursor.hasZPositionBeenSpecified == false) {
-                universe.inputHelper.isEnabled = false;
-                var targetPos = Coords.create();
-                var target = new Entity("Target", [
-                    new BodyDefn("MoveTarget", targetPos, null),
-                    this.cursor.locatable().clone()
-                ]);
-                var order = new Order(this.cursor.orderName, target);
-                Orderable.fromEntity(ship).order = order;
-                order.obey(universe, universe.world, null, ship);
-                this.cursor.clear();
-            }
+        var selectionTypeName = (this.selectedEntity == null
+            ? null
+            : this.selectedEntity.constructor.name);
+        if (this.selectedEntity == null) {
+            this.selectedEntity = bodyClicked;
         }
         else if (selectionTypeName == Planet.name) {
-            if (bodyClicked == this.selection) {
-                var planet = bodyClicked;
-                if (planet != null) {
-                    var layout = planet.layout;
-                    var venueNext = new VenueLayout(this, bodyClicked, layout);
-                    venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-                    universe.venueNext = venueNext;
-                }
-            }
+            this.updateForTimerTick_Input_Mouse_Selection_Planet(universe, bodyClicked);
+        }
+        else if (selectionTypeName == Ship.name) {
+            this.updateForTimerTick_Input_Mouse_Selection_Ship(universe, bodyClicked);
         }
         else {
-            this.selection = bodyClicked;
+            this.selectedEntity = bodyClicked;
+        }
+    }
+    updateForTimerTick_Input_Mouse_Selection_Planet(universe, bodyClicked) {
+        var planetSelected = this.selectedEntity;
+        if (bodyClicked == null) {
+            this.selectedEntity = null;
+        }
+        else if (bodyClicked == planetSelected) {
+            var layout = planetSelected.layout;
+            var venueNext = new VenueLayout(this, bodyClicked, layout);
+            venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
+            universe.venueNext = venueNext;
+        }
+        else if (planetSelected.isAwaitingTarget()) {
+            // todo
+        }
+        else {
+            this.selectedEntity = bodyClicked;
+        }
+    }
+    updateForTimerTick_Input_Mouse_Selection_Ship(universe, bodyClicked) {
+        var ship = this.selectedEntity;
+        if (ship.isAwaitingTarget() == false) {
+            this.selectedEntity = bodyClicked;
+        }
+        else if (bodyClicked != null) {
+            // Targeting an existing body, not an arbitrary point.
+            universe.inputHelper.isEnabled = false;
+            var targetEntity = bodyClicked;
+            if (this.cursor.orderName != null) {
+                var order = new Order(this.cursor.orderName, targetEntity);
+                ship.orderSet(order);
+                order.obey(universe, universe.world, null, ship);
+            }
+            this.cursor.clear();
+        }
+        else if (this.cursor.hasXYPositionBeenSpecified == false) {
+            this.cursor.hasXYPositionBeenSpecified = true;
+        }
+        else if (this.cursor.hasZPositionBeenSpecified == false) {
+            universe.inputHelper.isEnabled = false;
+            var targetPos = Coords.create();
+            var target = new Entity("Target", [
+                new BodyDefn("MoveTarget", targetPos, null),
+                this.cursor.locatable().clone()
+            ]);
+            var order = new Order(this.cursor.orderName, target);
+            Orderable.fromEntity(ship).order = order;
+            order.obey(universe, universe.world, null, ship);
+            this.cursor.clear();
         }
     }
     updateForTimerTick_Input_MouseMove(universe) {
@@ -230,10 +246,10 @@ class VenueStarsystem {
         return this.cameraEntity.camera();
     }
     cameraCenterOnSelection() {
-        if (this.selection != null) {
+        if (this.selectedEntity != null) {
             var constraint = this.cameraEntity.constrainable().constraintByClassName(Constraint_PositionOnCylinder.name);
             var constraintPosition = constraint;
-            var selectionPos = this.selection.locatable().loc.pos;
+            var selectionPos = this.selectedEntity.locatable().loc.pos;
             constraintPosition.center.overwriteWith(selectionPos);
         }
     }
@@ -283,7 +299,8 @@ class VenueStarsystem {
                 venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
                 universe.venueNext = venueNext;
             }),
-            controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight),
+            controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, false // includeTurnAdvanceButtons
+            ),
             controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight),
             controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, margin), Coords.fromXY(containerInnerSize.x, containerMainSize.y - margin * 2), margin, controlHeight),
         ]);

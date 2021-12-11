@@ -1,7 +1,8 @@
 "use strict";
 class OrderDefn {
-    constructor(name, obey) {
+    constructor(name, description, obey) {
         this.name = name;
+        this.description = description;
         this.obey = obey;
     }
     static Instances() {
@@ -13,8 +14,8 @@ class OrderDefn {
 }
 class OrderDefn_Instances {
     constructor() {
-        this.Go = new OrderDefn("Go", this.go);
-        this.UseDevice = new OrderDefn("UseDevice", this.useDevice);
+        this.Go = new OrderDefn("Go", "moving to", this.go);
+        this.UseDevice = new OrderDefn("UseDevice", "using", this.useDevice);
         this._All =
             [
                 this.Go,

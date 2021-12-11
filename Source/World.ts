@@ -152,6 +152,7 @@ class WorldExtended extends World
 	static create_BuildableDefns(): BuildableDefn[]
 	{
 		var mapCellSizeInPixels = Coords.fromXY(20, 20); // hack
+		var fontHeight = mapCellSizeInPixels.y / 2;
 
 		var terrainNamesOrbit = [ "Orbit" ];
 		var terrainNamesSurface = [ "Surface" ];
@@ -163,13 +164,17 @@ class WorldExtended extends World
 				"Colony Hub",
 				true, // isItem
 				terrainNamesSurface,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					new VisualRectangle
 					(
 						mapCellSizeInPixels, Color.byName("Gray"), null, null
 					),
-					VisualText.fromTextAndColor("H", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"H", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 100) ], // resourcesToBuild
 				// resourcesProducedPerTurn
@@ -185,13 +190,17 @@ class WorldExtended extends World
 				"Factory",
 				false, // isItem
 				terrainNamesSurface,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					new VisualRectangle
 					(
 						mapCellSizeInPixels, Color.byName("Red"), null, null
 					),
-					VisualText.fromTextAndColor("F", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"F", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Industry", 1) ], // resourcesPerTurn
@@ -203,13 +212,17 @@ class WorldExtended extends World
 				"Laboratory",
 				false, // isItem
 				terrainNamesSurface,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					new VisualRectangle
 					(
 						mapCellSizeInPixels, Color.byName("Blue"), null, null
 					),
-					VisualText.fromTextAndColor("L", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"L", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Research", 1) ], // resourcesPerTurn
@@ -221,13 +234,17 @@ class WorldExtended extends World
 				"Plantation",
 				false, // isItem
 				terrainNamesSurface,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					new VisualRectangle
 					(
 						mapCellSizeInPixels, Color.byName("Green"), null, null
 					),
-					VisualText.fromTextAndColor("P", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"P", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[ new Resource("Prosperity", 1) ], // resourcesPerTurn
@@ -239,10 +256,14 @@ class WorldExtended extends World
 				"Ship Drive, Basic",
 				true, // isItem
 				terrainNamesOrbit,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					Ship.visual(Color.byName("Gray") ),
-					VisualText.fromTextAndColor("Small", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"Drive", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[], // resourcesPerTurn
@@ -254,10 +275,14 @@ class WorldExtended extends World
 				"Ship Generator, Basic",
 				true, // isItem
 				terrainNamesOrbit,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					Ship.visual(Color.byName("Gray") ),
-					VisualText.fromTextAndColor("Small", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"Generator", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[], // resourcesPerTurn
@@ -269,10 +294,14 @@ class WorldExtended extends World
 				"Ship Hull, Small",
 				true, // isItem
 				terrainNamesOrbit,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					Ship.visual(Color.byName("Gray") ),
-					VisualText.fromTextAndColor("Small", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"Hull", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 50) ], // resourcesToBuild
 				[], // resourcesPerTurn
@@ -284,10 +313,14 @@ class WorldExtended extends World
 				"Ship Shield, Basic",
 				true, // isItem
 				terrainNamesOrbit,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					Ship.visual(Color.byName("Gray") ),
-					VisualText.fromTextAndColor("Small", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"Shield", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[], // resourcesPerTurn
@@ -299,10 +332,14 @@ class WorldExtended extends World
 				"Ship Weapon, Basic",
 				true, // isItem
 				terrainNamesOrbit,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
 					Ship.visual(Color.byName("Gray") ),
-					VisualText.fromTextAndColor("Small", Color.byName("White"))
+					VisualText.fromTextHeightAndColor
+					(
+						"Small", fontHeight, Color.byName("White")
+					)
 				]),
 				[ new Resource("Industry", 30) ], // resourcesToBuild
 				[], // resourcesPerTurn
@@ -314,9 +351,13 @@ class WorldExtended extends World
 				"Shipyard",
 				false, // isItem
 				terrainNamesOrbit,
+				mapCellSizeInPixels,
 				new VisualGroup
 				([
-					new VisualRectangle(mapCellSizeInPixels, Color.byName("Orange"), null, null)
+					VisualRectangle.fromSizeAndColorFill
+					(
+						mapCellSizeInPixels, Color.byName("Orange")
+					)
 				]),
 				[ new Resource("Industry", 1) ], // resourcesToBuild
 				[], // resourcesPerTurn
@@ -453,9 +494,8 @@ class WorldExtended extends World
 						var target = device.targetEntity; // todo
 						if (target == null)
 						{
-							var mustTargetBody = true;
 							var venue = uwpe.universe.venueCurrent as VenueStarsystem;
-							venue.cursor.set(ship, "UseDevice", mustTargetBody);
+							venue.cursor.entityAndOrderNameSet(ship, "UseDevice");
 						}
 						else // if (target != null)
 						{
@@ -563,6 +603,8 @@ class WorldExtended extends World
 			var factionHomePlanet = planets[planetIndexRandom];
 			factionHomePlanet.factionName = factionName;
 
+			factionHomePlanet.demographics.population = 1;
+
 			var buildable = new Buildable("Colony Hub", Coords.fromXY(4, 4), true);
 			var buildableAsEntity = buildable.toEntity(worldDummy);
 
@@ -578,9 +620,12 @@ class WorldExtended extends World
 			{
 				var ship = new Ship
 				(
-					factionName + " Ship" + s,
+					"Ship" + s,
 					shipDefn,
-					Coords.create().randomize(universe.randomizer).multiply
+					Coords.create().randomize
+					(
+						universe.randomizer
+					).multiply
 					(
 						factionHomeStarsystem.size
 					).multiplyScalar
@@ -680,9 +725,15 @@ class WorldExtended extends World
 
 	factionsOtherThanCurrent(): Faction[]
 	{
-		var returnValues = this.factions.slice();
-		ArrayHelper.removeAt(returnValues, this.factionIndexCurrent);
-		return returnValues;
+		return this.factionsOtherThan(this.factionCurrent());
+	}
+
+	factionsOtherThan(faction: Faction): Faction[]
+	{
+		return this.factions.filter
+		(
+			x => x.name != faction.name
+		);
 	}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
@@ -702,6 +753,26 @@ class WorldExtended extends World
 	{
 		return new VenueWorldExtended(this);
 	}
+
+	turnAdvanceUntilNotification(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var world = this;
+		var factionForPlayer = world.factions[0];
+		var notificationSession = factionForPlayer.notificationSession;
+		var notifications = notificationSession.notifications;
+		if (notifications.length > 0)
+		{
+			world.updateForTurn(uwpe);
+		}
+		else
+		{
+			while (notifications.length == 0)
+			{
+				world.updateForTurn(uwpe);
+			}
+		}
+	}
+
 
 	updateForTurn(uwpe: UniverseWorldPlaceEntities): void
 	{

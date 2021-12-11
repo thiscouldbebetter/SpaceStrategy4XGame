@@ -11,7 +11,6 @@ class Cursor extends Entity {
         this.entityUnderneath = null;
         this.entityParent = null;
         this.orderName = null;
-        this.mustTargetEntity = null;
         this.hasXYPositionBeenSpecified = false;
         this.hasZPositionBeenSpecified = false;
         this.defn = this.bodyDefn();
@@ -20,9 +19,9 @@ class Cursor extends Entity {
         var radius = 5;
         var color = Color.Instances().White;
         var visualReticle = new VisualSelect(new Map([
-            ["_0", new VisualNone()],
+            ["None", new VisualNone()],
             [
-                "_1",
+                "Crosshairs",
                 new VisualGroup([
                     new VisualCircle(radius, null, color, null),
                     new VisualLine(Coords.fromXY(-radius, 0), Coords.fromXY(radius, 0), color, null),
@@ -35,13 +34,10 @@ class Cursor extends Entity {
             var returnValue;
             var cursor = uwpe.entity;
             if (cursor.entityParent == null) {
-                returnValue = "_0";
-            }
-            else if (cursor.mustTargetEntity) {
-                returnValue = "_1";
+                returnValue = "None";
             }
             else {
-                returnValue = "_1";
+                returnValue = "Crosshairs";
             }
             return [returnValue];
         });
@@ -54,8 +50,7 @@ class Cursor extends Entity {
                 returnValue = c.entityUnderneath.name;
             }
             return returnValue;
-        }), false, // shouldTextContextBeReset
-        null, // heightInPixels
+        }), null, // heightInPixels
         Color.byName("Gray"), Color.byName("White"));
         var visual = new VisualGroup([
             visualHover,
@@ -71,14 +66,14 @@ class Cursor extends Entity {
         this.hasXYPositionBeenSpecified = false;
         this.hasZPositionBeenSpecified = false;
     }
-    set(entity, orderName, mustTargetEntity) {
+    entityAndOrderNameSet(entity, orderName) {
         this.entityParent = entity;
         this.orderName = orderName;
-        this.mustTargetEntity = mustTargetEntity;
+        return this;
     }
     // controls
-    toControl(uwpe) {
-        return this.entityParent.controllable().toControl(uwpe);
+    toControl(uwpe, size) {
+        return this.entityParent.controllable().toControl(uwpe, size, null);
     }
     // drawable
     draw(uwpe, display) {

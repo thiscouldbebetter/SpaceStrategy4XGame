@@ -116,8 +116,10 @@ class OrderDefn_Instances
 					ship.factionName,
 					null // devices
 				);
-				projectileEntity.energyPerMove = 0;
-				projectileEntity.distancePerMove = 1000;
+				var turnAndMove = 
+					projectileEntity.turnAndMove;
+				turnAndMove.energyPerMove = 0;
+				turnAndMove.distancePerMove = 1000;
 
 				projectileEntity.actor().activity = 
 					Activity.fromDefnNameAndTargetEntity

@@ -92,12 +92,12 @@ class VenueWorldExtended extends VenueWorld {
             () => // click
              {
                 var venueNext = universe.controlBuilder.gameAndSettings1(universe).toVenue();
-                venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-                universe.venueNext = venueNext;
+                universe.venueTransitionTo(venueNext);
             }),
             controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, true // includeTurnAdvanceButtons
             ),
-            faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth),
+            faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, true // includeDetailsButton
+            ),
             controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight),
             controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, containerMainSize.y - margin - containerInnerSize.y), containerInnerSize, margin, controlHeight),
         ]);
@@ -147,7 +147,7 @@ class VenueWorldExtended extends VenueWorld {
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
         var inputHelper = universe.inputHelper;
-        if (inputHelper.isMouseClicked(null)) {
+        if (inputHelper.isMouseClicked()) {
             universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
             var mouseClickPos = inputHelper.mouseClickPos.clone();
             var camera = this.cameraEntity.camera();
@@ -173,9 +173,7 @@ class VenueWorldExtended extends VenueWorld {
                     var starsystem = bodyClickedNetworkNode.starsystem;
                     if (starsystem != null) {
                         var venueNext = new VenueStarsystem(venueCurrent, starsystem);
-                        venueNext =
-                            VenueFader.fromVenuesToAndFrom(venueNext, venueCurrent);
-                        universe.venueNext = venueNext;
+                        universe.venueTransitionTo(venueNext);
                     }
                 }
                 this.selectedEntity = bodyClicked;
@@ -186,15 +184,14 @@ class VenueWorldExtended extends VenueWorld {
             var inputActive = inputsActive[i].name;
             if (inputActive == "Escape") {
                 var venueNext = universe.controlBuilder.gameAndSettings1(universe).toVenue();
-                venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-                universe.venueNext = venueNext;
+                universe.venueTransitionTo(venueNext);
             }
             var cameraSpeed = 20;
             if (inputActive == "MouseMove") {
                 // Do nothing.
             }
             else if (inputActive == "MouseClick") {
-                inputHelper.isMouseClicked(false);
+                inputHelper.mouseClickedSet(false);
             }
             else if (inputActive == "a") {
                 this.cameraLeft(cameraSpeed);

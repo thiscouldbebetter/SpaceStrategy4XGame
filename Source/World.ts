@@ -3,7 +3,7 @@ class WorldExtended extends World
 {
 	buildableDefns: BuildableDefn[];
 	deviceDefns: DeviceDefn[];
-	technologyTree: TechnologyTree;
+	technologyGraph: TechnologyGraph;
 	network: Network2;
 	factions: Faction[];
 	ships: Ship[];
@@ -24,7 +24,7 @@ class WorldExtended extends World
 		activityDefns: ActivityDefn[],
 		buildableDefns: BuildableDefn[],
 		deviceDefns: DeviceDefn[],
-		technologyTree: TechnologyTree,
+		technologyGraph: TechnologyGraph,
 		network: Network2,
 		factions: Faction[],
 		ships: Ship[],
@@ -46,7 +46,7 @@ class WorldExtended extends World
 
 		this.buildableDefns = buildableDefns;
 		this.deviceDefns = deviceDefns;
-		this.technologyTree = technologyTree;
+		this.technologyGraph = technologyGraph;
 		this.network = network;
 		this.factions = factions;
 		this.ships = ships;
@@ -73,8 +73,16 @@ class WorldExtended extends World
 
 	// static methods
 
-	static create(universe: Universe): WorldExtended
+	static create
+	(
+		universe: Universe,
+		worldCreator: WorldCreator
+	): WorldExtended
 	{
+		var settings = worldCreator.settings;
+		var starsystemCount = parseInt(settings.starsystemCountAsString);
+		var factionCount = parseInt(settings.factionCountAsString);
+
 		var worldName = NameGenerator.generateName() + " Cluster";
 
 		var activityDefns = ArrayHelper.flattenArrayOfArrays
@@ -85,20 +93,19 @@ class WorldExtended extends World
 
 		var buildableDefns = WorldExtended.create_BuildableDefns();
 
-		var technologyTree = TechnologyTree.demo();
-		var technologiesFree = technologyTree.technologiesFree();
+		var technologyGraph = TechnologyGraph.demo();
+		var technologiesFree = technologyGraph.technologiesFree();
 
 		var viewSize = universe.display.sizeInPixels.clone();
 		var viewDimension = viewSize.y;
 
 		var networkRadius = viewDimension * .25;
-		var numberOfNetworkNodes = 12;
 		var network = Network2.generateRandom
 		(
 			universe,
 			worldName,
 			NetworkNodeDefn.Instances()._All,
-			numberOfNetworkNodes
+			starsystemCount
 		).scale
 		(
 			networkRadius
@@ -112,8 +119,12 @@ class WorldExtended extends World
 
 		var factionsAndShips = WorldExtended.create_FactionsAndShips
 		(
-			universe, network,  technologiesFree,
-			buildableDefns, deviceDefnsByName
+			universe,
+			network, 
+			technologiesFree,
+			buildableDefns,
+			deviceDefnsByName,
+			factionCount
 		);
 
 		var factions = factionsAndShips[0];
@@ -139,7 +150,7 @@ class WorldExtended extends World
 			activityDefns,
 			buildableDefns,
 			deviceDefns,
-			technologyTree,
+			technologyGraph,
 			network,
 			factions,
 			ships,
@@ -402,13 +413,15 @@ class WorldExtended extends World
 				(uwpe: UniverseWorldPlaceEntities) => // updateForTurn
 				{
 					var ship = uwpe.entity as Ship;
-					ship.distancePerMove += 50;
-					ship.energyPerMove += 1;
+					var shipTurnAndMove = ship.turnAndMove;
+					shipTurnAndMove.distancePerMove += 50;
+					shipTurnAndMove.energyPerMove += 1;
 				},
 				(uwpe: UniverseWorldPlaceEntities) => // use
 				{
 					var ship = uwpe.entity as Ship;
-					ship.energyThisTurn -= ship.energyPerMove;
+					var shipTurnAndMove = ship.turnAndMove;
+					shipTurnAndMove.energyForMoveDeduct();
 				}
 			),
 			new DeviceDefn
@@ -422,7 +435,7 @@ class WorldExtended extends World
 				(uwpe: UniverseWorldPlaceEntities) =>  // updateForTurn
 				{
 					var ship = uwpe.entity as Ship;
-					ship.energyThisTurn += 10;
+					ship.turnAndMove.energyThisTurn += 10;
 				},
 				(uwpe: UniverseWorldPlaceEntities) =>  // use
 				{
@@ -448,24 +461,26 @@ class WorldExtended extends World
 
 					if (device.isActive)
 					{
-						ship.energyThisTurn -= 1;
-						ship.shieldingThisTurn = 0;
+						var turnAndMove = ship.turnAndMove;
+						turnAndMove.energyThisTurn -= 1;
+						turnAndMove.shieldingThisTurn += 1;
 					}
 				},
 				(uwpe: UniverseWorldPlaceEntities) => // use
 				{
 					var ship = uwpe.entity as Ship;
 					var device = Device.fromEntity(uwpe.entity2);
+					var turnAndMove = ship.turnAndMove;
 
 					if (device.isActive)
 					{
 						device.isActive = false;
-						ship.energyThisTurn += 1;
+						turnAndMove.energyThisTurn += 1;
 					}
 					else
 					{
 						device.isActive = true;
-						ship.energyThisTurn -= 1;
+						turnAndMove.energyThisTurn -= 1;
 					}
 				}
 			),
@@ -521,11 +536,10 @@ class WorldExtended extends World
 		network: Network2,
 		technologiesFree: Technology[],
 		buildableDefns: BuildableDefn[],
-		deviceDefnsByName: Map<string, DeviceDefn>
+		deviceDefnsByName: Map<string, DeviceDefn>,
+		numberOfFactions: number
 	): [ Faction[], Ship[] ]
 	{
-		var numberOfFactions = 6;
-
 		var factions = new Array<Faction>();
 		var ships = new Array<Ship>();
 
@@ -538,6 +552,7 @@ class WorldExtended extends World
 			colors.Green,
 			colors.Cyan,
 			colors.Violet,
+			colors.Gray
 		];
 
 		var numberOfNetworkNodes = network.nodes.length;
@@ -549,12 +564,15 @@ class WorldExtended extends World
 			[], // activityDefns
 			buildableDefns,
 			[], // deviceDefns
-			null, // technologyTree
-			null, // network
+			null, // technologyGraph
+			network, // network
 			[], // factions
 			[], // ships
 			null, // camera
 		);
+
+		var factionIntelligenceAutomated =
+			FactionIntelligence.demo();
 
 		for (var i = 0; i < numberOfFactions; i++)
 		{
@@ -648,6 +666,9 @@ class WorldExtended extends World
 				factionHomeStarsystem.shipAdd(ship);
 			}
 
+			var factionIntelligence =
+				(i == 0 ? null : factionIntelligenceAutomated);
+
 			var faction = new Faction
 			(
 				factionName,
@@ -673,10 +694,46 @@ class WorldExtended extends World
 					(
 						(x: NetworkLink2) => x.name
 					)
-				)
+				),
+				factionIntelligence
 			);
 			factions.push(faction);
 		}
+
+		var factionUser = factions[0];
+		var factionUserHomeStarsystem =
+			factionUser.starsystemHome(worldDummy);
+
+		var factionEnemy = factions[1];
+
+		var shipEnemy = new Ship
+		(
+			"ShipEnemy",
+			shipDefn,
+			Coords.create().randomize
+			(
+				universe.randomizer
+			).multiply
+			(
+				factionUserHomeStarsystem.size
+			).multiplyScalar
+			(
+				2
+			).subtract
+			(
+				factionUserHomeStarsystem.size
+			),
+			factionEnemy.name,
+			[
+				new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
+				new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
+				new Device(deviceDefnsByName.get("Ship Shield, Basic") ),
+				new Device(deviceDefnsByName.get("Ship Weapon, Basic") ),
+			]
+		);
+
+		factionEnemy.shipAdd(shipEnemy);
+		factionUserHomeStarsystem.shipAdd(shipEnemy);
 
 		var factionsAndShips: [Faction[], Ship[]] = 
 			[ factions, ships ];

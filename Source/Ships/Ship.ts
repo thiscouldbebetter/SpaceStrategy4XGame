@@ -5,15 +5,10 @@ class Ship extends Entity
 	factionName: string;
 
 	deviceSelected: Device;
-	distanceLeftThisMove: number;
-	distancePerMove: number;
-	energyPerMove: number;
-	energyThisTurn: number;
-	shieldingThisTurn: number;
+	turnAndMove: TurnAndMove;
 
 	_devicesDrives: Device[];
 	_devicesUsable: Device[];
-	_displacement: Coords;
 	_visual: VisualBase;
 
 	constructor
@@ -45,12 +40,7 @@ class Ship extends Entity
 		this.defn = defn;
 		this.factionName = factionName;
 
-		this.energyThisTurn = 0;
-		this.distancePerMove = 0;
-		this.shieldingThisTurn = 0;
-
-		// Helper variables.
-		this._displacement = Coords.create();
+		this.turnAndMove = new TurnAndMove();
 
 		this.buildable(); // hack
 	}
@@ -273,7 +263,7 @@ class Ship extends Entity
 			this.name
 			+ " - " + this.locatable().loc.placeName
 			+ " - Integrity: " + this.integrityCurrentOverMax()
-			+ ", Energy: " + this.energyThisTurn
+			+ ", " + this.turnAndMove.toStringDescription();
 		
 		var order = this.order();
 		var orderAsString = (order == null ? "Doing nothing." : order.toStringDescription());
@@ -417,95 +407,7 @@ class Ship extends Entity
 
 	moveTowardTarget(universe: Universe, target: Entity, ship: Ship): void
 	{
-		if (this.distanceLeftThisMove == null)
-		{
-			if (this.energyThisTurn >= this.energyPerMove)
-			{
-				this.energyThisTurn -= this.energyPerMove;
-				this.distanceLeftThisMove = this.distancePerMove;
-			}
-		}
-
-		if (this.distanceLeftThisMove > 0)
-		{
-			var shipLoc = this.locatable().loc;
-			var shipPos = shipLoc.pos;
-			var targetLoc = target.locatable().loc;
-			var targetPos = targetLoc.pos;
-
-			var displacementToTarget = this._displacement.overwriteWith
-			(
-				targetPos
-			).subtract
-			(
-				shipPos
-			);
-			var distanceToTarget = displacementToTarget.magnitude();
-
-			var distanceMaxPerTick = 3; // hack
-
-			var distanceToMoveThisTick =
-			(
-				this.distanceLeftThisMove < distanceMaxPerTick
-				? this.distanceLeftThisMove
-				: distanceMaxPerTick
-			);
-
-			if (distanceToTarget < distanceToMoveThisTick)
-			{
-				shipPos.overwriteWith(targetPos);
-
-				// hack
-				this.distanceLeftThisMove = null;
-				this.actor().activity.doNothing();
-				universe.inputHelper.isEnabled = true;
-				this.order().complete();
-
-				var targetBodyDefn = BodyDefn.fromEntity(target);
-				var targetDefnName = targetBodyDefn.name;
-				if (targetDefnName == LinkPortal.name)
-				{
-					var portal = target as LinkPortal;
-					this.linkPortalEnter(
-						(universe.world as WorldExtended).network, portal, ship
-					);
-				}
-				else if (targetDefnName == Planet.name)
-				{
-					var planet = target as Planet;
-					var venue = universe.venueCurrent as VenueStarsystem;
-					var starsystem = venue.starsystem;
-					this.planetOrbitEnter(universe, starsystem, planet);
-				}
-			}
-			else
-			{
-				var directionToTarget = displacementToTarget.divideScalar
-				(
-					distanceToTarget
-				);
-
-				var shipVel = shipLoc.vel;
-				shipVel.overwriteWith
-				(
-					directionToTarget
-				).multiplyScalar
-				(
-					distanceToMoveThisTick
-				);
-
-				shipPos.add(shipVel);
-
-				this.distanceLeftThisMove -= distanceToMoveThisTick;
-				if (this.distanceLeftThisMove <= 0)
-				{
-					// hack
-					this.distanceLeftThisMove = null;
-					this.actor().activity.doNothing();
-					universe.inputHelper.isEnabled = true;
-				}
-			}
-		}
+		this.turnAndMove.moveShipTowardTarget(universe, ship, target);
 	}
 
 	movementThroughLinkPerTurn(link: NetworkLink2): number
@@ -618,23 +520,25 @@ class Ship extends Entity
 			universe, world, null, ship, null
 		);
 
-		var returnValue = ControlContainer.from4
-		(
-			"containerShip",
-			Coords.fromXY(0, 0), // pos
-			containerSize,
-			// children
-			[
-				new ControlLabel
-				(
-					"textShipAsSelection",
-					Coords.fromXY(margin, margin),
-					Coords.fromXY(containerSize.x, 0), // this.size
-					false, // isTextCentered
-					DataBinding.fromContext(this.name),
-					fontHeightInPixels
-				),
+		var childControls: ControlBase[] =
+		[
+			new ControlLabel
+			(
+				"textShipAsSelection",
+				Coords.fromXY(margin, margin),
+				Coords.fromXY(containerSize.x, 0), // this.size
+				false, // isTextCentered
+				DataBinding.fromContext(this.name),
+				fontHeightInPixels
+			)
+		];
 
+		var shipBelongsToUser = ship.faction(world).isControlledByUser();
+
+		if (shipBelongsToUser)
+		{
+			var childControlsDetailed: ControlBase[] =
+			[
 				new ControlLabel
 				(
 					"labelIntegrity",
@@ -676,7 +580,7 @@ class Ship extends Entity
 					false, // isTextCentered
 					DataBinding.fromContextAndGet
 					(
-						ship, (c: Ship) => "" + c.energyThisTurn
+						ship, (c: Ship) => "" + c.turnAndMove.energyThisTurn
 					),
 					fontHeightInPixels
 				),
@@ -786,10 +690,18 @@ class Ship extends Entity
 						var device = ship.deviceSelected;
 						device.use(uwpe);
 					}
-				),
+				)
+			];
 
+			childControls.push(...childControlsDetailed);
+		}
 
-			]
+		var returnValue = ControlContainer.from4
+		(
+			"containerShip",
+			Coords.fromXY(0, 0), // pos
+			containerSize,
+			childControls
 		);
 
 		return returnValue;
@@ -806,10 +718,7 @@ class Ship extends Entity
 
 	updateForTurn(universe: Universe, world: World, faction: Faction): void
 	{
-		this.energyThisTurn = 0;
-		this.distancePerMove = 0;
-		this.energyPerMove = 0;
-		this.shieldingThisTurn = 0;
+		this.turnAndMove.clear();
 
 		var devices = this.devices();
 		var uwpe = new UniverseWorldPlaceEntities

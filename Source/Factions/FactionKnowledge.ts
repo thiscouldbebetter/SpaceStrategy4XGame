@@ -89,7 +89,7 @@ class FactionKnowledge
 				worldActual.defn.activityDefns,
 				worldActual.buildableDefns,
 				worldActual.deviceDefns,
-				worldActual.technologyTree,
+				worldActual.technologyGraph,
 				networkKnown,
 				factionsKnown,
 				worldActual.ships, // todo

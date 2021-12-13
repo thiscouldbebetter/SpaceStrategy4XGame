@@ -31,18 +31,29 @@ class VenueLayout {
         var cursorPos = cursor.pos;
         cursorPos.overwriteWith(inputHelper.mouseMovePos).subtract(map.pos).divide(map.cellSizeInPixels).round();
         if (cursorPos.isInRangeMax(map.sizeInCellsMinusOnes)) {
-            if (inputHelper.isMouseClicked(null)) {
-                inputHelper.isMouseClicked(false);
+            if (inputHelper.isMouseClicked()) {
+                inputHelper.mouseClickedSet(false);
                 var bodyAtCursor = this.layout.map.bodyAtCursor();
                 if (bodyAtCursor == null) {
                     var buildableEntityInProgress = planet.buildableEntityInProgress();
                     var acknowledge = () => universe.venueNext = venueLayout;
                     if (buildableEntityInProgress == null) {
-                        var neighboringBodies = map.bodiesNeighboringCursor();
-                        if (neighboringBodies.length == 0) {
-                            universe.venueNext = VenueMessage.fromTextAndAcknowledge("Cannot build there.", acknowledge);
+                        var canBuildAtCursor = false;
+                        var terrainAtCursor = this.layout.map.terrainAtCursor();
+                        var isSurface = (terrainAtCursor.name != "Orbit");
+                        if (isSurface) {
+                            var neighboringBodies = map.bodiesNeighboringCursor();
+                            if (neighboringBodies.length == 0) {
+                                universe.venueNext = VenueMessage.fromTextAndAcknowledge("Must build near other facilities.", acknowledge);
+                            }
+                            else {
+                                canBuildAtCursor = true;
+                            }
                         }
                         else {
+                            canBuildAtCursor = true;
+                        }
+                        if (canBuildAtCursor) {
                             var controlBuildables = this.controlBuildableSelectBuild(universe, cursorPos);
                             universe.venueNext = new VenueControls(controlBuildables, null);
                         }
@@ -139,7 +150,7 @@ class VenueLayout {
             ControlButton.from8("buttonBuild", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
             buttonSize, "Build", // text,
             fontHeightInPixels, true, // hasBorder,
-            DataBinding.fromTrue(), // isEnabled,
+            DataBinding.fromContextAndGet(this, (c) => (c.buildableDefnSelected != null)), // isEnabled,
             buttonBuild_Clicked),
             ControlButton.from8("buttonCancel", Coords.fromXY(margin.x * 2 + buttonSize.x, containerSize.y - margin.y - buttonSize.y), //pos,
             buttonSize, "Cancel", // text,
@@ -171,8 +182,7 @@ class VenueLayout {
              {
                 var venue = universe.venueCurrent;
                 var venueNext = venue.venueParent;
-                venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-                universe.venueNext = venueNext;
+                universe.venueTransitionTo(venueNext);
             }),
             this.toControl_Vitals(universe, containerMainSize, containerInnerSize, margin, controlHeight),
         ]);
@@ -181,7 +191,8 @@ class VenueLayout {
             var factionCurrent = world.factionCurrent();
             if (factionCurrent.name == planet.factionName) {
                 var faction = factionCurrent;
-                var controlFaction = faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth);
+                var controlFaction = faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, false // includeDetailsButton
+                );
                 container.childAdd(controlFaction);
                 var controlIndustry = this.toControl_Industry(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth);
                 container.childAdd(controlIndustry);

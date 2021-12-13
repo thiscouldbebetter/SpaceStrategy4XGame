@@ -66,7 +66,7 @@ class DiplomaticSession
 		var entityTalker = uwpe.entity;
 		var entityTalkee = uwpe.entity2;
 
-		var conversationDefnName = "todo";
+		var conversationDefnName = "Diplomacy";
 		var conversationDefnAsJSON =
 			universe.mediaLibrary.textStringGetByName(conversationDefnName).value;
 		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
@@ -98,6 +98,8 @@ class DiplomaticSession
 		universe: Universe, containerSize: Coords
 	): ControlBase
 	{
+		var diplomaticSession = this;
+
 		var margin = 10;
 		var controlHeight = 20;
 		var listWidth = 100;
@@ -121,12 +123,8 @@ class DiplomaticSession
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						var venueNext: Venue = universe.world.toVenue();
-						venueNext = VenueFader.fromVenuesToAndFrom
-						(
-							venueNext, universe.venueCurrent
-						);
-						universe.venueNext = venueNext;
+						var venueNext = universe.world.toVenue();
+						universe.venueTransitionTo(venueNext);
 					}
 				),
 
@@ -172,8 +170,13 @@ class DiplomaticSession
 					true, // hasBorder
 					DataBinding.fromContextAndGet
 					(
-						this, (c: DiplomaticSession) => c.isFactionSelected() ), // isEnabled
-					this.talkSessionInitialize.bind(this, universe) // click
+						this, (c: DiplomaticSession) => c.isFactionSelected()
+					), // isEnabled
+					() =>
+						diplomaticSession.talkSessionInitialize
+						(
+							UniverseWorldPlaceEntities.fromUniverse(universe)
+						) // click
 				),
 
 				Faction.toControl_Intelligence

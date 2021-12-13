@@ -73,9 +73,9 @@ class VenueLayout implements Venue
 
 		if (cursorPos.isInRangeMax(map.sizeInCellsMinusOnes))
 		{
-			if (inputHelper.isMouseClicked(null))
+			if (inputHelper.isMouseClicked())
 			{
-				inputHelper.isMouseClicked(false);
+				inputHelper.mouseClickedSet(false);
 
 				var bodyAtCursor = this.layout.map.bodyAtCursor();
 
@@ -86,15 +86,32 @@ class VenueLayout implements Venue
 					var acknowledge = () => universe.venueNext = venueLayout;
 					if (buildableEntityInProgress == null)
 					{
-						var neighboringBodies = map.bodiesNeighboringCursor();
-						if (neighboringBodies.length == 0)
+						var canBuildAtCursor = false;
+
+						var terrainAtCursor = this.layout.map.terrainAtCursor();
+
+						var isSurface = (terrainAtCursor.name != "Orbit");
+						if (isSurface)
 						{
-							universe.venueNext = VenueMessage.fromTextAndAcknowledge
-							(
-								"Cannot build there.", acknowledge
-							);
+							var neighboringBodies = map.bodiesNeighboringCursor();
+							if (neighboringBodies.length == 0)
+							{
+								universe.venueNext = VenueMessage.fromTextAndAcknowledge
+								(
+									"Must build near other facilities.", acknowledge
+								);
+							}
+							else
+							{
+								canBuildAtCursor = true;
+							}
 						}
 						else
+						{
+							canBuildAtCursor = true;
+						}
+
+						if (canBuildAtCursor)
 						{
 							var controlBuildables =
 								this.controlBuildableSelectBuild(universe, cursorPos);
@@ -298,7 +315,11 @@ class VenueLayout implements Venue
 					"Build", // text,
 					fontHeightInPixels,
 					true, // hasBorder,
-					DataBinding.fromTrue(), // isEnabled,
+					DataBinding.fromContextAndGet
+					(
+						this,
+						(c: VenueLayout) => (c.buildableDefnSelected != null)
+					), // isEnabled,
 					buttonBuild_Clicked
 				),
 
@@ -361,11 +382,7 @@ class VenueLayout implements Venue
 					{
 						var venue = universe.venueCurrent as VenueLayout;
 						var venueNext = venue.venueParent;
-						venueNext = VenueFader.fromVenuesToAndFrom
-						(
-							venueNext, universe.venueCurrent
-						);
-						universe.venueNext = venueNext;
+						universe.venueTransitionTo(venueNext);
 					}
 				),
 
@@ -396,7 +413,8 @@ class VenueLayout implements Venue
 					containerInnerSize,
 					margin,
 					controlHeight,
-					buttonWidth
+					buttonWidth,
+					false // includeDetailsButton
 				);
 
 				container.childAdd(controlFaction);

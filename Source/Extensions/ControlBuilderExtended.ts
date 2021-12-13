@@ -161,11 +161,7 @@ class ControlBuilderExtended extends ControlBuilder
 
 							if (venueNext != null)
 							{
-								venueNext = VenueFader.fromVenuesToAndFrom
-								(
-									venueNext, universe.venueCurrent
-								);
-								universe.venueNext = venueNext;
+								universe.venueTransitionTo(venueNext);
 							}
 						}
 					}

@@ -39,7 +39,7 @@ class TechnologyResearcher
 	{
 		var returnValues = [];
 
-		var technologiesByName = world.technologyTree.technologiesByName;
+		var technologiesByName = world.technologyGraph.technologiesByName;
 
 		for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++)
 		{
@@ -119,8 +119,8 @@ class TechnologyResearcher
 		world: WorldExtended
 	): Technology[]
 	{
-		var technologyTree = world.technologyTree;
-		var technologiesAll = technologyTree.technologies;
+		var technologyGraph = world.technologyGraph;
+		var technologiesAll = technologyGraph.technologies;
 
 		var returnValues = technologiesAll.filter
 		(
@@ -137,7 +137,7 @@ class TechnologyResearcher
 		for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++)
 		{
 			var techName = this.namesOfTechnologiesKnown[i];
-			var technology = world.technologyTree.technologyByName(techName);
+			var technology = world.technologyGraph.technologyByName(techName);
 			returnValues.push(technology);
 		}
 
@@ -146,10 +146,10 @@ class TechnologyResearcher
 
 	technologyBeingResearched(world: WorldExtended): Technology
 	{
-		var technologyTree = world.technologyTree;
+		var technologyGraph = world.technologyGraph;
 
 		var returnValue =
-			technologyTree.technologyByName(this.nameOfTechnologyBeingResearched);
+			technologyGraph.technologyByName(this.nameOfTechnologyBeingResearched);
 
 		return returnValue;
 	}

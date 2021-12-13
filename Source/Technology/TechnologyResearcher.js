@@ -14,7 +14,7 @@ class TechnologyResearcher {
     }
     buildablesAvailable(world) {
         var returnValues = [];
-        var technologiesByName = world.technologyTree.technologiesByName;
+        var technologiesByName = world.technologyGraph.technologiesByName;
         for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++) {
             var technologyName = this.namesOfTechnologiesKnown[i];
             var technology = technologiesByName.get(technologyName);
@@ -60,8 +60,8 @@ class TechnologyResearcher {
         return returnValue;
     }
     technologiesAvailableForResearch(world) {
-        var technologyTree = world.technologyTree;
-        var technologiesAll = technologyTree.technologies;
+        var technologyGraph = world.technologyGraph;
+        var technologiesAll = technologyGraph.technologies;
         var returnValues = technologiesAll.filter(x => this.technologyIsAvailableForResearch(x));
         return returnValues;
     }
@@ -69,14 +69,14 @@ class TechnologyResearcher {
         var returnValues = [];
         for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++) {
             var techName = this.namesOfTechnologiesKnown[i];
-            var technology = world.technologyTree.technologyByName(techName);
+            var technology = world.technologyGraph.technologyByName(techName);
             returnValues.push(technology);
         }
         return returnValues;
     }
     technologyBeingResearched(world) {
-        var technologyTree = world.technologyTree;
-        var returnValue = technologyTree.technologyByName(this.nameOfTechnologyBeingResearched);
+        var technologyGraph = world.technologyGraph;
+        var returnValue = technologyGraph.technologyByName(this.nameOfTechnologyBeingResearched);
         return returnValue;
     }
     technologyIsAvailableForResearch(technologyToCheck) {

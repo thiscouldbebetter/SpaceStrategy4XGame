@@ -221,33 +221,61 @@ class NetworkNode2 extends Entity
 		}
 
 		var ships = starsystem.ships;
-		var shipOffset = Coords.fromXY(0, -2).multiplyScalar(radiusApparent);
-		for (var i = 0; i < ships.length; i++)
+		var shipsSortedByFactionIndex = ships.sort
+		(
+			(a, b) =>
+			{
+				var factions = world.factions;
+				var returnValue =
+					factions.indexOf(a.faction(world))
+					- factions.indexOf(a.faction(world));
+				return returnValue;
+			}
+		);
+
+		var shipFactionPrev: Faction = null;
+
+		var shipOffsetIncrement =
+			Coords.fromXY(0, -1).multiplyScalar(radiusApparent);
+
+		var factionsSoFar = 0;
+
+		for (var i = 0; i < shipsSortedByFactionIndex.length; i++)
 		{
 			var ship = ships[i];
 			var shipFaction = ship.faction(world);
-			var shipColor = shipFaction.color;
-			drawablePosTransformed.overwriteWith
-			(
-				starsystemDrawPos
-			).add
-			(
-				shipOffset
-			);
+			if (shipFaction != shipFactionPrev)
+			{
+				factionsSoFar++;
 
-			var visualShip = new VisualPolygon
-			(
-				new Path
-				([
-					Coords.fromXY(0, 0),
-					Coords.fromXY(.5, -1).multiplyScalar(radiusApparent),
-					Coords.fromXY(-.5, -1).multiplyScalar(radiusApparent),
-				]),
-				shipColor,
-				null, // colorBorder
-				false // shouldUseEntityOrientation
-			);
-			visualShip.draw(uwpe.entitySet(drawableTransformed), display);
+				var shipColor = shipFaction.color;
+
+				var shipOffset = shipOffsetIncrement.clone();
+				shipOffset.y *= factionsSoFar + 1;
+
+				drawablePosTransformed.overwriteWith
+				(
+					starsystemDrawPos
+				).add
+				(
+					shipOffset
+				);
+
+				var visualShip = new VisualPolygon
+				(
+					new Path
+					([
+						Coords.fromXY(0, 0),
+						Coords.fromXY(.5, -1).multiplyScalar(radiusApparent),
+						Coords.fromXY(-.5, -1).multiplyScalar(radiusApparent),
+					]),
+					shipColor,
+					null, // colorBorder
+					false // shouldUseEntityOrientation
+				);
+				visualShip.draw(uwpe.entitySet(drawableTransformed), display);
+			}
+			shipFactionPrev = shipFaction;
 		}
 
 		var visualText = VisualText.fromTextHeightAndColor

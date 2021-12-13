@@ -57,8 +57,9 @@ class VenueStarsystem {
         return (this.selectedEntity == null ? "[none]" : this.selectedEntity.name);
     }
     updateForTimerTick(universe) {
+        var world = universe.world;
         this.venueControls.updateForTimerTick(universe);
-        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, null, null);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
         this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
         if (this.cursor != null) {
             this.cursor.constrainable().constrain(uwpe.entitySet(this.cursor));
@@ -101,7 +102,7 @@ class VenueStarsystem {
             else if (inputActive == "w") {
                 this.cameraIn(cameraSpeed);
             }
-            else if (inputHelper.isMouseClicked(null)) {
+            else if (inputHelper.isMouseClicked()) {
                 this.updateForTimerTick_Input_Mouse(universe);
             }
         }
@@ -153,7 +154,7 @@ class VenueStarsystem {
             }
         }
         this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
-        inputHelper.isMouseClicked(false);
+        inputHelper.mouseClickedSet(false);
     }
     updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked) {
         var selectionTypeName = (this.selectedEntity == null
@@ -180,8 +181,7 @@ class VenueStarsystem {
         else if (bodyClicked == planetSelected) {
             var layout = planetSelected.layout;
             var venueNext = new VenueLayout(this, bodyClicked, layout);
-            venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-            universe.venueNext = venueNext;
+            universe.venueTransitionTo(venueNext);
         }
         else if (planetSelected.isAwaitingTarget()) {
             // todo
@@ -296,8 +296,7 @@ class VenueStarsystem {
              {
                 var venue = universe.venueCurrent;
                 var venueNext = venue.venueParent;
-                venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-                universe.venueNext = venueNext;
+                universe.venueTransitionTo(venueNext);
             }),
             controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, false // includeTurnAdvanceButtons
             ),

@@ -24,7 +24,7 @@ class DiplomaticSession {
         var universe = uwpe.universe;
         var entityTalker = uwpe.entity;
         var entityTalkee = uwpe.entity2;
-        var conversationDefnName = "todo";
+        var conversationDefnName = "Diplomacy";
         var conversationDefnAsJSON = universe.mediaLibrary.textStringGetByName(conversationDefnName).value;
         var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
         var venueToReturnTo = universe.venueCurrent;
@@ -41,6 +41,7 @@ class DiplomaticSession {
     }
     // controls
     toControl(universe, containerSize) {
+        var diplomaticSession = this;
         var margin = 10;
         var controlHeight = 20;
         var listWidth = 100;
@@ -56,8 +57,7 @@ class DiplomaticSession {
             () => // click
              {
                 var venueNext = universe.world.toVenue();
-                venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-                universe.venueNext = venueNext;
+                universe.venueTransitionTo(venueNext);
             }),
             new ControlLabel("labelFactions", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(100, controlHeight), // size
@@ -75,7 +75,7 @@ class DiplomaticSession {
             Coords.fromXY(listWidth, controlHeight), // size
             "Talk", fontHeightInPixels, true, // hasBorder
             DataBinding.fromContextAndGet(this, (c) => c.isFactionSelected()), // isEnabled
-            this.talkSessionInitialize.bind(this, universe) // click
+            () => diplomaticSession.talkSessionInitialize(UniverseWorldPlaceEntities.fromUniverse(universe)) // click
             ),
             Faction.toControl_Intelligence(this, Coords.fromXY(margin * 2 + listWidth, 0), // pos
             Coords.fromXY(containerSize.x - listWidth - margin * 2, containerSize.y))

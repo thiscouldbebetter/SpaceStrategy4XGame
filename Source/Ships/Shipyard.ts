@@ -110,12 +110,7 @@ class Shipyard implements EntityProperty<Shipyard>
 
 		var venuePrev = universe.venueCurrent;
 
-		var back = () =>
-		{
-			var venueNext: Venue = venuePrev;
-			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-			universe.venueNext = venueNext;
-		};
+		var back = () => universe.venueTransitionTo(venuePrev);
 
 		var transferItemFromShipyardToShip = () =>
 		{

@@ -157,13 +157,9 @@ class VenueWorldExtended extends VenueWorld
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						var venueNext: Venue =
+						var venueNext =
 							universe.controlBuilder.gameAndSettings1(universe).toVenue();
-						venueNext = VenueFader.fromVenuesToAndFrom
-						(
-							venueNext, universe.venueCurrent
-						);
-						universe.venueNext = venueNext;
+						universe.venueTransitionTo(venueNext);
 					}
 				),
 
@@ -184,7 +180,8 @@ class VenueWorldExtended extends VenueWorld
 					containerInnerSize,
 					margin,
 					controlHeight,
-					buttonWidth
+					buttonWidth,
+					true // includeDetailsButton
 				),
 
 				controlBuilder.view
@@ -292,7 +289,7 @@ class VenueWorldExtended extends VenueWorld
 		this.venueControls.updateForTimerTick(universe);
 
 		var inputHelper = universe.inputHelper;
-		if (inputHelper.isMouseClicked(null))
+		if (inputHelper.isMouseClicked())
 		{
 			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 
@@ -348,11 +345,9 @@ class VenueWorldExtended extends VenueWorld
 					var starsystem = bodyClickedNetworkNode.starsystem;
 					if (starsystem != null)
 					{
-						var venueNext: Venue =
-							new VenueStarsystem(venueCurrent, starsystem);
-						venueNext =
-							VenueFader.fromVenuesToAndFrom(venueNext, venueCurrent);
-						universe.venueNext = venueNext;
+						var venueNext: Venue
+							= new VenueStarsystem(venueCurrent, starsystem);
+						universe.venueTransitionTo(venueNext);
 					}
 				}
 
@@ -369,8 +364,7 @@ class VenueWorldExtended extends VenueWorld
 			{
 				var venueNext: Venue =
 					universe.controlBuilder.gameAndSettings1(universe).toVenue();
-				venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-				universe.venueNext = venueNext;
+				universe.venueTransitionTo(venueNext);
 			}
 
 			var cameraSpeed = 20;
@@ -381,7 +375,7 @@ class VenueWorldExtended extends VenueWorld
 			}
 			else if (inputActive == "MouseClick")
 			{
-				inputHelper.isMouseClicked(false);
+				inputHelper.mouseClickedSet(false);
 			}
 			else if (inputActive == "a")
 			{

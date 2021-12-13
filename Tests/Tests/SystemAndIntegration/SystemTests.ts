@@ -45,13 +45,12 @@ class SystemTests extends TestFixture
 
 		var technologiesNeededToBuildShipNames =
 		[
-			"Drives",
-			"Hulls",
-			"Generators",
-			"Hubs",
-			"Shields",
-			"Shipyards",
-			"Weapons"
+			"Drives, Basic",
+			"Generators, Basic",
+			"Biology, Basic",
+			"Shields, Basic",
+			"Space Structures, Basic",
+			"Weapons, Basic"
 		];
 
 		for (var t = 0; t < technologiesNeededToBuildShipNames.length; t++)
@@ -163,9 +162,11 @@ class SystemTests extends TestFixture
 
 		while (shipOrder.isComplete == false)
 		{
-			var shipEnergyBeforeMove = ship.energyThisTurn;
+			var shipTurnAndMove = ship.turnAndMove;
 
-			if (shipEnergyBeforeMove < ship.energyPerMove)
+			var shipEnergyBeforeMove = shipTurnAndMove.energyThisTurn;
+
+			if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove)
 			{
 				world.updateForTurn_IgnoringNotifications(universe);
 			}
@@ -174,7 +175,7 @@ class SystemTests extends TestFixture
 				while
 				(
 					shipOrder.isComplete == false
-					&& ship.energyThisTurn == shipEnergyBeforeMove
+					&& shipTurnAndMove.energyThisTurn == shipEnergyBeforeMove
 				)
 				{
 					shipOrder.obey(universe, world, null, ship);
@@ -222,9 +223,11 @@ class SystemTests extends TestFixture
 
 			while (shipOrder.isComplete == false)
 			{
-				var shipEnergyBeforeMove = ship.energyThisTurn;
+				var shipTurnAndMove = ship.turnAndMove;
 
-				if (shipEnergyBeforeMove < ship.energyPerMove)
+				var shipEnergyBeforeMove = shipTurnAndMove.energyThisTurn;
+
+				if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove)
 				{
 					world.updateForTurn_IgnoringNotifications(universe);
 				}
@@ -233,7 +236,7 @@ class SystemTests extends TestFixture
 					while
 					(
 						shipOrder.isComplete == false
-						&& ship.energyThisTurn == shipEnergyBeforeMove
+						&& shipTurnAndMove.energyThisTurn == shipEnergyBeforeMove
 					)
 					{
 						shipOrder.obey(universe, world, null, ship);

@@ -7,6 +7,16 @@ class EnvironmentMock
 		var display = DisplayTest.default();
 		var mediaLibrary = MediaLibrary.default();
 		var controlBuilder = new ControlBuilderExtended();
+		var worldCreator = new WorldCreator
+		(
+			(u: Universe, wc: WorldCreator) => WorldExtended.create(u, wc),
+			null,
+			{
+				"starsystemCountAsString": "12",
+				"factionCountAsString": "2"
+			} // settings
+		);
+		
 
 		var universe = new Universe
 		(
@@ -16,8 +26,7 @@ class EnvironmentMock
 			display,
 			mediaLibrary,
 			controlBuilder,
-			(u: Universe) =>
-				WorldExtended.create(u)
+			worldCreator
 		);
 
 		universe.initialize(() => {});

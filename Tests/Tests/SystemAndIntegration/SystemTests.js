@@ -27,13 +27,12 @@ class SystemTests extends TestFixture {
         Assert.isTrue(buildableLaboratory.isComplete);
         var researcher = factionUser.technologyResearcher;
         var technologiesNeededToBuildShipNames = [
-            "Drives",
-            "Hulls",
-            "Generators",
-            "Hubs",
-            "Shields",
-            "Shipyards",
-            "Weapons"
+            "Drives, Basic",
+            "Generators, Basic",
+            "Biology, Basic",
+            "Shields, Basic",
+            "Space Structures, Basic",
+            "Weapons, Basic"
         ];
         for (var t = 0; t < technologiesNeededToBuildShipNames.length; t++) {
             var technologyToResearchName = technologiesNeededToBuildShipNames[t];
@@ -92,13 +91,14 @@ class SystemTests extends TestFixture {
         ship.orderSet(shipOrder);
         universe.venueNext = starsystemUser.toVenue(); // Can this be avoided?
         while (shipOrder.isComplete == false) {
-            var shipEnergyBeforeMove = ship.energyThisTurn;
-            if (shipEnergyBeforeMove < ship.energyPerMove) {
+            var shipTurnAndMove = ship.turnAndMove;
+            var shipEnergyBeforeMove = shipTurnAndMove.energyThisTurn;
+            if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove) {
                 world.updateForTurn_IgnoringNotifications(universe);
             }
             else {
                 while (shipOrder.isComplete == false
-                    && ship.energyThisTurn == shipEnergyBeforeMove) {
+                    && shipTurnAndMove.energyThisTurn == shipEnergyBeforeMove) {
                     shipOrder.obey(universe, world, null, ship);
                     universe.updateForTimerTick();
                 }
@@ -123,13 +123,14 @@ class SystemTests extends TestFixture {
         if (planetToColonize != null) {
             shipOrder.defnNameAndTargetEntitySet(orderDefns.Go.name, planetToColonize).assignToEntityOrderable(ship);
             while (shipOrder.isComplete == false) {
-                var shipEnergyBeforeMove = ship.energyThisTurn;
-                if (shipEnergyBeforeMove < ship.energyPerMove) {
+                var shipTurnAndMove = ship.turnAndMove;
+                var shipEnergyBeforeMove = shipTurnAndMove.energyThisTurn;
+                if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove) {
                     world.updateForTurn_IgnoringNotifications(universe);
                 }
                 else {
                     while (shipOrder.isComplete == false
-                        && ship.energyThisTurn == shipEnergyBeforeMove) {
+                        && shipTurnAndMove.energyThisTurn == shipEnergyBeforeMove) {
                         shipOrder.obey(universe, world, null, ship);
                         universe.updateForTimerTick();
                     }

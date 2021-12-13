@@ -45,10 +45,9 @@ class NotificationSession
 			var planet = notificationLoc;
 			var planetLayout = null; // todo
 			var venueCurrent = universe.venueCurrent;
-			var venueNext: Venue =
+			var venueNext =
 				new VenueLayout(venueCurrent, planet, planetLayout);
-			venueNext = VenueFader.fromVenuesToAndFrom(venueNext, venueCurrent);
-			universe.venueNext = venueNext;
+			universe.venueTransitionTo(venueNext);
 		}
 		else
 		{
@@ -75,8 +74,11 @@ class NotificationSession
 		var controlHeight = containerSize.y / 16;
 		var margin = 10;
 		var columnWidth = containerSize.x - margin * 2;
-		var buttonWidth = (containerSize.x - margin * 4) / 3;
+		var buttonCount = 4;
+		var buttonWidth = (containerSize.x - margin * 5) / buttonCount;
 		var fontHeightInPixels = display.fontHeightInPixels;
+		var listHeight = controlHeight * 8;
+		var buttonPosY = containerSize.y - margin * 2 - controlHeight * 2;
 
 		var returnValue = ControlContainer.from4
 		(
@@ -99,7 +101,7 @@ class NotificationSession
 				(
 					"listNotifications",
 					Coords.fromXY(margin, margin + controlHeight), // pos
-					Coords.fromXY(columnWidth, controlHeight * 4), // size
+					Coords.fromXY(columnWidth, listHeight), // size
 					DataBinding.fromContextAndGet
 					(
 						this,
@@ -122,18 +124,18 @@ class NotificationSession
 
 				new ControlLabel
 				(
-					"labelMessage",
-					Coords.fromXY(margin, margin * 2 + controlHeight * 5), // pos
+					"labelSelected",
+					Coords.fromXY(margin, margin * 2 + controlHeight + listHeight), // pos
 					Coords.fromXY(columnWidth, controlHeight), // size
 					false, // isTextCentered
-					DataBinding.fromContext("Details:"),
+					DataBinding.fromContext("Selected:"),
 					fontHeightInPixels
 				),
 
 				new ControlLabel
 				(
 					"textMessage",
-					Coords.fromXY(margin, margin * 2 + controlHeight * 6), // pos
+					Coords.fromXY(margin, margin * 2 + controlHeight * 2 + listHeight), // pos
 					Coords.fromXY(columnWidth, controlHeight), // size
 					false, // isTextCentered
 					DataBinding.fromContextAndGet
@@ -148,7 +150,10 @@ class NotificationSession
 				ControlButton.from8
 				(
 					"buttonGoTo",
-					Coords.fromXY(margin, margin * 2 + controlHeight * 7), // pos
+					Coords.fromXY
+					(
+						margin, buttonPosY
+					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Go To",
 					fontHeightInPixels,
@@ -163,8 +168,31 @@ class NotificationSession
 
 				ControlButton.from8
 				(
+					"buttonGoToAndDismiss",
+					Coords.fromXY
+					(
+						margin * 2 + buttonWidth, buttonPosY
+					), // pos
+					Coords.fromXY(buttonWidth, controlHeight), // size
+					"Go To + Dismiss",
+					fontHeightInPixels,
+					true, // hasBorder
+					DataBinding.fromTrue(), // isEnabled
+					() => // click
+					{
+						var notification = notificationSession.notificationSelected;
+						notificationSession.notificationDismiss(notification);
+						notification.jumpTo(universe);
+					}
+				),
+
+				ControlButton.from8
+				(
 					"buttonDismiss",
-					Coords.fromXY(margin * 2 + buttonWidth, margin * 2 + controlHeight * 7), // pos
+					Coords.fromXY
+					(
+						margin * 3 + buttonWidth * 2, buttonPosY
+					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Dismiss",
 					fontHeightInPixels,
@@ -185,8 +213,7 @@ class NotificationSession
 					"buttonDismissAll",
 					Coords.fromXY
 					(
-						margin * 3 + buttonWidth * 2,
-						margin * 2 + controlHeight * 7
+						margin * 4 + buttonWidth * 3, buttonPosY
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Dismiss All",
@@ -205,7 +232,7 @@ class NotificationSession
 				new ControlLabel
 				(
 					"textMessage",
-					Coords.fromXY(margin, containerSize.y - margin * 2 - controlHeight * 2), // pos
+					Coords.fromXY(margin, containerSize.y - margin - controlHeight), // pos
 					Coords.fromXY(columnWidth, controlHeight), // size
 					false, // isTextCentered
 					DataBinding.fromContext
@@ -218,8 +245,12 @@ class NotificationSession
 				ControlButton.from8
 				(
 					"buttonBack",
-					Coords.fromXY(margin, containerSize.y - margin - controlHeight), // pos
-					Coords.fromXY(columnWidth, controlHeight), // size
+					Coords.fromXY
+					(
+						containerSize.x - margin - buttonWidth,
+						containerSize.y - margin - controlHeight
+					), // pos
+					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Back",
 					fontHeightInPixels,
 					true, // hasBorder
@@ -228,11 +259,7 @@ class NotificationSession
 					{
 						var world = universe.world;
 						var venueNext: Venue = world.toVenue();
-						venueNext = VenueFader.fromVenuesToAndFrom
-						(
-							venueNext, universe.venueCurrent
-						);
-						universe.venueNext = venueNext;
+						universe.venueTransitionTo(venueNext);
 					}
 				),
 			]

@@ -1,7 +1,7 @@
 "use strict";
 class TechnologyResearchSession {
-    constructor(technologyTree, researcher) {
-        this.technologyTree = technologyTree;
+    constructor(technologyGraph, researcher) {
+        this.technologyGraph = technologyGraph;
         this.researcher = researcher;
     }
     // instance methods
@@ -15,6 +15,13 @@ class TechnologyResearchSession {
     researchAccumulatedIncrement(world, faction, amountToIncrement) {
         this.researcher.researchAccumulatedIncrement(world, faction, amountToIncrement);
     }
+    researchAccumulatedOverRequired() {
+        var tech = this.technologyBeingResearched();
+        var returnValue = "" + this.researcher.researchAccumulated
+            + "/"
+            + (tech == null ? "-" : "" + tech.researchRequired);
+        return returnValue;
+    }
     researchRequired() {
         var technologyBeingResearched = this.technologyBeingResearched();
         var returnValue = (technologyBeingResearched == null
@@ -24,7 +31,7 @@ class TechnologyResearchSession {
     }
     technologyBeingResearched() {
         var techName = this.researcher.nameOfTechnologyBeingResearched;
-        var returnValue = this.technologyTree.technologyByName(techName);
+        var returnValue = this.technologyGraph.technologyByName(techName);
         return returnValue;
     }
     // controls
@@ -35,6 +42,8 @@ class TechnologyResearchSession {
         var labelHeight = display.fontHeightInPixels;
         var buttonHeight = labelHeight * 2.5;
         var fontHeightInPixels = margin;
+        var listSize = Coords.fromXY((size.x - margin * 3) / 2, 150);
+        var listPosY = 55;
         var researcher = this.researcher;
         var returnValue = ControlContainer.from4("Research", // name,
         Coords.fromXY(0, 0), // pos,
@@ -71,21 +80,21 @@ class TechnologyResearchSession {
             false, // isTextCentered,
             DataBinding.fromContext("Technologies Known:"), //text
             fontHeightInPixels),
-            ControlList.from6("listTechnologiesKnown", Coords.fromXY(margin, 55), // pos
-            Coords.fromXY(110, 50), // size
+            ControlList.from6("listTechnologiesKnown", Coords.fromXY(margin, listPosY), // pos
+            listSize, 
             // items
             DataBinding.fromContext(this.researcher.namesOfTechnologiesKnown), DataBinding.fromContext(null), // bindingForItemText
             labelHeight // fontHeightInPixels
             ),
             new ControlLabel("labelTechnologiesAvailable", // name,
-            Coords.fromXY(140, 40), // pos,
+            Coords.fromXY(margin * 2 + listSize.x, 40), // pos,
             Coords.fromXY(size.x - margin * 2, labelHeight), // size,
             false, // isTextCentered,
             DataBinding.fromContext("Technologies Available:"), // text
             fontHeightInPixels),
             ControlList.from8("listTechnologiesAvailable", // name,
-            Coords.fromXY(140, 55), // pos,
-            Coords.fromXY(110, 50), // size,
+            Coords.fromXY(margin * 2 + listSize.x, listPosY), // pos,
+            listSize, 
             // items,
             DataBinding.fromContextAndGet(researcher, (c) => c.technologiesAvailableForResearch(world)), DataBinding.fromGet((c) => c.name), // bindingForItemText
             labelHeight, // fontHeightInPixels
@@ -93,45 +102,45 @@ class TechnologyResearchSession {
             DataBinding.fromGet((c) => c.name) // bindingForItemValue
             ),
             new ControlLabel("labelTechnologyBeingResearched", // name,
-            Coords.fromXY(margin, 120), // pos,
+            Coords.fromXY(margin, listPosY + listSize.y + margin), // pos,
             Coords.fromXY(size.x - margin * 2, labelHeight), // size,
             false, // isTextCentered,
             DataBinding.fromContext("Technology Being Researched:"), // text
             fontHeightInPixels),
             new ControlLabel("textTechnologyBeingResearched", // name,
-            Coords.fromXY(160, 120), // pos,
+            Coords.fromXY(140, listPosY + listSize.y + margin), // pos,
             Coords.fromXY(size.x - margin * 2, labelHeight), // size,
             false, // isTextCentered,
             DataBinding.fromContextAndGet(this.researcher, (c) => c.nameOfTechnologyBeingResearched), fontHeightInPixels),
             new ControlLabel("labelResearchAccumulated", // name,
-            Coords.fromXY(margin, 135), // pos,
+            Coords.fromXY(margin, listPosY + listSize.y + margin + labelHeight), // pos,
             Coords.fromXY(size.x - margin * 2, labelHeight), // size,
             false, // isTextCentered,
             DataBinding.fromContext("Research Accumulated:"), // text
             fontHeightInPixels),
-            new ControlLabel("textResearchAccumulated", // name,
-            Coords.fromXY(120, 140), // pos,
+            new ControlLabel("textResearchAccumulatedOverRequired", // name,
+            Coords.fromXY(110, listPosY + listSize.y + margin + labelHeight), // pos,
             Coords.fromXY(30, labelHeight), // size,
-            true, // isTextCentered,
-            DataBinding.fromContextAndGet(this.researcher, (c) => "" + c.researchAccumulated), // text
+            false, // isTextCentered,
+            DataBinding.fromContextAndGet(this, (c) => c.researchAccumulatedOverRequired()), // text
             fontHeightInPixels),
-            new ControlLabel("labelSlash", // name,
-            Coords.fromXY(130, 140), // pos,
-            Coords.fromXY(30, labelHeight), // size,
-            true, // isTextCentered,
-            DataBinding.fromContext("/"), // text
+            new ControlLabel("labelGrants", // name,
+            Coords.fromXY(margin, listPosY + listSize.y + margin + labelHeight * 2), // pos,
+            Coords.fromXY(size.x - margin * 2, labelHeight), // size,
+            false, // isTextCentered,
+            DataBinding.fromContext("Grants:"), // text
             fontHeightInPixels),
-            new ControlLabel("textResearchRequired", // name,
-            Coords.fromXY(140, 140), // pos,
-            Coords.fromXY(30, labelHeight), // size,
-            true, // isTextCentered,
+            new ControlLabel("textGrants", // name,
+            Coords.fromXY(110, listPosY + listSize.y + margin + labelHeight * 2), // pos,
+            Coords.fromXY(size.x - margin * 2 - buttonHeight, labelHeight), // size,
+            false, // isTextCentered,
             DataBinding.fromContextAndGet(this, (c) => {
                 var tech = c.technologyBeingResearched();
-                return (tech == null ? "-" : "" + tech.researchRequired);
+                return (tech == null ? "-" : tech.namesOfBuildablesEnabled.join("; "));
             }), // text
             fontHeightInPixels),
             ControlButton.from8("buttonBack", //name,
-            Coords.fromXY(margin, size.y - margin - buttonHeight), //pos,
+            Coords.fromXY(size.x - margin - buttonHeight, size.y - margin - buttonHeight), //pos,
             Coords.fromXY(buttonHeight, buttonHeight), // size,
             "Back", // text,
             labelHeight, // fontHeightInPixels,
@@ -140,8 +149,7 @@ class TechnologyResearchSession {
             () => // click
              {
                 var venueNext = universe.world.toVenue();
-                venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-                universe.venueNext = venueNext;
+                universe.venueTransitionTo(venueNext);
             })
         ]);
         this.control = returnValue;

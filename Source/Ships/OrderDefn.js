@@ -53,8 +53,9 @@ class OrderDefn_Instances {
             if (projectileEntity == null) {
                 projectileEntity = new Ship(ship.name + "_projectile", Projectile.bodyDefnBuild(), ship.locatable().loc.pos.clone(), ship.factionName, null // devices
                 );
-                projectileEntity.energyPerMove = 0;
-                projectileEntity.distancePerMove = 1000;
+                var turnAndMove = projectileEntity.turnAndMove;
+                turnAndMove.energyPerMove = 0;
+                turnAndMove.distancePerMove = 1000;
                 projectileEntity.actor().activity =
                     Activity.fromDefnNameAndTargetEntity("MoveToTarget", order.targetEntity);
                 starsystem.shipAdd(projectileEntity);

@@ -5,7 +5,12 @@ class EnvironmentMock {
         var display = DisplayTest.default();
         var mediaLibrary = MediaLibrary.default();
         var controlBuilder = new ControlBuilderExtended();
-        var universe = new Universe("TestUniverse", "[version]", timerHelper, display, mediaLibrary, controlBuilder, (u) => WorldExtended.create(u));
+        var worldCreator = new WorldCreator((u, wc) => WorldExtended.create(u, wc), null, {
+            "starsystemCountAsString": "12",
+            "factionCountAsString": "2"
+        } // settings
+        );
+        var universe = new Universe("TestUniverse", "[version]", timerHelper, display, mediaLibrary, controlBuilder, worldCreator);
         universe.initialize(() => { });
         universe.soundHelper = new SoundHelperMock();
         var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);

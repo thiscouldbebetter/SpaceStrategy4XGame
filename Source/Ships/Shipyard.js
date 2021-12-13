@@ -45,11 +45,7 @@ class Shipyard {
         var itemHolderShipyard = planet.itemHolder();
         var itemHolderShip = ship.itemHolder();
         var venuePrev = universe.venueCurrent;
-        var back = () => {
-            var venueNext = venuePrev;
-            venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-            universe.venueNext = venueNext;
-        };
+        var back = () => universe.venueTransitionTo(venuePrev);
         var transferItemFromShipyardToShip = () => {
             // todo
         };

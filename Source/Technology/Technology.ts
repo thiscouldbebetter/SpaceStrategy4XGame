@@ -20,7 +20,7 @@ class Technology
 		this.namesOfBuildablesEnabled = namesOfBuildablesEnabled;
 	}
 
-	buildablesEnabled(world: WorldExtended)
+	buildablesEnabled(world: WorldExtended): BuildableDefn[]
 	{
 		var returnValues = new Array<BuildableDefn>();
 
@@ -34,7 +34,7 @@ class Technology
 		return returnValues;
 	}
 
-	strength(world: WorldExtended)
+	strength(world: WorldExtended): number
 	{
 		var multiplier = 0; // todo
 		return this.researchRequired * multiplier;

@@ -12,11 +12,7 @@ class Ship extends Entity {
         ]);
         this.defn = defn;
         this.factionName = factionName;
-        this.energyThisTurn = 0;
-        this.distancePerMove = 0;
-        this.shieldingThisTurn = 0;
-        // Helper variables.
-        this._displacement = Coords.create();
+        this.turnAndMove = new TurnAndMove();
         this.buildable(); // hack
     }
     // static methods
@@ -133,7 +129,7 @@ class Ship extends Entity {
         var returnValue = this.name
             + " - " + this.locatable().loc.placeName
             + " - Integrity: " + this.integrityCurrentOverMax()
-            + ", Energy: " + this.energyThisTurn;
+            + ", " + this.turnAndMove.toStringDescription();
         var order = this.order();
         var orderAsString = (order == null ? "Doing nothing." : order.toStringDescription());
         returnValue +=
@@ -229,57 +225,7 @@ class Ship extends Entity {
         }
     }
     moveTowardTarget(universe, target, ship) {
-        if (this.distanceLeftThisMove == null) {
-            if (this.energyThisTurn >= this.energyPerMove) {
-                this.energyThisTurn -= this.energyPerMove;
-                this.distanceLeftThisMove = this.distancePerMove;
-            }
-        }
-        if (this.distanceLeftThisMove > 0) {
-            var shipLoc = this.locatable().loc;
-            var shipPos = shipLoc.pos;
-            var targetLoc = target.locatable().loc;
-            var targetPos = targetLoc.pos;
-            var displacementToTarget = this._displacement.overwriteWith(targetPos).subtract(shipPos);
-            var distanceToTarget = displacementToTarget.magnitude();
-            var distanceMaxPerTick = 3; // hack
-            var distanceToMoveThisTick = (this.distanceLeftThisMove < distanceMaxPerTick
-                ? this.distanceLeftThisMove
-                : distanceMaxPerTick);
-            if (distanceToTarget < distanceToMoveThisTick) {
-                shipPos.overwriteWith(targetPos);
-                // hack
-                this.distanceLeftThisMove = null;
-                this.actor().activity.doNothing();
-                universe.inputHelper.isEnabled = true;
-                this.order().complete();
-                var targetBodyDefn = BodyDefn.fromEntity(target);
-                var targetDefnName = targetBodyDefn.name;
-                if (targetDefnName == LinkPortal.name) {
-                    var portal = target;
-                    this.linkPortalEnter(universe.world.network, portal, ship);
-                }
-                else if (targetDefnName == Planet.name) {
-                    var planet = target;
-                    var venue = universe.venueCurrent;
-                    var starsystem = venue.starsystem;
-                    this.planetOrbitEnter(universe, starsystem, planet);
-                }
-            }
-            else {
-                var directionToTarget = displacementToTarget.divideScalar(distanceToTarget);
-                var shipVel = shipLoc.vel;
-                shipVel.overwriteWith(directionToTarget).multiplyScalar(distanceToMoveThisTick);
-                shipPos.add(shipVel);
-                this.distanceLeftThisMove -= distanceToMoveThisTick;
-                if (this.distanceLeftThisMove <= 0) {
-                    // hack
-                    this.distanceLeftThisMove = null;
-                    this.actor().activity.doNothing();
-                    universe.inputHelper.isEnabled = true;
-                }
-            }
-        }
+        this.turnAndMove.moveShipTowardTarget(universe, ship, target);
     }
     movementThroughLinkPerTurn(link) {
         return 8; // todo
@@ -334,75 +280,80 @@ class Ship extends Entity {
         var buttonSize = Coords.fromXY(containerSize.x - margin * 2, 15);
         var fontHeightInPixels = margin;
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
-        var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(0, 0), // pos
-        containerSize, 
-        // children
-        [
+        var childControls = [
             new ControlLabel("textShipAsSelection", Coords.fromXY(margin, margin), Coords.fromXY(containerSize.x, 0), // this.size
             false, // isTextCentered
-            DataBinding.fromContext(this.name), fontHeightInPixels),
-            new ControlLabel("labelIntegrity", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
-            false, // isTextCentered
-            DataBinding.fromContext("H:"), fontHeightInPixels),
-            new ControlLabel("textIntegrity", Coords.fromXY(containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
-            false, // isTextCentered
-            DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontHeightInPixels),
-            new ControlLabel("labelEnergy", Coords.fromXY(containerSize.x / 2, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
-            false, // isTextCentered
-            DataBinding.fromContext("E:"), fontHeightInPixels),
-            new ControlLabel("textEnergy", Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
-            false, // isTextCentered
-            DataBinding.fromContextAndGet(ship, (c) => "" + c.energyThisTurn), fontHeightInPixels),
-            ControlButton.from8("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
-            buttonSize, // size
-            "View", fontHeightInPixels, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            () => alert("todo - view") // click
-            ),
-            ControlButton.from8("buttonMove", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
-            buttonSize, "Move", fontHeightInPixels, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            () => // click
-             {
-                var venue = universe.venueCurrent;
-                var ship = venue.selectedEntity;
-                ship.deviceSelected = ship.devicesDrives(world)[0];
-                var orderDefns = OrderDefn.Instances();
-                venue.cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
-            }),
-            ControlButton.from8("buttonRepeat", Coords.fromXY(margin, margin + controlSpacing * 4), // pos
-            buttonSize, "Repeat", fontHeightInPixels, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            () => // click
-             {
-                var venue = universe.venueCurrent;
-                var ship = venue.selectedEntity;
-                var order = Orderable.fromEntity(ship).order;
-                if (order != null) {
-                    order.obey(universe, null, null, ship);
-                }
-            }),
-            new ControlLabel("labelDevices", Coords.fromXY(margin, margin + controlSpacing * 5), // pos
-            Coords.fromXY(containerSize.x, 0), // this.size
-            false, // isTextCentered
-            DataBinding.fromContext("Devices:"), fontHeightInPixels),
-            ControlList.from8("listDevices", Coords.fromXY(margin, margin + controlSpacing * 6), // pos
-            Coords.fromXY(buttonSize.x, controlSpacing * 2), // size
-            // dataBindingForItems
-            DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable(world)), DataBinding.fromGet((c) => c.defn.name), // bindingForOptionText
-            fontHeightInPixels, new DataBinding(ship, (c) => c.deviceSelected, (c, v) => c.deviceSelected = v), // dataBindingForItemSelected
-            DataBinding.fromContext(null) // bindingForItemValue
-            ),
-            ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
-            buttonSize, "Use Device", fontHeightInPixels, true, // hasBorder
-            DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected != null)), () => // click
-             {
-                var venue = universe.venueCurrent;
-                var ship = venue.selectedEntity;
-                var device = ship.deviceSelected;
-                device.use(uwpe);
-            }),
-        ]);
+            DataBinding.fromContext(this.name), fontHeightInPixels)
+        ];
+        var shipBelongsToUser = ship.faction(world).isControlledByUser();
+        if (shipBelongsToUser) {
+            var childControlsDetailed = [
+                new ControlLabel("labelIntegrity", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
+                false, // isTextCentered
+                DataBinding.fromContext("H:"), fontHeightInPixels),
+                new ControlLabel("textIntegrity", Coords.fromXY(containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
+                false, // isTextCentered
+                DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontHeightInPixels),
+                new ControlLabel("labelEnergy", Coords.fromXY(containerSize.x / 2, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
+                false, // isTextCentered
+                DataBinding.fromContext("E:"), fontHeightInPixels),
+                new ControlLabel("textEnergy", Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
+                false, // isTextCentered
+                DataBinding.fromContextAndGet(ship, (c) => "" + c.turnAndMove.energyThisTurn), fontHeightInPixels),
+                ControlButton.from8("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
+                buttonSize, // size
+                "View", fontHeightInPixels, true, // hasBorder
+                DataBinding.fromTrue(), // isEnabled
+                () => alert("todo - view") // click
+                ),
+                ControlButton.from8("buttonMove", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
+                buttonSize, "Move", fontHeightInPixels, true, // hasBorder
+                DataBinding.fromTrue(), // isEnabled
+                () => // click
+                 {
+                    var venue = universe.venueCurrent;
+                    var ship = venue.selectedEntity;
+                    ship.deviceSelected = ship.devicesDrives(world)[0];
+                    var orderDefns = OrderDefn.Instances();
+                    venue.cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
+                }),
+                ControlButton.from8("buttonRepeat", Coords.fromXY(margin, margin + controlSpacing * 4), // pos
+                buttonSize, "Repeat", fontHeightInPixels, true, // hasBorder
+                DataBinding.fromTrue(), // isEnabled
+                () => // click
+                 {
+                    var venue = universe.venueCurrent;
+                    var ship = venue.selectedEntity;
+                    var order = Orderable.fromEntity(ship).order;
+                    if (order != null) {
+                        order.obey(universe, null, null, ship);
+                    }
+                }),
+                new ControlLabel("labelDevices", Coords.fromXY(margin, margin + controlSpacing * 5), // pos
+                Coords.fromXY(containerSize.x, 0), // this.size
+                false, // isTextCentered
+                DataBinding.fromContext("Devices:"), fontHeightInPixels),
+                ControlList.from8("listDevices", Coords.fromXY(margin, margin + controlSpacing * 6), // pos
+                Coords.fromXY(buttonSize.x, controlSpacing * 2), // size
+                // dataBindingForItems
+                DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable(world)), DataBinding.fromGet((c) => c.defn.name), // bindingForOptionText
+                fontHeightInPixels, new DataBinding(ship, (c) => c.deviceSelected, (c, v) => c.deviceSelected = v), // dataBindingForItemSelected
+                DataBinding.fromContext(null) // bindingForItemValue
+                ),
+                ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
+                buttonSize, "Use Device", fontHeightInPixels, true, // hasBorder
+                DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected != null)), () => // click
+                 {
+                    var venue = universe.venueCurrent;
+                    var ship = venue.selectedEntity;
+                    var device = ship.deviceSelected;
+                    device.use(uwpe);
+                })
+            ];
+            childControls.push(...childControlsDetailed);
+        }
+        var returnValue = ControlContainer.from4("containerShip", Coords.fromXY(0, 0), // pos
+        containerSize, childControls);
         return returnValue;
     }
     // diplomacy
@@ -411,10 +362,7 @@ class Ship extends Entity {
     }
     // turns
     updateForTurn(universe, world, faction) {
-        this.energyThisTurn = 0;
-        this.distancePerMove = 0;
-        this.energyPerMove = 0;
-        this.shieldingThisTurn = 0;
+        this.turnAndMove.clear();
         var devices = this.devices();
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
         for (var i = 0; i < devices.length; i++) {

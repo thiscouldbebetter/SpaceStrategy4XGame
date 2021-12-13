@@ -72,8 +72,7 @@ class ControlBuilderExtended extends ControlBuilder {
                         throw new Error("Not yet implemented!");
                     }
                     if (venueNext != null) {
-                        venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-                        universe.venueNext = venueNext;
+                        universe.venueTransitionTo(venueNext);
                     }
                 }
             })

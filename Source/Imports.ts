@@ -134,6 +134,7 @@ import Sound = gf.Sound;
 import SoundFromFile = gf.SoundFromFile;
 import SoundHelper = gf.SoundHelper;
 import SoundHelperLive = gf.SoundHelperLive;
+import TextString = gf.TextString;
 import VenueVideo = gf.VenueVideo;
 import Video = gf.Video;
 import VideoHelper = gf.VideoHelper;
@@ -151,6 +152,7 @@ import UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 import Venue = gf.Venue;
 import VenueWorld = gf.VenueWorld;
 import World = gf.World;
+import WorldCreator = gf.WorldCreator;
 import WorldDefn = gf.WorldDefn;
 
 // Model - Actors.

@@ -122,11 +122,13 @@ class VenueStarsystem implements Venue
 
 	updateForTimerTick(universe: Universe): void
 	{
+		var world = universe.world as WorldExtended;
+
 		this.venueControls.updateForTimerTick(universe);
 
 		var uwpe = new UniverseWorldPlaceEntities
 		(
-			universe, universe.world, null, null, null
+			universe, world, null, null, null
 		);
 
 		this.cameraEntity.constrainable().constrain
@@ -198,7 +200,7 @@ class VenueStarsystem implements Venue
 			{
 				this.cameraIn(cameraSpeed);
 			}
-			else if (inputHelper.isMouseClicked(null))
+			else if (inputHelper.isMouseClicked())
 			{
 				this.updateForTimerTick_Input_Mouse(universe);
 			}
@@ -297,7 +299,7 @@ class VenueStarsystem implements Venue
 
 		this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
 
-		inputHelper.isMouseClicked(false);
+		inputHelper.mouseClickedSet(false);
 	}
 
 	updateForTimerTick_Input_Mouse_Selection
@@ -350,13 +352,9 @@ class VenueStarsystem implements Venue
 		else if (bodyClicked == planetSelected)
 		{
 			var layout = planetSelected.layout;
-			var venueNext: Venue =
+			var venueNext =
 				new VenueLayout(this, bodyClicked, layout);
-			venueNext = VenueFader.fromVenuesToAndFrom
-			(
-				venueNext, universe.venueCurrent
-			);
-			universe.venueNext = venueNext;
+			universe.venueTransitionTo(venueNext);
 		}
 		else if (planetSelected.isAwaitingTarget())
 		{
@@ -566,9 +564,8 @@ class VenueStarsystem implements Venue
 					() => // click
 					{
 						var venue = universe.venueCurrent as VenueStarsystem;
-						var venueNext: Venue = venue.venueParent;
-						venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-						universe.venueNext = venueNext;
+						var venueNext = venue.venueParent;
+						universe.venueTransitionTo(venueNext);
 					}
 				),
 

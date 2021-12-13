@@ -57,7 +57,8 @@ class FactionTests extends TestFixture {
         this.universe.display.sizeInPixels.clone().half(), // containerInnerSize
         10, // margin,
         10, // controlHeight,
-        20 // buttonWidth
+        20, // buttonWidth
+        true // includeDetailsButton
         );
         Assert.isNotNull(factionAsControl);
     }

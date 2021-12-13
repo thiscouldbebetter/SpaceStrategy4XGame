@@ -1,0 +1,13 @@
+{
+    "name": "Diplomacy",
+    "talkNodes": [
+        {
+            "name": "Greet",
+            "defnName": "Display",
+            "text": "Diplomacy is not yet implemented!"
+        },
+        {
+            "defnName": "Quit"
+        }
+    ]
+}

@@ -167,7 +167,8 @@ class VenueLayout implements Venue
 					"labelBuildableName",
 					Coords.fromXY(1, 1).multiply(margin),
 					listSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext(buildableAtCursor.defnName), // text
 					fontHeightInPixels
 				),
@@ -297,7 +298,8 @@ class VenueLayout implements Venue
 					"labelFacilityToBuild",
 					margin,
 					listSize,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Facility to Build:"), // text
 					fontHeightInPixels
 				),
@@ -490,7 +492,8 @@ class VenueLayout implements Venue
 						containerInnerSize.x - margin * 2,
 						controlHeight
 					), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Building:"),
 					fontHeightInPixels
 				),
@@ -500,7 +503,8 @@ class VenueLayout implements Venue
 					"labelBuildable",
 					Coords.fromXY(margin, controlHeight + margin), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size,
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						planet,
@@ -524,7 +528,8 @@ class VenueLayout implements Venue
 					"labelResourcesRequired",
 					Coords.fromXY(margin, controlHeight * 2 + margin), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						planet,
@@ -583,7 +588,8 @@ class VenueLayout implements Venue
 						containerInnerSize.x - margin * 2,
 						controlHeight
 					), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						planet, (c: Planet) => c.name
@@ -596,7 +602,8 @@ class VenueLayout implements Venue
 					"labelPopulation",
 					Coords.fromXY(margin, margin + controlHeight), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Population:"),
 					fontHeightInPixels
 				),
@@ -606,7 +613,8 @@ class VenueLayout implements Venue
 					"textPopulation",
 					Coords.fromXY(column1PosX, margin + controlHeight), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						planet,
@@ -620,7 +628,8 @@ class VenueLayout implements Venue
 					"labelIndustry",
 					Coords.fromXY(margin, margin + controlHeight * 2), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Industry:"),
 					fontHeightInPixels
 				),
@@ -630,7 +639,8 @@ class VenueLayout implements Venue
 					"textIndustry",
 					Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						planet,
@@ -644,7 +654,8 @@ class VenueLayout implements Venue
 					"labelProsperity",
 					Coords.fromXY(margin, margin + controlHeight * 3), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Prosperity:"),
 					fontHeightInPixels
 				),
@@ -654,7 +665,8 @@ class VenueLayout implements Venue
 					"textProsperity",
 					Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						planet,
@@ -668,7 +680,8 @@ class VenueLayout implements Venue
 					"labelResearch",
 					Coords.fromXY(margin, margin + controlHeight * 4), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Research:"),
 					fontHeightInPixels
 				),
@@ -678,7 +691,8 @@ class VenueLayout implements Venue
 					"textResearch",
 					Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						planet,

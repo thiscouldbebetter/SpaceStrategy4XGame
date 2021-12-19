@@ -7,7 +7,7 @@ class Starsystem extends Place
 	linkPortals: LinkPortal[];
 	_linkPortalsByStarsystemName: Map<string,LinkPortal>;
 	planets: Planet[];
-	factionName: string;
+	factionName: string; // Owner.
 
 	ships: Ship[];
 
@@ -139,9 +139,56 @@ class Starsystem extends Place
 
 	// instance methods
 
-	faction(world: WorldExtended)
+	faction(world: WorldExtended): Faction
 	{
 		return (this.factionName == null ? null : world.factionByName(this.factionName));
+	}
+
+	factionsPresent(world: WorldExtended): Faction[]
+	{
+		var factionsPresentByName = new Map<string, Faction>();
+
+		this.planets.forEach
+		(
+			x =>
+			{
+				var factionName = x.factionName;
+				if (factionName != null)
+				{
+					if (factionsPresentByName.has(factionName) == false)
+					{
+						var faction = world.factionByName(factionName);
+						factionsPresentByName.set(factionName, faction);
+					}
+				}
+			}
+		);
+
+		this.ships.forEach
+		(
+			x =>
+			{
+				var factionName = x.factionName;
+				if (factionName != null)
+				{
+					if (factionsPresentByName.has(factionName) == false)
+					{
+						var faction = world.factionByName(factionName);
+						factionsPresentByName.set(factionName, faction);
+					}
+				}
+			}
+		);
+
+		var factionsPresent = Array.from
+		(
+			factionsPresentByName.keys()
+		).map
+		(
+			factionName => factionsPresentByName.get(factionName)
+		);
+
+		return factionsPresent;
 	}
 
 	linkPortalAdd(linkPortalToAdd: LinkPortal)
@@ -182,14 +229,26 @@ class Starsystem extends Place
 		return this.planetsByName.get(planetName);
 	}
 
-	shipAdd(shipToAdd: Ship)
+	shipAdd(shipToAdd: Ship, world: WorldExtended): void
 	{
 		this.ships.push(shipToAdd);
+
 		shipToAdd.locatable().loc.placeName =
 			Starsystem.name + ":" + this.name;
+
+		var factionsInStarsystem = this.factionsPresent(world);
+		factionsInStarsystem.forEach
+		(
+			faction =>
+			{
+				var factionKnowledge = faction.knowledge;
+				factionKnowledge.shipAdd(shipToAdd, world);
+				factionKnowledge.starsystemAdd(this, world);
+			}
+		);
 	}
 
-	shipRemove(shipToRemove: Ship)
+	shipRemove(shipToRemove: Ship): void
 	{
 		ArrayHelper.remove(this.ships, shipToRemove);
 	}

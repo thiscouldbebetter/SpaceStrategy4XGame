@@ -50,12 +50,12 @@ class TechnologyResearcher {
         var returnValue = faction.researchPerTurn(universe, world);
         return returnValue;
     }
-    strength(world) {
+    strategicValue(world) {
         var returnValue = 0;
         var technologiesKnown = this.technologiesKnown(world);
         for (var i = 0; i < technologiesKnown.length; i++) {
             var tech = technologiesKnown[i];
-            returnValue += tech.strength(world);
+            returnValue += tech.strategicValue(world);
         }
         return returnValue;
     }

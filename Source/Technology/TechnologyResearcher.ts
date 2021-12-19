@@ -100,7 +100,7 @@ class TechnologyResearcher
 		return returnValue;
 	}
 
-	strength(world: WorldExtended): number
+	strategicValue(world: WorldExtended): number
 	{
 		var returnValue = 0;
 
@@ -108,7 +108,7 @@ class TechnologyResearcher
 		for (var i = 0; i < technologiesKnown.length; i++)
 		{
 			var tech = technologiesKnown[i];
-			returnValue += tech.strength(world);
+			returnValue += tech.strategicValue(world);
 		}
 
 		return returnValue;

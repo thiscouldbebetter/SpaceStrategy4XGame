@@ -26,6 +26,7 @@ import ControlContainer = gf.ControlContainer;
 import ControlContainerTransparent = gf.ControlContainerTransparent;
 import ControlLabel = gf.ControlLabel;
 import ControlList = gf.ControlList;
+import ControlNumber = gf.ControlNumber;
 import ControlScrollbar = gf.ControlScrollbar;
 import ControlSelect = gf.ControlSelect;
 import ControlSelectOption = gf.ControlSelectOption;

@@ -323,7 +323,8 @@ class Planet extends Entity
 					"labelName",
 					Coords.fromXY(0, 0), // pos
 					Coords.fromXY(size.x, 0), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.name),
 					10 // fontHeightInPixels
 				)
@@ -335,7 +336,7 @@ class Planet extends Entity
 
 	// diplomacy
 
-	strength(world: WorldExtended): number
+	strategicValue(world: WorldExtended): number
 	{
 		return 1; // todo
 	}

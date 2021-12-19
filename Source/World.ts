@@ -9,10 +9,10 @@ class WorldExtended extends World
 	ships: Ship[];
 	camera: Camera;
 
-	buildableDefnsByName: Map<string, BuildableDefn>;
-	deviceDefnsByName: Map<string, DeviceDefn>;
-	factionsByName: Map<string, Faction>;
-	shipsByName: Map<string, Ship>;
+	private buildableDefnsByName: Map<string, BuildableDefn>;
+	private deviceDefnsByName: Map<string, DeviceDefn>;
+	private factionsByName: Map<string, Faction>;
+	//private shipsByName: Map<string, Ship>;
 
 	factionIndexCurrent: number;
 	turnsSoFar: number;
@@ -57,7 +57,7 @@ class WorldExtended extends World
 		this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
 		this.deviceDefnsByName = ArrayHelper.addLookupsByName(this.deviceDefns);
 		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
-		this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
+		//this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
 
 		this.defn.itemDefns.push(...deviceDefns);
 		var buildableDefnsNonDevice = this.buildableDefns.filter(
@@ -80,8 +80,8 @@ class WorldExtended extends World
 	): WorldExtended
 	{
 		var settings = worldCreator.settings;
-		var starsystemCount = parseInt(settings.starsystemCountAsString);
-		var factionCount = parseInt(settings.factionCountAsString);
+		var starsystemCount = parseInt(settings.starsystemCount);
+		var factionCount = parseInt(settings.factionCount);
 
 		var worldName = NameGenerator.generateName() + " Cluster";
 
@@ -130,7 +130,7 @@ class WorldExtended extends World
 		var factions = factionsAndShips[0];
 		var ships = factionsAndShips[1];
 
-		DiplomaticRelationship.initializeForFactions(factions);
+		factions.forEach(x => x.diplomacy.initializeForFactions(factions));
 
 		var camera = new Camera
 		(
@@ -566,8 +566,8 @@ class WorldExtended extends World
 			[], // deviceDefns
 			null, // technologyGraph
 			network, // network
-			[], // factions
-			[], // ships
+			factions,
+			ships, // ships
 			null, // camera
 		);
 
@@ -576,7 +576,7 @@ class WorldExtended extends World
 
 		for (var i = 0; i < numberOfFactions; i++)
 		{
-			var factionHomeStarsystem = null;
+			var factionHomeStarsystem: Starsystem = null;
 
 			var random = Math.random();
 			var starsystemIndexStart = Math.floor
@@ -615,6 +615,8 @@ class WorldExtended extends World
 			var factionName = factionHomeStarsystem.name + "ians";
 			factionHomeStarsystem.factionName = factionName;
 			var factionColor = colorsForFactions[i];
+
+			var factionDiplomacy = FactionDiplomacy.fromFactionSelfName(factionName);
 
 			var planets = factionHomeStarsystem.planets;
 			var planetIndexRandom = Math.floor(planets.length * Math.random());
@@ -663,7 +665,6 @@ class WorldExtended extends World
 				);
 				ships.push(ship);
 				factionShips.push(ship);
-				factionHomeStarsystem.shipAdd(ship);
 			}
 
 			var factionIntelligence =
@@ -675,7 +676,7 @@ class WorldExtended extends World
 				factionHomeStarsystem.name,
 				factionHomePlanet.name,
 				factionColor,
-				[], // relationships
+				factionDiplomacy,
 				new TechnologyResearcher
 				(
 					factionName,
@@ -688,7 +689,9 @@ class WorldExtended extends World
 				factionShips,
 				new FactionKnowledge
 				(
-					[ factionName ],
+					factionName, // factionSelfName
+					[ factionName ], // factionNames
+					ships.map(x => x.id), // shipIds
 					[ factionHomeStarsystem.name ],
 					factionHomeStarsystem.links(network).map
 					(
@@ -697,7 +700,40 @@ class WorldExtended extends World
 				),
 				factionIntelligence
 			);
-			factions.push(faction);
+
+			worldDummy.factionAdd(faction);
+
+			factionShips.forEach
+			(
+				ship => factionHomeStarsystem.shipAdd(ship, worldDummy)
+			);
+		}
+
+		var communicationStyleNames =
+		[
+			"Chivalrous",
+			"Enthusiastic",
+			"Haughty",
+			"Poetic",
+			"Robotic",
+			"Unctuous",
+			"Unhinged",
+		];
+
+		for (var i = 0; i < factions.length; i++)
+		{
+			var faction = factions[i];
+			var communicationStyleIndex =
+				Math.floor(Math.random() * communicationStyleNames.length);
+			var communicationStyleName =
+				communicationStyleNames[communicationStyleIndex];
+			faction.diplomacy.communicationStyleName =
+				communicationStyleName;
+
+			communicationStyleNames.splice
+			(
+				communicationStyleNames.indexOf(communicationStyleName), 1
+			);
 		}
 
 		var factionUser = factions[0];
@@ -733,7 +769,7 @@ class WorldExtended extends World
 		);
 
 		factionEnemy.shipAdd(shipEnemy);
-		factionUserHomeStarsystem.shipAdd(shipEnemy);
+		factionUserHomeStarsystem.shipAdd(shipEnemy, worldDummy);
 
 		var factionsAndShips: [Faction[], Ship[]] = 
 			[ factions, ships ];
@@ -768,6 +804,12 @@ class WorldExtended extends World
 	deviceDefnByName(deviceDefnName: string): DeviceDefn
 	{
 		return this.deviceDefnsByName.get(deviceDefnName);
+	}
+
+	factionAdd(faction: Faction): void
+	{
+		this.factions.push(faction);
+		this.factionsByName.set(faction.name, faction);
 	}
 
 	factionByName(factionName: string): Faction

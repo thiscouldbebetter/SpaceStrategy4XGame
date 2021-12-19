@@ -45,7 +45,16 @@ function main()
 		],
 		// textStrings
 		[
-			new TextString("Diplomacy", contentPathTextStrings + "Diplomacy.json")
+			new TextString("Diplomacy_Others_Default", 		contentPathTextStrings + "Diplomacy/Others/Default.json"),
+			new TextString("Diplomacy_Others_Chivalrous",	contentPathTextStrings + "Diplomacy/Others/Chivalrous.json"),
+			new TextString("Diplomacy_Others_Enthusiastic",	contentPathTextStrings + "Diplomacy/Others/Enthusiastic.json"),
+			new TextString("Diplomacy_Others_Haughty",		contentPathTextStrings + "Diplomacy/Others/Haughty.json"),
+			new TextString("Diplomacy_Others_Poetic",		contentPathTextStrings + "Diplomacy/Others/Poetic.json"),
+			new TextString("Diplomacy_Others_Robotic",		contentPathTextStrings + "Diplomacy/Others/Robotic.json"),
+			new TextString("Diplomacy_Others_Unctuous",		contentPathTextStrings + "Diplomacy/Others/Unctuous.json"),
+			new TextString("Diplomacy_Others_Unhinged",		contentPathTextStrings + "Diplomacy/Others/Unhinged.json"),
+
+			new TextString("Diplomacy_Player_Default", contentPathTextStrings + "Diplomacy/Player/Default.json"),
 		]
 	);
 
@@ -53,16 +62,16 @@ function main()
 
 	var worldCreatorSettings =
 	{
-		"starsystemCountAsString": "12",
-		"factionCountAsString": "2",
+		"starsystemCount": 12,
+		"factionCount": 2,
 
 		"isValid": (worldCreator: WorldCreator) =>
 		{
 			var settings = worldCreator.settings;
 			var areAllSettingsValid =
 			(
-				isNaN(settings.starsystemCountAsString) == false
-				&& isNaN(settings.factionCountAsString) == false
+				isNaN(settings.starsystemCount) == false
+				&& isNaN(settings.factionCount) == false
 			)
 			return areAllSettingsValid;
 		}
@@ -117,7 +126,8 @@ function worldCreatorToControl
 				"labelWorldCreationSettings",
 				Coords.fromXY(margin, margin), // pos
 				Coords.fromXY(size.x - margin * 2, controlHeight),
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext("World Creation Settings"),
 				fontHeightInPixels
 			),
@@ -127,24 +137,26 @@ function worldCreatorToControl
 				"labelWorldStarsystemCount",
 				Coords.fromXY(margin, margin * 2 + controlHeight), // pos
 				Coords.fromXY(size.x - margin * 2, controlHeight),
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext("Starsystems:"),
 				fontHeightInPixels
 			),
 
-			new ControlTextBox
+			new ControlNumber
 			(
-				"textBoxStarsystemCount",
+				"numberStarsystemCount",
 				Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
 				Coords.fromXY(controlHeight * 2, controlHeight), // size
 				new DataBinding
 				(
 					worldCreator,
-					(c: WorldCreator) => c.settings.starsystemCountAsString,
-					(c: WorldCreator, v: string) => c.settings.starsystemCountAsString = v
-				), // text
+					(c: WorldCreator) => c.settings.starsystemCount,
+					(c: WorldCreator, v: number) => c.settings.starsystemCount = v
+				), // value
+				DataBinding.fromGet( (c: WorldCreator) => 12), // valueMin
+				DataBinding.fromGet( (c: WorldCreator) => 128), // valueMax
 				fontHeightInPixels,
-				3, // charCountMax
 				DataBinding.fromTrue() // isEnabled
 			),
 
@@ -153,24 +165,26 @@ function worldCreatorToControl
 				"labelWorldFactionCount",
 				Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
 				Coords.fromXY(size.x - margin * 2, controlHeight),
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext("Factions:"),
 				fontHeightInPixels
 			),
 
-			new ControlTextBox
+			new ControlNumber
 			(
-				"textBoxFactionCount",
+				"numberFactionCount",
 				Coords.fromXY(margin * 8, margin * 3 + controlHeight * 2), // pos
 				Coords.fromXY(controlHeight * 2, controlHeight), // size
 				new DataBinding
 				(
 					worldCreator,
-					(c: WorldCreator) => c.settings.factionCountAsString,
-					(c: WorldCreator, v: string) => c.settings.factionCountAsString = v
-				), // text
+					(c: WorldCreator) => c.settings.factionCount,
+					(c: WorldCreator, v: number) => c.settings.factionCount = v
+				), // value
+				DataBinding.fromGet( (c: WorldCreator) => 2), // valueMin
+				DataBinding.fromGet( (c: WorldCreator) => 7), // valueMax
 				fontHeightInPixels,
-				64, // charCountMax
 				DataBinding.fromTrue() // isEnabled
 			),
 

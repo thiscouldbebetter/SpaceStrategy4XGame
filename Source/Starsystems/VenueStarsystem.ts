@@ -387,7 +387,7 @@ class VenueStarsystem implements Venue
 			{
 				var order = new Order(this.cursor.orderName, targetEntity);
 				ship.orderSet(order);
-				order.obey(universe, universe.world, null, ship);
+				order.obey(universe, universe.world as WorldExtended, null, ship);
 			}
 
 			this.cursor.clear();
@@ -412,7 +412,7 @@ class VenueStarsystem implements Venue
 
 			var order = new Order(this.cursor.orderName, target);
 			Orderable.fromEntity(ship).order = order;
-			order.obey(universe, universe.world, null, ship);
+			order.obey(universe, universe.world as WorldExtended, null, ship);
 
 			this.cursor.clear();
 		}

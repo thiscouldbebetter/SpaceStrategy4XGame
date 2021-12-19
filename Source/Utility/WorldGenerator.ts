@@ -38,7 +38,8 @@ class WorldGenerator
 				"labelWorldGenerationCriteria",
 				Coords.fromXY(margin, margin), // pos
 				Coords.fromXY(size.x - margin * 2, controlHeight), // size
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext("World Generation Criteria:"), // text
 				fontHeightInPixels
 			),
@@ -48,7 +49,8 @@ class WorldGenerator
 				"labelStarsystemCount",
 				Coords.fromXY(margin, margin * 2 + controlHeight), // pos
 				Coords.fromXY(size.x - margin * 2, controlHeight), // size
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext("Starsystems:"), // text
 				fontHeightInPixels
 			),
@@ -79,7 +81,8 @@ class WorldGenerator
 				"labelFactionCount",
 				Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
 				Coords.fromXY(size.x - margin * 2, controlHeight), // size
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext("Factions:"), // text
 				fontHeightInPixels
 			),

@@ -92,7 +92,8 @@ class NotificationSession
 					"labelNotifications",
 					Coords.fromXY(margin, margin), // pos
 					Coords.fromXY(columnWidth, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Notifications:"),
 					fontHeightInPixels
 				),
@@ -127,7 +128,8 @@ class NotificationSession
 					"labelSelected",
 					Coords.fromXY(margin, margin * 2 + controlHeight + listHeight), // pos
 					Coords.fromXY(columnWidth, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Selected:"),
 					fontHeightInPixels
 				),
@@ -137,7 +139,8 @@ class NotificationSession
 					"textMessage",
 					Coords.fromXY(margin, margin * 2 + controlHeight * 2 + listHeight), // pos
 					Coords.fromXY(columnWidth, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this,
@@ -234,7 +237,8 @@ class NotificationSession
 					"textMessage",
 					Coords.fromXY(margin, containerSize.y - margin - controlHeight), // pos
 					Coords.fromXY(columnWidth, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext
 					(
 						"All notifications must be dismissed before turn can be ended."

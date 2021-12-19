@@ -3,13 +3,13 @@ class OrderDefn
 {
 	name: string;
 	description: string;
-	obey: (u: Universe, w: World, p: Place, e: Entity)=>void;
+	obey: (u: Universe, w: WorldExtended, p: Place, e: Entity) => void;
 
 	constructor
 	(
 		name: string,
 		description: string,
-		obey: (u: Universe, w: World, p: Place, e: Entity)=>void
+		obey: (u: Universe, w: WorldExtended, p: Place, e: Entity) => void
 	)
 	{
 		this.name = name;
@@ -57,7 +57,7 @@ class OrderDefn_Instances
 		this._AllByName = ArrayHelper.addLookupsByName(this._All);
 	}
 
-	go(u: Universe, w: World, p: Place, e: Entity): void
+	go(u: Universe, w: WorldExtended, p: Place, e: Entity): void
 	{
 		var actor = e.actor();
 		var orderable = Orderable.fromEntity(e);
@@ -90,7 +90,7 @@ class OrderDefn_Instances
 
 	useDevice
 	(
-		universe: Universe, world: World, place: Place, entity: Entity
+		universe: Universe, world: WorldExtended, place: Place, entity: Entity
 	): void
 	{
 		var orderable = Orderable.fromEntity(entity);
@@ -127,7 +127,7 @@ class OrderDefn_Instances
 						"MoveToTarget", order.targetEntity
 					);
 
-				starsystem.shipAdd(projectileEntity);
+				starsystem.shipAdd(projectileEntity, world);
 
 				device.projectileEntity = projectileEntity;
 			}

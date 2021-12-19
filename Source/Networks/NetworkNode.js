@@ -27,10 +27,12 @@ class NetworkNode2 extends Entity {
         // children
         [
             new ControlLabel("labelStarsystemName", Coords.fromXY(margin, margin), Coords.fromXY(0, 0), // this.size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext(this.name), fontHeightInPixels),
             new ControlLabel("labelStarsystemHolder", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(0, 0), // this.size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(networkNode, (c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)), fontHeightInPixels),
             ControlButton.from8("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
             buttonSize, // size

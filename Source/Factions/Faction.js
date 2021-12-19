@@ -1,24 +1,26 @@
 "use strict";
 class Faction {
-    constructor(name, homeStarsystemName, homePlanetName, color, relationships, technologyResearcher, planets, ships, knowledge, intelligence) {
+    constructor(name, homeStarsystemName, homePlanetName, color, diplomacy, technologyResearcher, planets, ships, knowledge, intelligence) {
         this.name = name;
         this.homeStarsystemName = homeStarsystemName;
         this.homePlanetName = homePlanetName;
         this.color = color;
-        this.relationships = relationships;
+        this.diplomacy = diplomacy;
         this.technologyResearcher = technologyResearcher;
         this.planets = planets;
         this.ships = ships;
         this.knowledge = knowledge;
         this.intelligence = intelligence;
         this.notificationSession = new NotificationSession(this.name, []);
-        this.relationshipsByFactionName = ArrayHelper.addLookups(this.relationships, (x) => x.factionNameOther);
-        this.shipsBuiltSoFarCount = 0;
+        this.shipsBuiltSoFarCount = ships.length;
+    }
+    static fromEntity(entity) {
+        return entity.propertyByName(Faction.name);
     }
     static fromName(name) {
         return new Faction(name, null, // homeStarsystemName,
         null, // homePlanetName,
-        Color.Instances().Red, new Array(), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.default(), null // intelligence
+        Color.Instances().Red, FactionDiplomacy.fromFactionSelfName(name), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.fromFactionSelfName(name), null // intelligence
         );
     }
     detailsView(universe) {
@@ -48,6 +50,9 @@ class Faction {
     starsystemHome(world) {
         return world.network.nodeByName(this.homeStarsystemName).starsystem;
     }
+    toEntity() {
+        return new Entity(Faction.name + "_" + this.name, [this]);
+    }
     toString() {
         return this.name;
     }
@@ -59,11 +64,13 @@ class Faction {
         var childControls = [
             new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Faction:"), fontHeightInPixels),
             new ControlLabel("textFaction", Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext(faction.name), fontHeightInPixels)
         ];
         if (includeDetailsButton) {
@@ -82,83 +89,27 @@ class Faction {
         size, childControls);
         return returnValue;
     }
-    static toControl_Intelligence(diplomaticSession, pos, containerSize) {
-        var margin = 10;
-        var controlSpacing = 20;
-        var listWidth = 100;
-        var columnWidth = 60;
-        var fontHeightInPixels = 10;
-        var returnValue = ControlContainer.from4("containerFactionIntelligence", pos, containerSize, 
-        // children
-        [
-            new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
-            Coords.fromXY(columnWidth, controlSpacing), // size
-            false, // isTextCentered
-            DataBinding.fromContext("Faction:"), fontHeightInPixels),
-            new ControlLabel("textFaction", Coords.fromXY(margin * 2 + columnWidth, margin), // pos
-            Coords.fromXY(columnWidth, controlSpacing), // size,
-            false, // isTextCentered
-            DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null ? "[none]" : c.factionSelected.name)), fontHeightInPixels),
-            new ControlLabel("labelRelationship", Coords.fromXY(margin, margin + controlSpacing), // pos
-            Coords.fromXY(columnWidth, controlSpacing), // size
-            false, // isTextCentered
-            DataBinding.fromContext("Relationship:"), fontHeightInPixels),
-            new ControlLabel("textRelationship", Coords.fromXY(margin + columnWidth, margin + controlSpacing), // pos
-            Coords.fromXY(columnWidth, controlSpacing), // size,
-            false, // isTextCentered
-            DataBinding.fromContext("[relationship]"), fontHeightInPixels),
-            new ControlLabel("labelPlanets", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
-            Coords.fromXY(columnWidth, controlSpacing), // size
-            false, // isTextCentered
-            DataBinding.fromContext("Planets:"), fontHeightInPixels),
-            ControlList.from8("listPlanets", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
-            Coords.fromXY(listWidth, controlSpacing * 4), // size
-            new DataBinding(diplomaticSession, (c) => (c.factionSelected == null ? new Array() : c.factionSelected.planets), null), // items
-            DataBinding.fromGet((c) => "todo" // bindingForItemText,
-            ), fontHeightInPixels, 
-            // dataBindingForItemSelected
-            new DataBinding(diplomaticSession, (c) => (c.factionSelected == null ? null : c.factionSelected.planetSelected), (c, v) => {
-                if (c.factionSelected != null) {
-                    c.factionSelected.planetSelected = v;
-                }
-            }), null // bindingForItemValue
-            ),
-            new ControlLabel("labelShips", Coords.fromXY(margin, margin + controlSpacing * 7), // pos
-            Coords.fromXY(columnWidth, controlSpacing), // size
-            false, // isTextCentered
-            DataBinding.fromContext("Ships:"), fontHeightInPixels),
-            ControlList.from7("listShips", Coords.fromXY(margin, margin + controlSpacing * 8), // pos
-            Coords.fromXY(listWidth, controlSpacing * 4), // size
-            DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null ? new Array() : c.factionSelected.ships)), // options
-            DataBinding.fromGet((c) => "todo"), // bindingForOptionText,
-            null, // fontHeightInPixels
-            // dataBindingForValueSelected
-            new DataBinding(diplomaticSession, (c) => (c.factionSelected == null ? null : c.factionSelected.shipSelected), (c, v) => {
-                if (c.factionSelected != null) {
-                    c.factionSelected.shipSelected = v;
-                }
-            })),
-        ]);
-        return returnValue;
-    }
     toControl_Details(universe) {
         var size = universe.display.sizeInPixels;
         var margin = 8;
         var fontHeightInPixels = 10;
         var controlHeight = 12;
         var tabButtonSize = Coords.fromXY(4, 2).multiplyScalar(controlHeight);
-        var tabbedControlSize = Coords.fromXY(size.x, size.y - tabButtonSize.y - margin);
+        var tabbedControlSize = Coords.fromXY(size.x, size.y - tabButtonSize.y - margin - 2 // hack - Why 2?
+        );
         var faction = this;
         var containerStatus = ControlContainer.from4("Status", Coords.create(), tabbedControlSize, 
         // children
         [
             new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(tabbedControlSize.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Faction:"), fontHeightInPixels),
             new ControlLabel("textBoxFaction", Coords.fromXY(margin * 8, margin), // pos
             Coords.fromXY(tabbedControlSize.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext(faction.name), fontHeightInPixels),
         ]);
         var containerNotifications = this.toControl_Details_Notifications(universe, tabbedControlSize);
@@ -182,10 +133,8 @@ class Faction {
         return returnControl;
     }
     toControl_Details_Diplomacy(universe, size) {
-        var world = universe.world;
         var factionCurrent = this;
-        var factionsOther = world.factionsOtherThan(factionCurrent);
-        var diplomaticSession = DiplomaticSession.demo(factionCurrent, factionsOther, universe.venueCurrent);
+        var diplomaticSession = DiplomaticSession.demo(factionCurrent, universe.venueCurrent);
         var diplomaticSessionAsControl = diplomaticSession.toControl(universe, size);
         return diplomaticSessionAsControl;
     }
@@ -200,11 +149,13 @@ class Faction {
         [
             new ControlLabel("labelPlanets", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Planets:"), fontHeightInPixels),
             new ControlLabel("textPlanetCount", Coords.fromXY(margin * 8, margin), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(faction, (c) => "" + c.planets.length), fontHeightInPixels),
             ControlList.from8("listPlanets", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
@@ -232,11 +183,13 @@ class Faction {
         [
             new ControlLabel("labelShips", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Ships:"), fontHeightInPixels),
             new ControlLabel("textShipCount", Coords.fromXY(margin * 8, margin), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(faction, (c) => "" + c.ships.length), fontHeightInPixels),
             ControlList.from8("listShips", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
@@ -263,9 +216,6 @@ class Faction {
         return researchSessionAsControl;
     }
     // diplomacy
-    allianceProposalAcceptFrom(factionOther) {
-        return true;
-    }
     allies(world) {
         return this.factionsMatchingRelationshipState(world, DiplomaticRelationship.States().Alliance);
     }
@@ -273,18 +223,10 @@ class Faction {
         return this.factionsMatchingRelationshipState(world, DiplomaticRelationship.States().War);
     }
     factionsMatchingRelationshipState(world, stateToMatch) {
-        var returnValues = [];
-        for (var i = 0; i < this.relationships.length; i++) {
-            var relationship = this.relationships[i];
-            if (relationship.state == stateToMatch) {
-                var factionOther = relationship.factionOther(world);
-                returnValues.push(factionOther);
-            }
-        }
+        var relationships = this.diplomacy.relationships;
+        var relationshipsMatching = relationships.filter(x => x.state == stateToMatch);
+        var returnValues = relationshipsMatching.map(x => x.factionOther(world));
         return returnValues;
-    }
-    peaceOfferAcceptFrom(factionOther) {
-        return true;
     }
     relationsInitialize(universe) {
         var diplomaticSessionAsControl = this.toControl_Details_Diplomacy(universe, universe.display.sizeInPixels);
@@ -292,30 +234,28 @@ class Faction {
         universe.venueTransitionTo(venueNext);
     }
     relationshipByFactionName(factionName) {
-        return this.relationshipsByFactionName.get(factionName);
+        var returnValue = this.diplomacy.relationships.find(x => x.factionNameOther == factionName);
+        return returnValue;
     }
     selfAndAllies(world) {
         var returnValues = this.factionsMatchingRelationshipState(world, DiplomaticRelationship.States().Alliance);
         returnValues.push(this);
         return returnValues;
     }
-    strength(world) {
+    strategicValue(world) {
         var returnValue = 0;
         var ships = this.ships;
         for (var i = 0; i < ships.length; i++) {
             var ship = ships[i];
-            returnValue += ship.strength(world);
+            returnValue += ship.strategicValue(world);
         }
         var planets = this.planets;
         for (var i = 0; i < planets.length; i++) {
             var planet = planets[i];
-            returnValue += planet.strength(world);
+            returnValue += planet.strategicValue(world);
         }
-        returnValue += this.technologyResearcher.strength(world);
+        returnValue += this.technologyResearcher.strategicValue(world);
         return returnValue;
-    }
-    warThreatOfferConcessionsTo(factionOther) {
-        return true;
     }
     // notifications
     notificationSessionStart(universe) {
@@ -344,5 +284,13 @@ class Faction {
             ship.updateForTurn(universe, world, this);
         }
         this.technologyResearcher.updateForTurn(universe, world, this);
+    }
+    // EntityProperty.
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) { }
+    // Equatable.
+    equals(other) {
+        return (this.name == other.name);
     }
 }

@@ -1,11 +1,11 @@
 
-class Faction
+class Faction implements EntityProperty<Faction>
 {
 	name: string;
 	homeStarsystemName: string;
 	homePlanetName: string;
 	color: Color;
-	relationships: DiplomaticRelationship[];
+	diplomacy: FactionDiplomacy;
 	technologyResearcher: TechnologyResearcher;
 	planets: Planet[];
 	ships: Ship[];
@@ -13,7 +13,6 @@ class Faction
 	intelligence: FactionIntelligence;
 
 	notificationSession: NotificationSession;
-	relationshipsByFactionName: Map<string,DiplomaticRelationship>;
 
 	planetSelected: Planet;
 	shipSelected: Ship;
@@ -26,7 +25,7 @@ class Faction
 		homeStarsystemName: string,
 		homePlanetName: string,
 		color: Color,
-		relationships: DiplomaticRelationship[],
+		diplomacy: FactionDiplomacy,
 		technologyResearcher: TechnologyResearcher,
 		planets: Planet[],
 		ships: Ship[],
@@ -38,7 +37,7 @@ class Faction
 		this.homeStarsystemName = homeStarsystemName;
 		this.homePlanetName = homePlanetName;
 		this.color = color;
-		this.relationships = relationships;
+		this.diplomacy = diplomacy;
 		this.technologyResearcher = technologyResearcher;
 		this.planets = planets;
 		this.ships = ships;
@@ -46,13 +45,13 @@ class Faction
 		this.intelligence = intelligence;
 
 		this.notificationSession = new NotificationSession(this.name, []);
-		this.relationshipsByFactionName = ArrayHelper.addLookups
-		(
-			this.relationships,
-			(x: DiplomaticRelationship) => x.factionNameOther
-		);
 
-		this.shipsBuiltSoFarCount = 0;
+		this.shipsBuiltSoFarCount = ships.length;
+	}
+
+	static fromEntity(entity: Entity): Faction
+	{
+		return entity.propertyByName(Faction.name) as Faction;
 	}
 
 	static fromName(name: string): Faction
@@ -63,11 +62,11 @@ class Faction
 			null, // homeStarsystemName,
 			null, // homePlanetName,
 			Color.Instances().Red,
-			new Array<DiplomaticRelationship>(),
+			FactionDiplomacy.fromFactionSelfName(name),
 			TechnologyResearcher.default(),
 			new Array<Planet>(),
 			new Array<Ship>(),
-			FactionKnowledge.default(),
+			FactionKnowledge.fromFactionSelfName(name),
 			null // intelligence
 		);
 	}
@@ -117,6 +116,11 @@ class Faction
 		return world.network.nodeByName(this.homeStarsystemName).starsystem;
 	}
 
+	toEntity(): Entity
+	{
+		return new Entity(Faction.name + "_" + this.name, [ this ]);
+	}
+
 	toString(): string
 	{
 		return this.name;
@@ -156,7 +160,8 @@ class Faction
 					containerInnerSize.x - margin * 3,
 					controlHeight
 				), // size
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext("Faction:"),
 				fontHeightInPixels
 			),
@@ -173,7 +178,8 @@ class Faction
 					containerInnerSize.x - margin * 2,
 					controlHeight
 				), // size
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext(faction.name),
 				fontHeightInPixels
 			)
@@ -217,162 +223,6 @@ class Faction
 		return returnValue;
 	}
 
-	static toControl_Intelligence
-	(
-		diplomaticSession: DiplomaticSession,
-		pos: Coords,
-		containerSize: Coords
-	): ControlBase
-	{
-		var margin = 10;
-		var controlSpacing = 20;
-		var listWidth = 100;
-		var columnWidth = 60;
-		var fontHeightInPixels = 10;
-
-		var returnValue = ControlContainer.from4
-		(
-			"containerFactionIntelligence",
-			pos,
-			containerSize,
-			// children
-			[
-				new ControlLabel
-				(
-					"labelFaction",
-					Coords.fromXY(margin, margin), // pos
-					Coords.fromXY(columnWidth, controlSpacing), // size
-					false, // isTextCentered
-					DataBinding.fromContext("Faction:"),
-					fontHeightInPixels
-				),
-
-				new ControlLabel
-				(
-					"textFaction",
-					Coords.fromXY(margin * 2 + columnWidth, margin), // pos
-					Coords.fromXY(columnWidth, controlSpacing), // size,
-					false, // isTextCentered
-					DataBinding.fromContextAndGet
-					(
-						diplomaticSession,
-						(c: DiplomaticSession) =>
-							(c.factionSelected == null ? "[none]" : c.factionSelected.name)
-					),
-					fontHeightInPixels
-				),
-
-				new ControlLabel
-				(
-					"labelRelationship",
-					Coords.fromXY(margin, margin + controlSpacing), // pos
-					Coords.fromXY(columnWidth, controlSpacing), // size
-					false, // isTextCentered
-					DataBinding.fromContext("Relationship:"),
-					fontHeightInPixels
-				),
-
-				new ControlLabel
-				(
-					"textRelationship",
-					Coords.fromXY(margin + columnWidth, margin + controlSpacing), // pos
-					Coords.fromXY(columnWidth, controlSpacing), // size,
-					false, // isTextCentered
-					DataBinding.fromContext("[relationship]"),
-					fontHeightInPixels
-				),
-
-				new ControlLabel
-				(
-					"labelPlanets",
-					Coords.fromXY(margin, margin + controlSpacing * 2), // pos
-					Coords.fromXY(columnWidth, controlSpacing), // size
-					false, // isTextCentered
-					DataBinding.fromContext("Planets:"),
-					fontHeightInPixels
-				),
-
-				ControlList.from8
-				(
-					"listPlanets",
-					Coords.fromXY(margin, margin + controlSpacing * 3), // pos
-					Coords.fromXY(listWidth, controlSpacing * 4), // size
-					new DataBinding
-					(
-						diplomaticSession,
-						(c: DiplomaticSession) =>
-							(c.factionSelected == null ? new Array<Planet>() : c.factionSelected.planets),
-						null
-					), // items
-					DataBinding.fromGet
-					(
-						(c: Planet) => "todo" // bindingForItemText,
-					),
-					fontHeightInPixels,
-					// dataBindingForItemSelected
-					new DataBinding
-					(
-						diplomaticSession,
-						(c: DiplomaticSession) =>
-							(c.factionSelected == null ? null : c.factionSelected.planetSelected),
-						(c: DiplomaticSession, v: Planet) =>
-						{
-							if (c.factionSelected != null)
-							{
-								c.factionSelected.planetSelected = v;
-							}
-						}
-					),
-					null // bindingForItemValue
-				),
-
-				new ControlLabel
-				(
-					"labelShips",
-					Coords.fromXY(margin, margin + controlSpacing * 7), // pos
-					Coords.fromXY(columnWidth, controlSpacing), // size
-					false, // isTextCentered
-					DataBinding.fromContext("Ships:"),
-					fontHeightInPixels
-				),
-
-				ControlList.from7
-				(
-					"listShips",
-					Coords.fromXY(margin, margin + controlSpacing * 8), // pos
-					Coords.fromXY(listWidth, controlSpacing * 4), // size
-					DataBinding.fromContextAndGet
-					(
-						diplomaticSession,
-						(c: DiplomaticSession) => 
-							(c.factionSelected == null ? new Array<Ship>() : c.factionSelected.ships)
-					), // options
-					DataBinding.fromGet
-					(
-						(c: Ship) => "todo"
-					), // bindingForOptionText,
-					null, // fontHeightInPixels
-					// dataBindingForValueSelected
-					new DataBinding
-					(
-						diplomaticSession,
-						(c: DiplomaticSession) =>
-							(c.factionSelected == null ? null : c.factionSelected.shipSelected),
-						(c: DiplomaticSession, v: Ship) =>
-						{
-							if (c.factionSelected != null)
-							{
-								c.factionSelected.shipSelected = v;
-							}
-						}
-					)
-				),
-			]
-		);
-
-		return returnValue;
-	}
-
 	toControl_Details(universe: Universe): ControlBase
 	{
 		var size = universe.display.sizeInPixels;
@@ -386,7 +236,7 @@ class Faction
 		var tabbedControlSize = Coords.fromXY
 		(
 			size.x,
-			size.y - tabButtonSize.y - margin
+			size.y - tabButtonSize.y - margin - 2 // hack - Why 2?
 		);
 
 		var faction = this;
@@ -407,7 +257,8 @@ class Faction
 						tabbedControlSize.x - margin * 2,
 						controlHeight
 					), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Faction:"),
 					fontHeightInPixels
 				),
@@ -421,7 +272,8 @@ class Faction
 						tabbedControlSize.x - margin * 2,
 						controlHeight
 					), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext(faction.name),
 					fontHeightInPixels
 				),
@@ -481,13 +333,10 @@ class Faction
 		universe: Universe, size: Coords
 	): ControlBase
 	{
-		var world = universe.world as WorldExtended;
 		var factionCurrent = this;
-		var factionsOther = world.factionsOtherThan(factionCurrent);
 		var diplomaticSession = DiplomaticSession.demo
 		(
 			factionCurrent,
-			factionsOther,
 			universe.venueCurrent
 		);
 		var diplomaticSessionAsControl =
@@ -532,7 +381,8 @@ class Faction
 						size.x - margin * 2,
 						controlHeight
 					), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Planets:"),
 					fontHeightInPixels
 				),
@@ -546,7 +396,8 @@ class Faction
 						size.x - margin * 2,
 						controlHeight
 					), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						faction,
@@ -635,7 +486,8 @@ class Faction
 						size.x - margin * 2,
 						controlHeight
 					), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Ships:"),
 					fontHeightInPixels
 				),
@@ -649,7 +501,8 @@ class Faction
 						size.x - margin * 2,
 						controlHeight
 					), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						faction,
@@ -730,11 +583,6 @@ class Faction
 
 	// diplomacy
 
-	allianceProposalAcceptFrom(factionOther: Faction): boolean
-	{
-		return true;
-	}
-
 	allies(world: WorldExtended): Faction[]
 	{
 		return this.factionsMatchingRelationshipState
@@ -756,24 +604,17 @@ class Faction
 		world: WorldExtended, stateToMatch: string
 	): Faction[]
 	{
-		var returnValues = [];
+		var relationships = this.diplomacy.relationships;
 
-		for (var i = 0; i < this.relationships.length; i++)
-		{
-			var relationship = this.relationships[i];
-			if (relationship.state == stateToMatch)
-			{
-				var factionOther = relationship.factionOther(world);
-				returnValues.push(factionOther);
-			}
-		}
+		var relationshipsMatching = relationships.filter
+		(
+			x => x.state == stateToMatch
+		);
+
+		var returnValues =
+			relationshipsMatching.map(x => x.factionOther(world));
 
 		return returnValues;
-	}
-
-	peaceOfferAcceptFrom(factionOther: Faction): boolean
-	{
-		return true;
 	}
 
 	relationsInitialize(universe: Universe): void
@@ -788,7 +629,11 @@ class Faction
 
 	relationshipByFactionName(factionName: string): DiplomaticRelationship
 	{
-		return this.relationshipsByFactionName.get(factionName);
+		var returnValue = this.diplomacy.relationships.find
+		(
+			x => x.factionNameOther == factionName
+		);
+		return returnValue;
 	}
 
 	selfAndAllies(world: WorldExtended): Faction[]
@@ -803,7 +648,7 @@ class Faction
 		return returnValues;
 	}
 
-	strength(world: WorldExtended): number
+	strategicValue(world: WorldExtended): number
 	{
 		var returnValue = 0;
 
@@ -811,25 +656,21 @@ class Faction
 		for (var i = 0; i < ships.length; i++)
 		{
 			var ship = ships[i];
-			returnValue += ship.strength(world);
+			returnValue += ship.strategicValue(world);
 		}
 
 		var planets = this.planets;
 		for (var i = 0; i < planets.length; i++)
 		{
 			var planet = planets[i];
-			returnValue += planet.strength(world);
+			returnValue += planet.strategicValue(world);
 		}
 
-		returnValue += this.technologyResearcher.strength(world);
+		returnValue += this.technologyResearcher.strategicValue(world);
 
 		return returnValue;
 	}
 
-	warThreatOfferConcessionsTo(factionOther: Faction): boolean
-	{
-		return true;
-	}
 
 	// notifications
 
@@ -883,4 +724,18 @@ class Faction
 			universe, world, this
 		);
 	}
+
+	// EntityProperty.
+
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Equatable.
+
+	equals(other: Faction): boolean
+	{
+		return (this.name == other.name);
+	}
+
 }

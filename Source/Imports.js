@@ -16,6 +16,7 @@ var ControlContainer = gf.ControlContainer;
 var ControlContainerTransparent = gf.ControlContainerTransparent;
 var ControlLabel = gf.ControlLabel;
 var ControlList = gf.ControlList;
+var ControlNumber = gf.ControlNumber;
 var ControlScrollbar = gf.ControlScrollbar;
 var ControlSelect = gf.ControlSelect;
 var ControlSelectOption = gf.ControlSelectOption;

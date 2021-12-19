@@ -17,7 +17,7 @@ class WorldExtended extends World {
         this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
         this.deviceDefnsByName = ArrayHelper.addLookupsByName(this.deviceDefns);
         this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
-        this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
+        //this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
         this.defn.itemDefns.push(...deviceDefns);
         var buildableDefnsNonDevice = this.buildableDefns.filter(x => this.deviceDefnsByName.has(x.name) == false);
         var itemDefns = buildableDefnsNonDevice.map(x => ItemDefn.fromName(x.name));
@@ -29,8 +29,8 @@ class WorldExtended extends World {
     // static methods
     static create(universe, worldCreator) {
         var settings = worldCreator.settings;
-        var starsystemCount = parseInt(settings.starsystemCountAsString);
-        var factionCount = parseInt(settings.factionCountAsString);
+        var starsystemCount = parseInt(settings.starsystemCount);
+        var factionCount = parseInt(settings.factionCount);
         var worldName = NameGenerator.generateName() + " Cluster";
         var activityDefns = ArrayHelper.flattenArrayOfArrays([
             new ActivityDefn_Instances2()._All,
@@ -50,7 +50,7 @@ class WorldExtended extends World {
         var factionsAndShips = WorldExtended.create_FactionsAndShips(universe, network, technologiesFree, buildableDefns, deviceDefnsByName, factionCount);
         var factions = factionsAndShips[0];
         var ships = factionsAndShips[1];
-        DiplomaticRelationship.initializeForFactions(factions);
+        factions.forEach(x => x.diplomacy.initializeForFactions(factions));
         var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
         );
         var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns, deviceDefns, technologyGraph, network, factions, ships, camera);
@@ -271,8 +271,7 @@ class WorldExtended extends World {
         buildableDefns, [], // deviceDefns
         null, // technologyGraph
         network, // network
-        [], // factions
-        [], // ships
+        factions, ships, // ships
         null);
         var factionIntelligenceAutomated = FactionIntelligence.demo();
         for (var i = 0; i < numberOfFactions; i++) {
@@ -300,6 +299,7 @@ class WorldExtended extends World {
             var factionName = factionHomeStarsystem.name + "ians";
             factionHomeStarsystem.factionName = factionName;
             var factionColor = colorsForFactions[i];
+            var factionDiplomacy = FactionDiplomacy.fromFactionSelfName(factionName);
             var planets = factionHomeStarsystem.planets;
             var planetIndexRandom = Math.floor(planets.length * Math.random());
             var factionHomePlanet = planets[planetIndexRandom];
@@ -320,15 +320,34 @@ class WorldExtended extends World {
                 ]);
                 ships.push(ship);
                 factionShips.push(ship);
-                factionHomeStarsystem.shipAdd(ship);
             }
             var factionIntelligence = (i == 0 ? null : factionIntelligenceAutomated);
-            var faction = new Faction(factionName, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, [], // relationships
-            new TechnologyResearcher(factionName, null, // nameOfTechnologyBeingResearched,
+            var faction = new Faction(factionName, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, factionDiplomacy, new TechnologyResearcher(factionName, null, // nameOfTechnologyBeingResearched,
             0, // researchAccumulated
             // namesOfTechnologiesKnown
-            technologiesFree.map(x => x.name)), [factionHomePlanet], factionShips, new FactionKnowledge([factionName], [factionHomeStarsystem.name], factionHomeStarsystem.links(network).map((x) => x.name)), factionIntelligence);
-            factions.push(faction);
+            technologiesFree.map(x => x.name)), [factionHomePlanet], factionShips, new FactionKnowledge(factionName, // factionSelfName
+            [factionName], // factionNames
+            ships.map(x => x.id), // shipIds
+            [factionHomeStarsystem.name], factionHomeStarsystem.links(network).map((x) => x.name)), factionIntelligence);
+            worldDummy.factionAdd(faction);
+            factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, worldDummy));
+        }
+        var communicationStyleNames = [
+            "Chivalrous",
+            "Enthusiastic",
+            "Haughty",
+            "Poetic",
+            "Robotic",
+            "Unctuous",
+            "Unhinged",
+        ];
+        for (var i = 0; i < factions.length; i++) {
+            var faction = factions[i];
+            var communicationStyleIndex = Math.floor(Math.random() * communicationStyleNames.length);
+            var communicationStyleName = communicationStyleNames[communicationStyleIndex];
+            faction.diplomacy.communicationStyleName =
+                communicationStyleName;
+            communicationStyleNames.splice(communicationStyleNames.indexOf(communicationStyleName), 1);
         }
         var factionUser = factions[0];
         var factionUserHomeStarsystem = factionUser.starsystemHome(worldDummy);
@@ -340,7 +359,7 @@ class WorldExtended extends World {
             new Device(deviceDefnsByName.get("Ship Weapon, Basic")),
         ]);
         factionEnemy.shipAdd(shipEnemy);
-        factionUserHomeStarsystem.shipAdd(shipEnemy);
+        factionUserHomeStarsystem.shipAdd(shipEnemy, worldDummy);
         var factionsAndShips = [factions, ships];
         return factionsAndShips;
     }
@@ -361,6 +380,10 @@ class WorldExtended extends World {
     }
     deviceDefnByName(deviceDefnName) {
         return this.deviceDefnsByName.get(deviceDefnName);
+    }
+    factionAdd(faction) {
+        this.factions.push(faction);
+        this.factionsByName.set(faction.name, faction);
     }
     factionByName(factionName) {
         return this.factionsByName.get(factionName);

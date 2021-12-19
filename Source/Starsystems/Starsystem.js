@@ -55,6 +55,29 @@ class Starsystem extends Place {
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
     }
+    factionsPresent(world) {
+        var factionsPresentByName = new Map();
+        this.planets.forEach(x => {
+            var factionName = x.factionName;
+            if (factionName != null) {
+                if (factionsPresentByName.has(factionName) == false) {
+                    var faction = world.factionByName(factionName);
+                    factionsPresentByName.set(factionName, faction);
+                }
+            }
+        });
+        this.ships.forEach(x => {
+            var factionName = x.factionName;
+            if (factionName != null) {
+                if (factionsPresentByName.has(factionName) == false) {
+                    var faction = world.factionByName(factionName);
+                    factionsPresentByName.set(factionName, faction);
+                }
+            }
+        });
+        var factionsPresent = Array.from(factionsPresentByName.keys()).map(factionName => factionsPresentByName.get(factionName));
+        return factionsPresent;
+    }
     linkPortalAdd(linkPortalToAdd) {
         this.linkPortals.push(linkPortalToAdd);
     }
@@ -76,10 +99,16 @@ class Starsystem extends Place {
     planetByName(planetName) {
         return this.planetsByName.get(planetName);
     }
-    shipAdd(shipToAdd) {
+    shipAdd(shipToAdd, world) {
         this.ships.push(shipToAdd);
         shipToAdd.locatable().loc.placeName =
             Starsystem.name + ":" + this.name;
+        var factionsInStarsystem = this.factionsPresent(world);
+        factionsInStarsystem.forEach(faction => {
+            var factionKnowledge = faction.knowledge;
+            factionKnowledge.shipAdd(shipToAdd, world);
+            factionKnowledge.starsystemAdd(this, world);
+        });
     }
     shipRemove(shipToRemove) {
         ArrayHelper.remove(this.ships, shipToRemove);

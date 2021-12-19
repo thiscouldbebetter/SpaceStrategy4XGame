@@ -3,7 +3,6 @@ class DiplomaticSession
 {
 	diplomaticActions: DiplomaticAction[];
 	factionActing: Faction;
-	factions: Faction[];
 	venueParent: Venue;
 
 	diplomaticActionsByName: Map<string,DiplomaticAction>;
@@ -14,7 +13,6 @@ class DiplomaticSession
 	(
 		diplomaticActions: DiplomaticAction[],
 		factionActing: Faction,
-		factions: Faction[],
 		venueParent: Venue
 	)
 	{
@@ -23,8 +21,6 @@ class DiplomaticSession
 			ArrayHelper.addLookupsByName(this.diplomaticActions);
 
 		this.factionActing = factionActing;
-		this.factions = factions;
-		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
 
 		this.venueParent = venueParent;
 
@@ -36,7 +32,6 @@ class DiplomaticSession
 	static demo
 	(
 		factionActing: Faction,
-		factions: Faction[],
 		venueParent: Venue
 	): DiplomaticSession
 	{
@@ -46,7 +41,6 @@ class DiplomaticSession
 		(
 			diplomaticActions,
 			factionActing,
-			factions,
 			venueParent
 		);
 
@@ -63,24 +57,30 @@ class DiplomaticSession
 	talkSessionInitialize(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var universe = uwpe.universe;
-		var entityTalker = uwpe.entity;
-		var entityTalkee = uwpe.entity2;
+		var entityTalker = this.factionActing.toEntity();
+		var entityTalkee = this.factionSelected.toEntity();
 
+		/*
 		var conversationDefnName = "Diplomacy";
 		var conversationDefnAsJSON =
 			universe.mediaLibrary.textStringGetByName(conversationDefnName).value;
 		var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+		*/
+		var conversationDefn =
+			this.factionActing.diplomacy.toConversationDefn(universe);
+
 		var venueToReturnTo = universe.venueCurrent;
 		var conversationQuit = () => // quit
 		{
-			universe.venueNext = venueToReturnTo;
+			universe.venueTransitionTo(venueToReturnTo);
 		};
 		var conversation = new ConversationRun
 		(
 			conversationDefn,
 			conversationQuit,
 			entityTalkee,
-			entityTalker // entityTalker
+			entityTalker, // entityTalker
+			null // contentsById
 		);
 		var conversationSize = universe.display.sizeDefault().clone();
 		var conversationAsControl =
@@ -88,7 +88,7 @@ class DiplomaticSession
 
 		var venueNext = conversationAsControl.toVenue();
 
-		universe.venueNext = venueNext;
+		universe.venueTransitionTo(venueNext);
 	}
 
 	// controls
@@ -98,6 +98,7 @@ class DiplomaticSession
 		universe: Universe, containerSize: Coords
 	): ControlBase
 	{
+		var world = universe.world as WorldExtended;
 		var diplomaticSession = this;
 
 		var margin = 10;
@@ -133,7 +134,8 @@ class DiplomaticSession
 					"labelFactions",
 					Coords.fromXY(margin, margin * 2 + controlHeight), // pos
 					Coords.fromXY(100, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Factions:"),
 					fontHeightInPixels
 				),
@@ -146,7 +148,8 @@ class DiplomaticSession
 					DataBinding.fromContextAndGet
 					(
 						this,
-						(c: DiplomaticSession) => c.factions
+						(c: DiplomaticSession) =>
+							c.factionActing.knowledge.factionsOther(world)
 					), // items
 					DataBinding.fromGet((c: Faction) => c.name), // bindingForItemText,
 					fontHeightInPixels,
@@ -179,8 +182,9 @@ class DiplomaticSession
 						) // click
 				),
 
-				Faction.toControl_Intelligence
+				this.factionActing.diplomacy.toControl
 				(
+					world,
 					this,
 					Coords.fromXY(margin * 2 + listWidth, 0), // pos
 					Coords.fromXY

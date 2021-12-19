@@ -58,7 +58,7 @@ class OrderDefn_Instances {
                 turnAndMove.distancePerMove = 1000;
                 projectileEntity.actor().activity =
                     Activity.fromDefnNameAndTargetEntity("MoveToTarget", order.targetEntity);
-                starsystem.shipAdd(projectileEntity);
+                starsystem.shipAdd(projectileEntity, world);
                 device.projectileEntity = projectileEntity;
             }
             else {

@@ -134,7 +134,8 @@ class Shipyard implements EntityProperty<Shipyard>
 					"labelInStock",
 					Coords.fromXY(margin, margin), // pos
 					Coords.fromXY(listSize.x, 25), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("In Stock:"),
 					fontHeight
 				),
@@ -203,7 +204,8 @@ class Shipyard implements EntityProperty<Shipyard>
 					"labelGetterPutterName",
 					Coords.fromXY(size.x - margin - listSize.x, margin), // pos
 					Coords.fromXY(85, 25), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext(ship.name + ":"),
 					fontHeight
 				),
@@ -242,7 +244,8 @@ class Shipyard implements EntityProperty<Shipyard>
 					"infoStatus",
 					Coords.fromXY(size.x / 2, size.y - margin - fontHeight), // pos
 					Coords.fromXY(size.x, fontHeight), // size
-					true, // isTextCentered
+					true, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet(this, c => "[status]"),
 					fontHeight
 				),

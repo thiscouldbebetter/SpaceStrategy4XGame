@@ -36,6 +36,7 @@ class Device extends Item
 
 	use(uwpe: UniverseWorldPlaceEntities): void
 	{
+		uwpe.entity2 = this.toEntity(uwpe);
 		var defn = this.deviceDefn(uwpe.world);
 		defn.use(uwpe);
 	}

@@ -15,7 +15,7 @@ class Technology {
         }
         return returnValues;
     }
-    strength(world) {
+    strategicValue(world) {
         var multiplier = 0; // todo
         return this.researchRequired * multiplier;
     }

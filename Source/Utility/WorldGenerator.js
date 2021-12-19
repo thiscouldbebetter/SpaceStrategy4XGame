@@ -17,12 +17,14 @@ class WorldGenerator {
         var childControls = [
             new ControlLabel("labelWorldGenerationCriteria", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("World Generation Criteria:"), // text
             fontHeightInPixels),
             new ControlLabel("labelStarsystemCount", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Starsystems:"), // text
             fontHeightInPixels),
             new ControlSelect("selectStarsystemCount", Coords.fromXY(column1PosX, margin * 2 + controlHeight), // pos
@@ -33,7 +35,8 @@ class WorldGenerator {
             fontHeightInPixels),
             new ControlLabel("labelFactionCount", Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Factions:"), // text
             fontHeightInPixels),
             new ControlSelect("selectFactionCount", Coords.fromXY(column1PosX, margin * 3 + controlHeight * 2), // pos

@@ -67,7 +67,8 @@ class NetworkNode2 extends Entity
 					"labelStarsystemName",
 					Coords.fromXY(margin, margin),
 					Coords.fromXY(0, 0), // this.size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.name),
 					fontHeightInPixels
 				),
@@ -77,7 +78,8 @@ class NetworkNode2 extends Entity
 					"labelStarsystemHolder",
 					Coords.fromXY(margin, margin + controlSpacing),
 					Coords.fromXY(0, 0), // this.size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						networkNode,

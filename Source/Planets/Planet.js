@@ -162,14 +162,15 @@ class Planet extends Entity {
         size, [
             new ControlLabel("labelName", Coords.fromXY(0, 0), // pos
             Coords.fromXY(size.x, 0), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext(this.name), 10 // fontHeightInPixels
             )
         ]);
         return returnValue;
     }
     // diplomacy
-    strength(world) {
+    strategicValue(world) {
         return 1; // todo
     }
     // turns

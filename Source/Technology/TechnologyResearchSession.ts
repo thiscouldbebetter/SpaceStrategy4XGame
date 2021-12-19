@@ -91,7 +91,8 @@ class TechnologyResearchSession
 					"labelResearcher", // name,
 					Coords.fromXY(margin, margin), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Researcher:"), //text
 					fontHeightInPixels
 				),
@@ -101,7 +102,8 @@ class TechnologyResearchSession
 					"textResearcher", // name,
 					Coords.fromXY(100, margin), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.researcher.name), //text
 					fontHeightInPixels
 				),
@@ -111,7 +113,8 @@ class TechnologyResearchSession
 					"labelResearchPerDay", // name,
 					Coords.fromXY(margin, 25), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Research per Turn:"), //text
 					fontHeightInPixels
 				),
@@ -121,7 +124,8 @@ class TechnologyResearchSession
 					"textResearchPerTurn", // name,
 					Coords.fromXY(100, 25), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this.researcher,
@@ -135,7 +139,8 @@ class TechnologyResearchSession
 					"labelTechnologiesKnown", // name,
 					Coords.fromXY(margin, 40), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Technologies Known:"), //text
 					fontHeightInPixels
 				),
@@ -159,7 +164,8 @@ class TechnologyResearchSession
 					"labelTechnologiesAvailable", // name,
 					Coords.fromXY(margin * 2 + listSize.x, 40), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Technologies Available:"), // text
 					fontHeightInPixels
 				),
@@ -201,7 +207,8 @@ class TechnologyResearchSession
 					"labelTechnologyBeingResearched", // name,
 					Coords.fromXY(margin, listPosY + listSize.y + margin), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Technology Being Researched:"), // text
 					fontHeightInPixels
 				),
@@ -211,7 +218,8 @@ class TechnologyResearchSession
 					"textTechnologyBeingResearched", // name,
 					Coords.fromXY(140, listPosY + listSize.y + margin), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this.researcher,
@@ -229,7 +237,8 @@ class TechnologyResearchSession
 						listPosY + listSize.y + margin + labelHeight
 					), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Research Accumulated:"), // text
 					fontHeightInPixels
 				),
@@ -243,7 +252,8 @@ class TechnologyResearchSession
 						listPosY + listSize.y + margin + labelHeight
 					), // pos,
 					Coords.fromXY(30, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this,
@@ -262,7 +272,8 @@ class TechnologyResearchSession
 						listPosY + listSize.y + margin + labelHeight * 2
 					), // pos,
 					Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Grants:"), // text
 					fontHeightInPixels
 				),
@@ -276,7 +287,8 @@ class TechnologyResearchSession
 						listPosY + listSize.y + margin + labelHeight * 2
 					), // pos,
 					Coords.fromXY(size.x - margin * 2 - buttonHeight, labelHeight), // size,
-					false, // isTextCentered,
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						this,

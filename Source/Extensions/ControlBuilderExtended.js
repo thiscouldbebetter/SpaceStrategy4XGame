@@ -11,12 +11,14 @@ class ControlBuilderExtended extends ControlBuilder {
         [
             new ControlLabel("labelSelected", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Selection:"), // text
             fontHeightInPixels),
             new ControlLabel("textSelectionName", Coords.fromXY(margin, margin + controlHeight * .6), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(universe, (c) => {
                 var returnValue = null;
                 var venue = c.venueCurrent;
@@ -87,7 +89,8 @@ class ControlBuilderExtended extends ControlBuilder {
         var childControlsGuaranteed = [
             new ControlLabel("textPlace", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(universe, (c) => {
                 // hack
                 var venue = c.venueCurrent;
@@ -95,11 +98,13 @@ class ControlBuilderExtended extends ControlBuilder {
             }), fontHeightInPixels),
             new ControlLabel("labelTurn", Coords.fromXY(margin, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Turn:"), fontHeightInPixels),
             new ControlLabel("textTurn", Coords.fromXY(margin + 25, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(universe, (c) => "" + c.world.turnsSoFar), fontHeightInPixels)
         ];
         childControls.push(...childControlsGuaranteed);
@@ -139,7 +144,8 @@ class ControlBuilderExtended extends ControlBuilder {
         [
             new ControlLabel("labelControls", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(containerInnerSize.x, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("View:"), fontHeightInPixels),
             new ControlButton("buttonViewUp", Coords.fromXY(margin + controlHeight, margin * 2 + controlHeight), // pos
             Coords.fromXY(controlHeight, controlHeight), // size

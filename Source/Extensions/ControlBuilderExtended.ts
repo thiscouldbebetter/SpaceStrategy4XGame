@@ -34,7 +34,8 @@ class ControlBuilderExtended extends ControlBuilder
 					"labelSelected",
 					Coords.fromXY(margin, margin), // pos
 					Coords.fromXY(size.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("Selection:"), // text
 					fontHeightInPixels
 				),
@@ -44,7 +45,8 @@ class ControlBuilderExtended extends ControlBuilder
 					"textSelectionName",
 					Coords.fromXY(margin, margin + controlHeight * .6), // pos
 					Coords.fromXY(size.x - margin * 2, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						universe,
@@ -200,7 +202,8 @@ class ControlBuilderExtended extends ControlBuilder
 					containerInnerSize.x - margin * 2,
 					controlHeight
 				), // size
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContextAndGet
 				(
 					universe,
@@ -219,7 +222,8 @@ class ControlBuilderExtended extends ControlBuilder
 				"labelTurn",
 				Coords.fromXY(margin, margin + controlHeight), // pos
 				Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContext("Turn:"),
 				fontHeightInPixels
 			),
@@ -233,7 +237,8 @@ class ControlBuilderExtended extends ControlBuilder
 					containerInnerSize.x - margin * 3,
 					controlHeight
 				), // size
-				false, // isTextCentered
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
 				DataBinding.fromContextAndGet
 				(
 					universe,
@@ -334,7 +339,8 @@ class ControlBuilderExtended extends ControlBuilder
 					"labelControls",
 					Coords.fromXY(margin, margin),// pos
 					Coords.fromXY(containerInnerSize.x, controlHeight), // size
-					false, // isTextCentered
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
 					DataBinding.fromContext("View:"),
 					fontHeightInPixels
 				),

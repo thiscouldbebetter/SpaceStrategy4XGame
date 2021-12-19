@@ -5,34 +5,11 @@ class DiplomaticRelationship {
         this.state = state;
     }
     // static methods
-    static initializeForFactions(factions) {
-        var statePeace = DiplomaticRelationship.States().Peace;
-        for (var f = 0; f < factions.length; f++) {
-            var factionThis = factions[f];
-            for (var g = 0; g < f; g++) {
-                var factionOther = factions[g];
-                factionThis.relationships.push(new DiplomaticRelationship(factionOther.name, statePeace));
-                factionOther.relationships.push(new DiplomaticRelationship(factionThis.name, statePeace));
-            }
-        }
-        for (var f = 0; f < factions.length; f++) {
-            var faction = factions[f];
-            ArrayHelper.addLookups(faction.relationships, x => x.factionNameOther);
-        }
-    }
-    static setStateForFactions(factions, state) {
-        for (var i = 0; i < factions.length; i++) {
-            var faction = factions[i];
-            var factionOther = factions[1 - i];
-            faction.relationshipsByFactionName.get(factionOther.name).state = state;
-        }
-        return state;
-    }
     static strengthOfFactions(world, factions) {
         var returnValue = 0;
         for (var i = 0; i < factions.length; i++) {
             var faction = factions[i];
-            returnValue += faction.strength(world);
+            returnValue += faction.strategicValue(world);
         }
         return returnValue;
     }

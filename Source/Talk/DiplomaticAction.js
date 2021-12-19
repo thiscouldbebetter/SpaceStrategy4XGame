@@ -58,10 +58,10 @@ class DiplomaticAction_Instances {
                     var strengthOfAlliesMinusEnemies = strengthOfSelfAndAllies - strengthOfEnemies;
                     if (strengthOfAlliesMinusEnemies <= 0) {
                         var statePeace = DiplomaticRelationship.States().Peace;
-                        var relationship = factionActing.relationshipsByFactionName.get(factionReceiving.name);
+                        var relationship = factionActing.relationshipByFactionName(factionReceiving.name);
                         relationship.state = statePeace;
                         relationship =
-                            factionReceiving.relationshipsByFactionName.get(factionActing.name);
+                            factionReceiving.relationshipByFactionName(factionActing.name);
                         relationship.state = statePeace;
                         message =
                             "The " + factionReceiving.name
@@ -82,7 +82,7 @@ class DiplomaticAction_Instances {
         (universe, factionActing, factionReceiving) => {
             var world = universe.world;
             var message;
-            var stateExisting = factionActing.relationshipsByFactionName.get(factionReceiving.name).state;
+            var stateExisting = factionActing.relationshipByFactionName(factionReceiving.name).state;
             var relationshipStates = DiplomaticRelationship.States();
             if (stateExisting == relationshipStates.Alliance) {
                 message =
@@ -136,7 +136,7 @@ class DiplomaticAction_Instances {
                         }
                     }
                     var strengthOfNewEnemies = DiplomaticRelationship.strengthOfFactions(world, factionsDeclaringWarOnReceiving);
-                    if (strengthOfNewEnemies >= factionActing.strength(world)) {
+                    if (strengthOfNewEnemies >= factionActing.strategicValue(world)) {
                         message =
                             "The "
                                 + factionReceiving.name
@@ -144,10 +144,10 @@ class DiplomaticAction_Instances {
                                 + factionActing.name + ".";
                     }
                     else {
-                        var relationship = factionActing.relationshipsByFactionName.get(factionReceiving.name);
+                        var relationship = factionActing.relationshipByFactionName(factionReceiving.name);
                         relationship.state = DiplomaticRelationship.States().Alliance;
                         relationship =
-                            factionReceiving.relationshipsByFactionName.get(factionActing.name);
+                            factionReceiving.relationshipByFactionName(factionActing.name);
                         relationship.state = DiplomaticRelationship.States().Alliance;
                         message =
                             "The "

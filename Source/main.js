@@ -36,16 +36,24 @@ function main() {
     ], 
     // textStrings
     [
-        new TextString("Diplomacy", contentPathTextStrings + "Diplomacy.json")
+        new TextString("Diplomacy_Others_Default", contentPathTextStrings + "Diplomacy/Others/Default.json"),
+        new TextString("Diplomacy_Others_Chivalrous", contentPathTextStrings + "Diplomacy/Others/Chivalrous.json"),
+        new TextString("Diplomacy_Others_Enthusiastic", contentPathTextStrings + "Diplomacy/Others/Enthusiastic.json"),
+        new TextString("Diplomacy_Others_Haughty", contentPathTextStrings + "Diplomacy/Others/Haughty.json"),
+        new TextString("Diplomacy_Others_Poetic", contentPathTextStrings + "Diplomacy/Others/Poetic.json"),
+        new TextString("Diplomacy_Others_Robotic", contentPathTextStrings + "Diplomacy/Others/Robotic.json"),
+        new TextString("Diplomacy_Others_Unctuous", contentPathTextStrings + "Diplomacy/Others/Unctuous.json"),
+        new TextString("Diplomacy_Others_Unhinged", contentPathTextStrings + "Diplomacy/Others/Unhinged.json"),
+        new TextString("Diplomacy_Player_Default", contentPathTextStrings + "Diplomacy/Player/Default.json"),
     ]);
     var controlBuilder = new ControlBuilderExtended();
     var worldCreatorSettings = {
-        "starsystemCountAsString": "12",
-        "factionCountAsString": "2",
+        "starsystemCount": 12,
+        "factionCount": 2,
         "isValid": (worldCreator) => {
             var settings = worldCreator.settings;
-            var areAllSettingsValid = (isNaN(settings.starsystemCountAsString) == false
-                && isNaN(settings.factionCountAsString) == false);
+            var areAllSettingsValid = (isNaN(settings.starsystemCount) == false
+                && isNaN(settings.factionCount) == false);
             return areAllSettingsValid;
         }
     };
@@ -66,25 +74,30 @@ function worldCreatorToControl(universe, worldCreator) {
     var returnControl = ControlContainer.from4("containerWorldCreator", Coords.zeroes(), // pos
     size, [
         new ControlLabel("labelWorldCreationSettings", Coords.fromXY(margin, margin), // pos
-        Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCentered
+        Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
         DataBinding.fromContext("World Creation Settings"), fontHeightInPixels),
         new ControlLabel("labelWorldStarsystemCount", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
-        Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCentered
+        Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
         DataBinding.fromContext("Starsystems:"), fontHeightInPixels),
-        new ControlTextBox("textBoxStarsystemCount", Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
+        new ControlNumber("numberStarsystemCount", Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
         Coords.fromXY(controlHeight * 2, controlHeight), // size
-        new DataBinding(worldCreator, (c) => c.settings.starsystemCountAsString, (c, v) => c.settings.starsystemCountAsString = v), // text
-        fontHeightInPixels, 3, // charCountMax
-        DataBinding.fromTrue() // isEnabled
+        new DataBinding(worldCreator, (c) => c.settings.starsystemCount, (c, v) => c.settings.starsystemCount = v), // value
+        DataBinding.fromGet((c) => 12), // valueMin
+        DataBinding.fromGet((c) => 128), // valueMax
+        fontHeightInPixels, DataBinding.fromTrue() // isEnabled
         ),
         new ControlLabel("labelWorldFactionCount", Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
-        Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCentered
+        Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
         DataBinding.fromContext("Factions:"), fontHeightInPixels),
-        new ControlTextBox("textBoxFactionCount", Coords.fromXY(margin * 8, margin * 3 + controlHeight * 2), // pos
+        new ControlNumber("numberFactionCount", Coords.fromXY(margin * 8, margin * 3 + controlHeight * 2), // pos
         Coords.fromXY(controlHeight * 2, controlHeight), // size
-        new DataBinding(worldCreator, (c) => c.settings.factionCountAsString, (c, v) => c.settings.factionCountAsString = v), // text
-        fontHeightInPixels, 64, // charCountMax
-        DataBinding.fromTrue() // isEnabled
+        new DataBinding(worldCreator, (c) => c.settings.factionCount, (c, v) => c.settings.factionCount = v), // value
+        DataBinding.fromGet((c) => 2), // valueMin
+        DataBinding.fromGet((c) => 7), // valueMax
+        fontHeightInPixels, DataBinding.fromTrue() // isEnabled
         ),
         new ControlButton("buttonCreate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Create", fontHeightInPixels, true, // hasBorder
         DataBinding.fromContextAndGet(worldCreator, (wc) => wc.settings.isValid(worldCreator)), // isEnabled

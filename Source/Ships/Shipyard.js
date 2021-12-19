@@ -58,7 +58,8 @@ class Shipyard {
         [
             new ControlLabel("labelInStock", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(listSize.x, 25), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("In Stock:"), fontHeight),
             new ControlList("listContainerItems", Coords.fromXY(margin, margin * 2), // pos
             listSize.clone(), DataBinding.fromContextAndGet(itemHolderShipyard, (c) => c.items), // items
@@ -80,7 +81,8 @@ class Shipyard {
             ),
             new ControlLabel("labelGetterPutterName", Coords.fromXY(size.x - margin - listSize.x, margin), // pos
             Coords.fromXY(85, 25), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext(ship.name + ":"), fontHeight),
             new ControlList("listOtherItems", Coords.fromXY(size.x - margin - listSize.x, margin * 2), // pos
             listSize.clone(), DataBinding.fromContextAndGet(itemHolderShip, (c) => c.items //.filter(x => x.item().defnName != itemDefnNameCurrency);
@@ -93,7 +95,8 @@ class Shipyard {
             null),
             new ControlLabel("infoStatus", Coords.fromXY(size.x / 2, size.y - margin - fontHeight), // pos
             Coords.fromXY(size.x, fontHeight), // size
-            true, // isTextCentered
+            true, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(this, c => "[status]"), fontHeight),
             ControlButton.from8("buttonBuild", Coords.fromXY(size.x - (margin - buttonSize.x) * 2, size.y - margin - buttonSize.y), // pos
             buttonSize.clone(), "Build Ship", fontHeight, true, // hasBorder

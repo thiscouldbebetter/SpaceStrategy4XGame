@@ -1,19 +1,17 @@
 "use strict";
 class DiplomaticSession {
-    constructor(diplomaticActions, factionActing, factions, venueParent) {
+    constructor(diplomaticActions, factionActing, venueParent) {
         this.diplomaticActions = diplomaticActions;
         this.diplomaticActionsByName =
             ArrayHelper.addLookupsByName(this.diplomaticActions);
         this.factionActing = factionActing;
-        this.factions = factions;
-        this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
         this.venueParent = venueParent;
         this.factionSelected = null;
     }
     // static methods
-    static demo(factionActing, factions, venueParent) {
+    static demo(factionActing, venueParent) {
         var diplomaticActions = DiplomaticAction.Instances()._All;
-        var session = new DiplomaticSession(diplomaticActions, factionActing, factions, venueParent);
+        var session = new DiplomaticSession(diplomaticActions, factionActing, venueParent);
         return session;
     }
     // instance methods
@@ -22,25 +20,31 @@ class DiplomaticSession {
     }
     talkSessionInitialize(uwpe) {
         var universe = uwpe.universe;
-        var entityTalker = uwpe.entity;
-        var entityTalkee = uwpe.entity2;
+        var entityTalker = this.factionActing.toEntity();
+        var entityTalkee = this.factionSelected.toEntity();
+        /*
         var conversationDefnName = "Diplomacy";
-        var conversationDefnAsJSON = universe.mediaLibrary.textStringGetByName(conversationDefnName).value;
+        var conversationDefnAsJSON =
+            universe.mediaLibrary.textStringGetByName(conversationDefnName).value;
         var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
+        */
+        var conversationDefn = this.factionActing.diplomacy.toConversationDefn(universe);
         var venueToReturnTo = universe.venueCurrent;
         var conversationQuit = () => // quit
          {
-            universe.venueNext = venueToReturnTo;
+            universe.venueTransitionTo(venueToReturnTo);
         };
-        var conversation = new ConversationRun(conversationDefn, conversationQuit, entityTalkee, entityTalker // entityTalker
+        var conversation = new ConversationRun(conversationDefn, conversationQuit, entityTalkee, entityTalker, // entityTalker
+        null // contentsById
         );
         var conversationSize = universe.display.sizeDefault().clone();
         var conversationAsControl = conversation.toControl(conversationSize, universe);
         var venueNext = conversationAsControl.toVenue();
-        universe.venueNext = venueNext;
+        universe.venueTransitionTo(venueNext);
     }
     // controls
     toControl(universe, containerSize) {
+        var world = universe.world;
         var diplomaticSession = this;
         var margin = 10;
         var controlHeight = 20;
@@ -61,11 +65,12 @@ class DiplomaticSession {
             }),
             new ControlLabel("labelFactions", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(100, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Factions:"), fontHeightInPixels),
             ControlList.from8("listFactions", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
             Coords.fromXY(listWidth, controlHeight * 4), // size
-            DataBinding.fromContextAndGet(this, (c) => c.factions), // items
+            DataBinding.fromContextAndGet(this, (c) => c.factionActing.knowledge.factionsOther(world)), // items
             DataBinding.fromGet((c) => c.name), // bindingForItemText,
             fontHeightInPixels, 
             // bindingForItemSelected
@@ -77,7 +82,7 @@ class DiplomaticSession {
             DataBinding.fromContextAndGet(this, (c) => c.isFactionSelected()), // isEnabled
             () => diplomaticSession.talkSessionInitialize(UniverseWorldPlaceEntities.fromUniverse(universe)) // click
             ),
-            Faction.toControl_Intelligence(this, Coords.fromXY(margin * 2 + listWidth, 0), // pos
+            this.factionActing.diplomacy.toControl(world, this, Coords.fromXY(margin * 2 + listWidth, 0), // pos
             Coords.fromXY(containerSize.x - listWidth - margin * 2, containerSize.y))
         ]);
         return returnValue;

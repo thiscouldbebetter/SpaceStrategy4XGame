@@ -57,7 +57,8 @@ class NotificationSession {
         [
             new ControlLabel("labelNotifications", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(columnWidth, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Notifications:"), fontHeightInPixels),
             ControlList.from8("listNotifications", Coords.fromXY(margin, margin + controlHeight), // pos
             Coords.fromXY(columnWidth, listHeight), // size
@@ -68,11 +69,13 @@ class NotificationSession {
             ),
             new ControlLabel("labelSelected", Coords.fromXY(margin, margin * 2 + controlHeight + listHeight), // pos
             Coords.fromXY(columnWidth, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("Selected:"), fontHeightInPixels),
             new ControlLabel("textMessage", Coords.fromXY(margin, margin * 2 + controlHeight * 2 + listHeight), // pos
             Coords.fromXY(columnWidth, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(this, (c) => (c.notificationSelected == null ? "[none]" : c.notificationSelected.message)), fontHeightInPixels),
             ControlButton.from8("buttonGoTo", Coords.fromXY(margin, buttonPosY), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
@@ -118,7 +121,8 @@ class NotificationSession {
             }),
             new ControlLabel("textMessage", Coords.fromXY(margin, containerSize.y - margin - controlHeight), // pos
             Coords.fromXY(columnWidth, controlHeight), // size
-            false, // isTextCentered
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
             DataBinding.fromContext("All notifications must be dismissed before turn can be ended."), fontHeightInPixels),
             ControlButton.from8("buttonBack", Coords.fromXY(containerSize.x - margin - buttonWidth, containerSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size

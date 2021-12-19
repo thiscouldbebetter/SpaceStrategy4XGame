@@ -48,7 +48,7 @@ class Order //
 		return this;
 	}
 
-	obey(universe: Universe, world: World, place: Place, entity: Entity): void
+	obey(universe: Universe, world: WorldExtended, place: Place, entity: Entity): void
 	{
 		var orderable = Orderable.fromEntity(entity);
 		if (this.isComplete)

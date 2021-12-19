@@ -221,7 +221,7 @@ class VenueWorldExtended extends VenueWorld
 		//this.world.network.draw(universe, this.world.camera);
 		var playerFaction = this.world.factions[0];
 		var playerKnowledge = playerFaction.knowledge;
-		var worldKnown = playerKnowledge.worldKnown(universe, this.world);
+		var worldKnown = playerKnowledge.world(universe, this.world);
 		worldKnown.network.draw(universe, worldKnown.camera);
 		this.venueControls.draw(universe);
 	}
@@ -310,7 +310,7 @@ class VenueWorldExtended extends VenueWorld
 			);
 
 			var playerFaction = world.factions[0];
-			var worldKnown = playerFaction.knowledge.worldKnown
+			var worldKnown = playerFaction.knowledge.world
 			(
 				universe, world
 			);

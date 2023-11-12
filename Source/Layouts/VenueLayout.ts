@@ -151,6 +151,8 @@ class VenueLayout implements Venue
 		var containerSize = displaySize.clone().half();
 		var margin = Coords.fromXY(1, 1).multiplyScalar(8);
 		var fontHeightInPixels = 10; // hack
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var listSize = containerSize.clone().subtract(margin).subtract(margin);
 		var buttonSize = Coords.fromXY(listSize.x, fontHeightInPixels * 2);
 
@@ -170,7 +172,7 @@ class VenueLayout implements Venue
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(buildableAtCursor.defnName), // text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlButton.from8
@@ -179,7 +181,7 @@ class VenueLayout implements Venue
 					Coords.fromXY(margin.x, containerSize.y - margin.y * 2 - buttonSize.y * 2), //pos,
 					buttonSize,
 					"Demolish", // text,
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() => // click
@@ -195,7 +197,7 @@ class VenueLayout implements Venue
 					Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
 					buttonSize,
 					"Done", // text,
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					() => universe.venueNext = venueThis // click
@@ -230,6 +232,8 @@ class VenueLayout implements Venue
 		var containerSize = displaySize.clone().half();
 		var margin = Coords.fromXY(1, 1).multiplyScalar(8);
 		var fontHeightInPixels = 10; // hack
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var columnWidth = containerSize.x - margin.x * 2;
 		var buttonHeight = fontHeightInPixels * 2;
 		var buttonSize = Coords.fromXY
@@ -257,7 +261,7 @@ class VenueLayout implements Venue
 			(
 				(c: BuildableDefn) => c.name
 			), //bindingForItemText,
-			fontHeightInPixels,
+			fontNameAndHeight,
 			new DataBinding
 			(
 				this,
@@ -301,7 +305,7 @@ class VenueLayout implements Venue
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Facility to Build:"), // text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				listBuildables,
@@ -315,7 +319,7 @@ class VenueLayout implements Venue
 					), //pos,
 					buttonSize,
 					"Build", // text,
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder,
 					DataBinding.fromContextAndGet
 					(
@@ -335,7 +339,7 @@ class VenueLayout implements Venue
 					), //pos,
 					buttonSize,
 					"Cancel", // text,
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder,
 					DataBinding.fromTrue(), // isEnabled,
 					buttonCancel_Clicked
@@ -355,7 +359,9 @@ class VenueLayout implements Venue
 		var containerMainSize = display.sizeInPixels.clone();
 		var controlHeight = 14;
 		var margin = 8;
-		var fontHeightInPixels = display.fontHeightInPixels;
+		var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var containerInnerSize = Coords.fromXY(100, 60);
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
@@ -377,7 +383,7 @@ class VenueLayout implements Venue
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Back",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -469,6 +475,8 @@ class VenueLayout implements Venue
 		var world = universe.world as WorldExtended;
 		var planet = this.modelParent;
 		var fontHeightInPixels = margin;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var returnValue = ControlContainer.from4
 		(
@@ -495,7 +503,7 @@ class VenueLayout implements Venue
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Building:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -520,7 +528,7 @@ class VenueLayout implements Venue
 							return returnValue;
 						}
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -545,7 +553,7 @@ class VenueLayout implements Venue
 							return returnValue;
 						}
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 			]
 		);
@@ -569,6 +577,8 @@ class VenueLayout implements Venue
 		var column1PosX = margin * 8;
 		controlHeight = 10;
 		var fontHeightInPixels = controlHeight;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var size = containerInnerSize;
 
@@ -594,7 +604,7 @@ class VenueLayout implements Venue
 					(
 						planet, (c: Planet) => c.name
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -605,7 +615,7 @@ class VenueLayout implements Venue
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Population:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -620,7 +630,7 @@ class VenueLayout implements Venue
 						planet,
 						(c: Planet) => "" + c.demographics.population
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -631,7 +641,7 @@ class VenueLayout implements Venue
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Industry:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -646,7 +656,7 @@ class VenueLayout implements Venue
 						planet,
 						(c: Planet) => "" + c.industryPerTurn(universe, world, faction)
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -657,7 +667,7 @@ class VenueLayout implements Venue
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Prosperity:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -672,7 +682,7 @@ class VenueLayout implements Venue
 						planet,
 						(c: Planet) => "" + c.prosperityPerTurn(universe, world, faction)
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -683,7 +693,7 @@ class VenueLayout implements Venue
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Research:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -698,7 +708,7 @@ class VenueLayout implements Venue
 						planet,
 						(c: Planet) => "" + c.researchPerTurn(universe, world, faction)
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 			]
 		);

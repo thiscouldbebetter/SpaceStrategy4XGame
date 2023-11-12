@@ -17,6 +17,8 @@ class WorldExtended extends World
 	factionIndexCurrent: number;
 	turnsSoFar: number;
 
+	places: Place[];
+
 	constructor
 	(
 		name: string,
@@ -36,12 +38,14 @@ class WorldExtended extends World
 			name,
 			dateCreated,
 			new WorldDefn
-			(
-				null, // actions
-				activityDefns,
-				null, null, null, null // ?
-			), // worldDefn
-			[] // places
+			([
+				activityDefns
+			]), // worldDefn
+			(placeName) =>
+			{
+				return this.places.find(x => x.name == placeName)
+			}, // placeGetByName
+			network.name
 		);
 
 		this.buildableDefns = buildableDefns;
@@ -59,6 +63,7 @@ class WorldExtended extends World
 		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
 		//this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
 
+		this.defn.itemDefnsInitialize([]);
 		this.defn.itemDefns.push(...deviceDefns);
 		var buildableDefnsNonDevice = this.buildableDefns.filter(
 			x => this.deviceDefnsByName.has(x.name) == false
@@ -69,6 +74,10 @@ class WorldExtended extends World
 
 		this.turnsSoFar = 0;
 		this.factionIndexCurrent = 0;
+
+		this.places = [];
+		this.places.push(this.network);
+		this.places.push(...this.network.nodes.map(x => x.starsystem) );
 	}
 
 	// static methods

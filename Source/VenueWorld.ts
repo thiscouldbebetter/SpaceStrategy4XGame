@@ -125,6 +125,7 @@ class VenueWorldExtended extends VenueWorld
 
 		var margin = 8;
 		var fontHeightInPixels = 10;//universe.display.fontHeightInPixels;
+		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var containerInnerSize = Coords.fromXY(100, 60);
 
@@ -152,7 +153,7 @@ class VenueWorldExtended extends VenueWorld
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Menu",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -222,7 +223,7 @@ class VenueWorldExtended extends VenueWorld
 		var playerFaction = this.world.factions[0];
 		var playerKnowledge = playerFaction.knowledge;
 		var worldKnown = playerKnowledge.world(universe, this.world);
-		worldKnown.network.draw(universe, worldKnown.camera);
+		worldKnown.network.draw2(universe, worldKnown.camera);
 		this.venueControls.draw(universe);
 	}
 

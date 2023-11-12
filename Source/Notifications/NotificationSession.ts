@@ -76,7 +76,9 @@ class NotificationSession
 		var columnWidth = containerSize.x - margin * 2;
 		var buttonCount = 4;
 		var buttonWidth = (containerSize.x - margin * 5) / buttonCount;
-		var fontHeightInPixels = display.fontHeightInPixels;
+		var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var listHeight = controlHeight * 8;
 		var buttonPosY = containerSize.y - margin * 2 - controlHeight * 2;
 
@@ -95,7 +97,7 @@ class NotificationSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Notifications:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from8
@@ -112,7 +114,7 @@ class NotificationSession
 					(
 						(c: Notification) => c.toString(),
 					), // bindingForItemText
-					fontHeightInPixels,
+					fontNameAndHeight,
 					// bindingForItemSelected
 					new DataBinding
 					(
@@ -131,7 +133,7 @@ class NotificationSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Selected:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -147,7 +149,7 @@ class NotificationSession
 						(c: NotificationSession) =>
 							(c.notificationSelected == null ? "[none]" : c.notificationSelected.message)
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlButton.from8
@@ -159,7 +161,7 @@ class NotificationSession
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Go To",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -178,7 +180,7 @@ class NotificationSession
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Go To + Dismiss",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -198,7 +200,7 @@ class NotificationSession
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Dismiss",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -220,7 +222,7 @@ class NotificationSession
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Dismiss All",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -243,7 +245,7 @@ class NotificationSession
 					(
 						"All notifications must be dismissed before turn can be ended."
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlButton.from8
@@ -256,7 +258,7 @@ class NotificationSession
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Back",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click

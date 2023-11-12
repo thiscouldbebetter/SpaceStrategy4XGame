@@ -48,7 +48,8 @@ class NotificationSession {
         var columnWidth = containerSize.x - margin * 2;
         var buttonCount = 4;
         var buttonWidth = (containerSize.x - margin * 5) / buttonCount;
-        var fontHeightInPixels = display.fontHeightInPixels;
+        var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var listHeight = controlHeight * 8;
         var buttonPosY = containerSize.y - margin * 2 - controlHeight * 2;
         var returnValue = ControlContainer.from4("Alerts", Coords.fromXY(0, 0), // pos
@@ -59,11 +60,11 @@ class NotificationSession {
             Coords.fromXY(columnWidth, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Notifications:"), fontHeightInPixels),
+            DataBinding.fromContext("Notifications:"), fontNameAndHeight),
             ControlList.from8("listNotifications", Coords.fromXY(margin, margin + controlHeight), // pos
             Coords.fromXY(columnWidth, listHeight), // size
             DataBinding.fromContextAndGet(this, (c) => c.notifications), DataBinding.fromGet((c) => c.toString()), // bindingForItemText
-            fontHeightInPixels, 
+            fontNameAndHeight, 
             // bindingForItemSelected
             new DataBinding(this, (c) => c.notificationSelected, (c, v) => c.notificationSelected = v), DataBinding.fromContext(null) // bindingForItemValue
             ),
@@ -71,15 +72,15 @@ class NotificationSession {
             Coords.fromXY(columnWidth, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Selected:"), fontHeightInPixels),
+            DataBinding.fromContext("Selected:"), fontNameAndHeight),
             new ControlLabel("textMessage", Coords.fromXY(margin, margin * 2 + controlHeight * 2 + listHeight), // pos
             Coords.fromXY(columnWidth, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(this, (c) => (c.notificationSelected == null ? "[none]" : c.notificationSelected.message)), fontHeightInPixels),
+            DataBinding.fromContextAndGet(this, (c) => (c.notificationSelected == null ? "[none]" : c.notificationSelected.message)), fontNameAndHeight),
             ControlButton.from8("buttonGoTo", Coords.fromXY(margin, buttonPosY), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Go To", fontHeightInPixels, true, // hasBorder
+            "Go To", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -88,7 +89,7 @@ class NotificationSession {
             }),
             ControlButton.from8("buttonGoToAndDismiss", Coords.fromXY(margin * 2 + buttonWidth, buttonPosY), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Go To + Dismiss", fontHeightInPixels, true, // hasBorder
+            "Go To + Dismiss", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -98,7 +99,7 @@ class NotificationSession {
             }),
             ControlButton.from8("buttonDismiss", Coords.fromXY(margin * 3 + buttonWidth * 2, buttonPosY), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Dismiss", fontHeightInPixels, true, // hasBorder
+            "Dismiss", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -110,7 +111,7 @@ class NotificationSession {
             }),
             ControlButton.from8("buttonDismissAll", Coords.fromXY(margin * 4 + buttonWidth * 3, buttonPosY), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Dismiss All", fontHeightInPixels, true, // hasBorder
+            "Dismiss All", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -123,10 +124,10 @@ class NotificationSession {
             Coords.fromXY(columnWidth, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("All notifications must be dismissed before turn can be ended."), fontHeightInPixels),
+            DataBinding.fromContext("All notifications must be dismissed before turn can be ended."), fontNameAndHeight),
             ControlButton.from8("buttonBack", Coords.fromXY(containerSize.x - margin - buttonWidth, containerSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Back", fontHeightInPixels, true, // hasBorder
+            "Back", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {

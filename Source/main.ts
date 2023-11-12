@@ -7,8 +7,7 @@ function main()
 	var display = new Display2D
 	(
 		[ displaySizeInPixels ],
-		"Font", // fontName
-		10, // fontHeightInPixels
+		new FontNameAndHeight("Font", 10),
 		Color.byName("Blue"),
 		Color.fromSystemColor("rgb(16, 0, 32)"), // colorFore, colorBack
 		null // ?
@@ -23,11 +22,13 @@ function main()
 
 	var mediaLibrary = new MediaLibrary
 	(
+		"", // contentDirectoryPath - Already incorporated into item paths?
+
 		// images
 		[
-			new Image2("Opening", contentPathImages + "Opening.png"),
-			new Image2("Producer", contentPathImages + "Producer.png"),
-			new Image2("Title", contentPathImages + "Title.png"),
+			new Image2("Titles_Opening", contentPathImages + "Opening.png"),
+			new Image2("Titles_Producer", contentPathImages + "Producer.png"),
+			new Image2("Titles_Title", contentPathImages + "Title.png"),
 		],
 		// sounds
 		[
@@ -111,6 +112,7 @@ function worldCreatorToControl
 	var size = universe.display.sizeInPixels;
 	var margin = 8;
 	var fontHeightInPixels = 10;
+	var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 	var controlHeight = fontHeightInPixels + margin;
 	var buttonSize =
 		Coords.fromXY(4, 1).multiplyScalar(controlHeight);
@@ -129,7 +131,7 @@ function worldCreatorToControl
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext("World Creation Settings"),
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlLabel
@@ -140,7 +142,7 @@ function worldCreatorToControl
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext("Starsystems:"),
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlNumber
@@ -156,7 +158,7 @@ function worldCreatorToControl
 				), // value
 				DataBinding.fromGet( (c: WorldCreator) => 12), // valueMin
 				DataBinding.fromGet( (c: WorldCreator) => 128), // valueMax
-				fontHeightInPixels,
+				fontNameAndHeight,
 				DataBinding.fromTrue() // isEnabled
 			),
 
@@ -168,7 +170,7 @@ function worldCreatorToControl
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext("Factions:"),
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlNumber
@@ -184,7 +186,7 @@ function worldCreatorToControl
 				), // value
 				DataBinding.fromGet( (c: WorldCreator) => 2), // valueMin
 				DataBinding.fromGet( (c: WorldCreator) => 7), // valueMax
-				fontHeightInPixels,
+				fontNameAndHeight,
 				DataBinding.fromTrue() // isEnabled
 			),
 
@@ -198,7 +200,7 @@ function worldCreatorToControl
 				),
 				buttonSize,
 				"Create",
-				fontHeightInPixels,
+				fontNameAndHeight,
 				true, // hasBorder
 				DataBinding.fromContextAndGet
 				(

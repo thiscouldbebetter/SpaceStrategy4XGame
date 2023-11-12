@@ -124,8 +124,6 @@ class VenueStarsystem implements Venue
 	{
 		var world = universe.world as WorldExtended;
 
-		this.venueControls.updateForTimerTick(universe);
-
 		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, world, null, null, null
@@ -157,6 +155,8 @@ class VenueStarsystem implements Venue
 		}
 
 		this.draw(universe);
+
+		this.venueControls.updateForTimerTick(universe);
 
 		this.updateForTimerTick_Input(universe);
 	}
@@ -533,7 +533,8 @@ class VenueStarsystem implements Venue
 	{
 		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
-		var fontHeightInPixels = display.fontHeightInPixels;
+		var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var controlHeight = 16;
 		var margin = 10;
 		var containerInnerSize = Coords.fromXY(100, 60);
@@ -558,7 +559,7 @@ class VenueStarsystem implements Venue
 					), // pos
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Back",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click

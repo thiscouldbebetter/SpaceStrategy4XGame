@@ -24,7 +24,7 @@ class Ship extends Entity
 		(
 			name,
 			[
-				Actor.create(),
+				Actor.default(),
 				new Controllable
 				(
 					Ship.toControl
@@ -463,6 +463,8 @@ class Ship extends Entity
 
 		var margin = 8;
 		var fontHeightInPixels = 10;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var returnControl = ControlContainer.from4
 		(
@@ -479,7 +481,7 @@ class Ship extends Entity
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(Ship.name),
-					fontHeightInPixels
+					fontNameAndHeight
 				)
 			]
 		);
@@ -503,6 +505,7 @@ class Ship extends Entity
 		var buttonHalfSize =
 			buttonSize.clone().multiply(Coords.fromXY(.5, 1));
 		var fontHeightInPixels = margin;
+		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var uwpe = new UniverseWorldPlaceEntities
 		(
@@ -519,7 +522,7 @@ class Ship extends Entity
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext(this.name),
-				fontHeightInPixels
+				fontNameAndHeight
 			)
 		];
 
@@ -537,7 +540,7 @@ class Ship extends Entity
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("H:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -551,7 +554,7 @@ class Ship extends Entity
 					(
 						ship, (c: Ship) => "" + c.integrityCurrentOverMax()
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -562,7 +565,7 @@ class Ship extends Entity
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("E:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -576,7 +579,7 @@ class Ship extends Entity
 					(
 						ship, (c: Ship) => "" + c.turnAndMove.energyThisTurn
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlButton.from8
@@ -585,7 +588,7 @@ class Ship extends Entity
 					Coords.fromXY(margin, margin + controlSpacing * 2), // pos
 					buttonHalfSize,
 					"Move",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -610,7 +613,7 @@ class Ship extends Entity
 					), // pos
 					buttonHalfSize,
 					"Repeat",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -633,7 +636,7 @@ class Ship extends Entity
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Devices:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from8
@@ -650,7 +653,7 @@ class Ship extends Entity
 					(
 						(c: Device) => c.defn(world).name
 					), // bindingForOptionText
-					fontHeightInPixels,
+					fontNameAndHeight,
 					new DataBinding
 					(
 						ship,
@@ -666,7 +669,7 @@ class Ship extends Entity
 					Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
 					buttonSize,
 					"Use Device",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromContextAndGet
 					(

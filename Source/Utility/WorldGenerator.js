@@ -11,6 +11,7 @@ class WorldGenerator {
         var margin = 8;
         var controlHeight = 12;
         var fontHeightInPixels = 10;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var buttonSize = Coords.fromXY(4, 1).multiplyScalar(controlHeight);
         var labelSize = Coords.fromXY(4, 1).multiplyScalar(controlHeight);
         var column1PosX = margin * 2 + labelSize.x;
@@ -20,32 +21,32 @@ class WorldGenerator {
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("World Generation Criteria:"), // text
-            fontHeightInPixels),
+            fontNameAndHeight),
             new ControlLabel("labelStarsystemCount", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Starsystems:"), // text
-            fontHeightInPixels),
+            fontNameAndHeight),
             new ControlSelect("selectStarsystemCount", Coords.fromXY(column1PosX, margin * 2 + controlHeight), // pos
             buttonSize, new DataBinding(this, (c) => c.factionCount, (c, v) => c.factionCount = v), // valueSelected
             // options
             DataBinding.fromContextAndGet(this, (c) => c.starsystemCountsAvailable), DataBinding.fromGet((c) => c), // bindingForOptionValue
             DataBinding.fromGet((c) => "" + c), // bindingForOptionText
-            fontHeightInPixels),
+            fontNameAndHeight),
             new ControlLabel("labelFactionCount", Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Factions:"), // text
-            fontHeightInPixels),
+            fontNameAndHeight),
             new ControlSelect("selectFactionCount", Coords.fromXY(column1PosX, margin * 3 + controlHeight * 2), // pos
             buttonSize, new DataBinding(this, (c) => c.factionCount, (c, v) => c.factionCount = v), // valueSelected
             // options
             DataBinding.fromContextAndGet(this, (c) => c.factionCountsAvailable), DataBinding.fromGet((c) => c), // bindingForOptionValue
             DataBinding.fromGet((c) => "" + c), // bindingForOptionText
-            fontHeightInPixels),
-            new ControlButton("buttonGenerate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Generate", fontHeightInPixels, true, // hasBorder
+            fontNameAndHeight),
+            new ControlButton("buttonGenerate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Generate", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled,
             () => // click
              {

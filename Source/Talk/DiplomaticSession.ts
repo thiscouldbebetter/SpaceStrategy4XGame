@@ -105,6 +105,8 @@ class DiplomaticSession
 		var controlHeight = 20;
 		var listWidth = 100;
 		var fontHeightInPixels = margin;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var returnValue = ControlContainer.from4
 		(
@@ -119,7 +121,7 @@ class DiplomaticSession
 					Coords.fromXY(margin, margin), // pos
 					Coords.fromXY(controlHeight, controlHeight), // size
 					"<",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
@@ -137,7 +139,7 @@ class DiplomaticSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Factions:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from8
@@ -152,7 +154,7 @@ class DiplomaticSession
 							c.factionActing.knowledge.factionsOther(world)
 					), // items
 					DataBinding.fromGet((c: Faction) => c.name), // bindingForItemText,
-					fontHeightInPixels,
+					fontNameAndHeight,
 					// bindingForItemSelected
 					new DataBinding
 					(
@@ -169,7 +171,7 @@ class DiplomaticSession
 					Coords.fromXY(margin, margin * 3 + controlHeight * 6), // pos
 					Coords.fromXY(listWidth, controlHeight), // size
 					"Talk",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromContextAndGet
 					(

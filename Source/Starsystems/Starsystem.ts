@@ -31,6 +31,7 @@ class Starsystem extends Place
 		(
 			name,
 			Starsystem.name, // defnName
+			null, // parentName
 			size,
 			// entities
 			ArrayHelper.flattenArrayOfArrays
@@ -55,7 +56,7 @@ class Starsystem extends Place
 		this.posSaved = Coords.create();
 		this.visualElevationStem = new VisualElevationStem();
 		var gridColor = Color.Instances().Cyan.clone();
-		gridColor.alpha(.5);
+		gridColor.alphaSet(.5);
 		this.visualGrid = new VisualGrid(40, 10, gridColor);
 	}
 

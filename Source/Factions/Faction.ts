@@ -140,6 +140,8 @@ class Faction implements EntityProperty<Faction>
 	): ControlBase
 	{
 		var fontHeightInPixels = 10;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var faction = this;
 
@@ -163,7 +165,7 @@ class Faction implements EntityProperty<Faction>
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext("Faction:"),
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlLabel
@@ -181,7 +183,7 @@ class Faction implements EntityProperty<Faction>
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext(faction.name),
-				fontHeightInPixels
+				fontNameAndHeight
 			)
 		];
 
@@ -196,7 +198,7 @@ class Faction implements EntityProperty<Faction>
 				), // pos
 				Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 				"Details",
-				fontHeightInPixels,
+				fontNameAndHeight,
 				true, // hasBorder
 				DataBinding.fromTrue(), // isEnabled
 				// click
@@ -228,6 +230,8 @@ class Faction implements EntityProperty<Faction>
 		var size = universe.display.sizeInPixels;
 		var margin = 8;
 		var fontHeightInPixels = 10;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var controlHeight = 12;
 
 		var tabButtonSize =
@@ -260,7 +264,7 @@ class Faction implements EntityProperty<Faction>
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Faction:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -275,7 +279,7 @@ class Faction implements EntityProperty<Faction>
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(faction.name),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 			]
@@ -292,12 +296,12 @@ class Faction implements EntityProperty<Faction>
 
 		var containerPlanets = this.toControl_Details_Planets
 		(
-			universe, tabbedControlSize, margin, controlHeight, fontHeightInPixels
+			universe, tabbedControlSize, margin, controlHeight, fontNameAndHeight
 		);
 
 		var containerShips = this.toControl_Details_Ships
 		(
-			universe, tabbedControlSize, margin, controlHeight, fontHeightInPixels
+			universe, tabbedControlSize, margin, controlHeight, fontNameAndHeight
 		);
 
 		var controlsForTabs =
@@ -320,7 +324,7 @@ class Faction implements EntityProperty<Faction>
 			size,
 			tabButtonSize,
 			controlsForTabs,
-			fontHeightInPixels,
+			fontNameAndHeight,
 			back,
 			faction // context
 		);
@@ -359,7 +363,7 @@ class Faction implements EntityProperty<Faction>
 		size: Coords,
 		margin: number,
 		controlHeight: number,
-		fontHeightInPixels: number
+		fontNameAndHeight: FontNameAndHeight
 	): ControlBase
 	{
 		var world = universe.world as WorldExtended;
@@ -384,7 +388,7 @@ class Faction implements EntityProperty<Faction>
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Planets:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -403,7 +407,7 @@ class Faction implements EntityProperty<Faction>
 						faction,
 						(c: Faction) => "" + c.planets.length
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from8
@@ -424,7 +428,7 @@ class Faction implements EntityProperty<Faction>
 					(
 						(c: Planet) => c.toStringDescription(world)
 					), // bindingForItemText
-					fontHeightInPixels,
+					fontNameAndHeight,
 					// dataBindingForItemSelected
 					new DataBinding
 					(
@@ -444,7 +448,7 @@ class Faction implements EntityProperty<Faction>
 					Coords.fromXY(margin, size.y - margin - controlHeight), // pos
 					Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
 					"Go To",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromContextAndGet
 					(
@@ -465,7 +469,7 @@ class Faction implements EntityProperty<Faction>
 		size: Coords,
 		margin: number,
 		controlHeight: number,
-		fontHeightInPixels: number
+		fontNameAndHeight: FontNameAndHeight
 	): ControlBase
 	{
 		var faction = this;
@@ -489,7 +493,7 @@ class Faction implements EntityProperty<Faction>
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Ships:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -508,7 +512,7 @@ class Faction implements EntityProperty<Faction>
 						faction,
 						(c: Faction) => "" + c.ships.length
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from8
@@ -529,7 +533,7 @@ class Faction implements EntityProperty<Faction>
 					(
 						(c: Ship) => c.toStringDescription()
 					), // bindingForItemText
-					fontHeightInPixels,
+					fontNameAndHeight,
 					// dataBindingForItemSelected
 					new DataBinding
 					(
@@ -549,7 +553,7 @@ class Faction implements EntityProperty<Faction>
 					Coords.fromXY(margin, size.y - margin - controlHeight), // pos
 					Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
 					"Go To",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromContextAndGet
 					(

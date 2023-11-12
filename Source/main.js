@@ -2,9 +2,7 @@
 function main() {
     //localStorage.clear();
     var displaySizeInPixels = new Coords(400, 300, 1);
-    var display = new Display2D([displaySizeInPixels], "Font", // fontName
-    10, // fontHeightInPixels
-    Color.byName("Blue"), Color.fromSystemColor("rgb(16, 0, 32)"), // colorFore, colorBack
+    var display = new Display2D([displaySizeInPixels], new FontNameAndHeight("Font", 10), Color.byName("Blue"), Color.fromSystemColor("rgb(16, 0, 32)"), // colorFore, colorBack
     null // ?
     );
     var contentPath = "../Content/";
@@ -13,12 +11,12 @@ function main() {
     var contentPathVideo = contentPath + "Video/";
     var contentPathFonts = contentPath + "Fonts/";
     var contentPathTextStrings = contentPath + "Text/";
-    var mediaLibrary = new MediaLibrary(
+    var mediaLibrary = new MediaLibrary("", // contentDirectoryPath - Already incorporated into item paths?
     // images
     [
-        new Image2("Opening", contentPathImages + "Opening.png"),
-        new Image2("Producer", contentPathImages + "Producer.png"),
-        new Image2("Title", contentPathImages + "Title.png"),
+        new Image2("Titles_Opening", contentPathImages + "Opening.png"),
+        new Image2("Titles_Producer", contentPathImages + "Producer.png"),
+        new Image2("Titles_Title", contentPathImages + "Title.png"),
     ], 
     // sounds
     [
@@ -69,6 +67,7 @@ function worldCreatorToControl(universe, worldCreator) {
     var size = universe.display.sizeInPixels;
     var margin = 8;
     var fontHeightInPixels = 10;
+    var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
     var controlHeight = fontHeightInPixels + margin;
     var buttonSize = Coords.fromXY(4, 1).multiplyScalar(controlHeight);
     var returnControl = ControlContainer.from4("containerWorldCreator", Coords.zeroes(), // pos
@@ -76,30 +75,30 @@ function worldCreatorToControl(universe, worldCreator) {
         new ControlLabel("labelWorldCreationSettings", Coords.fromXY(margin, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCenteredHorizontally
         false, // isTextCenteredVertically
-        DataBinding.fromContext("World Creation Settings"), fontHeightInPixels),
+        DataBinding.fromContext("World Creation Settings"), fontNameAndHeight),
         new ControlLabel("labelWorldStarsystemCount", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCenteredHorizontally
         false, // isTextCenteredVertically
-        DataBinding.fromContext("Starsystems:"), fontHeightInPixels),
+        DataBinding.fromContext("Starsystems:"), fontNameAndHeight),
         new ControlNumber("numberStarsystemCount", Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
         Coords.fromXY(controlHeight * 2, controlHeight), // size
         new DataBinding(worldCreator, (c) => c.settings.starsystemCount, (c, v) => c.settings.starsystemCount = v), // value
         DataBinding.fromGet((c) => 12), // valueMin
         DataBinding.fromGet((c) => 128), // valueMax
-        fontHeightInPixels, DataBinding.fromTrue() // isEnabled
+        fontNameAndHeight, DataBinding.fromTrue() // isEnabled
         ),
         new ControlLabel("labelWorldFactionCount", Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), false, // isTextCenteredHorizontally
         false, // isTextCenteredVertically
-        DataBinding.fromContext("Factions:"), fontHeightInPixels),
+        DataBinding.fromContext("Factions:"), fontNameAndHeight),
         new ControlNumber("numberFactionCount", Coords.fromXY(margin * 8, margin * 3 + controlHeight * 2), // pos
         Coords.fromXY(controlHeight * 2, controlHeight), // size
         new DataBinding(worldCreator, (c) => c.settings.factionCount, (c, v) => c.settings.factionCount = v), // value
         DataBinding.fromGet((c) => 2), // valueMin
         DataBinding.fromGet((c) => 7), // valueMax
-        fontHeightInPixels, DataBinding.fromTrue() // isEnabled
+        fontNameAndHeight, DataBinding.fromTrue() // isEnabled
         ),
-        new ControlButton("buttonCreate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Create", fontHeightInPixels, true, // hasBorder
+        new ControlButton("buttonCreate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Create", fontNameAndHeight, true, // hasBorder
         DataBinding.fromContextAndGet(worldCreator, (wc) => wc.settings.isValid(worldCreator)), // isEnabled
         () => universe.venueTransitionTo(worldCreator.venueWorldGenerate(universe)), false // canBeHeldDown
         )

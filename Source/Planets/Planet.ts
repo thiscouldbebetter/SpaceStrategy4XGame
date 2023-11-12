@@ -100,11 +100,11 @@ class Planet extends Entity
 							{
 								returnValue = new VisualOffset
 								(
+									Coords.fromXY(0, 16),
 									VisualText.fromTextHeightAndColor
 									(
 										factionName, planetDimension, Color.byName("White"),
-									),
-									Coords.fromXY(0, 16)
+									)
 								)
 							}
 							return returnValue;
@@ -326,7 +326,7 @@ class Planet extends Entity
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.name),
-					10 // fontHeightInPixels
+					FontNameAndHeight.fromHeightInPixels(10)
 				)
 			]
 		);

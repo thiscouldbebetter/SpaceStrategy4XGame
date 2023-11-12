@@ -189,6 +189,8 @@ class FactionDiplomacy
 		var listWidth = 260;
 		var columnWidth = 60;
 		var fontHeightInPixels = 10;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var listSize = Coords.fromXY(listWidth, controlSpacing * 4);
 
 		var returnValue = ControlContainer.from4
@@ -206,7 +208,7 @@ class FactionDiplomacy
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Faction:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -222,7 +224,7 @@ class FactionDiplomacy
 						(c: DiplomaticSession) =>
 							(c.factionSelected == null ? "[none]" : c.factionSelected.name)
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -233,7 +235,7 @@ class FactionDiplomacy
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Relationship:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -259,7 +261,7 @@ class FactionDiplomacy
 							)
 						)
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -270,7 +272,7 @@ class FactionDiplomacy
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Planets:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from8
@@ -292,7 +294,7 @@ class FactionDiplomacy
 					(
 						(c: Planet) => c.toStringDescription(world)
 					), // bindingForItemText,
-					fontHeightInPixels,
+					fontNameAndHeight,
 					// dataBindingForItemSelected
 					new DataBinding
 					(
@@ -318,7 +320,7 @@ class FactionDiplomacy
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Ships:"),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from7
@@ -336,7 +338,7 @@ class FactionDiplomacy
 					(
 						(c: Ship) => c.toStringDescription()
 					), // bindingForOptionText,
-					fontHeightInPixels, // fontHeightInPixels
+					fontNameAndHeight,
 					// dataBindingForValueSelected
 					new DataBinding
 					(
@@ -645,7 +647,9 @@ class FactionDiplomacy
 		var returnConversationDefn = new ConversationDefn
 		(
 			"Diplomacy",
-			new VisualNone(), // todo
+			null, // contentTextStringName,
+			new VisualNone(), // visualPortrait
+			null, // soundMusicName
 			TalkNodeDefn.Instances()._All,
 			talkNodes
 		);

@@ -70,10 +70,12 @@ class TechnologyResearchSession
 		var world = universe.world as WorldExtended;
 
 		var display = universe.display;
-		var margin = display.fontHeightInPixels;
-		var labelHeight = display.fontHeightInPixels;
+		var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+		var margin = fontHeightInPixels;
+		var labelHeight = fontHeightInPixels;
 		var buttonHeight = labelHeight * 2.5;
 		var fontHeightInPixels = margin;
+		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var listSize = Coords.fromXY((size.x - margin * 3) / 2, 150);
 		var listPosY = 55;
 
@@ -94,7 +96,7 @@ class TechnologyResearchSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Researcher:"), //text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -105,7 +107,7 @@ class TechnologyResearchSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.researcher.name), //text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -116,7 +118,7 @@ class TechnologyResearchSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Research per Turn:"), //text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -131,7 +133,7 @@ class TechnologyResearchSession
 						this.researcher,
 						(c: TechnologyResearcher) => "" + c.researchPerTurn(universe, world)
 					), //text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -142,7 +144,7 @@ class TechnologyResearchSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Technologies Known:"), //text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from6
@@ -156,7 +158,7 @@ class TechnologyResearchSession
 						this.researcher.namesOfTechnologiesKnown
 					),
 					DataBinding.fromContext(null), // bindingForItemText
-					labelHeight // fontHeightInPixels
+					FontNameAndHeight.fromHeightInPixels(labelHeight)
 				),
 
 				new ControlLabel
@@ -167,7 +169,7 @@ class TechnologyResearchSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Technologies Available:"), // text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlList.from8
@@ -189,7 +191,7 @@ class TechnologyResearchSession
 					(
 						(c: Technology) => c.name
 					), // bindingForItemText
-					labelHeight, // fontHeightInPixels
+					FontNameAndHeight.fromHeightInPixels(labelHeight), // fontHeightInPixels
 					new DataBinding
 					(
 						researcher,
@@ -210,7 +212,7 @@ class TechnologyResearchSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Technology Being Researched:"), // text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -225,7 +227,7 @@ class TechnologyResearchSession
 						this.researcher,
 						(c: TechnologyResearcher) => c.nameOfTechnologyBeingResearched
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -240,7 +242,7 @@ class TechnologyResearchSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Research Accumulated:"), // text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -259,9 +261,8 @@ class TechnologyResearchSession
 						this,
 						(c: TechnologyResearchSession) => c.researchAccumulatedOverRequired()
 					), // text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
-
 
 				new ControlLabel
 				(
@@ -275,7 +276,7 @@ class TechnologyResearchSession
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("Grants:"), // text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -298,7 +299,7 @@ class TechnologyResearchSession
 							return (tech == null ? "-" : tech.namesOfBuildablesEnabled.join("; ") );
 						}
 					), // text
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlButton.from8
@@ -311,7 +312,7 @@ class TechnologyResearchSession
 					), //pos,
 					Coords.fromXY(buttonHeight, buttonHeight), // size,
 					"Back", // text,
-					labelHeight, // fontHeightInPixels,
+					FontNameAndHeight.fromHeightInPixels(labelHeight),
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click

@@ -97,6 +97,7 @@ class Shipyard implements EntityProperty<Shipyard>
 		var size = universe.display.sizeDefault();
 
 		var fontHeight = 10;
+		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		var margin = fontHeight * 1.5;
 		var buttonSize = Coords.fromXY(2, 2).multiplyScalar(fontHeight);
 		var listSize = Coords.fromXY
@@ -137,7 +138,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext("In Stock:"),
-					fontHeight
+					fontNameAndHeight
 				),
 
 				new ControlList
@@ -154,7 +155,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					(
 						(c: Item) => c.toString(world)
 					), // bindingForItemText
-					fontHeight,
+					fontNameAndHeight,
 					new DataBinding
 					(
 						itemHolderShipyard,
@@ -177,7 +178,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					), // pos
 					buttonSize.clone(),
 					">",
-					fontHeight,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					transferItemFromShipyardToShip // click
@@ -193,7 +194,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					), // pos
 					buttonSize.clone(),
 					"<",
-					fontHeight,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					transferItemFromShipToShipyard // click
@@ -207,7 +208,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(ship.name + ":"),
-					fontHeight
+					fontNameAndHeight
 				),
 
 				new ControlList
@@ -225,7 +226,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					(
 						(c: Item) => c.toString(world)
 					), // bindingForItemText
-					fontHeight,
+					fontNameAndHeight,
 					new DataBinding
 					(
 						itemHolderShip,
@@ -247,7 +248,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					true, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet(this, c => "[status]"),
-					fontHeight
+					fontNameAndHeight
 				),
 
 				ControlButton.from8
@@ -260,7 +261,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					), // pos
 					buttonSize.clone(),
 					"Build Ship",
-					fontHeight,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					back // click
@@ -276,7 +277,7 @@ class Shipyard implements EntityProperty<Shipyard>
 					), // pos
 					buttonSize.clone(),
 					"Cancel",
-					fontHeight,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					back // click

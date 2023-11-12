@@ -50,13 +50,14 @@ class DiplomaticSession {
         var controlHeight = 20;
         var listWidth = 100;
         var fontHeightInPixels = margin;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var returnValue = ControlContainer.from4("Diplomacy", Coords.fromXY(0, 0), // pos
         containerSize, 
         // children
         [
             ControlButton.from8("buttonBack", Coords.fromXY(margin, margin), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
-            "<", fontHeightInPixels, true, // hasBorder
+            "<", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -67,18 +68,18 @@ class DiplomaticSession {
             Coords.fromXY(100, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Factions:"), fontHeightInPixels),
+            DataBinding.fromContext("Factions:"), fontNameAndHeight),
             ControlList.from8("listFactions", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
             Coords.fromXY(listWidth, controlHeight * 4), // size
             DataBinding.fromContextAndGet(this, (c) => c.factionActing.knowledge.factionsOther(world)), // items
             DataBinding.fromGet((c) => c.name), // bindingForItemText,
-            fontHeightInPixels, 
+            fontNameAndHeight, 
             // bindingForItemSelected
             new DataBinding(this, (c) => c.factionSelected, (c, v) => c.factionSelected = v), DataBinding.fromContext(null) // bindingForItemValue
             ),
             ControlButton.from8("buttonTalk", Coords.fromXY(margin, margin * 3 + controlHeight * 6), // pos
             Coords.fromXY(listWidth, controlHeight), // size
-            "Talk", fontHeightInPixels, true, // hasBorder
+            "Talk", fontNameAndHeight, true, // hasBorder
             DataBinding.fromContextAndGet(this, (c) => c.isFactionSelected()), // isEnabled
             () => diplomaticSession.talkSessionInitialize(UniverseWorldPlaceEntities.fromUniverse(universe)) // click
             ),

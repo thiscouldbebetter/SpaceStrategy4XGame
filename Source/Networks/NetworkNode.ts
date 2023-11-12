@@ -49,6 +49,8 @@ class NetworkNode2 extends Entity
 		var margin = 10;
 		var controlSpacing = 8;
 		var fontHeightInPixels = margin;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var buttonSize = Coords.fromXY
 		(
 			containerSize.x - margin * 4,
@@ -70,7 +72,7 @@ class NetworkNode2 extends Entity
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.name),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				new ControlLabel
@@ -85,7 +87,7 @@ class NetworkNode2 extends Entity
 						networkNode,
 						(c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)
 					),
-					fontHeightInPixels
+					fontNameAndHeight
 				),
 
 				ControlButton.from8
@@ -94,7 +96,7 @@ class NetworkNode2 extends Entity
 					Coords.fromXY(margin, margin + controlSpacing * 2), // pos
 					buttonSize, // size
 					"View",
-					fontHeightInPixels,
+					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click

@@ -61,7 +61,9 @@
   "exclude":
   [
     "Framework/Source/Imports.ts",
+    "Framework/Source/main.ts",
     "Framework/Source/Demo/",
+    "Framework/Source/Media/Audio/MusicTracker/Source/main.ts",
     "Framework/Stub/",
     "Framework/Tests/"
   ]

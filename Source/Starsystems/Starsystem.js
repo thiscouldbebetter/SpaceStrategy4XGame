@@ -2,6 +2,7 @@
 class Starsystem extends Place {
     constructor(name, size, star, linkPortals, planets, factionName) {
         super(name, Starsystem.name, // defnName
+        null, // parentName
         size, 
         // entities
         ArrayHelper.flattenArrayOfArrays(new Array([star], linkPortals, planets)));
@@ -15,7 +16,7 @@ class Starsystem extends Place {
         this.posSaved = Coords.create();
         this.visualElevationStem = new VisualElevationStem();
         var gridColor = Color.Instances().Cyan.clone();
-        gridColor.alpha(.5);
+        gridColor.alphaSet(.5);
         this.visualGrid = new VisualGrid(40, 10, gridColor);
     }
     static SizeStandard() {

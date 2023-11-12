@@ -39,6 +39,7 @@ class Shipyard {
         var ship = uwpe.entity;
         var size = universe.display.sizeDefault();
         var fontHeight = 10;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeight);
         var margin = fontHeight * 1.5;
         var buttonSize = Coords.fromXY(2, 2).multiplyScalar(fontHeight);
         var listSize = Coords.fromXY((size.x - margin * 4 - buttonSize.x) / 2, size.y - margin * 4 - fontHeight * 2);
@@ -60,22 +61,22 @@ class Shipyard {
             Coords.fromXY(listSize.x, 25), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("In Stock:"), fontHeight),
+            DataBinding.fromContext("In Stock:"), fontNameAndHeight),
             new ControlList("listContainerItems", Coords.fromXY(margin, margin * 2), // pos
             listSize.clone(), DataBinding.fromContextAndGet(itemHolderShipyard, (c) => c.items), // items
             DataBinding.fromGet((c) => c.toString(world)), // bindingForItemText
-            fontHeight, new DataBinding(itemHolderShipyard, (c) => c.itemSelected, (c, v) => c.itemSelected = v), // bindingForItemSelected
+            fontNameAndHeight, new DataBinding(itemHolderShipyard, (c) => c.itemSelected, (c, v) => c.itemSelected = v), // bindingForItemSelected
             DataBinding.fromGet((c) => c), // bindingForItemValue
             DataBinding.fromTrue(), // isEnabled
             transferItemFromShipyardToShip, // confirm
             null),
             ControlButton.from8("buttonTransferToShip", Coords.fromXY((size.x - buttonSize.x) / 2, (size.y - buttonSize.y - margin) / 2), // pos
-            buttonSize.clone(), ">", fontHeight, true, // hasBorder
+            buttonSize.clone(), ">", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             transferItemFromShipyardToShip // click
             ),
             ControlButton.from8("buttonPut", Coords.fromXY((size.x - buttonSize.x) / 2, (size.y + buttonSize.y + margin) / 2), // pos
-            buttonSize.clone(), "<", fontHeight, true, // hasBorder
+            buttonSize.clone(), "<", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             transferItemFromShipToShipyard // click
             ),
@@ -83,12 +84,12 @@ class Shipyard {
             Coords.fromXY(85, 25), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext(ship.name + ":"), fontHeight),
+            DataBinding.fromContext(ship.name + ":"), fontNameAndHeight),
             new ControlList("listOtherItems", Coords.fromXY(size.x - margin - listSize.x, margin * 2), // pos
             listSize.clone(), DataBinding.fromContextAndGet(itemHolderShip, (c) => c.items //.filter(x => x.item().defnName != itemDefnNameCurrency);
             ), // items
             DataBinding.fromGet((c) => c.toString(world)), // bindingForItemText
-            fontHeight, new DataBinding(itemHolderShip, (c) => c.itemSelected, (c, v) => c.itemSelected = v), // bindingForItemSelected
+            fontNameAndHeight, new DataBinding(itemHolderShip, (c) => c.itemSelected, (c, v) => c.itemSelected = v), // bindingForItemSelected
             DataBinding.fromGet((c) => c), // bindingForItemValue
             DataBinding.fromTrue(), // isEnabled
             transferItemFromShipToShipyard, // confirm
@@ -97,14 +98,14 @@ class Shipyard {
             Coords.fromXY(size.x, fontHeight), // size
             true, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(this, c => "[status]"), fontHeight),
+            DataBinding.fromContextAndGet(this, c => "[status]"), fontNameAndHeight),
             ControlButton.from8("buttonBuild", Coords.fromXY(size.x - (margin - buttonSize.x) * 2, size.y - margin - buttonSize.y), // pos
-            buttonSize.clone(), "Build Ship", fontHeight, true, // hasBorder
+            buttonSize.clone(), "Build Ship", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             back // click
             ),
             ControlButton.from8("buttonDone", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), // pos
-            buttonSize.clone(), "Cancel", fontHeight, true, // hasBorder
+            buttonSize.clone(), "Cancel", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             back // click
             )

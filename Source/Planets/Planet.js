@@ -43,7 +43,7 @@ class Planet extends Entity {
                         returnValue = new VisualNone();
                     }
                     else {
-                        returnValue = new VisualOffset(VisualText.fromTextHeightAndColor(factionName, planetDimension, Color.byName("White")), Coords.fromXY(0, 16));
+                        returnValue = new VisualOffset(Coords.fromXY(0, 16), VisualText.fromTextHeightAndColor(factionName, planetDimension, Color.byName("White")));
                     }
                     return returnValue;
                 })
@@ -164,8 +164,7 @@ class Planet extends Entity {
             Coords.fromXY(size.x, 0), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext(this.name), 10 // fontHeightInPixels
-            )
+            DataBinding.fromContext(this.name), FontNameAndHeight.fromHeightInPixels(10))
         ]);
         return returnValue;
     }

@@ -91,6 +91,7 @@ var Input = gf.Input;
 var InputHelper = gf.InputHelper;
 // Media.
 var Font = gf.Font;
+var FontNameAndHeight = gf.FontNameAndHeight;
 var Image2 = gf.Image2;
 var MediaLibrary = gf.MediaLibrary;
 var SoundFromFile = gf.SoundFromFile;

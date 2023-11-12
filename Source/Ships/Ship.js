@@ -2,7 +2,7 @@
 class Ship extends Entity {
     constructor(name, defn, pos, factionName, items) {
         super(name, [
-            Actor.create(),
+            Actor.default(),
             new Controllable(Ship.toControl),
             defn,
             ItemHolder.fromItems(items),
@@ -250,6 +250,7 @@ class Ship extends Entity {
         var containerSize = uwpe.universe.display.sizeInPixels;
         var margin = 8;
         var fontHeightInPixels = 10;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var returnControl = ControlContainer.from4("containerShipStatus", Coords.fromXY(0, 0), // pos
         containerSize, 
         // children
@@ -257,7 +258,7 @@ class Ship extends Entity {
             new ControlLabel("headingShip", Coords.fromXY(margin, margin), Coords.fromXY(containerSize.x, 0), // this.size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext(Ship.name), fontHeightInPixels)
+            DataBinding.fromContext(Ship.name), fontNameAndHeight)
         ]);
         return returnControl;
     }
@@ -269,12 +270,13 @@ class Ship extends Entity {
         var buttonSize = Coords.fromXY(containerSize.x - margin * 2, 15);
         var buttonHalfSize = buttonSize.clone().multiply(Coords.fromXY(.5, 1));
         var fontHeightInPixels = margin;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
         var childControls = [
             new ControlLabel("textShipAsSelection", Coords.fromXY(margin, margin), Coords.fromXY(containerSize.x, 0), // this.size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext(this.name), fontHeightInPixels)
+            DataBinding.fromContext(this.name), fontNameAndHeight)
         ];
         var shipBelongsToUser = ship.faction(world).isControlledByUser();
         if (shipBelongsToUser) {
@@ -282,21 +284,21 @@ class Ship extends Entity {
                 new ControlLabel("labelIntegrity", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
                 false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContext("H:"), fontHeightInPixels),
+                DataBinding.fromContext("H:"), fontNameAndHeight),
                 new ControlLabel("textIntegrity", Coords.fromXY(containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
                 false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontHeightInPixels),
+                DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontNameAndHeight),
                 new ControlLabel("labelEnergy", Coords.fromXY(containerSize.x / 2, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
                 false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContext("E:"), fontHeightInPixels),
+                DataBinding.fromContext("E:"), fontNameAndHeight),
                 new ControlLabel("textEnergy", Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
                 false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(ship, (c) => "" + c.turnAndMove.energyThisTurn), fontHeightInPixels),
+                DataBinding.fromContextAndGet(ship, (c) => "" + c.turnAndMove.energyThisTurn), fontNameAndHeight),
                 ControlButton.from8("buttonMove", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
-                buttonHalfSize, "Move", fontHeightInPixels, true, // hasBorder
+                buttonHalfSize, "Move", fontNameAndHeight, true, // hasBorder
                 DataBinding.fromTrue(), // isEnabled
                 () => // click
                  {
@@ -307,7 +309,7 @@ class Ship extends Entity {
                     venue.cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
                 }),
                 ControlButton.from8("buttonRepeat", Coords.fromXY(margin + buttonHalfSize.x, margin + controlSpacing * 2), // pos
-                buttonHalfSize, "Repeat", fontHeightInPixels, true, // hasBorder
+                buttonHalfSize, "Repeat", fontNameAndHeight, true, // hasBorder
                 DataBinding.fromTrue(), // isEnabled
                 () => // click
                  {
@@ -322,16 +324,16 @@ class Ship extends Entity {
                 Coords.fromXY(containerSize.x, 0), // this.size
                 false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContext("Devices:"), fontHeightInPixels),
+                DataBinding.fromContext("Devices:"), fontNameAndHeight),
                 ControlList.from8("listDevices", Coords.fromXY(margin, margin + controlSpacing * 4), // pos
                 Coords.fromXY(buttonSize.x, controlSpacing * 4), // size
                 // dataBindingForItems
                 DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable(world)), DataBinding.fromGet((c) => c.defn(world).name), // bindingForOptionText
-                fontHeightInPixels, new DataBinding(ship, (c) => c.deviceSelected, (c, v) => c.deviceSelected = v), // dataBindingForItemSelected
+                fontNameAndHeight, new DataBinding(ship, (c) => c.deviceSelected, (c, v) => c.deviceSelected = v), // dataBindingForItemSelected
                 DataBinding.fromContext(null) // bindingForItemValue
                 ),
                 ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
-                buttonSize, "Use Device", fontHeightInPixels, true, // hasBorder
+                buttonSize, "Use Device", fontNameAndHeight, true, // hasBorder
                 DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected != null)), () => // click
                  {
                     var venue = universe.venueCurrent;

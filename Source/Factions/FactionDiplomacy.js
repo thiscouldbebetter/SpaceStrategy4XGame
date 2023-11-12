@@ -75,6 +75,7 @@ class FactionDiplomacy {
         var listWidth = 260;
         var columnWidth = 60;
         var fontHeightInPixels = 10;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var listSize = Coords.fromXY(listWidth, controlSpacing * 4);
         var returnValue = ControlContainer.from4("containerFactionIntelligence", pos, containerSize, 
         // children
@@ -83,17 +84,17 @@ class FactionDiplomacy {
             Coords.fromXY(columnWidth, controlSpacing), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Faction:"), fontHeightInPixels),
+            DataBinding.fromContext("Faction:"), fontNameAndHeight),
             new ControlLabel("textFaction", Coords.fromXY(margin * 2 + columnWidth, margin), // pos
             Coords.fromXY(columnWidth, controlSpacing), // size,
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null ? "[none]" : c.factionSelected.name)), fontHeightInPixels),
+            DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null ? "[none]" : c.factionSelected.name)), fontNameAndHeight),
             new ControlLabel("labelRelationship", Coords.fromXY(margin, margin + controlSpacing), // pos
             Coords.fromXY(columnWidth, controlSpacing), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Relationship:"), fontHeightInPixels),
+            DataBinding.fromContext("Relationship:"), fontNameAndHeight),
             new ControlLabel("textRelationship", Coords.fromXY(margin + columnWidth, margin + controlSpacing), // pos
             Coords.fromXY(columnWidth, controlSpacing), // size,
             false, // isTextCenteredHorizontally
@@ -101,18 +102,18 @@ class FactionDiplomacy {
             DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null
                 ? "-"
                 :
-                    (c.factionSelected.relationshipByFactionName(diplomaticSession.factionActing.name).state))), fontHeightInPixels),
+                    (c.factionSelected.relationshipByFactionName(diplomaticSession.factionActing.name).state))), fontNameAndHeight),
             new ControlLabel("labelPlanets", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
             Coords.fromXY(columnWidth, controlSpacing), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Planets:"), fontHeightInPixels),
+            DataBinding.fromContext("Planets:"), fontNameAndHeight),
             ControlList.from8("listPlanets", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
             listSize, DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null
                 ? new Array()
                 : c.factionSelected.planets)), // items
             DataBinding.fromGet((c) => c.toStringDescription(world)), // bindingForItemText,
-            fontHeightInPixels, 
+            fontNameAndHeight, 
             // dataBindingForItemSelected
             new DataBinding(diplomaticSession, (c) => (c.factionSelected == null ? null : c.factionSelected.planetSelected), (c, v) => {
                 if (c.factionSelected != null) {
@@ -124,11 +125,11 @@ class FactionDiplomacy {
             Coords.fromXY(columnWidth, controlSpacing), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Ships:"), fontHeightInPixels),
+            DataBinding.fromContext("Ships:"), fontNameAndHeight),
             ControlList.from7("listShips", Coords.fromXY(margin, margin + controlSpacing * 8), // pos
             listSize, DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null ? new Array() : c.factionSelected.ships)), // options
             DataBinding.fromGet((c) => c.toStringDescription()), // bindingForOptionText,
-            fontHeightInPixels, // fontHeightInPixels
+            fontNameAndHeight, 
             // dataBindingForValueSelected
             new DataBinding(diplomaticSession, (c) => (c.factionSelected == null ? null : c.factionSelected.shipSelected), (c, v) => {
                 if (c.factionSelected != null) {
@@ -221,7 +222,9 @@ class FactionDiplomacy {
             tn.display("Quit", "Until next time, then."),
             tn.quit()
         ];
-        var returnConversationDefn = new ConversationDefn("Diplomacy", new VisualNone(), // todo
+        var returnConversationDefn = new ConversationDefn("Diplomacy", null, // contentTextStringName,
+        new VisualNone(), // visualPortrait
+        null, // soundMusicName
         TalkNodeDefn.Instances()._All, talkNodes);
         var contentNameOther = "Diplomacy_Others_" + this.communicationStyleName;
         var contentNames = [

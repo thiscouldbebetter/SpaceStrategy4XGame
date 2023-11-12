@@ -5,6 +5,7 @@ class ControlBuilderExtended extends ControlBuilder {
     }
     selection(universe, pos, size, margin, controlHeight) {
         var fontHeightInPixels = 10; // universe.display.fontHeightInPixels;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var controlSelectionSize = Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 3);
         var returnValue = new ControlContainer("containerSelected", pos.clone(), size.clone(), 
         // children
@@ -14,7 +15,7 @@ class ControlBuilderExtended extends ControlBuilder {
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Selection:"), // text
-            fontHeightInPixels),
+            fontNameAndHeight),
             new ControlLabel("textSelectionName", Coords.fromXY(margin, margin + controlHeight * .6), // pos
             Coords.fromXY(size.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
@@ -30,7 +31,7 @@ class ControlBuilderExtended extends ControlBuilder {
                     returnValue = venue.selectionName();
                 }
                 return returnValue;
-            }), fontHeightInPixels),
+            }), fontNameAndHeight),
             new ControlDynamic("dynamicSelection", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
             controlSelectionSize, // size
             DataBinding.fromContextAndGet(universe, (c) => c.venueCurrent.selectedEntity), (v) => {
@@ -40,7 +41,7 @@ class ControlBuilderExtended extends ControlBuilder {
             Coords.fromXY(margin, size.y - margin - controlHeight), // pos
             Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
             "Center", // text,
-            fontHeightInPixels, true, // hasBorder
+            fontNameAndHeight, true, // hasBorder
             DataBinding.fromContextAndGet(universe.venueCurrent, (c) => (c.selectedEntity != null)), // isEnabled
             () => // click
              {
@@ -50,7 +51,7 @@ class ControlBuilderExtended extends ControlBuilder {
             Coords.fromXY(margin * 2 + ((size.x - margin * 3) / 2), size.y - margin - controlHeight), // pos
             Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
             "Details", // text,
-            fontHeightInPixels, true, // hasBorder
+            fontNameAndHeight, true, // hasBorder
             DataBinding.fromContextAndGet(universe.venueCurrent, (c) => (c.selectedEntity != null)), // isEnabled
             () => // click
              {
@@ -85,6 +86,7 @@ class ControlBuilderExtended extends ControlBuilder {
     timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, includeTurnAdvanceButtons) {
         var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
         var fontHeightInPixels = 10; //universe.display.fontHeightInPixels;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var childControls = new Array();
         var childControlsGuaranteed = [
             new ControlLabel("textPlace", Coords.fromXY(margin, margin), // pos
@@ -95,17 +97,17 @@ class ControlBuilderExtended extends ControlBuilder {
                 // hack
                 var venue = c.venueCurrent;
                 return (venue.model == null ? "" : venue.model().name);
-            }), fontHeightInPixels),
+            }), fontNameAndHeight),
             new ControlLabel("labelTurn", Coords.fromXY(margin, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Turn:"), fontHeightInPixels),
+            DataBinding.fromContext("Turn:"), fontNameAndHeight),
             new ControlLabel("textTurn", Coords.fromXY(margin + 25, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(universe, (c) => "" + c.world.turnsSoFar), fontHeightInPixels)
+            DataBinding.fromContextAndGet(universe, (c) => "" + c.world.turnsSoFar), fontNameAndHeight)
         ];
         childControls.push(...childControlsGuaranteed);
         if (includeTurnAdvanceButtons) {
@@ -115,14 +117,14 @@ class ControlBuilderExtended extends ControlBuilder {
                 Coords.fromXY(margin + 50, margin + controlHeight), // pos
                 Coords.fromXY(controlHeight, controlHeight), // size,
                 ">", // text,
-                fontHeightInPixels, true, // hasBorder
+                fontNameAndHeight, true, // hasBorder
                 DataBinding.fromTrue(), // isEnabled
                 () => world.updateForTurn(uwpe)),
                 ControlButton.from8("buttonTurnFastForward", // name,
                 Coords.fromXY(margin + 50 + controlHeight, margin + controlHeight), // pos
                 Coords.fromXY(controlHeight, controlHeight), // size,
                 ">>", // text,
-                fontHeightInPixels, true, // hasBorder
+                fontNameAndHeight, true, // hasBorder
                 DataBinding.fromTrue(), // isEnabled
                 () => world.turnAdvanceUntilNotification(uwpe))
             ];
@@ -135,6 +137,7 @@ class ControlBuilderExtended extends ControlBuilder {
     view(universe, containerMainSize, containerInnerSize, margin, controlHeight) {
         var cameraSpeed = 10;
         var fontHeightInPixels = 10; // universe.display.fontHeightInPixels;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var size = Coords.fromXY(containerInnerSize.x, margin * 3 + controlHeight * 3);
         var pos = Coords.fromXY(margin, containerMainSize.y
             - margin
@@ -146,10 +149,10 @@ class ControlBuilderExtended extends ControlBuilder {
             Coords.fromXY(containerInnerSize.x, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("View:"), fontHeightInPixels),
+            DataBinding.fromContext("View:"), fontNameAndHeight),
             new ControlButton("buttonViewUp", Coords.fromXY(margin + controlHeight, margin * 2 + controlHeight), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
-            "^", fontHeightInPixels, true, // hasBorder
+            "^", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -158,7 +161,7 @@ class ControlBuilderExtended extends ControlBuilder {
             ),
             new ControlButton("buttonViewDown", Coords.fromXY(margin + controlHeight, margin * 2 + controlHeight * 2), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
-            "v", fontHeightInPixels, true, // hasBorder
+            "v", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -167,7 +170,7 @@ class ControlBuilderExtended extends ControlBuilder {
             ),
             new ControlButton("buttonViewLeft", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
-            "<", fontHeightInPixels, true, // hasBorder
+            "<", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -176,7 +179,7 @@ class ControlBuilderExtended extends ControlBuilder {
             ),
             new ControlButton("buttonViewRight", Coords.fromXY(margin + controlHeight * 2, margin * 2 + controlHeight * 2), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
-            ">", fontHeightInPixels, true, // hasBorder
+            ">", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -185,7 +188,7 @@ class ControlBuilderExtended extends ControlBuilder {
             ),
             new ControlButton("buttonViewZoomIn", Coords.fromXY(margin * 2 + controlHeight * 2, margin), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
-            "In", fontHeightInPixels, true, // hasBorder
+            "In", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -194,7 +197,7 @@ class ControlBuilderExtended extends ControlBuilder {
             ),
             new ControlButton("buttonViewZoomOut", Coords.fromXY(margin * 2 + controlHeight * 3, margin), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
-            "Out", fontHeightInPixels, true, // hasBorder
+            "Out", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -203,7 +206,7 @@ class ControlBuilderExtended extends ControlBuilder {
             ),
             new ControlButton("buttonViewReset", Coords.fromXY(margin * 2.5 + controlHeight * 3, margin * 2 + controlHeight * 2), // pos
             Coords.fromXY(controlHeight, controlHeight), // size
-            "x", fontHeightInPixels, true, // hasBorder
+            "x", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {

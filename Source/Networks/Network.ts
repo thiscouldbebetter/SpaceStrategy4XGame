@@ -1,5 +1,5 @@
 
-class Network2 //
+class Network2 extends Place
 {
 	name: string;
 	nodes: NetworkNode2[];
@@ -22,6 +22,15 @@ class Network2 //
 		links: NetworkLink2[]
 	)
 	{
+		super
+		(
+			name,
+			Network2.name, // defnName
+			null, // parentName
+			null, // size
+			nodes // entities
+		);
+
 		this.name = name;
 		this.nodes = nodes;
 		this.links = links;
@@ -141,7 +150,7 @@ class Network2 //
 		(
 			x => x.locatable().loc.pos
 		);
-		var boundsActual = new Box(Coords.create(), Coords.create()).ofPoints(nodePositions);
+		var boundsActual = Box.create().containPoints(nodePositions);
 		var boundsDesired = new Box
 		(
 			Coords.create(), // center
@@ -334,7 +343,12 @@ class Network2 //
 
 	// drawing
 
-	draw(universe: Universe, camera: Camera): void
+	draw(universe: Universe, world: World, display: Display): void
+	{
+		throw new Error("Not yet implemented!");
+	}
+
+	draw2(universe: Universe, camera: Camera): void
 	{
 		var drawPos = this.drawPos;
 		var drawPosFrom = this.drawPosFrom;

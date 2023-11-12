@@ -21,6 +21,7 @@ class NetworkNode2 extends Entity {
         var margin = 10;
         var controlSpacing = 8;
         var fontHeightInPixels = margin;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var buttonSize = Coords.fromXY(containerSize.x - margin * 4, 10);
         var returnValue = ControlContainer.from4("containerStarsystem", Coords.fromXY(viewSize.x - margin - containerSize.x, margin), // pos
         Coords.fromXY(containerSize.x - margin * 2, 40), // size
@@ -29,14 +30,14 @@ class NetworkNode2 extends Entity {
             new ControlLabel("labelStarsystemName", Coords.fromXY(margin, margin), Coords.fromXY(0, 0), // this.size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext(this.name), fontHeightInPixels),
+            DataBinding.fromContext(this.name), fontNameAndHeight),
             new ControlLabel("labelStarsystemHolder", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(0, 0), // this.size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(networkNode, (c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)), fontHeightInPixels),
+            DataBinding.fromContextAndGet(networkNode, (c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)), fontNameAndHeight),
             ControlButton.from8("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
             buttonSize, // size
-            "View", fontHeightInPixels, true, // hasBorder
+            "View", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {

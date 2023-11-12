@@ -58,7 +58,6 @@ class VenueStarsystem {
     }
     updateForTimerTick(universe) {
         var world = universe.world;
-        this.venueControls.updateForTimerTick(universe);
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
         this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
         if (this.cursor != null) {
@@ -73,6 +72,7 @@ class VenueStarsystem {
             }
         }
         this.draw(universe);
+        this.venueControls.updateForTimerTick(universe);
         this.updateForTimerTick_Input(universe);
     }
     updateForTimerTick_Input(universe) {
@@ -278,7 +278,8 @@ class VenueStarsystem {
     toControl(universe) {
         var display = universe.display;
         var containerMainSize = display.sizeInPixels.clone();
-        var fontHeightInPixels = display.fontHeightInPixels;
+        var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var controlHeight = 16;
         var margin = 10;
         var containerInnerSize = Coords.fromXY(100, 60);
@@ -290,7 +291,7 @@ class VenueStarsystem {
         [
             ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Back", fontHeightInPixels, true, // hasBorder
+            "Back", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {

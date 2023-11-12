@@ -76,6 +76,7 @@ class VenueWorldExtended extends VenueWorld {
         var controlHeight = 14;
         var margin = 8;
         var fontHeightInPixels = 10; //universe.display.fontHeightInPixels;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var containerInnerSize = Coords.fromXY(100, 60);
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
         var world = universe.world;
@@ -87,7 +88,7 @@ class VenueWorldExtended extends VenueWorld {
         [
             ControlButton.from8("buttonMenu", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Menu", fontHeightInPixels, true, // hasBorder
+            "Menu", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -111,7 +112,7 @@ class VenueWorldExtended extends VenueWorld {
         var playerFaction = this.world.factions[0];
         var playerKnowledge = playerFaction.knowledge;
         var worldKnown = playerKnowledge.world(universe, this.world);
-        worldKnown.network.draw(universe, worldKnown.camera);
+        worldKnown.network.draw2(universe, worldKnown.camera);
         this.venueControls.draw(universe);
     }
     finalize(universe) {

@@ -79,6 +79,7 @@ class VenueLayout {
         var containerSize = displaySize.clone().half();
         var margin = Coords.fromXY(1, 1).multiplyScalar(8);
         var fontHeightInPixels = 10; // hack
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var listSize = containerSize.clone().subtract(margin).subtract(margin);
         var buttonSize = Coords.fromXY(listSize.x, fontHeightInPixels * 2);
         var venueThis = this; // hack
@@ -87,10 +88,10 @@ class VenueLayout {
             new ControlLabel("labelBuildableName", Coords.fromXY(1, 1).multiply(margin), listSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext(buildableAtCursor.defnName), // text
-            fontHeightInPixels),
+            fontNameAndHeight),
             ControlButton.from8("buttonDemolish", Coords.fromXY(margin.x, containerSize.y - margin.y * 2 - buttonSize.y * 2), //pos,
             buttonSize, "Demolish", // text,
-            fontHeightInPixels, true, // hasBorder,
+            fontNameAndHeight, true, // hasBorder,
             DataBinding.fromTrue(), // isEnabled,
             () => // click
              {
@@ -99,7 +100,7 @@ class VenueLayout {
             }),
             ControlButton.from8("buttonDone", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
             buttonSize, "Done", // text,
-            fontHeightInPixels, true, // hasBorder,
+            fontNameAndHeight, true, // hasBorder,
             DataBinding.fromTrue(), // isEnabled,
             () => universe.venueNext = venueThis // click
             ),
@@ -119,12 +120,13 @@ class VenueLayout {
         var containerSize = displaySize.clone().half();
         var margin = Coords.fromXY(1, 1).multiplyScalar(8);
         var fontHeightInPixels = 10; // hack
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var columnWidth = containerSize.x - margin.x * 2;
         var buttonHeight = fontHeightInPixels * 2;
         var buttonSize = Coords.fromXY((columnWidth - margin.x) / 2, buttonHeight);
         var listSize = Coords.fromXY(columnWidth, containerSize.y - buttonHeight * 2 - margin.y * 4);
         var listBuildables = ControlList.from8("listBuildables", Coords.fromXY(margin.x, margin.y * 2 + buttonSize.y), listSize, DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsAllowedOnTerrain(buildableDefnsAvailable, terrain)), DataBinding.fromGet((c) => c.name), //bindingForItemText,
-        fontHeightInPixels, new DataBinding(this, (c) => c.buildableDefnSelected, (c, v) => c.buildableDefnSelected = v), // bindingForItemSelected,
+        fontNameAndHeight, new DataBinding(this, (c) => c.buildableDefnSelected, (c, v) => c.buildableDefnSelected = v), // bindingForItemSelected,
         DataBinding.fromGet((c) => c.name) // bindingForItemValue
         );
         var buttonBuild_Clicked = () => {
@@ -147,16 +149,16 @@ class VenueLayout {
             new ControlLabel("labelFacilityToBuild", margin, listSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Facility to Build:"), // text
-            fontHeightInPixels),
+            fontNameAndHeight),
             listBuildables,
             ControlButton.from8("buttonBuild", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
             buttonSize, "Build", // text,
-            fontHeightInPixels, true, // hasBorder,
+            fontNameAndHeight, true, // hasBorder,
             DataBinding.fromContextAndGet(this, (c) => (c.buildableDefnSelected != null)), // isEnabled,
             buttonBuild_Clicked),
             ControlButton.from8("buttonCancel", Coords.fromXY(margin.x * 2 + buttonSize.x, containerSize.y - margin.y - buttonSize.y), //pos,
             buttonSize, "Cancel", // text,
-            fontHeightInPixels, true, // hasBorder,
+            fontNameAndHeight, true, // hasBorder,
             DataBinding.fromTrue(), // isEnabled,
             buttonCancel_Clicked)
         ]);
@@ -169,7 +171,8 @@ class VenueLayout {
         var containerMainSize = display.sizeInPixels.clone();
         var controlHeight = 14;
         var margin = 8;
-        var fontHeightInPixels = display.fontHeightInPixels;
+        var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var containerInnerSize = Coords.fromXY(100, 60);
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
         var container = ControlContainer.from4("containerMain", Coords.fromXY(0, 0), // pos
@@ -178,7 +181,7 @@ class VenueLayout {
         [
             ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Back", fontHeightInPixels, true, // hasBorder
+            "Back", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => // click
              {
@@ -209,6 +212,7 @@ class VenueLayout {
         var world = universe.world;
         var planet = this.modelParent;
         var fontHeightInPixels = margin;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var returnValue = ControlContainer.from4("containerViewControls", Coords.fromXY(margin, containerMainSize.y
             - margin
             - containerInnerSize.y), containerInnerSize, 
@@ -218,7 +222,7 @@ class VenueLayout {
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Building:"), fontHeightInPixels),
+            DataBinding.fromContext("Building:"), fontNameAndHeight),
             new ControlLabel("labelBuildable", Coords.fromXY(margin, controlHeight + margin), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size,
             false, // isTextCenteredHorizontally
@@ -229,7 +233,7 @@ class VenueLayout {
                     ? "[none]"
                     : buildable.defnName);
                 return returnValue;
-            }), fontHeightInPixels),
+            }), fontNameAndHeight),
             new ControlLabel("labelResourcesRequired", Coords.fromXY(margin, controlHeight * 2 + margin), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
@@ -240,7 +244,7 @@ class VenueLayout {
                     ? "-"
                     : buildable.defn(world).resourcesToBuild.toString());
                 return returnValue;
-            }), fontHeightInPixels),
+            }), fontNameAndHeight),
         ]);
         return returnValue;
     }
@@ -251,6 +255,7 @@ class VenueLayout {
         var column1PosX = margin * 8;
         controlHeight = 10;
         var fontHeightInPixels = controlHeight;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var size = containerInnerSize;
         var returnValue = ControlContainer.from4("containerTimeAndPlace", Coords.fromXY(margin, margin), size, 
         // children
@@ -259,47 +264,47 @@ class VenueLayout {
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(planet, (c) => c.name), fontHeightInPixels),
+            DataBinding.fromContextAndGet(planet, (c) => c.name), fontNameAndHeight),
             new ControlLabel("labelPopulation", Coords.fromXY(margin, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Population:"), fontHeightInPixels),
+            DataBinding.fromContext("Population:"), fontNameAndHeight),
             new ControlLabel("textPopulation", Coords.fromXY(column1PosX, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(planet, (c) => "" + c.demographics.population), fontHeightInPixels),
+            DataBinding.fromContextAndGet(planet, (c) => "" + c.demographics.population), fontNameAndHeight),
             new ControlLabel("labelIndustry", Coords.fromXY(margin, margin + controlHeight * 2), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Industry:"), fontHeightInPixels),
+            DataBinding.fromContext("Industry:"), fontNameAndHeight),
             new ControlLabel("textIndustry", Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(planet, (c) => "" + c.industryPerTurn(universe, world, faction)), fontHeightInPixels),
+            DataBinding.fromContextAndGet(planet, (c) => "" + c.industryPerTurn(universe, world, faction)), fontNameAndHeight),
             new ControlLabel("labelProsperity", Coords.fromXY(margin, margin + controlHeight * 3), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Prosperity:"), fontHeightInPixels),
+            DataBinding.fromContext("Prosperity:"), fontNameAndHeight),
             new ControlLabel("textProsperity", Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(planet, (c) => "" + c.prosperityPerTurn(universe, world, faction)), fontHeightInPixels),
+            DataBinding.fromContextAndGet(planet, (c) => "" + c.prosperityPerTurn(universe, world, faction)), fontNameAndHeight),
             new ControlLabel("labelResearch", Coords.fromXY(margin, margin + controlHeight * 4), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Research:"), fontHeightInPixels),
+            DataBinding.fromContext("Research:"), fontNameAndHeight),
             new ControlLabel("textResearch", Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(planet, (c) => "" + c.researchPerTurn(universe, world, faction)), fontHeightInPixels),
+            DataBinding.fromContextAndGet(planet, (c) => "" + c.researchPerTurn(universe, world, faction)), fontNameAndHeight),
         ]);
         return returnValue;
     }

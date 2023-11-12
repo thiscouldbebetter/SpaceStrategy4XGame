@@ -101,7 +101,7 @@ class LinkPortal extends Entity
 			false, // isTextCenteredHorizontally
 			false, // isTextCenteredVertically
 			DataBinding.fromContext("Link to " + this.starsystemNamesFromAndTo[1]),
-			10 // fontHeightInPixels
+			FontNameAndHeight.fromHeightInPixels(10)
 		);
 
 		return returnValue;

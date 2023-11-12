@@ -1,7 +1,11 @@
 "use strict";
-class Network2 //
- {
+class Network2 extends Place {
     constructor(name, nodes, links) {
+        super(name, Network2.name, // defnName
+        null, // parentName
+        null, // size
+        nodes // entities
+        );
         this.name = name;
         this.nodes = nodes;
         this.links = links;
@@ -59,7 +63,7 @@ class Network2 //
             nodesNotYetLinked.push(node);
         }
         var nodePositions = nodesNotYetLinked.map(x => x.locatable().loc.pos);
-        var boundsActual = new Box(Coords.create(), Coords.create()).ofPoints(nodePositions);
+        var boundsActual = Box.create().containPoints(nodePositions);
         var boundsDesired = new Box(Coords.create(), // center
         new Coords(1, 1, 1).multiplyScalar(2 * radiusMax) // size
         );
@@ -170,7 +174,10 @@ class Network2 //
         }
     }
     // drawing
-    draw(universe, camera) {
+    draw(universe, world, display) {
+        throw new Error("Not yet implemented!");
+    }
+    draw2(universe, camera) {
         var drawPos = this.drawPos;
         var drawPosFrom = this.drawPosFrom;
         var drawPosTo = this.drawPosTo;

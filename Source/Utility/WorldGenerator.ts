@@ -27,6 +27,7 @@ class WorldGenerator
 		var margin = 8;
 		var controlHeight = 12;
 		var fontHeightInPixels = 10;
+		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var buttonSize = Coords.fromXY(4, 1).multiplyScalar(controlHeight);
 		var labelSize = Coords.fromXY(4, 1).multiplyScalar(controlHeight);
 		var column1PosX = margin * 2 + labelSize.x;
@@ -41,7 +42,7 @@ class WorldGenerator
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext("World Generation Criteria:"), // text
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlLabel
@@ -52,7 +53,7 @@ class WorldGenerator
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext("Starsystems:"), // text
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlSelect
@@ -73,7 +74,7 @@ class WorldGenerator
 				),
 				DataBinding.fromGet( (c: number) => c ), // bindingForOptionValue
 				DataBinding.fromGet( (c: number) => "" + c ), // bindingForOptionText
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlLabel
@@ -84,7 +85,7 @@ class WorldGenerator
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext("Factions:"), // text
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlSelect
@@ -105,7 +106,7 @@ class WorldGenerator
 				),
 				DataBinding.fromGet( (c: number) => c ), // bindingForOptionValue
 				DataBinding.fromGet( (c: number) => "" + c ), // bindingForOptionText
-				fontHeightInPixels
+				fontNameAndHeight
 			),
 
 			new ControlButton
@@ -118,7 +119,7 @@ class WorldGenerator
 				),
 				buttonSize,
 				"Generate",
-				fontHeightInPixels,
+				fontNameAndHeight,
 				true, // hasBorder
 				DataBinding.fromTrue(), // isEnabled,
 				() => // click

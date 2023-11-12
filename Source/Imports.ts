@@ -129,6 +129,7 @@ import InputHelper = gf.InputHelper;
 // Media.
 
 import Font = gf.Font;
+import FontNameAndHeight = gf.FontNameAndHeight;
 import Image2 = gf.Image2;
 import MediaLibrary = gf.MediaLibrary;
 import Sound = gf.Sound;

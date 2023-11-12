@@ -54,6 +54,8 @@ var VisualText = gf.VisualText;
 var VisualAnimation = gf.VisualAnimation;
 // Geometry.
 var Camera = gf.Camera;
+var Collidable = gf.Collidable;
+var Collision = gf.Collision;
 var CollisionHelper = gf.CollisionHelper;
 var Coords = gf.Coords;
 var Disposition = gf.Disposition;

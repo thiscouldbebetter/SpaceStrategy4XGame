@@ -4,7 +4,7 @@ class ActivityDefn_Instances2 {
         this.MoveToTarget = new ActivityDefn("MoveToTarget", (uwpe) => {
             var ship = uwpe.entity;
             var activity = ship.actor().activity;
-            ship.moveTowardTarget(uwpe.universe, activity.targetEntity(), ship);
+            ship.moveTowardTarget(uwpe, activity.targetEntity(), ship);
         });
         this._All =
             [

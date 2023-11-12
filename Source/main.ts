@@ -2,7 +2,7 @@ function main()
 {
 	//localStorage.clear();
 
-	var displaySizeInPixels = new Coords(400, 300, 1);
+	var displaySizeInPixels = new Coords(800, 600, 1);
 
 	var display = new Display2D
 	(

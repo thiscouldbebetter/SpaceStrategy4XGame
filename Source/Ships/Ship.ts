@@ -25,6 +25,7 @@ class Ship extends Entity
 			name,
 			[
 				Actor.default(),
+				Collidable.default(),
 				new Controllable
 				(
 					Ship.toControl
@@ -89,6 +90,35 @@ class Ship extends Entity
 			this.propertyAdd(this._buildable);
 		}
 		return this._buildable;
+	}
+
+	collideWithEntity(uwpe: UniverseWorldPlaceEntities, target: Entity): void
+	{
+		var ship = this;
+		var universe = uwpe.universe;
+
+		var targetBodyDefn = BodyDefn.fromEntity(target);
+		var targetDefnName = targetBodyDefn.name;
+		if (targetDefnName == LinkPortal.name)
+		{
+			var portal = target as LinkPortal;
+			ship.linkPortalEnter(
+				(universe.world as WorldExtended).network, portal, ship
+			);
+		}
+		else if (targetDefnName == Planet.name)
+		{
+			var planet = target as Planet;
+			var venue = universe.venueCurrent as VenueStarsystem;
+			var starsystem = venue.starsystem;
+			ship.planetOrbitEnter(universe, starsystem, planet);
+		}
+		else if (targetDefnName == Ship.name)
+		{
+			var shipCollidable = ship.collidable();
+			var collision = Collision.fromEntitiesColliding(ship, target);
+			shipCollidable.collisionHandle(uwpe, collision);
+		}
 	}
 
 	devices(): Device[]
@@ -390,9 +420,9 @@ class Ship extends Entity
 		factionKnowledge.starsystemAdd(starsystemDestination, world);
 	}
 
-	moveTowardTarget(universe: Universe, target: Entity, ship: Ship): void
+	moveTowardTarget(uwpe: UniverseWorldPlaceEntities, target: Entity, ship: Ship): void
 	{
-		this.turnAndMove.moveShipTowardTarget(universe, ship, target);
+		this.turnAndMove.moveShipTowardTarget(uwpe, ship, target);
 	}
 
 	movementThroughLinkPerTurn(link: NetworkLink2): number

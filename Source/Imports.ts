@@ -76,6 +76,8 @@ import VisualAnimation = gf.VisualAnimation;
 // Geometry.
 
 import Camera = gf.Camera;
+import Collidable = gf.Collidable;
+import Collision = gf.Collision;
 import CollisionHelper = gf.CollisionHelper;
 import Coords = gf.Coords;
 import Disposition = gf.Disposition;

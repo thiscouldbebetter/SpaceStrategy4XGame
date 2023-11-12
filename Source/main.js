@@ -1,7 +1,7 @@
 "use strict";
 function main() {
     //localStorage.clear();
-    var displaySizeInPixels = new Coords(400, 300, 1);
+    var displaySizeInPixels = new Coords(800, 600, 1);
     var display = new Display2D([displaySizeInPixels], new FontNameAndHeight("Font", 10), Color.byName("Blue"), Color.fromSystemColor("rgb(16, 0, 32)"), // colorFore, colorBack
     null // ?
     );

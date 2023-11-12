@@ -12,7 +12,7 @@ class TurnAndMove
 
 	constructor()
 	{
-		this.distanceLeftThisMove = 0;
+		this.distanceLeftThisMove = null;
 		this.distancePerMove = 0;
 		this.energyPerMove = null;
 		this.energyThisTurn = 0;
@@ -39,7 +39,7 @@ class TurnAndMove
 
 	moveShipTowardTarget
 	(
-		universe: Universe, ship: Ship, target: Entity
+		uwpe: UniverseWorldPlaceEntities, ship: Ship, target: Entity
 	): void
 	{
 		if (this.distanceLeftThisMove == null)
@@ -76,6 +76,8 @@ class TurnAndMove
 				: distanceMaxPerTick
 			);
 
+			var universe = uwpe.universe;
+
 			if (distanceToTarget < distanceToMoveThisTick)
 			{
 				shipPos.overwriteWith(targetPos);
@@ -84,24 +86,14 @@ class TurnAndMove
 				this.distanceLeftThisMove = null;
 				ship.actor().activity.doNothing();
 				universe.inputHelper.isEnabled = true;
-				ship.order().complete();
 
-				var targetBodyDefn = BodyDefn.fromEntity(target);
-				var targetDefnName = targetBodyDefn.name;
-				if (targetDefnName == LinkPortal.name)
+				var shipOrder = ship.order();
+				if (shipOrder != null) // hack
 				{
-					var portal = target as LinkPortal;
-					ship.linkPortalEnter(
-						(universe.world as WorldExtended).network, portal, ship
-					);
+					shipOrder.complete();
 				}
-				else if (targetDefnName == Planet.name)
-				{
-					var planet = target as Planet;
-					var venue = universe.venueCurrent as VenueStarsystem;
-					var starsystem = venue.starsystem;
-					ship.planetOrbitEnter(universe, starsystem, planet);
-				}
+
+				ship.collideWithEntity(uwpe, target);
 			}
 			else
 			{

@@ -1,7 +1,7 @@
 "use strict";
 class TurnAndMove {
     constructor() {
-        this.distanceLeftThisMove = 0;
+        this.distanceLeftThisMove = null;
         this.distancePerMove = 0;
         this.energyPerMove = null;
         this.energyThisTurn = 0;
@@ -20,7 +20,7 @@ class TurnAndMove {
     energyForMoveDeduct() {
         this.energyThisTurn -= this.energyPerMove;
     }
-    moveShipTowardTarget(universe, ship, target) {
+    moveShipTowardTarget(uwpe, ship, target) {
         if (this.distanceLeftThisMove == null) {
             if (this.energyThisTurn >= this.energyPerMove) {
                 this.energyThisTurn -= this.energyPerMove;
@@ -38,25 +38,19 @@ class TurnAndMove {
             var distanceToMoveThisTick = (this.distanceLeftThisMove < distanceMaxPerTick
                 ? this.distanceLeftThisMove
                 : distanceMaxPerTick);
+            var universe = uwpe.universe;
             if (distanceToTarget < distanceToMoveThisTick) {
                 shipPos.overwriteWith(targetPos);
                 // hack
                 this.distanceLeftThisMove = null;
                 ship.actor().activity.doNothing();
                 universe.inputHelper.isEnabled = true;
-                ship.order().complete();
-                var targetBodyDefn = BodyDefn.fromEntity(target);
-                var targetDefnName = targetBodyDefn.name;
-                if (targetDefnName == LinkPortal.name) {
-                    var portal = target;
-                    ship.linkPortalEnter(universe.world.network, portal, ship);
+                var shipOrder = ship.order();
+                if (shipOrder != null) // hack
+                 {
+                    shipOrder.complete();
                 }
-                else if (targetDefnName == Planet.name) {
-                    var planet = target;
-                    var venue = universe.venueCurrent;
-                    var starsystem = venue.starsystem;
-                    ship.planetOrbitEnter(universe, starsystem, planet);
-                }
+                ship.collideWithEntity(uwpe, target);
             }
             else {
                 var directionToTarget = displacementToTarget.divideScalar(distanceToTarget);

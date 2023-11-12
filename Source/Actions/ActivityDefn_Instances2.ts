@@ -17,7 +17,7 @@ class ActivityDefn_Instances2
 				var activity = ship.actor().activity;
 				ship.moveTowardTarget
 				(
-					uwpe.universe, activity.targetEntity(), ship
+					uwpe, activity.targetEntity(), ship
 				);
 			}
 		);

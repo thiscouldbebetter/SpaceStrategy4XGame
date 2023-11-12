@@ -3,6 +3,7 @@ class Ship extends Entity {
     constructor(name, defn, pos, factionName, items) {
         super(name, [
             Actor.default(),
+            Collidable.default(),
             new Controllable(Ship.toControl),
             defn,
             ItemHolder.fromItems(items),
@@ -36,6 +37,27 @@ class Ship extends Entity {
             this.propertyAdd(this._buildable);
         }
         return this._buildable;
+    }
+    collideWithEntity(uwpe, target) {
+        var ship = this;
+        var universe = uwpe.universe;
+        var targetBodyDefn = BodyDefn.fromEntity(target);
+        var targetDefnName = targetBodyDefn.name;
+        if (targetDefnName == LinkPortal.name) {
+            var portal = target;
+            ship.linkPortalEnter(universe.world.network, portal, ship);
+        }
+        else if (targetDefnName == Planet.name) {
+            var planet = target;
+            var venue = universe.venueCurrent;
+            var starsystem = venue.starsystem;
+            ship.planetOrbitEnter(universe, starsystem, planet);
+        }
+        else if (targetDefnName == Ship.name) {
+            var shipCollidable = ship.collidable();
+            var collision = Collision.fromEntitiesColliding(ship, target);
+            shipCollidable.collisionHandle(uwpe, collision);
+        }
     }
     devices() {
         var items = this.itemHolder().items;
@@ -212,8 +234,8 @@ class Ship extends Entity {
         var factionKnowledge = shipFaction.knowledge;
         factionKnowledge.starsystemAdd(starsystemDestination, world);
     }
-    moveTowardTarget(universe, target, ship) {
-        this.turnAndMove.moveShipTowardTarget(universe, ship, target);
+    moveTowardTarget(uwpe, target, ship) {
+        this.turnAndMove.moveShipTowardTarget(uwpe, ship, target);
     }
     movementThroughLinkPerTurn(link) {
         return 8; // todo

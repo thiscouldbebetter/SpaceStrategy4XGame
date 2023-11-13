@@ -1,0 +1,73 @@
+Ascendancy Technology Tree
+==========================
+
+Below is a list of researchable technologies in the game _Ascendancy_, adapted from a list found at the URL "https://b-sting.nl/ascendancy/research-list.html".  All original names should probably be considered copyrighted by The Logic Factory, or its heirs.  Fair use!
+
+Invention						Prerequisites											Cost	Allows Construction of											Prerequisite of
+---------						-------------											----	----------------------											---------------
+Orbital Structures 				none													50 		Shipyard, Orbital Shield										Interplanetary Exploration
+Interplanetary Exploration		Orbital Structures										50		Ships - Small and Medium, Proton Shaver							Spacetime Surfing
+Tonklin Diary					none													50		Tonklin Motor, Tonklin Frequency Analyzer						Spectral Analysis, Superconductivity, Spacetime Surfing
+Xenobiology						none													90		Xeno Archaeological Dig											Environmental Encapsulation, Hyperlogic
+Environmental Encapsulation		Xenobiology												50		Colony Base, Ion Wrap, Colonizer								Advanced Chemistry, Planetary Replenishment
+Spectral Analysis				Tonklin Diary											120		Fourier Missiles												Advanced Interferometry, Molecular Explosives
+Superconductivity				Tonklin Diary											100		Surface Shield, Mass Barrage Gun								none
+Spacetime Surfing				Tonklin Diary, Interplantary Exploration				90		Star Lane Drive													Power Conversion, Gravity Control, Momentum Deconservation
+Advanced Chemistry				Environmental Encapsulation								100		Artificial Hypdroponifer, Ion Banger							none
+Advanced Interferometry			Spectral Analysis										90		Subspace Phase Array, Invasion Module							Cloaking, Hyperlogic
+Cloaking						Advanced Interferometry									1800	Surface Cloaker, Orbital Cloaker, Cloaker (ship)				none
+Power Conversion				Spacetime Surfing										100		Orbital Missile Base, Subatomic Scoop,							Molecular Explosives, Strong Force Weakening
+Gravity Control					Spacetime Surfing										560		Quantum Singularity Launcher									Light Bending, Gravimetrics
+Hyperlogic						Advanced Interferometry, Xenobiology					1120	Research Campus, Intellect Scrambler, X-Ray Megaglasses			Level Logic, Advanced Exploration, Diplomatics
+Momentum Deconservation			Spacetime Surfing										280		Concussion Shield												Momentum Reflection
+Diplomatics						Hyperlogic												2000	Observation Installation, Alien Hospitality						Advanced Fun Techniques
+Molecular Explosives			Spectral Analysis, Power Conversion						720		Phase Bomb, Mass Condensor										Positron Guidance
+Strong Force Weakening			Power Conversion										980		Molecular Disassociator											none
+Level Logic						Hyperlogic												3300	Scientist Takeover												Thought Analysis, Muratroyd Hypothesis
+Light Bending					Gravity Control											2560	Wave Scatterer, Replenisher										EM Field Coupling
+Gravimetrics					Gravity Control											1320	Orbital Docks, Molecular Tie Down								Mass Phasing, Gravimetric Combustion
+EM Field Coupling				Light Bending											4200	Electromagnetic Pulser, Aural Cloud Constructor					Hyperradiation
+Mass Phasing					Gravimetrics											2200	Gravimetric Catapult											Advanced Exploration
+Thought Analysis				Level Logic												7700	Engineering Retreat												Teleinfiltration, Snooping
+Advanced Fun Techniques			Diplomatics												5580	Logic Factory, Endless Party									none
+Positron Guidance				Molecular Explosives									2400	Industrial Megafacility, Positron Bouncer						Subatomics, Gravimetric Combustion
+Subatomics						Positron Guidance										3300	Hyperpower Plant, Quark Express									Plasmatics, Momentum Reflection
+Advanced Exploration			Mass Phasing, Hyperlogic								4140	Star Lane Hyperdrive, Large Ship Hull							Large Scale Construction
+Gravimetric Combustion			Gravimetrics, Positron Guidance							2600	Graviton Projector, Toroidal Blaster							Planetary Replenishment, Large Scale Construction
+Plasmatics						Subatomics												5700	Plasmatron, Plasma Coupler										Superstring Compression, Starlane Anatomy
+Planetary Replenishment			Gravimetric Combustion, Environmental Encapsulation		2560	Habitat, Terraforming											Ecosphere Phase Control
+Momentum Reflection				Subatomics, Momentum Deconservation						4420	Gravity Distorter												Hyperradiation, Matter Duplication
+Large Scale Construction		Gravimetric Combustion, Advanced Exploration			4200	Metroplex, Gigantic Ship Hull									Advanced Planetary Armaments
+Hyperradiation					Momentum Reflection, EM Field Coupling					5040	Hyperwave Tympanum, Van Creeg Hypersplicer						Energy Redirection, Stasis Field Science, Hyperwave Technology
+Superstring Compression			Plasmatics												3640	Hyperfuel														Muratroyd Hypothesis, Matter Duplication
+Muratroyd Hypothesis			Superstring Compression, Level Logic					5940	Short Range Orbital Whopper, Murgatroyd's Knower, Gyro-Inductor	Scientific Sorcery, Energy Focusing
+Energy Redirection				Hyperradiation											4400	Deactotron, Recaller, Sacrificial Orb							Starlane Anatomy, Coherent Photonics
+Stasis Field Science			Hyperradiation											3600	Tractor Beam, Brunswik Dissipator, Tractor Beam					none
+Matter Duplication				Superstring Compression, Momentum Reflection			5040	Cloning Plant, Disarmer											Microbotics, Inertia Control
+Scientific Sorcery				Mergatroyd Hypothesis									5400	Smart Bomb, Containment Device									Fergnatz's Last Theorem
+Starlane Anatomy				Energy Redirection, Plasmatics							3450	Lane Blocker, Lane Destabilizer									Inertia Control, Hyperdrive Technology
+Coherent Photonics				Energy Redirection										7000	Ueberlaser, Cannibalizer										Energy Focusing, Advanced Planetary Armaments
+Microbotics						Matter Duplication										9020	Automation														Self Modifying Structure
+Energy Focusing					Coherent Photonics, Muratroyd Hypothesis				5220	Myrmidonic Carbonizer, Accutron									Repulsion Beam Technology, Hyperwave Technology
+Inertial Control				Starlane Anatomy, Matter Duplication					10080	Inertia Negator													Nanodeflection
+Advanced Planetary Armaments	Coherent Photonics, Large Scale Construction			12240	Surface Mega Shield, Long Range Orbital Whopper					none
+Fergnatz's Last Theorem			Scientific Sorcery										10880	Fergnatz Lens, Gizmogrifier										Megagraph Theory, Nanoenergons, Hypergeometry
+Hypergeometry					Fergnatz's Last Theorem									12920	Hypersphere Driver, Hyperswapper								Ecosphere Phase Control
+Repulsion Beam Tech				Energy Focusing											7040	Fleet Disperser													none
+Hyperwave Technology			Energy Focusing, Hyperradiation							7260	Orbital Mega Shield, Hyperwave Nullifier						Nanoenergons, Teleinfiltration, Hyperwave Emission Control
+Megagraph Theory				Fergnatz's Last Theorem									11760	Internet														Action at a Distance, Accel. Energy Replenishment
+Nanoenergons					Fergnatz's Last Theorem, Hyperwave Technology			12580	Nanowave Decoupling Net, Nanotwirler							Nanofocusing, Nanopropulsion
+Ecosphere Phase Control			Hypergeometry, Planetary Replenishment					9240	Fertilization Plant												none
+Teleinfiltration				Hyperwave Technology, Thought Analysis					8580	Shield Blaster, Specialty Blaster								Action at a Distance, Doom Mechanization, Hyperdrive Technology
+Hyperwave Emission Control		Hyperwave Technology									9460	Backfirer														Doom Mechanization, Snooping
+Hyperdrive Technology			Starlane Anatomy, Teleinfiltration						8800	Lane Magnetron													Nanopropulsion
+Action At A Distance			Teleinfiltration, Megagraph Theory						12960	Moving Part Exploiter											none
+Doom Mechanization				Teleinfiltration, Hyperwave Emission Control			37600	Disintegrator, Self-Destructotron								none
+Nanofocusing					Nanoenergons											22080	Nanomanipulator													Self Modifying Structures, Nanodeflection, Illusory Machinizations
+Snooping						Thought Analysis, Hyperwave Emmision Control			11520	Lane Endoscope													none
+Self Modifying Structures		Nanofocusing, Microbotics								12000	Remote Repair Facility											none
+Nanopropulsion					Nanoenergons, Hyperdrive Technology						17600	Nanowave Space Bender											Accel. Energy Replenishment, Gravity Flow Control
+Nanodeflection					Nanofocusing, Inertia Control							21600	Nanoshell														none
+Accel Energy Replenishment		Megagraph Theory, Nanopropulsion						12480	Lush Growth Bomb												Illusory Machinisations
+Gravity Flow Control			Nanopropulsion											12720	Gravimetric Condensor											none
+Illusory Machinations			Accel. Energy Replenishment, Nanofocusing				33000	Invulnerablizer													none

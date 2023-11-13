@@ -1,0 +1,28 @@
+Ascendancy - Species
+====================
+
+Adapted from "https://b-sting.nl/ascendancy/species.html".
+
+Name		Special Ability						Days to Charge	Starting Planet
+----		---------------						--------------	---------------
+Minions		Ignore planetary surface sheilds.			-		Enormous Supermineral
+Snovemdomas	All ships have double strength hulls.			-		Enormous Primordial
+Orfa		Can build on black planet spaces.			-		Large Primordial
+Kambuchka	See home stars of all species.				-		Enormous Chapel
+Hanshaks	Diplomacy with all species from start.			-		Large Eden
+Fludentri	Repair all ships' damage. 				60		Enormous Congenial
+Baliflids	Force all aliens to make peace.				100		Large Special
+Swaparamans	Double all ships power.					62		Large Chapel
+Frutmaka	Warp alien ships out of owned systems.			77		Enormous Mineral
+Shevar		Wipe out power in alien ships in occupied systems.	90		Large Mineral
+Govorom		Convert least populated world to "rich" type.		150		Large Cornucopia
+Ungooma		Bump all ships backward down starlanes.			70		Large Congenial
+Dubtaks		Steal any technology owned by two or more races.	63		Enormous Cathedral
+Capelons	Make all colonies invincible for one day.		66		Enormous Special
+Mebes		Increase the maximum population of all colonies.	72		Enormous Tycoon
+Oculons		Can see all star lanes from start.			- 		Large Cathedral
+Arbryls		Block all star lanes entering colonized systems.	100		Enormous Eden
+Marmosians	Make aliens dislike all enemies.			100		Large Supermineral
+Chronomyst	Starlane travel twice as fast.				-		Medium Eden
+Chamachies	Achieve any discovery in one day.			89		Large Cathedral	
+Nimbuloids	Double the industry on every planet for a day.		68		Large Tycoon

@@ -1,0 +1,149 @@
+Ascendancy - Ships
+==================
+
+Adapted from documentation found at the URLs:
+
+	https://b-sting.nl/ascendancy/ships-hulls.html
+	https://b-sting.nl/ascendancy/ships-generator.html
+
+
+Hull size	Number of items
+---------	---------------
+Small		5
+Medium		10
+Large		15
+Enormous	25
+
+
+Power Generators
+----------------
+
+"Strength", as described by the original author, seems to be a score to compare the "total value" of different ships to each other.
+
+It seems that the table on the original page is missing a column named "Power Created".  Perhaps this is the same as "Strength", as in the subsequent table for engines?
+
+Name			Strength	Cost
+----------------	--------	----
+Proton Shaver		2		20
+Subatomic Scoop		4		35
+Quark Express		6		60
+Van Creeg Hypersplicer	8		80
+Nanotwirler		10		100
+
+
+Engines
+-------
+
+Per the original author, range is expressed in multiples of the smallest visible grid cells.
+
+
+Name 			Power Use	Strength	Range	Cost
+----			---------	--------	-----	----
+Tonklin Motor		1		2		2	10
+Ion Banger		1		4		4	30
+Graviton Projector	3		6		6	40
+Inertia Negator		1		6		6	20
+Nanowave Space Bender	5		10		10	80
+
+
+Scanners
+--------
+
+Name				Strength	Range 	Cost
+----				--------	-----	----
+Tonklin Frequency Analyzer	1		25	20
+Subspace Phase Array		1		50	40
+Aural Cloud Constructor		2		75	60
+Hyperwave Tympanum		3		100	80
+Murgatroyd's Knower		4		200	100
+Nanowave Decoupling Net		5		1000	200
+
+
+Shields
+-------
+
+Some weapon-versus-shield examples:
+
+	If the target has 3 powered Ion Wraps (3*1=3 strengh) and is hit with a plasmatron (4 damage/hit), the target's hull takes 1 damage (4-3=1).
+
+	If the target has 2 powered Hyperwave Nullifiers (2*4=8 strength) and is hit with 2 Hypersphere Driver shots (10 damage/hit),
+	the target's hull takes 4 damage (2*(10-8)=4).
+	
+	A ship with 3 powered Nanoshells (3*5=15 strength) cannot take any damage from weapons, except the Myrmidonic Carbonizer.
+
+Name			Power Use	Strength	Cost
+----			---------	--------	----
+Ion Wrap		2		1		10
+Concussion Shield	4		2		30
+Wave Scatterer		none		1		50
+Deactotron		4		3		50
+Hyperwave Nullifier	8		4		100
+Nanoshell		6		5		200
+
+
+Weapons
+-------
+
+Name				Power Use	Uses/Day	Strength	Range	Cost
+----				---------	--------	--------	-----	----
+Mass Barrage Gun		1		1		1		25	10
+Fourier Missiles		1		1		2		40	20
+Quantum Singularity Launcher	2		1		4		25	30
+Molecular Disassociator		2		1		4		50	40
+Electromagnetic Pulser		1		5		1		50	50
+Plasmatron			2		1		4		100	50
+Ueberlaser			3		2		6		50	70
+Fergnatz Lens			0		2		4		35	50
+Hypersphere Driver		6		2		10		75	100
+Nanomanipulator			6		3		13		50	100
+
+
+Specials
+--------
+
+Name			Description 					Power Use	Range	Cost	Notes
+----			-----------					---------	-----	----	-----
+Lane Blocker		Fires a weak blocker into a starlane.		3		40	30	-
+Molecular Tie Down	Depletes target ship's engines for 1 day.	7		25	20	-
+Intellect Scrambler	Resets crew's veteran bonus.			7		25	20	-
+Brunswik Dissipator	Depletes target ships's generators for 1 day.	15		25	100	-
+Recaller		Teleports host ship to its home system.		7		-	40	-
+Disarmer		Destroys random weapon on target ship.		5		40	30	-
+Smart Bomb		Damages all enemy ships in system by 6.		7		-	30	Destroyed by first use.
+Gravity Distorter	Pushes all ships away from host ship.		4		- 	20	-
+Fleet Disperser		Pushes all ships away from a targeted ship.	5		100	30	-
+X-Ray Megaglasses	View the contents of any scannable ship.	0		50	100	-
+Cloaker			Hidess host ship's contents from scanners.	0		-	30	Allows heavily-armed ships in alien systems without causing war.
+Star Lane Drive		Allows travelling through star lanes.		0		-	25	More drives allow faster travel.
+Star Lane Hyperdrive	Allows faster travel through red star lanes.	0		-	50	Obviates normal Star Lane Drive.
+Positron Bouncer	Pushes a targeted ship away from user.		2		60	10	-
+Gravimetric Catapult	Moves using ship to opposite side of sun.	3		-	15	-
+Myrmidonic Carbonizer	Deals 20 damage to target, plus 5 splash?	4		40	70	Most powerful weapon against ships. No effect on planets.
+Containment Device	Destroys colonizers/invaders on targeted ship.	5		40	15	"Info thanks to Micky."
+Shield Blaster		Depletes target ship's shields for 1 day.	7		25	30	-
+Backfirer		All weapons aboard target ship hurt target?	10		25	60	"The more weapons the target has, the more damage it will take."
+Lane Destabilizer	All ships in targeted star lane jump to end?	7		25	40	Destroyed by first use.
+Tractor Beam		Pulls one ship toward your ship.		3		100	30	-
+Cannibalizer		Damages hull to replenish energy.		0		-	20	-
+Moving Part Exploiter	Target's equipment breaks down explosively.	10		25	60	More advanced equipment causes more damage.
+Hyperswapper		Host and target ship switch positions.		3		100	20	-
+Gravimetric Condensor	All ships in system pulled towards the sun.	5		-	30	-
+Accutron		Increases range of user's weapons for one day.	7		-	60	-
+Remote Repair Facility	Repairs damage on using ship.			10		-	70	-
+Sacrificial Orb		Transfers damage from target to user.		3		50	20	Best coupled with the remote repair facility.
+Lane Magnetron		Allows instant travel through a star lane.	10		25	50	Destroyed by first use.
+Disintegrator		Destroys the target ship.			25		25	150	Destroyed by first use.
+Lane Endoscope		Allows scanning through star lanes.		10		25	20	-
+Toroidal Blaster	Boosts engine performance, but damages them.	0		-	20	-
+Gizmogrifier		Destroys the first major device it locks onto.	4		40	30	-
+Replenisher		Recharges all weapons.				8		-	60	"A must for your heavy battleships."
+Specialty Blaster	Destroys a device on target chosen by user.	5		40	30	-
+Gyro-Inductor		Produces power on leaving orbit.		0		-	20	-
+Plasma Coupler		Power transferred from user to target ship.	4		50	20	-
+Invulnerablizer		User indestructible for 1 day.			20		-	60	Destroyed by first use.
+Phase Bomb		Destroys structures on planet surface.		4		25	40	Destroyed by first use.
+Colonizer		Creates a colony on an unoccupied planet.	5		-	35	Deployed from orbit. Destroyed by use.
+Self-Destructotron	Destroys user and damages all ships nearby.	0		-	50	Destroyed by first use.
+Invasion Module		Takes control of alien planet.			10		-	70	Deployed from orbit. Each destroys 1 surface shield, and vice-versa.
+Mass Condensor		Pulls nearby ships towards target ship.		8		100	50	-
+Hyperfuel		Replenishes power levels.			0		-	20	Destroyed by first use.

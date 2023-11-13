@@ -1,0 +1,77 @@
+Ascendancy Planetary Structures
+-------------------------------
+
+Adapted from "https://b-sting.nl/ascendancy/planets-orbital.html".
+
+Some additional notes on planetary production from that site:
+
+	To calculate the score represented in the game, you need to know that the growth is not linear.
+	Instead all values in the game can be calculated as follows:
+
+	Total industry is
+		the sum of industry produced by structures,
+		multiplied by 1.5 if a Hyperpower Plant is present,
+		rounded down to a number we'll call the "pre-exponentiation industry",
+		raised to the power 0.85,
+		then rounded to nearest integer.
+
+	Total prosperity is:
+		the sum of prosperity produced by structures,
+		multiplied by 1.5 if a Fertilization Plant present,
+		plus 25% of pre-exponentation industry if Endless Party is active,
+		rounded down as for industry,
+		raised to the power ^ 0.85,
+		rounded to the nearest integer,
+		minus 25% of total population, rounded down
+
+	Total research is:
+		the sum of research produced by structures
+		multiplied by 1.5 if an Internet is present,
+		plus 25% of pre-exponentiation industry if Scentist takeover is active,
+
+	[The original author credited Markus Ramikin for helping figure out these values and formulas.]
+
+
+Name				Description						Cost
+----				-----------						----
+
+Factory				Produces 1 industry.					30
+Agriplot			Produces 1 prosperity.					30
+Laboratory			Produces 1 research.					50
+Habitat				Increases maximum population by 3.			160
+Metroplex			Adds 2 prosperity, 1 industry, 1 research, 2 max pop.	200
+Industrial Megafacility		Produces 2 industry.					110
+Artificial Hydroponifer		Produces 2 prosperity.					100
+Research Campus			Produces 2 research.					160
+Logic Factory			Produces 1 prosperity, 1 research.			80
+Engineering Retreat		Produces 1 industry, 1 research.			80
+Surface Cloaker			Hides all surface structures from other races.		40
+Hyperpower Plant		Adds 50% to total industry.  One per planet.		200
+Fertilization Plant		Adds 50% to total prosperity.  One per planet.		200
+Internet			Adds 50% to total research.  One per planet.		250
+Cloning Plant			Population grows 2 at a time.				250
+Observation Installation	Lets you scan the contents of alien space ships.	40
+Tractor Beam			Can pull ships toward the planet and into orbit.	50
+Surface Shield			Destroys 1 Invader Module and is destroyed.		100
+Surface Mega Shield		Destroys 2 Invader Modules and is destroyed.		180
+Outpost				Increases maximum population by 1.			120
+Terraforming			Turns black square into a white square.			50
+Xeno Archeological Dig		Extracts a technology from alien ruins.			50
+Transport Tubes			Crosses black squares to access usable ones.		10
+Alien Hospitality		Industry diverted to add to rating with non-enemies.	-
+Endless Party			25% of industry converted to prosperity; rest lost.	-
+Scientist Takeover		25% of industry converted to research; rest lost.	-
+Lush Growth Bomb		Increases Maximum Population of a planet by 10.		200
+Automation			Frees the population working at a structure.		[?]
+
+Shipyard			Constructs ships.					240
+Ship				A ship.							20[?]
+Orbital Docks			Repairs and refits ships.				170
+Orbital Cloaker			Hides orbital structures from enemies.			40
+Orbital Shield			Protects orbital structures, stops enemies orbiting.	60
+				Takes 15 damage to destroy.  Cannot be repaired.
+Orbital Mega Shield		A more effective version of the Orbital Shield.		120
+				Takes 35 damage to destroy.  Cannot be repaired.
+Orbital Missle Base		Allows the planet to attack nearby ships, twice/turn.	60
+Short-Range Orbital Whopper	More powerful than the Missile Base, but one shot.	90
+Long-Range Orbital Whopper	More range, power, shots than Short-Range version.	180

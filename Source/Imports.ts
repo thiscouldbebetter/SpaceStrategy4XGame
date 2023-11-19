@@ -151,6 +151,7 @@ import EntityBuilder = gf.EntityBuilder;
 import EntityPropertyBase = gf.EntityPropertyBase;
 import Namable = gf.Namable;
 import Place = gf.Place;
+import PlaceDefn = gf.PlaceDefn;
 import Universe = gf.Universe;
 import UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 import Venue = gf.Venue;

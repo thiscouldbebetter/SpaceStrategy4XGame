@@ -1,12 +1,23 @@
 "use strict";
-class Projectile {
-    constructor(shipParent) {
-        this.shipParent = shipParent;
+class Projectile extends Entity {
+    constructor(name, defn, pos, shipFiredFrom) {
+        super(name, [
+            Actor.default(),
+            Collidable.default(),
+            defn,
+            Killable.fromIntegrityMax(1),
+            Locatable.fromPos(pos)
+        ]);
+        this.defn = defn;
+        this.shipFiredFrom = shipFiredFrom;
     }
-    static bodyDefnBuild() {
-        var scaleFactor = 10;
-        var bodyDefn = new BodyDefn("Projectile", Coords.fromXY(1, 1).multiplyScalar(scaleFactor), // size
-        new VisualCircle(3, Color.byName("Yellow"), null, null));
-        return bodyDefn;
+    // instance methods
+    collideWithEntity(uwpe, target) {
+        var collidable = this.collidable();
+        var collision = Collision.fromEntitiesColliding(this, target);
+        collidable.collisionHandle(uwpe, collision);
+    }
+    faction(world) {
+        return this.shipFiredFrom.faction(world);
     }
 }

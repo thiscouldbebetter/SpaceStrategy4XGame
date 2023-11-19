@@ -47,24 +47,21 @@ class OrderDefn_Instances {
         var ship = entity;
         var device = ship.deviceSelected;
         if (device != null) {
-            var projectileEntity = device.projectileEntity; // hack - Replace with dedicated Projectile class.
             var venue = universe.venueCurrent;
             var starsystem = venue.starsystem;
-            if (projectileEntity == null) {
-                projectileEntity = new Ship(ship.name + "_projectile", Projectile.bodyDefnBuild(), ship.locatable().loc.pos.clone(), ship.factionName, null // devices
+            var projectile = device.projectile;
+            if (projectile == null) {
+                projectile = new Projectile(ship.name + "_projectile", Ship.bodyDefnBuild(null), // hack
+                ship.locatable().loc.pos.clone(), ship // shipFiredFrom
                 );
-                var turnAndMove = projectileEntity.turnAndMove;
-                turnAndMove.energyPerMove = 0;
-                turnAndMove.distancePerMove = 1000;
-                projectileEntity.actor().activity =
+                projectile.actor().activity =
                     Activity.fromDefnNameAndTargetEntity("MoveToTarget", order.targetEntity);
-                starsystem.shipAdd(projectileEntity, world);
-                device.projectileEntity = projectileEntity;
+                starsystem.entityToSpawnAdd(projectile);
+                device.projectile = projectile;
             }
             else {
-                ArrayHelper.remove(starsystem.ships, projectileEntity);
-                device.projectileEntity = null;
-                var projectilePos = projectileEntity.locatable().loc.pos;
+                device.projectile = null;
+                var projectilePos = projectile.locatable().loc.pos;
                 var targetPos = order.targetEntity.locatable().loc.pos;
                 if (projectilePos.equals(targetPos)) {
                     order.isComplete = true;

@@ -100,7 +100,11 @@ class Starsystem extends Place {
     planetByName(planetName) {
         return this.planetsByName.get(planetName);
     }
+    projectiles() {
+        return this.entities.filter(x => x.constructor.name == Projectile.name);
+    }
     shipAdd(shipToAdd, world) {
+        this.entityToSpawnAdd(shipToAdd);
         this.ships.push(shipToAdd);
         shipToAdd.locatable().loc.placeName =
             Starsystem.name + ":" + this.name;
@@ -151,11 +155,13 @@ class Starsystem extends Place {
         var camera = this.camera2(universe);
         var uwpe = new UniverseWorldPlaceEntities(universe, world, this, null, null);
         this.visualGrid.draw(uwpe, display);
+        var projectiles = this.projectiles();
         var bodiesByType = [
             [this.star],
             this.linkPortals,
             this.planets,
             this.ships,
+            projectiles
         ];
         var bodyToSortDrawPos = Coords.create();
         var bodySortedDrawPos = Coords.create();
@@ -195,86 +201,4 @@ class Starsystem extends Place {
         bodyPos.overwriteWith(this.posSaved);
         this.visualElevationStem.draw(uwpe, display);
     }
-}
-// Visuals.
-class VisualElevationStem {
-    constructor() {
-        // Helper variables.
-        this.drawPosTip = Coords.create();
-        this.drawPosPlane = Coords.create();
-    }
-    draw(uwpe, display) {
-        var universe = uwpe.universe;
-        var starsystem = universe.venueCurrent.starsystem;
-        if (starsystem == null) {
-            return;
-        }
-        var camera = starsystem.camera2(universe);
-        var entity = uwpe.entity;
-        var drawablePosWorld = entity.locatable().loc.pos;
-        var drawPosTip = camera.coordsTransformWorldToView(this.drawPosTip.overwriteWith(drawablePosWorld));
-        var drawPosPlane = camera.coordsTransformWorldToView(this.drawPosPlane.overwriteWith(drawablePosWorld).clearZ());
-        var colorName = (drawablePosWorld.z < 0 ? "Green" : "Red");
-        display.drawLine(drawPosTip, drawPosPlane, Color.byName(colorName), null);
-    }
-    // Clonable.
-    clone() { return this; }
-    overwriteWith(other) { return this; }
-    // Transformable.
-    transform(transform) { return this; }
-}
-class VisualGrid {
-    constructor(gridDimensionInCells, gridCellDimensionInPixels, color) {
-        this.gridSizeInCells =
-            Coords.fromXY(1, 1).multiplyScalar(gridDimensionInCells);
-        this.gridCellSizeInPixels =
-            Coords.fromXY(1, 1).multiplyScalar(gridCellDimensionInPixels);
-        this.color = color;
-        this.gridSizeInPixels =
-            this.gridSizeInCells.clone().multiply(this.gridCellSizeInPixels);
-        this.gridSizeInCellsHalf = this.gridSizeInCells.clone().half();
-        this.gridSizeInPixelsHalf = this.gridSizeInPixels.clone().half();
-        // Helper variables.
-        this.displacement = Coords.create();
-        this.drawPosFrom = Coords.create();
-        this.drawPosTo = Coords.create();
-        this.multiplier = Coords.create();
-        this.multiplierTimesI = Coords.create();
-    }
-    draw(uwpe, display) {
-        var universe = uwpe.universe;
-        var starsystem = universe.venueCurrent.starsystem;
-        if (starsystem == null) {
-            return;
-        }
-        var camera = starsystem.camera2(universe);
-        var drawPosFrom = this.drawPosFrom;
-        var drawPosTo = this.drawPosTo;
-        var multiplier = this.multiplier;
-        var multiplierTimesI = this.multiplierTimesI;
-        for (var d = 0; d < 2; d++) {
-            multiplier.clear();
-            multiplier.dimensionSet(d, this.gridCellSizeInPixels.dimensionGet(d));
-            for (var i = 0 - this.gridSizeInCellsHalf.x; i <= this.gridSizeInCellsHalf.x; i++) {
-                drawPosFrom.overwriteWith(this.gridSizeInPixelsHalf).multiplyScalar(-1);
-                drawPosTo.overwriteWith(this.gridSizeInPixelsHalf);
-                drawPosFrom.dimensionSet(d, 0);
-                drawPosTo.dimensionSet(d, 0);
-                multiplierTimesI.overwriteWith(multiplier).multiplyScalar(i);
-                drawPosFrom.add(multiplierTimesI);
-                drawPosTo.add(multiplierTimesI);
-                camera.coordsTransformWorldToView(drawPosFrom);
-                camera.coordsTransformWorldToView(drawPosTo);
-                if (drawPosFrom.z >= 0 && drawPosTo.z >= 0) {
-                    // todo - Real clipping.
-                    display.drawLine(drawPosFrom, drawPosTo, this.color, null);
-                }
-            }
-        }
-    }
-    // Clonable.
-    clone() { return this; }
-    overwriteWith(other) { return this; }
-    // Transformable.
-    transform(transform) { return this; }
 }

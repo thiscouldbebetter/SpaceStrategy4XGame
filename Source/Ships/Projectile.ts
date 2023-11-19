@@ -1,24 +1,46 @@
 
-class Projectile
+class Projectile extends Entity
 {
-	shipParent: Ship;
+	defn: BodyDefn;
+	shipFiredFrom: Ship;
 
-	constructor(shipParent: Ship)
-	{
-		this.shipParent = shipParent;
-	}
+	_visual: VisualBase;
 
-	static bodyDefnBuild()
+	constructor
+	(
+		name: string,
+		defn: BodyDefn,
+		pos: Coords,
+		shipFiredFrom: Ship
+	)
 	{
-		var scaleFactor = 10;
-		var bodyDefn = new BodyDefn
+		super
 		(
-			"Projectile",
-			Coords.fromXY(1, 1).multiplyScalar(scaleFactor), // size
-			new VisualCircle(3, Color.byName("Yellow"), null, null)
+			name,
+			[
+				Actor.default(),
+				Collidable.default(),
+				defn,
+				Killable.fromIntegrityMax(1),
+				Locatable.fromPos(pos)
+			]
 		);
 
-		return bodyDefn;
+		this.defn = defn;
+		this.shipFiredFrom = shipFiredFrom;
+	}
+
+	// instance methods
+
+	collideWithEntity(uwpe: UniverseWorldPlaceEntities, target: Entity): void
+	{
+		var collidable = this.collidable();
+		var collision = Collision.fromEntitiesColliding(this, target);
+		collidable.collisionHandle(uwpe, collision);
+	}
+
+	faction(world: WorldExtended): Faction
+	{
+		return this.shipFiredFrom.faction(world);
 	}
 }
-

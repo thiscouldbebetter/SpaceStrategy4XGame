@@ -53,77 +53,152 @@ class TurnAndMove
 
 		if (this.distanceLeftThisMove > 0)
 		{
-			var shipLoc = ship.locatable().loc;
-			var shipPos = shipLoc.pos;
-			var targetLoc = target.locatable().loc;
-			var targetPos = targetLoc.pos;
-
-			var displacementToTarget = this._displacement.overwriteWith
-			(
-				targetPos
-			).subtract
-			(
-				shipPos
-			);
-			var distanceToTarget = displacementToTarget.magnitude();
-
+			var shipLocatable = ship.locatable();
+			var targetLocatable = target.locatable();
 			var distanceMaxPerTick = 3; // hack
+			var distanceToTarget =
+				shipLocatable.approachOtherWithAccelerationAndSpeedMaxAndReturnDistance
+				(
+					targetLocatable,
+					distanceMaxPerTick, // accel
+					distanceMaxPerTick // speedMax
+				);
 
-			var distanceToMoveThisTick =
-			(
-				this.distanceLeftThisMove < distanceMaxPerTick
-				? this.distanceLeftThisMove
-				: distanceMaxPerTick
-			);
-
-			var universe = uwpe.universe;
-
-			if (distanceToTarget < distanceToMoveThisTick)
+			if (distanceToTarget < this.distanceLeftThisMove)
 			{
-				shipPos.overwriteWith(targetPos);
-
-				// hack
 				this.distanceLeftThisMove = null;
 				ship.actor().activity.doNothing();
-				universe.inputHelper.isEnabled = true;
 
 				var shipOrder = ship.order();
 				if (shipOrder != null) // hack
 				{
 					shipOrder.complete();
 				}
-
-				ship.collideWithEntity(uwpe, target);
-			}
-			else
-			{
-				var directionToTarget = displacementToTarget.divideScalar
-				(
-					distanceToTarget
-				);
-
-				var shipVel = shipLoc.vel;
-				shipVel.overwriteWith
-				(
-					directionToTarget
-				).multiplyScalar
-				(
-					distanceToMoveThisTick
-				);
-
-				shipPos.add(shipVel);
-
-				this.distanceLeftThisMove -= distanceToMoveThisTick;
-				if (this.distanceLeftThisMove <= 0)
-				{
-					// hack
-					this.distanceLeftThisMove = null;
-					ship.actor().activity.doNothing();
-					universe.inputHelper.isEnabled = true;
-				}
 			}
 		}
 	}
+
+	moveShipTowardTarget_Old
+	(
+		uwpe: UniverseWorldPlaceEntities, ship: Ship, target: Entity
+	): void
+	{
+		if (this.distanceLeftThisMove == null)
+		{
+			if (this.energyThisTurn >= this.energyPerMove)
+			{
+				this.energyThisTurn -= this.energyPerMove;
+				this.distanceLeftThisMove = this.distancePerMove;
+			}
+		}
+
+		if (this.distanceLeftThisMove > 0)
+		{
+			this.moveShipTowardTarget2(uwpe, ship, target);
+		}
+	}
+
+	moveShipTowardTarget2
+	(
+		uwpe: UniverseWorldPlaceEntities,
+		ship: Ship,
+		target: Entity
+	): void
+	{
+		var shipLoc = ship.locatable().loc;
+		var shipPos = shipLoc.pos;
+		var targetLoc = target.locatable().loc;
+		var targetPos = targetLoc.pos;
+
+		var displacementToTarget = this._displacement.overwriteWith
+		(
+			targetPos
+		).subtract
+		(
+			shipPos
+		);
+		var distanceToTarget = displacementToTarget.magnitude();
+
+		var distanceMaxPerTick = 3; // hack
+
+		var distanceToMoveThisTick =
+		(
+			this.distanceLeftThisMove < distanceMaxPerTick
+			? this.distanceLeftThisMove
+			: distanceMaxPerTick
+		);
+
+		this.moveShipTowardTarget3
+		(
+			uwpe,
+			displacementToTarget,
+			distanceToTarget,
+			distanceToMoveThisTick,
+			ship,
+			target
+		);
+	}
+
+	moveShipTowardTarget3
+	(
+		uwpe: UniverseWorldPlaceEntities,
+		displacementToTarget: Coords,
+		distanceToTarget: number,
+		distanceToMoveThisTick: number,
+		ship: Ship,
+		target: Entity
+	)
+	{
+		var universe = uwpe.universe;
+		var shipLoc = ship.locatable().loc;
+		var shipPos = shipLoc.pos;
+
+		if (distanceToTarget <= distanceToMoveThisTick)
+		{
+			var targetPos = target.locatable().loc.pos;
+			shipPos.overwriteWith(targetPos);
+
+			// hack
+			this.distanceLeftThisMove = null;
+			ship.actor().activity.doNothing();
+			universe.inputHelper.isEnabled = true;
+
+			var shipOrder = ship.order();
+			if (shipOrder != null) // hack
+			{
+				shipOrder.complete();
+			}
+
+			ship.collideWithEntity(uwpe, target);
+		}
+		else
+		{
+			var directionToTarget = displacementToTarget.divideScalar
+			(
+				distanceToTarget
+			);
+
+			var shipAccel = shipLoc.accel;
+			shipAccel.overwriteWith
+			(
+				directionToTarget
+			).multiplyScalar
+			(
+				distanceToMoveThisTick
+			);
+
+			this.distanceLeftThisMove -= distanceToMoveThisTick;
+			if (this.distanceLeftThisMove <= 0)
+			{
+				// hack
+				this.distanceLeftThisMove = null;
+				ship.actor().activity.doNothing();
+				universe.inputHelper.isEnabled = true;
+			}
+		}
+	}
+
+
 
 	toStringDescription(): string
 	{

@@ -63,14 +63,20 @@ class VenueStarsystem {
         if (this.cursor != null) {
             this.cursor.constrainable().constrain(uwpe.entitySet(this.cursor));
         }
+        /*
         var ships = this.starsystem.ships;
-        for (var i = 0; i < ships.length; i++) {
+        for (var i = 0; i < ships.length; i++)
+        {
             var ship = ships[i];
+
             var activity = ship.actor().activity;
-            if (activity != null) {
+            if (activity != null)
+            {
                 activity.perform(uwpe.entitySet(ship));
             }
         }
+        */
+        this.starsystem.updateForTimerTick(uwpe);
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
         this.updateForTimerTick_Input(universe);

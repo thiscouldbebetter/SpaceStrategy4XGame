@@ -26,10 +26,7 @@ class Ship extends Entity
 			[
 				Actor.default(),
 				Collidable.default(),
-				new Controllable
-				(
-					Ship.toControl
-				),
+				new Controllable(Ship.toControl),
 				defn,
 				ItemHolder.fromItems(items),
 				Killable.fromIntegrityMax(10),

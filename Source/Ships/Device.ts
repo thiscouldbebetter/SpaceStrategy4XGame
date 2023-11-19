@@ -8,7 +8,7 @@ class Device extends Item
 	shieldingThisTurn: number;
 	usesThisTurn: number;
 
-	projectileEntity: Entity;
+	projectile: Projectile;
 
 	targetEntity: Entity;
 

@@ -142,6 +142,7 @@ class VenueStarsystem implements Venue
 			);
 		}
 
+		/*
 		var ships = this.starsystem.ships;
 		for (var i = 0; i < ships.length; i++)
 		{
@@ -153,6 +154,8 @@ class VenueStarsystem implements Venue
 				activity.perform(uwpe.entitySet(ship));
 			}
 		}
+		*/
+		this.starsystem.updateForTimerTick(uwpe);
 
 		this.draw(universe);
 

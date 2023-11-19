@@ -16,9 +16,10 @@ class TechnologyGraph
 
 	static demo(): TechnologyGraph
 	{
-		var t = (n: string, r: number, p: string[], a: string[]) => new Technology(n, r, p, a);
+		var t = (n: string, r: number, p: string[], buildableDefnsAllowed: BuildableDefn[]) =>
+			new Technology(n, r, p, buildableDefnsAllowed.map(x => x.name));
 
-		var techNameUnattainable = "[unattainable]";
+		var bds = new BuildableDefnsBasic();
 
 		var returnValue = new TechnologyGraph
 		(
@@ -31,51 +32,46 @@ class TechnologyGraph
 					0, // research
 					[], // prerequisites
 					[
-						"Factory", "Laboratory", "Plantation",
+						bds.SurfaceFactory, bds.SurfaceLaboratory, bds.SurfacePlantation,
 					]
 				),
 
-				t("Biology, Basic", 			50, [ "Default" ], [ "Colonizer Hub" ] ),
-				t("Drives, Basic", 				50, [ "Default" ], [ "Ship Drive, Basic" ] ),
-				t("Generators, Basic", 			50, [ "Default" ], [ "Ship Generator, Basic" ] ),
-				t("Sensors, Basic", 			50, [ "Default" ], [ "Ship Sensors, Basic" ] ),
-				t("Shields, Basic", 			50, [ "Default" ], [ "Ship Shield, Basic" ] ),
-				t("Space Structures, Basic",	50, [ "Default" ], [ "Shipyard", "Ship Hull, Small" ] ),
-				t("Weapons, Basic", 			50, [ "Default" ], [ "Ship Weapon, Basic" ] ),
+				t("Biology, Basic", 					50, [ "Default" ], 													[ bds.ShipItemColonyBuilder ] ),
+				t("Drives, Basic", 						50, [ "Default" ], 													[ bds.ShipDriveBasic ] ),
+				t("Generators, Basic", 					50, [ "Default" ], 													[ bds.ShipGeneratorBasic ] ),
+				t("Sensors, Basic", 					50, [ "Default" ], 													[ bds.ShipSensorsBasic ] ),
+				t("Shields, Basic", 					50, [ "Default" ], 													[ bds.ShipShieldBasic ] ),
+				t("Space Structures, Basic",			50, [ "Default" ], 													[ bds.Shipyard, bds.ShipHullSmall ] ),
+				t("Weapons, Basic", 					50, [ "Default" ], 													[ bds.ShipWeaponBasic ] ),
 
-				t("Biology, Intermediate", 				400, [ "Biology, Basic" ], 									[ "Plantation, Advanced" ] ),
-				t("Drives, Intermediate", 				400, [ "Drives, Basic" ], 									[ "Ship Drive, Intermediate" ] ),
-				t("Generators, Intermediate", 			400, [ "Space Structures, Basic", "Generators, Basic" ],	[ "Ship Generator, Intermediate" ] ),
-				t("Industry, Intermediate", 			400, [ "Generators, Basic" ], 								[ "Factory, Advanced" ] ),
-				t("Research, Intermediate", 			400, [ "Biology, Basic" ],									[ "Laboratory, Advanced" ] ),
-				t("Sensors, Intermediate", 				400, [ "Sensors, Basic" ], 									[ "Ship Sensors, Intermediate" ] ),
-				t("Shields, Intermediate", 				400, [ "Space Structures, Basic", "Shields, Basic" ],	 	[ "Orbital Shield, Basic", "Ship Shield, Intermediate", "Surface Shield, Basic" ] ),
-				t("Space Structures, Intermediate", 	400, [ "Space Structures, Basic" ], 						[ "Orbital Docks", "Ship Hull, Medium" ] ),
-				t("Weapons, Intermediate", 				400, [ "Space Structures, Basic", "Weapons, Basic" ], 		[ "Drop Ship", "Orbital Weapon, Basic", "Ship Weapon, Intermediate" ] ),
-				t("Weapons, Nonlethal", 				400, [ "Space Structures, Basic", "Weapons, Basic" ], 		[ "Orbital Disrupter", "Ship Disrupter" ] ),
+				t("Biology, Intermediate", 				400, [ "Biology, Basic" ], 											[ bds.SurfacePlantationAdvanced ] ),
+				t("Drives, Intermediate", 				400, [ "Drives, Basic" ], 											[ bds.ShipDriveIntermediate ] ),
+				t("Generators, Intermediate", 			400, [ "Space Structures, Basic", "Generators, Basic" ],			[ bds.ShipGeneratorIntermediate ] ),
+				t("Industry, Intermediate", 			400, [ "Generators, Basic" ], 										[ bds.SurfaceFactoryAdvanced ] ),
+				t("Research, Intermediate", 			400, [ "Biology, Basic" ],											[ bds.SurfaceLaboratoryAdvanced ] ),
+				t("Sensors, Intermediate", 				400, [ "Sensors, Basic" ], 											[ bds.ShipSensorsIntermediate ] ),
+				t("Shields, Intermediate", 				400, [ "Space Structures, Basic", "Shields, Basic" ],	 			[ bds.OrbitalShield, bds.ShipShieldIntermediate, bds.SurfaceShield ] ),
+				t("Space Structures, Intermediate", 	400, [ "Space Structures, Basic" ], 								[ bds.OrbitalDocks, bds.ShipHullMedium ] ),
+				t("Weapons, Intermediate", 				400, [ "Space Structures, Basic", "Weapons, Basic" ], 				[ bds.ShipItemDropShip, bds.OrbitalWeaponBasic, bds.ShipWeaponIntermediate ] ),
+				// t("Weapons, Nonlethal", 				400, [ "Space Structures, Basic", "Weapons, Basic" ], 				[ bds.OrbitalDisrupter, bds.ShipDisrupter ] ),
 
-				t("Diplomatics, Advanced",			3200, [ "Biology, Intermediate" ], 									[ "Planetwide Diplomacy Focus" ] ),
-				t("Drives, Advanced",				3200, [ "Drives, Intermediate" ], 									[ "Ship Drive, Advanced" ] ),
-				t("Generators, Advanced",			3200, [ "Generators, Intermediate", "Industry, Intermediate" ],		[ "Ship Generator, Advanced" ] ),
-				t("Research, Advanced",				3200, [ "Research, Intermediate" ],									[ "Research Internetwork" ] ),
-				t("Sensors, Advanced",				3200, [ "Sensors, Intermediate" ], 									[ "Ship Sensors, Intermediate" ] ),
-				t("Shields, Advanced",				3200, [ "Shields, Intermediate" ], 									[ "Ship Shield, Advanced" ] ),
-				t("Shields, Cloaking",				3200, [ "Shields, Intermediate" ], 									[ "Orbital Cloak", "Ship Cloak", "Surface Cloak" ] ),
-				t("Space Structures, Advanced",		3200, [ "Space Structures, Intermediate" ], 						[ "Ship Hull, Medium" ] ),
-				t("Weapons, Advanced",				3200, [ "Weapons, Intermediate", "Weapons, Nonlethal" ], 			[ "Ship Weapon, Advanced" ] ),
+				t("Diplomatics, Advanced",				3200, [ "Biology, Intermediate" ], 									[ bds.PlanetwideFocusDiplomacy ] ),
+				t("Drives, Advanced",					3200, [ "Drives, Intermediate" ], 									[ bds.ShipDriveAdvanced ] ),
+				t("Generators, Advanced",				3200, [ "Generators, Intermediate", "Industry, Intermediate" ],		[ bds.ShipGeneratorAdvanced ] ),
+				t("Research, Advanced",					3200, [ "Research, Intermediate" ],									[ bds.SurfaceLaboratoryMultiplier ] ),
+				t("Sensors, Advanced",					3200, [ "Sensors, Intermediate" ], 									[ bds.ShipSensorsAdvanced ] ),
+				t("Shields, Advanced",					3200, [ "Shields, Intermediate" ], 									[ bds.ShipShieldAdvanced ] ),
+				t("Shields, Cloaking",					3200, [ "Shields, Intermediate" ], 									[ bds.OrbitalCloak, bds.ShipItemCloak, bds.SurfaceCloak ] ),
+				t("Space Structures, Advanced",			3200, [ "Space Structures, Intermediate" ], 						[ bds.ShipHullMedium ] ),
+				t("Weapons, Advanced",					3200, [ "Weapons, Intermediate", "Weapons, Nonlethal" ], 			[ bds.ShipWeaponAdvanced ] ),
 
-				t("Drives, Supreme",				12800, [ "Drives, Advanced" ],				[ "Ship Drive, Supreme" ] ),
-				t("Generators, Supreme",			12800, [ "Generators, Advanced" ],			[ "Ship Generator, Supreme" ] ),
-				t("Research, Supreme",				12800, [ "Generators, Advanced" ],			[ "Planetwide Research Focus" ] ),
-				t("Sensors, Supreme",				12800, [ "Sensors, Advanced" ],				[ "Ship Sensors, Supreme" ] ),
-				t("Shields, Supreme",				12800, [ "Shields, Advanced" ],				[ "Ship Shield, Supreme" ] ),
-				t("Space Structures, Supreme", 		12800, [ "Space Structures, Advanced" ],	[ "Ship Hull, Medium" ] ),
-				t("Weapons, Supreme",				12800, [ "Weapons, Advanced" ], 			[ "Ship Weapon, Supreme" ] ),
-
-				// todo
-
-				t("Teleportation",			99999, [ techNameUnattainable ], [ "todo" ] ),
-
+				t("Drives, Supreme",					12800, [ "Drives, Advanced" ],										[ bds.ShipDriveSupreme ] ),
+				t("Generators, Supreme",				12800, [ "Generators, Advanced" ],									[ bds.ShipGeneratorSupreme ] ),
+				t("Research, Supreme",					12800, [ "Generators, Advanced" ],									[ bds.PlanetwideFocusResearch ] ),
+				t("Sensors, Supreme",					12800, [ "Sensors, Advanced" ],										[ bds.ShipSensorsSupreme ] ),
+				t("Shields, Supreme",					12800, [ "Shields, Advanced" ],										[ bds.ShipShieldSupreme ] ),
+				t("Space Structures, Supreme", 			12800, [ "Space Structures, Advanced" ],							[ bds.ShipHullMedium ] ),
+				t("Weapons, Supreme",					12800, [ "Weapons, Advanced" ], 									[ bds.ShipWeaponSupreme ] ),
 			]
 		);
 

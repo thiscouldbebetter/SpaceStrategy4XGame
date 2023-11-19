@@ -35,10 +35,11 @@ class Starsystem extends Place {
         var numberOfPlanetsRange = numberOfPlanetsMax - numberOfPlanetsMin;
         var numberOfPlanets = numberOfPlanetsMin + Math.floor(Math.random() * numberOfPlanetsRange);
         var bodyDefnPlanet = Planet.bodyDefnPlanet();
+        var planetType = PlanetType.Instances().Default;
         var planets = new Array();
         for (var i = 0; i < numberOfPlanets; i++) {
             var planetName = name + " " + (i + 1);
-            var planet = new Planet(planetName, bodyDefnPlanet, 
+            var planet = new Planet(planetName, planetType, bodyDefnPlanet, 
             // pos
             Coords.create().randomize(universe.randomizer).multiply(size).multiplyScalar(2).subtract(size), null, // factionName
             new PlanetDemographics(0), new PlanetIndustry(), // 0, null),
@@ -59,7 +60,7 @@ class Starsystem extends Place {
     factionsPresent(world) {
         var factionsPresentByName = new Map();
         this.planets.forEach(x => {
-            var factionName = x.factionName;
+            var factionName = x.factionable().factionName;
             if (factionName != null) {
                 if (factionsPresentByName.has(factionName) == false) {
                     var faction = world.factionByName(factionName);
@@ -68,7 +69,7 @@ class Starsystem extends Place {
             }
         });
         this.ships.forEach(x => {
-            var factionName = x.factionName;
+            var factionName = x.factionable().factionName;
             if (factionName != null) {
                 if (factionsPresentByName.has(factionName) == false) {
                     var faction = world.factionByName(factionName);
@@ -78,6 +79,9 @@ class Starsystem extends Place {
         });
         var factionsPresent = Array.from(factionsPresentByName.keys()).map(factionName => factionsPresentByName.get(factionName));
         return factionsPresent;
+    }
+    factionSetByName(factionName) {
+        this.factionName = factionName;
     }
     linkPortalAdd(linkPortalToAdd) {
         this.linkPortals.push(linkPortalToAdd);

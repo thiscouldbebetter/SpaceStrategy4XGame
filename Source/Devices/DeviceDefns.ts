@@ -39,15 +39,15 @@ class DeviceDefns
 			(uwpe: UniverseWorldPlaceEntities) => // updateForTurn
 			{
 				var ship = uwpe.entity as Ship;
-				var shipTurnAndMove = ship.turnAndMove;
-				shipTurnAndMove.distancePerMove += 50;
-				shipTurnAndMove.energyPerMove += 1;
+				var shipTurnTaker = ship.turnTaker();
+				shipTurnTaker.distancePerMove += 50;
+				shipTurnTaker.energyPerMove += 1;
 			},
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
 				var ship = uwpe.entity as Ship;
-				var shipTurnAndMove = ship.turnAndMove;
-				shipTurnAndMove.energyForMoveDeduct();
+				var shipTurnTaker = ship.turnTaker();
+				shipTurnTaker.energyForMoveDeduct();
 			}
 		);
 
@@ -62,7 +62,8 @@ class DeviceDefns
 			(uwpe: UniverseWorldPlaceEntities) =>  // updateForTurn
 			{
 				var ship = uwpe.entity as Ship;
-				ship.turnAndMove.energyThisTurn += 10;
+				var shipTurnTaker = ship.turnTaker();
+				shipTurnTaker.energyThisTurn += 10;
 			},
 			(uwpe: UniverseWorldPlaceEntities) =>  // use
 			{
@@ -88,26 +89,26 @@ class DeviceDefns
 
 				if (device.isActive)
 				{
-					var turnAndMove = ship.turnAndMove;
-					turnAndMove.energyThisTurn -= 1;
-					turnAndMove.shieldingThisTurn += 1;
+					var shipTurnTaker = ship.turnTaker();
+					shipTurnTaker.energyThisTurn -= 1;
+					shipTurnTaker.shieldingThisTurn += 1;
 				}
 			},
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
 				var ship = uwpe.entity as Ship;
 				var device = Device.fromEntity(uwpe.entity2);
-				var turnAndMove = ship.turnAndMove;
+				var shipTurnTaker = ship.turnTaker();
 
 				if (device.isActive)
 				{
 					device.isActive = false;
-					turnAndMove.energyThisTurn += 1;
+					shipTurnTaker.energyThisTurn += 1;
 				}
 				else
 				{
 					device.isActive = true;
-					turnAndMove.energyThisTurn -= 1;
+					shipTurnTaker.energyThisTurn -= 1;
 				}
 			}
 		);

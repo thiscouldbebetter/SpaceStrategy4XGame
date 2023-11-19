@@ -38,14 +38,14 @@ class Faction {
     }
     planetAdd(planet) {
         this.planets.push(planet);
-        planet.factionName = this.name;
+        planet.factionable().factionSet(this);
     }
     planetHome(world) {
         return this.starsystemHome(world).planets.find(x => x.name == this.homePlanetName);
     }
     shipAdd(ship) {
         this.ships.push(ship);
-        ship.factionName = this.name;
+        ship.factionable().factionSet(this);
     }
     starsystemHome(world) {
         return world.network.nodeByName(this.homeStarsystemName).starsystem;

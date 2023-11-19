@@ -94,6 +94,8 @@ class Starsystem extends Place
 		);
 		var bodyDefnPlanet = Planet.bodyDefnPlanet();
 
+		var planetType = PlanetType.Instances().Default;
+
 		var planets = new Array<Planet>();
 		for (var i = 0; i < numberOfPlanets; i++)
 		{
@@ -102,6 +104,7 @@ class Starsystem extends Place
 			var planet = new Planet
 			(
 				planetName,
+				planetType,
 				bodyDefnPlanet,
 				// pos
 				Coords.create().randomize(universe.randomizer).multiply
@@ -153,7 +156,7 @@ class Starsystem extends Place
 		(
 			x =>
 			{
-				var factionName = x.factionName;
+				var factionName = x.factionable().factionName;
 				if (factionName != null)
 				{
 					if (factionsPresentByName.has(factionName) == false)
@@ -169,7 +172,7 @@ class Starsystem extends Place
 		(
 			x =>
 			{
-				var factionName = x.factionName;
+				var factionName = x.factionable().factionName;
 				if (factionName != null)
 				{
 					if (factionsPresentByName.has(factionName) == false)
@@ -190,6 +193,11 @@ class Starsystem extends Place
 		);
 
 		return factionsPresent;
+	}
+
+	factionSetByName(factionName: string): void
+	{
+		this.factionName = factionName;
 	}
 
 	linkPortalAdd(linkPortalToAdd: LinkPortal)

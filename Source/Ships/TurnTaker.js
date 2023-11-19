@@ -1,5 +1,5 @@
 "use strict";
-class TurnAndMove {
+class TurnTaker {
     constructor() {
         this.distanceLeftThisMove = null;
         this.distancePerMove = 0;
@@ -21,31 +21,6 @@ class TurnAndMove {
         this.energyThisTurn -= this.energyPerMove;
     }
     moveShipTowardTarget(uwpe, ship, target) {
-        if (this.distanceLeftThisMove == null) {
-            if (this.energyThisTurn >= this.energyPerMove) {
-                this.energyThisTurn -= this.energyPerMove;
-                this.distanceLeftThisMove = this.distancePerMove;
-            }
-        }
-        if (this.distanceLeftThisMove > 0) {
-            var shipLocatable = ship.locatable();
-            var targetLocatable = target.locatable();
-            var distanceMaxPerTick = 3; // hack
-            var distanceToTarget = shipLocatable.approachOtherWithAccelerationAndSpeedMaxAndReturnDistance(targetLocatable, distanceMaxPerTick, // accel
-            distanceMaxPerTick // speedMax
-            );
-            if (distanceToTarget < this.distanceLeftThisMove) {
-                this.distanceLeftThisMove = null;
-                ship.actor().activity.doNothing();
-                var shipOrder = ship.order();
-                if (shipOrder != null) // hack
-                 {
-                    shipOrder.complete();
-                }
-            }
-        }
-    }
-    moveShipTowardTarget_Old(uwpe, ship, target) {
         if (this.distanceLeftThisMove == null) {
             if (this.energyThisTurn >= this.energyPerMove) {
                 this.energyThisTurn -= this.energyPerMove;
@@ -103,4 +78,10 @@ class TurnAndMove {
     toStringDescription() {
         return "Energy: " + this.energyThisTurn;
     }
+    // EntityProperty.
+    finalize(uwpe) { }
+    initialize(uwpe) { }
+    updateForTimerTick(uwpe) { }
+    // Equatable.
+    equals(other) { return false; }
 }

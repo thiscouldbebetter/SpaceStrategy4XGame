@@ -2,10 +2,8 @@
 class Ship extends Entity
 {
 	defn: BodyDefn;
-	factionName: string;
 
 	deviceSelected: Device;
-	turnAndMove: TurnAndMove;
 
 	_devicesDrives: Device[];
 	_devicesUsable: Device[];
@@ -25,6 +23,7 @@ class Ship extends Entity
 			name,
 			[
 				Actor.default(),
+				defn,
 				Collidable.fromCollider
 				(
 					Sphere.fromRadiusAndCenter
@@ -33,18 +32,16 @@ class Ship extends Entity
 					)
 				),
 				new Controllable(Ship.toControl),
-				defn,
+				new Factionable(factionName),
 				ItemHolder.fromItems(items),
 				Killable.fromIntegrityMax(10),
 				Locatable.fromPos(pos),
-				new Orderable()
+				new Orderable(),
+				new TurnTaker()
 			]
 		);
 
 		this.defn = defn;
-		this.factionName = factionName;
-
-		this.turnAndMove = new TurnAndMove();
 
 		this.buildable(); // hack
 	}
@@ -143,14 +140,12 @@ class Ship extends Entity
 
 	faction(world: WorldExtended): Faction
 	{
-		var returnValue =
-		(
-			this.factionName == null
-			? null
-			: world.factionByName(this.factionName)
-		);
+		return this.factionable().faction(world);
+	}
 
-		return returnValue;
+	factionable(): Factionable
+	{
+		return this.propertyByName(Factionable.name) as Factionable;
 	}
 
 	integrityCurrentOverMax(): string
@@ -187,7 +182,7 @@ class Ship extends Entity
 
 	nameWithFaction(): string
 	{
-		return this.factionName + this.name;
+		return this.factionable().factionName + this.name;
 	}
 
 	order(): Order
@@ -224,11 +219,12 @@ class Ship extends Entity
 		var wasColonizationSuccessful = false;
 
 		var planetBeingOrbited = this.planet(world);
+		var planetBeingOrbitedFaction = planetBeingOrbited.factionable().faction(world);
 
 		if
 		(
 			planetBeingOrbited != null
-			&& planetBeingOrbited.factionName == null
+			&& planetBeingOrbitedFaction == null
 		)
 		{
 			var itemHolder = this.itemHolder();
@@ -255,18 +251,22 @@ class Ship extends Entity
 
 				planetBeingOrbited.buildableEntityBuild(entityForHub);
 
-				planetBeingOrbited.factionName = this.factionName;
+				var shipFactionName = this.factionable().factionName;
+
+				planetBeingOrbited.factionable().factionSetByName(shipFactionName);
 				var shipFaction = this.faction(world);
 				shipFaction.planetAdd(planetBeingOrbited);
 
 				wasColonizationSuccessful = true;
 
-				var starsystem = this.planet(world).starsystem(world);
-				if (starsystem.factionName == null)
+				var planet = this.planet(world);
+				var starsystem = planet.starsystem(world);
+				var starsystemFactionName = starsystem.factionName;
+				if (starsystemFactionName == null)
 				{
-					starsystem.factionName = this.factionName;
+					starsystem.factionName = shipFactionName;
 				}
-				else if (starsystem.factionName != this.factionName)
+				else if (starsystemFactionName != shipFactionName)
 				{
 					// todo - Diplomatic incident.
 				}
@@ -296,7 +296,7 @@ class Ship extends Entity
 			this.name
 			+ " - " + this.locatable().loc.placeName
 			+ " - Integrity: " + this.integrityCurrentOverMax()
-			+ ", " + this.turnAndMove.toStringDescription();
+			+ ", " + this.turnTaker().toStringDescription();
 		
 		var order = this.order();
 		var orderAsString = (order == null ? "Doing nothing." : order.toStringDescription());
@@ -425,7 +425,8 @@ class Ship extends Entity
 
 	moveTowardTarget(uwpe: UniverseWorldPlaceEntities, target: Entity, ship: Ship): void
 	{
-		this.turnAndMove.moveShipTowardTarget(uwpe, ship, target);
+		var turnTaker = this.turnTaker();
+		turnTaker.moveShipTowardTarget(uwpe, ship, target);
 	}
 
 	movementThroughLinkPerTurn(link: NetworkLink2): number
@@ -610,7 +611,7 @@ class Ship extends Entity
 					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
-						ship, (c: Ship) => "" + c.turnAndMove.energyThisTurn
+						ship, (c: Ship) => "" + c.turnTaker().energyThisTurn
 					),
 					fontNameAndHeight
 				),
@@ -744,7 +745,7 @@ class Ship extends Entity
 
 	updateForTurn(universe: Universe, world: World, faction: Faction): void
 	{
-		this.turnAndMove.clear();
+		this.turnTaker().clear();
 
 		var devices = this.devices();
 		var uwpe = new UniverseWorldPlaceEntities
@@ -758,6 +759,13 @@ class Ship extends Entity
 			uwpe.entity2Set(device.toEntity(uwpe));
 			device.updateForTurn(uwpe);
 		}
+	}
+
+	// TurnTaker.
+
+	turnTaker(): TurnTaker
+	{
+		return this.propertyByName(TurnTaker.name) as TurnTaker;
 	}
 
 	// drawable

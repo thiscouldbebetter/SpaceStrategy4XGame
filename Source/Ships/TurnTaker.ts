@@ -1,5 +1,5 @@
 
-class TurnAndMove
+class TurnTaker implements EntityProperty<TurnTaker>
 {
 	distanceLeftThisMove: number;
 	distancePerMove: number;
@@ -8,7 +8,7 @@ class TurnAndMove
 	initiativeThisTurn: number;
 	shieldingThisTurn: number;
 
-	_displacement: Coords;
+	private _displacement: Coords;
 
 	constructor()
 	{
@@ -38,47 +38,6 @@ class TurnAndMove
 	}
 
 	moveShipTowardTarget
-	(
-		uwpe: UniverseWorldPlaceEntities, ship: Ship, target: Entity
-	): void
-	{
-		if (this.distanceLeftThisMove == null)
-		{
-			if (this.energyThisTurn >= this.energyPerMove)
-			{
-				this.energyThisTurn -= this.energyPerMove;
-				this.distanceLeftThisMove = this.distancePerMove;
-			}
-		}
-
-		if (this.distanceLeftThisMove > 0)
-		{
-			var shipLocatable = ship.locatable();
-			var targetLocatable = target.locatable();
-			var distanceMaxPerTick = 3; // hack
-			var distanceToTarget =
-				shipLocatable.approachOtherWithAccelerationAndSpeedMaxAndReturnDistance
-				(
-					targetLocatable,
-					distanceMaxPerTick, // accel
-					distanceMaxPerTick // speedMax
-				);
-
-			if (distanceToTarget < this.distanceLeftThisMove)
-			{
-				this.distanceLeftThisMove = null;
-				ship.actor().activity.doNothing();
-
-				var shipOrder = ship.order();
-				if (shipOrder != null) // hack
-				{
-					shipOrder.complete();
-				}
-			}
-		}
-	}
-
-	moveShipTowardTarget_Old
 	(
 		uwpe: UniverseWorldPlaceEntities, ship: Ship, target: Entity
 	): void
@@ -204,4 +163,14 @@ class TurnAndMove
 	{
 		return "Energy: " + this.energyThisTurn
 	}
+
+	// EntityProperty.
+
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Equatable.
+
+	equals(other: TurnTaker): boolean { return false; }
 }

@@ -1,15 +1,16 @@
 "use strict";
 class Planet extends Entity {
-    constructor(name, bodyDefn, pos, factionName, demographics, industry, layout) {
+    constructor(name, planetType, bodyDefn, pos, factionName, demographics, industry, layout) {
         super(name, [
             bodyDefn,
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Planet.toControl),
+            new Factionable(factionName),
             ItemHolder.create(),
             Locatable.fromPos(pos)
         ]);
+        this.typeName = planetType.name();
         this.bodyDefn = bodyDefn;
-        this.factionName = factionName;
         this.demographics = demographics;
         this.industry = industry;
         this.layout = layout;
@@ -17,7 +18,7 @@ class Planet extends Entity {
         this.resourcesAccumulated = [];
     }
     static fromNameBodyDefnAndPos(name, bodyDefn, pos) {
-        return new Planet(name, bodyDefn, pos, null, null, null, null);
+        return new Planet(name, PlanetType.Instances().Default, bodyDefn, pos, null, null, null, null);
     }
     static bodyDefnPlanet() {
         if (Planet._bodyDefnPlanet == null) {
@@ -38,7 +39,7 @@ class Planet extends Entity {
                 new VisualDynamic // todo - VisualDynamic2?
                 ((uwpe) => {
                     var planet = uwpe.entity;
-                    var factionName = planet.factionName; // todo
+                    var factionName = planet.factionable().factionName; // todo
                     var returnValue = null;
                     if (factionName == null) {
                         returnValue = new VisualNone();
@@ -117,7 +118,10 @@ class Planet extends Entity {
         return returnValues;
     }
     faction(world) {
-        return (this.factionName == null ? null : world.factionByName(this.factionName));
+        return this.factionable().faction(world);
+    }
+    factionable() {
+        return this.propertyByName(Factionable.name);
     }
     isAwaitingTarget() {
         return (this.deviceSelected != null);

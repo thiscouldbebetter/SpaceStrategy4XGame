@@ -18,14 +18,14 @@ class DeviceDefns {
          { }, (uwpe) => // updateForTurn
          {
             var ship = uwpe.entity;
-            var shipTurnAndMove = ship.turnAndMove;
-            shipTurnAndMove.distancePerMove += 50;
-            shipTurnAndMove.energyPerMove += 1;
+            var shipTurnTaker = ship.turnTaker();
+            shipTurnTaker.distancePerMove += 50;
+            shipTurnTaker.energyPerMove += 1;
         }, (uwpe) => // use
          {
             var ship = uwpe.entity;
-            var shipTurnAndMove = ship.turnAndMove;
-            shipTurnAndMove.energyForMoveDeduct();
+            var shipTurnTaker = ship.turnTaker();
+            shipTurnTaker.energyForMoveDeduct();
         });
         this.ShipGeneratorBasic = new DeviceDefn("Ship Generator, Basic", false, // isActive
         false, // needsTarget
@@ -34,7 +34,8 @@ class DeviceDefns {
          { }, (uwpe) => // updateForTurn
          {
             var ship = uwpe.entity;
-            ship.turnAndMove.energyThisTurn += 10;
+            var shipTurnTaker = ship.turnTaker();
+            shipTurnTaker.energyThisTurn += 10;
         }, (uwpe) => // use
          {
             // Do nothing.
@@ -51,22 +52,22 @@ class DeviceDefns {
             var ship = uwpe.entity;
             var device = Device.fromEntity(uwpe.entity2);
             if (device.isActive) {
-                var turnAndMove = ship.turnAndMove;
-                turnAndMove.energyThisTurn -= 1;
-                turnAndMove.shieldingThisTurn += 1;
+                var shipTurnTaker = ship.turnTaker();
+                shipTurnTaker.energyThisTurn -= 1;
+                shipTurnTaker.shieldingThisTurn += 1;
             }
         }, (uwpe) => // use
          {
             var ship = uwpe.entity;
             var device = Device.fromEntity(uwpe.entity2);
-            var turnAndMove = ship.turnAndMove;
+            var shipTurnTaker = ship.turnTaker();
             if (device.isActive) {
                 device.isActive = false;
-                turnAndMove.energyThisTurn += 1;
+                shipTurnTaker.energyThisTurn += 1;
             }
             else {
                 device.isActive = true;
-                turnAndMove.energyThisTurn -= 1;
+                shipTurnTaker.energyThisTurn -= 1;
             }
         });
         this.ShipWeaponBasic = this.shipWeaponBasic();

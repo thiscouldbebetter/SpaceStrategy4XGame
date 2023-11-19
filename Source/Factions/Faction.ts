@@ -97,7 +97,7 @@ class Faction implements EntityProperty<Faction>
 	planetAdd(planet: Planet): void
 	{
 		this.planets.push(planet);
-		planet.factionName = this.name;
+		planet.factionable().factionSet(this);
 	}
 
 	planetHome(world: WorldExtended): Planet
@@ -108,7 +108,7 @@ class Faction implements EntityProperty<Faction>
 	shipAdd(ship: Ship): void
 	{
 		this.ships.push(ship);
-		ship.factionName = this.name;
+		ship.factionable().factionSet(this);
 	}
 
 	starsystemHome(world: WorldExtended): Starsystem

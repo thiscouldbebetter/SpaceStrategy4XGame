@@ -1,7 +1,8 @@
 
 class Planet extends Entity
 {
-	factionName: string;
+	defnName: string;
+	typeName: string;
 	demographics: PlanetDemographics;
 	industry: PlanetIndustry;
 	layout: Layout;
@@ -17,6 +18,7 @@ class Planet extends Entity
 	constructor
 	(
 		name: string,
+		planetType: PlanetType,
 		bodyDefn: BodyDefn,
 		pos: Coords,
 		factionName: string,
@@ -38,13 +40,14 @@ class Planet extends Entity
 					)
 				),
 				new Controllable(Planet.toControl),
+				new Factionable(factionName),
 				ItemHolder.create(),
 				Locatable.fromPos(pos)
 			]
 		);
 
+		this.typeName = planetType.name();
 		this.bodyDefn = bodyDefn;
-		this.factionName = factionName;
 		this.demographics = demographics;
 		this.industry = industry;
 		this.layout = layout;
@@ -56,7 +59,7 @@ class Planet extends Entity
 
 	static fromNameBodyDefnAndPos(name: string, bodyDefn: BodyDefn, pos: Coords)
 	{
-		return new Planet(name, bodyDefn, pos, null, null, null, null);
+		return new Planet(name, PlanetType.Instances().Default, bodyDefn, pos, null, null, null, null);
 	}
 
 	// constants
@@ -97,7 +100,7 @@ class Planet extends Entity
 						(uwpe: UniverseWorldPlaceEntities) =>
 						{
 							var planet = uwpe.entity as Planet;
-							var factionName = planet.factionName; // todo
+							var factionName = planet.factionable().factionName; // todo
 							var returnValue: VisualBase = null;
 							if (factionName == null)
 							{
@@ -237,7 +240,12 @@ class Planet extends Entity
 
 	faction(world: WorldExtended): Faction
 	{
-		return (this.factionName == null ? null : world.factionByName(this.factionName));
+		return this.factionable().faction(world);
+	}
+
+	factionable(): Factionable
+	{
+		return this.propertyByName(Factionable.name) as Factionable;
 	}
 
 	isAwaitingTarget(): boolean

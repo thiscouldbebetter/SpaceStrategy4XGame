@@ -3,6 +3,7 @@ class LinkPortal extends Entity {
     constructor(name, defn, pos, starsystemNamesFromAndTo) {
         super(name, [
             defn,
+            Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             Locatable.fromPos(pos)
         ]);
         this.defn = defn;

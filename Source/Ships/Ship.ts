@@ -25,7 +25,13 @@ class Ship extends Entity
 			name,
 			[
 				Actor.default(),
-				Collidable.default(),
+				Collidable.fromCollider
+				(
+					Sphere.fromRadiusAndCenter
+					(
+						VisualStar.radiusActual(), pos
+					)
+				),
 				new Controllable(Ship.toControl),
 				defn,
 				ItemHolder.fromItems(items),

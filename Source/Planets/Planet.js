@@ -3,6 +3,7 @@ class Planet extends Entity {
     constructor(name, bodyDefn, pos, factionName, demographics, industry, layout) {
         super(name, [
             bodyDefn,
+            Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Planet.toControl),
             ItemHolder.create(),
             Locatable.fromPos(pos)

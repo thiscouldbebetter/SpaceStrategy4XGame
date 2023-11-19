@@ -2,7 +2,9 @@
 class NetworkNode2 extends Entity {
     constructor(name, defn, pos, starsystem) {
         super(name, [
+            Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(NetworkNode2.toControl),
+            Drawable.fromVisual(NetworkNode2.visualBuild()),
             Locatable.fromPos(pos)
         ]);
         this.defn = defn;
@@ -52,14 +54,34 @@ class NetworkNode2 extends Entity {
         return returnValue;
     }
     // drawable
-    draw(universe, nodeRadiusActual, camera) {
+    static visualBuild() {
+        return new VisualStar();
+    }
+    draw(uwpe) {
+        var visual = this.drawable().visual;
+        visual.draw(uwpe, uwpe.universe.display);
+    }
+}
+class VisualStar {
+    constructor() {
+        this.radiusActual = VisualStar.radiusActual();
+        this._drawPos = Coords.create();
+    }
+    static radiusActual() {
+        return 4; // todo
+    }
+    // Visual.
+    draw(uwpe, display) {
+        var universe = uwpe.universe;
         var world = universe.world;
+        var networkNode = uwpe.entity;
         var display = universe.display;
-        var nodePos = this.locatable().loc.pos;
-        var drawPos = this.drawPos.overwriteWith(nodePos);
+        var nodePos = networkNode.locatable().loc.pos;
+        var drawPos = this._drawPos.overwriteWith(nodePos);
+        var camera = world.camera;
         camera.coordsTransformWorldToView(drawPos);
         var perspectiveFactor = camera.focalLength / drawPos.z;
-        var radiusApparent = nodeRadiusActual * perspectiveFactor;
+        var radiusApparent = this.radiusActual * perspectiveFactor;
         var alpha = Math.pow(perspectiveFactor, 4); // hack
         if (alpha > 1) {
             alpha = 1;
@@ -75,14 +97,14 @@ class NetworkNode2 extends Entity {
         var locatable = new Locatable(Disposition.fromPos(drawPos));
         var drawableTransformed = new Entity("[drawable]", [locatable]);
         visual.draw(new UniverseWorldPlaceEntities(universe, world, null, drawableTransformed, null), display);
-        var starsystem = this.starsystem;
+        var starsystem = networkNode.starsystem;
         if (starsystem != null) {
-            this.draw_Starsystem(universe, radiusApparent, drawPos, nodeColor, starsystem);
+            this.draw_Starsystem(uwpe, radiusApparent, drawPos, nodeColor, starsystem);
         }
     }
-    draw_Starsystem(universe, radiusApparent, starsystemDrawPos, nodeColor, starsystem) {
-        var world = universe.world;
-        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null); // todo - Avoid re-instantiating this every time.
+    draw_Starsystem(uwpe, radiusApparent, starsystemDrawPos, nodeColor, starsystem) {
+        var universe = uwpe.universe;
+        var world = uwpe.world;
         var display = universe.display;
         var factionsPresent = [];
         var planets = starsystem.planets;
@@ -135,12 +157,20 @@ class NetworkNode2 extends Entity {
             }
             shipFactionPrev = shipFaction;
         }
-        var visualText = VisualText.fromTextHeightAndColor(this.starsystem.name, radiusApparent, nodeColor);
+        var visualText = VisualText.fromTextHeightAndColor(starsystem.name, radiusApparent, nodeColor);
         drawablePosTransformed.overwriteWith(starsystemDrawPos);
         drawablePosTransformed.y += radiusApparent * 2;
         visualText.draw(uwpe.entitySet(drawableTransformed), display);
     }
-    static RadiusActual() {
-        return 4;
+    // Clonable.
+    clone() {
+        return this; // todo
+    }
+    overwriteWith(other) {
+        return this; // todo
+    }
+    // Transformable.
+    transform(transformToApply) {
+        return this; // todo
     }
 }

@@ -307,7 +307,7 @@ class VenueWorldExtended extends VenueWorld
 				).subtract
 				(
 					cameraPos
-				)
+				).normalize()
 			);
 
 			var playerFaction = world.factions[0];
@@ -316,11 +316,10 @@ class VenueWorldExtended extends VenueWorld
 				universe, world
 			);
 
-			var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies
+			var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable
 			(
 				rayFromCameraThroughClick,
 				worldKnown.network.nodes,
-				NetworkNode2.RadiusActual(),
 				[] // listToAddTo
 			);
 

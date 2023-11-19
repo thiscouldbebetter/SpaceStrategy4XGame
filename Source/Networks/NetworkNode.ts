@@ -19,7 +19,15 @@ class NetworkNode2 extends Entity
 		(
 			name,
 			[
+				Collidable.fromCollider
+				(
+					Sphere.fromRadiusAndCenter
+					(
+						VisualStar.radiusActual(), pos
+					)
+				),
 				new Controllable(NetworkNode2.toControl),
+				Drawable.fromVisual(NetworkNode2.visualBuild()),
 				Locatable.fromPos(pos)
 			]
 		);
@@ -120,17 +128,53 @@ class NetworkNode2 extends Entity
 
 	// drawable
 
-	draw(universe: Universe, nodeRadiusActual: number, camera: Camera): void
+	static visualBuild(): VisualStar
 	{
-		var world = universe.world;
-		var display = universe.display;
-		var nodePos = this.locatable().loc.pos;
+		return new VisualStar();
+	}
 
-		var drawPos = this.drawPos.overwriteWith(nodePos);
+	draw(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var visual = this.drawable().visual;
+		visual.draw(uwpe, uwpe.universe.display);
+	}
+}
+
+class VisualStar implements Visual<VisualStar>
+{
+	radiusActual: number;
+
+	private _drawPos: Coords;
+
+	constructor()
+	{
+		this.radiusActual = VisualStar.radiusActual();
+
+		this._drawPos = Coords.create();
+	}
+
+	static radiusActual(): number
+	{
+		return 4; // todo
+	}
+
+	// Visual.
+
+	draw(uwpe: UniverseWorldPlaceEntities, display: Display): void
+	{
+		var universe = uwpe.universe;
+		var world = universe.world as WorldExtended;
+		var networkNode = uwpe.entity as NetworkNode2;
+
+		var display = universe.display;
+		var nodePos = networkNode.locatable().loc.pos;
+
+		var drawPos = this._drawPos.overwriteWith(nodePos);
+		var camera = world.camera;
 		camera.coordsTransformWorldToView(drawPos);
 
 		var perspectiveFactor = camera.focalLength / drawPos.z;
-		var radiusApparent = nodeRadiusActual * perspectiveFactor;
+		var radiusApparent = this.radiusActual * perspectiveFactor;
 
 		var alpha = Math.pow(perspectiveFactor, 4); // hack
 		if (alpha > 1)
@@ -152,10 +196,12 @@ class NetworkNode2 extends Entity
 			],
 			null
 		);
+
 		var visual = new VisualCircleGradient
 		(
 			radiusApparent, gradient, null // colorBorder
 		);
+
 		var locatable = new Locatable(Disposition.fromPos(drawPos));
 		var drawableTransformed = new Entity("[drawable]", [ locatable ]);
 		visual.draw
@@ -167,30 +213,28 @@ class NetworkNode2 extends Entity
 			display
 		);
 
-		var starsystem = this.starsystem;
+		var starsystem = networkNode.starsystem;
 
 		if (starsystem != null)
 		{
 			this.draw_Starsystem
 			(
-				universe, radiusApparent, drawPos, nodeColor, starsystem
+				uwpe, radiusApparent, drawPos, nodeColor, starsystem
 			);
 		}
 	}
 
 	draw_Starsystem
 	(
-		universe: Universe, radiusApparent: number,
-		starsystemDrawPos: Coords, nodeColor: Color,
+		uwpe: UniverseWorldPlaceEntities,
+		radiusApparent: number,
+		starsystemDrawPos: Coords,
+		nodeColor: Color,
 		starsystem: Starsystem
 	): void
 	{
-		var world = universe.world as WorldExtended;
-
-		var uwpe = new UniverseWorldPlaceEntities
-		(
-			universe, world, null, null, null
-		); // todo - Avoid re-instantiating this every time.
+		var universe = uwpe.universe;
+		var world = uwpe.world as WorldExtended;
 
 		var display = universe.display;
 
@@ -284,7 +328,7 @@ class NetworkNode2 extends Entity
 
 		var visualText = VisualText.fromTextHeightAndColor
 		(
-			this.starsystem.name, radiusApparent, nodeColor
+			starsystem.name, radiusApparent, nodeColor
 		);
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;
@@ -294,8 +338,23 @@ class NetworkNode2 extends Entity
 		);
 	}
 
-	static RadiusActual(): number
+	// Clonable.
+
+	clone(): VisualStar
 	{
-		return 4;
+		return this; // todo
 	}
+
+	overwriteWith(other: VisualStar): VisualStar
+	{
+		return this; // todo
+	}
+
+	// Transformable.
+
+	transform(transformToApply: TransformBase): VisualStar
+	{
+		return this; // todo
+	}
+
 }

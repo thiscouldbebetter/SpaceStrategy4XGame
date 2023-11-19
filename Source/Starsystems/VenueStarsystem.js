@@ -119,9 +119,9 @@ class VenueStarsystem {
         var mouseClickPos = this._mouseClickPos.overwriteWith(inputHelper.mouseClickPos);
         var camera = this.camera();
         var rayFromCameraThroughClick = new Ray(camera.loc.pos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
-        ).subtract(camera.loc.pos));
-        var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughClick, this.entities, 10, // bodyRadius
-        []);
+        ).subtract(camera.loc.pos).normalize());
+        var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, this.entities, [] // listToAddTo
+        );
         var bodyClicked;
         if (bodiesClickedAsCollisions.length == 0) {
             bodyClicked = null;
@@ -234,9 +234,8 @@ class VenueStarsystem {
         var camera = this.camera();
         var cameraPos = camera.loc.pos;
         var rayFromCameraThroughMouse = new Ray(cameraPos, camera.coordsTransformViewToWorld(mouseMovePos, true // ignoreZ
-        ).subtract(cameraPos));
-        var bodiesUnderMouseAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughMouse, this.entities, 10, // bodyRadius
-        []);
+        ).subtract(cameraPos).normalize());
+        var bodiesUnderMouseAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughMouse, this.entities, []);
         var bodyUnderMouse;
         if (bodiesUnderMouseAsCollisions.length == 0) {
             bodyUnderMouse = null;

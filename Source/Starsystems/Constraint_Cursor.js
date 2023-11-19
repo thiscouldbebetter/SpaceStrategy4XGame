@@ -24,8 +24,8 @@ class Constraint_Cursor {
         var cameraOrientation = cameraLoc.orientation;
         var mousePos = this._mousePos.overwriteWith(universe.inputHelper.mouseMovePos);
         mousePos.subtract(camera.viewSizeHalf);
-        var displacementFromCameraToMousePosProjected = this._displacement.overwriteWith(cameraOrientation.forward).multiplyScalar(camera.focalLength).add(this._cameraRightOrDown.overwriteWith(cameraOrientation.right).multiplyScalar(mousePos.x)).add(this._cameraRightOrDown.overwriteWith(cameraOrientation.down).multiplyScalar(mousePos.y));
-        var rayFromCameraToMousePos = new Ray(cameraPos, displacementFromCameraToMousePosProjected);
+        var directionFromCameraToMousePosProjected = this._displacement.overwriteWith(cameraOrientation.forward).multiplyScalar(camera.focalLength).add(this._cameraRightOrDown.overwriteWith(cameraOrientation.right).multiplyScalar(mousePos.x)).add(this._cameraRightOrDown.overwriteWith(cameraOrientation.down).multiplyScalar(mousePos.y)).normalize();
+        var rayFromCameraToMousePos = new Ray(cameraPos, directionFromCameraToMousePosProjected);
         var cursorPos = cursor.locatable().loc.pos;
         if (cursor.hasXYPositionBeenSpecified == false) {
             this._boundsToRestrictTo.fromMinAndMax(this._min.overwriteWithDimensions(this._negativeInfinity, this._negativeInfinity, 0), this._max.overwriteWithDimensions(this._positiveInfinity, this._positiveInfinity, 0));

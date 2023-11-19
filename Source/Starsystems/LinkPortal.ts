@@ -18,6 +18,13 @@ class LinkPortal extends Entity
 			name,
 			[
 				defn,
+				Collidable.fromCollider
+				(
+					Sphere.fromRadiusAndCenter
+					(
+						VisualStar.radiusActual(), pos
+					)
+				),
 				Locatable.fromPos(pos)
 			]
 		);

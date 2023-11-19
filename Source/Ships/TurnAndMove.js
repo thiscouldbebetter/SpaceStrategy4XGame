@@ -35,6 +35,8 @@ class TurnAndMove {
             distanceMaxPerTick // speedMax
             );
             if (distanceToTarget < this.distanceLeftThisMove) {
+                this.distanceLeftThisMove = null;
+                ship.actor().activity.doNothing();
                 var shipOrder = ship.order();
                 if (shipOrder != null) // hack
                  {

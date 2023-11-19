@@ -16,34 +16,40 @@ class CollisionExtended
 
 	// static methods
 
-	static rayAndBodies
+	static rayAndEntitiesCollidable
 	(
-		ray: Ray, bodies: Entity[], bodyRadius: number, listToAddTo: CollisionExtended[]
-	)
+		ray: Ray,
+		entitiesCollidable: Entity[],
+		listToAddTo: CollisionExtended[]
+	): CollisionExtended[]
 	{
-		var bodyAsSphere = new Sphere(Coords.create(), bodyRadius);
-
-		for (var i = 0; i < bodies.length; i++)
+		for (var i = 0; i < entitiesCollidable.length; i++)
 		{
-			var body = bodies[i];
-			bodyAsSphere.center = body.locatable().loc.pos;
+			var entity = entitiesCollidable[i];
+			var collidable = entity.collidable();
 
-			var collisionOfRayWithBody = new CollisionExtended().rayAndSphere
-			(
-				ray, bodyAsSphere
-			);
-
-			if (collisionOfRayWithBody.distanceToCollision != null)
+			if (collidable != null)
 			{
-				collisionOfRayWithBody.colliders.push
+				var collider = collidable.collider as Sphere;
+
+				var collision = new CollisionExtended();
+				var collisionOfRayWithCollider = collision.rayAndSphere
 				(
-					body
+					ray, collider
 				);
 
-				listToAddTo.push
-				(
-					collisionOfRayWithBody
-				);
+				if (collisionOfRayWithCollider.distanceToCollision != null)
+				{
+					collisionOfRayWithCollider.colliders.push
+					(
+						entity // Should this be collider?
+					);
+
+					listToAddTo.push
+					(
+						collisionOfRayWithCollider
+					);
+				}
 			}
 		}
 

@@ -30,6 +30,13 @@ class Planet extends Entity
 			name,
 			[
 				bodyDefn,
+				Collidable.fromCollider
+				(
+					Sphere.fromRadiusAndCenter
+					(
+						VisualStar.radiusActual(), pos
+					)
+				),
 				new Controllable(Planet.toControl),
 				ItemHolder.create(),
 				Locatable.fromPos(pos)

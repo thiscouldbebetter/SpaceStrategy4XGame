@@ -231,15 +231,14 @@ class VenueStarsystem implements Venue
 			).subtract
 			(
 				camera.loc.pos
-			)
+			).normalize()
 		);
 
-		var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies
+		var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable
 		(
 			rayFromCameraThroughClick,
 			this.entities,
-			10, // bodyRadius
-			[]
+			[] // listToAddTo
 		);
 
 		var bodyClicked;
@@ -443,14 +442,13 @@ class VenueStarsystem implements Venue
 			).subtract
 			(
 				cameraPos
-			)
+			).normalize()
 		);
 
-		var bodiesUnderMouseAsCollisions = CollisionExtended.rayAndBodies
+		var bodiesUnderMouseAsCollisions = CollisionExtended.rayAndEntitiesCollidable
 		(
 			rayFromCameraThroughMouse,
 			this.entities,
-			10, // bodyRadius
 			[]
 		);
 

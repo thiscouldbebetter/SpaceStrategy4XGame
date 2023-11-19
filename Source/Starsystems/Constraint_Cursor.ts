@@ -50,7 +50,7 @@ class Constraint_Cursor implements Constraint
 		);
 		mousePos.subtract(camera.viewSizeHalf);
 
-		var displacementFromCameraToMousePosProjected = this._displacement.overwriteWith
+		var directionFromCameraToMousePosProjected = this._displacement.overwriteWith
 		(
 			cameraOrientation.forward
 		).multiplyScalar
@@ -74,10 +74,10 @@ class Constraint_Cursor implements Constraint
 			(
 				mousePos.y
 			)
-		);
+		).normalize();
 
 		var rayFromCameraToMousePos =
-			new Ray(cameraPos, displacementFromCameraToMousePosProjected);
+			new Ray(cameraPos, directionFromCameraToMousePosProjected );
 
 		var cursorPos = cursor.locatable().loc.pos;
 

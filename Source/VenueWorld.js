@@ -154,10 +154,10 @@ class VenueWorldExtended extends VenueWorld {
             var camera = this.cameraEntity.camera();
             var cameraPos = camera.loc.pos;
             var rayFromCameraThroughClick = new Ray(cameraPos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
-            ).subtract(cameraPos));
+            ).subtract(cameraPos).normalize());
             var playerFaction = world.factions[0];
             var worldKnown = playerFaction.knowledge.world(universe, world);
-            var bodiesClickedAsCollisions = CollisionExtended.rayAndBodies(rayFromCameraThroughClick, worldKnown.network.nodes, NetworkNode2.RadiusActual(), [] // listToAddTo
+            var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, worldKnown.network.nodes, [] // listToAddTo
             );
             if (bodiesClickedAsCollisions.length > 0) {
                 var collisionNearest = bodiesClickedAsCollisions[0];

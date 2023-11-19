@@ -54,12 +54,30 @@ class FactionKnowledge {
             var networkActual = world.network;
             var nodesActual = networkActual.nodes;
             var linksKnown = this.links(world);
-            var nodesKnown = nodesActual.map(nodeActual => (this.starsystemNames.indexOf(nodeActual.starsystem.name) >= 0
-                ? nodeActual
-                :
-                    (new NetworkNode2("?", // name
+            var nodesKnown = nodesActual.map(nodeActual => {
+                var returnValue;
+                if (this.starsystemNames.indexOf(nodeActual.starsystem.name) >= 0) {
+                    returnValue = nodeActual;
+                    // hack
+                    // This was hard to debug.
+                    // Basically, the collider's center is being set
+                    // to the same as the Locatable's loc.pos
+                    // before the nodes are scaled to screen size,
+                    // while they're all still fractional,
+                    // and the collider centers for the known nodes
+                    // weren't being reset here like they were for the unknown ones.
+                    // This was happening even though the exact same instance of pos
+                    // is passed to the instantions of Locatable and Collidable,
+                    // because Collidable is implicitly cloning it.
+                    nodeActual.collidable().colliderResetToRestPosition();
+                }
+                else {
+                    returnValue = new NetworkNode2("?", // name
                     nodeActual.defn, nodeActual.locatable().loc.pos, null // starsystem
-                    ))));
+                    );
+                }
+                return returnValue;
+            });
             this._network = new Network2(networkActual.name, nodesKnown, linksKnown);
         }
         return this._network;

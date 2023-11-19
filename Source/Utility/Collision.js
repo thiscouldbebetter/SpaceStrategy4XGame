@@ -7,15 +7,19 @@ class CollisionExtended {
         this.collidersByName = new Map();
     }
     // static methods
-    static rayAndBodies(ray, bodies, bodyRadius, listToAddTo) {
-        var bodyAsSphere = new Sphere(Coords.create(), bodyRadius);
-        for (var i = 0; i < bodies.length; i++) {
-            var body = bodies[i];
-            bodyAsSphere.center = body.locatable().loc.pos;
-            var collisionOfRayWithBody = new CollisionExtended().rayAndSphere(ray, bodyAsSphere);
-            if (collisionOfRayWithBody.distanceToCollision != null) {
-                collisionOfRayWithBody.colliders.push(body);
-                listToAddTo.push(collisionOfRayWithBody);
+    static rayAndEntitiesCollidable(ray, entitiesCollidable, listToAddTo) {
+        for (var i = 0; i < entitiesCollidable.length; i++) {
+            var entity = entitiesCollidable[i];
+            var collidable = entity.collidable();
+            if (collidable != null) {
+                var collider = collidable.collider;
+                var collision = new CollisionExtended();
+                var collisionOfRayWithCollider = collision.rayAndSphere(ray, collider);
+                if (collisionOfRayWithCollider.distanceToCollision != null) {
+                    collisionOfRayWithCollider.colliders.push(entity // Should this be collider?
+                    );
+                    listToAddTo.push(collisionOfRayWithCollider);
+                }
             }
         }
         return listToAddTo;

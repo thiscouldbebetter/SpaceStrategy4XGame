@@ -354,7 +354,7 @@ class Network2 extends Place
 		var drawPosFrom = this.drawPosFrom;
 		var drawPosTo = this.drawPosTo;
 
-		var nodeRadiusActual = NetworkNode2.RadiusActual();
+		var nodeRadiusActual = 4; // todo
 
 		var shipsInLinks = new Array<any>();
 		for (var i = 0; i < this.links.length; i++)
@@ -402,14 +402,21 @@ class Network2 extends Place
 			}
 		}
 
+		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld
+		(
+			universe, universe.world
+		);
+
 		for (var i = 0; i < drawablesSortedByZ.length; i++)
 		{
 			var entity = drawablesSortedByZ[i];
+			uwpe.entity = entity;
+
 			var entityTypeName = entity.constructor.name;
 			if (entityTypeName == NetworkNode2.name)
 			{
 				var node = entity as NetworkNode2;
-				node.draw(universe, nodeRadiusActual, camera);
+				node.draw(uwpe);
 			}
 			else if (entityTypeName == Ship.name)
 			{

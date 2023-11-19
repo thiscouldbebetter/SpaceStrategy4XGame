@@ -3,7 +3,7 @@ class Ship extends Entity {
     constructor(name, defn, pos, factionName, items) {
         super(name, [
             Actor.default(),
-            Collidable.default(),
+            Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Ship.toControl),
             defn,
             ItemHolder.fromItems(items),

@@ -28,18 +28,19 @@ class VenueLayout {
         var layout = this.layout;
         var map = layout.map;
         var cursor = map.cursor;
-        var cursorPos = cursor.pos;
-        cursorPos.overwriteWith(inputHelper.mouseMovePos).subtract(map.pos).divide(map.cellSizeInPixels).round();
-        if (cursorPos.isInRangeMax(map.sizeInCellsMinusOnes)) {
+        var cursorPosInCells = cursor.pos;
+        cursorPosInCells.overwriteWith(inputHelper.mouseMovePos).subtract(map.pos).divide(map.cellSizeInPixels).round().clearZ();
+        if (cursorPosInCells.isInRangeMax(map.sizeInCellsMinusOnes)) {
             if (inputHelper.isMouseClicked()) {
                 inputHelper.mouseClickedSet(false);
-                var bodyAtCursor = this.layout.map.bodyAtCursor();
+                var layout = this.layout;
+                var bodyAtCursor = layout.map.bodyAtCursor();
                 if (bodyAtCursor == null) {
                     var buildableEntityInProgress = planet.buildableEntityInProgress();
                     var acknowledge = () => universe.venueNext = venueLayout;
                     if (buildableEntityInProgress == null) {
                         var canBuildAtCursor = false;
-                        var terrainAtCursor = this.layout.map.terrainAtCursor();
+                        var terrainAtCursor = layout.map.terrainAtCursor();
                         var isSurface = (terrainAtCursor.name != "Orbit");
                         if (isSurface) {
                             var neighboringBodies = map.bodiesNeighboringCursor();
@@ -54,7 +55,7 @@ class VenueLayout {
                             canBuildAtCursor = true;
                         }
                         if (canBuildAtCursor) {
-                            var controlBuildables = this.controlBuildableSelectBuild(universe, cursorPos);
+                            var controlBuildables = this.controlBuildableSelectBuild(universe, cursorPosInCells);
                             universe.venueNext = new VenueControls(controlBuildables, null);
                         }
                     }
@@ -73,7 +74,7 @@ class VenueLayout {
     // controls
     controlBuildableDetailsBuild(universe) {
         var layout = this.layout;
-        var buildableAtCursorEntity = this.layout.map.bodyAtCursor();
+        var buildableAtCursorEntity = layout.map.bodyAtCursor();
         var buildableAtCursor = Buildable.fromEntity(buildableAtCursorEntity);
         var displaySize = universe.display.sizeInPixels;
         var containerSize = displaySize.clone().half();

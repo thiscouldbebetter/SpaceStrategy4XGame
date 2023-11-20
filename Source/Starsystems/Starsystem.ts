@@ -113,18 +113,20 @@ class Starsystem extends Place
 				size
 			);
 
+			var planetDemographics = new PlanetDemographics(0);
+
+			var planetIndustry = new PlanetIndustry(); // 0, null),
+
 			var planet = new Planet
 			(
 				planetName,
 				planetType,
 				planetPos,
 				null, // factionName
-				new PlanetDemographics(0),
-				new PlanetIndustry(), // 0, null),
+				planetDemographics,
+				planetIndustry,
 				null // layout
 			);
-
-			planet.layout = Layout.planet(universe, planet);
 
 			planets.push(planet);
 		}

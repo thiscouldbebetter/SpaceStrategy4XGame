@@ -41,11 +41,11 @@ class Starsystem extends Place {
             var planetName = name + " " + (i + 1);
             var planetType = PlanetType.random();
             var planetPos = Coords.create().randomize(universe.randomizer).multiply(size).multiplyScalar(2).subtract(size);
+            var planetDemographics = new PlanetDemographics(0);
+            var planetIndustry = new PlanetIndustry(); // 0, null),
             var planet = new Planet(planetName, planetType, planetPos, null, // factionName
-            new PlanetDemographics(0), new PlanetIndustry(), // 0, null),
-            null // layout
+            planetDemographics, planetIndustry, null // layout
             );
-            planet.layout = Layout.planet(universe, planet);
             planets.push(planet);
         }
         var returnValue = new Starsystem(name, size, star, [], // linkPortals - generated later

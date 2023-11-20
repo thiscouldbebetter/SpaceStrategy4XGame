@@ -426,7 +426,7 @@ class Faction implements EntityProperty<Faction>
 					), // items
 					DataBinding.fromGet
 					(
-						(c: Planet) => c.toStringDescription(world)
+						(c: Planet) => c.toStringDescription(universe, world)
 					), // bindingForItemText
 					fontNameAndHeight,
 					// dataBindingForItemSelected

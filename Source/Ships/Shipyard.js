@@ -5,7 +5,7 @@ class Shipyard {
     }
     shipAssembleFromComponentsAndLaunch(universe, world, faction, planet, shipyardEntity, componentNames) {
         var returnValue = null;
-        var cellPosToLaunchAt = planet.cellPositionsAvailableToOccupyInOrbit()[0];
+        var cellPosToLaunchAt = planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
         if (cellPosToLaunchAt == null) {
             throw new Error("No room to launch ship!");
         }
@@ -18,7 +18,7 @@ class Shipyard {
         planetItemHolder.itemsRemove(componentItems);
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, shipyardEntity, null);
         var componentItemsAsEntities = componentItems.map(x => x.toEntity(uwpe));
-        planet.buildableEntitiesRemove(componentItemsAsEntities);
+        planet.buildableEntitiesRemove(universe, componentItemsAsEntities);
         var itemDefns = componentNames.map(itemDefnName => world.defn.itemDefnByName(itemDefnName));
         var items = itemDefns.map(itemDefn => itemDefn.toItem());
         faction.shipsBuiltSoFarCount++;

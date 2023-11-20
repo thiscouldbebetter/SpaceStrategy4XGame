@@ -19,7 +19,7 @@ class Shipyard implements EntityProperty<Shipyard>
 		var returnValue = null;
 
 		var cellPosToLaunchAt =
-			planet.cellPositionsAvailableToOccupyInOrbit()[0];
+			planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
 
 		if (cellPosToLaunchAt == null)
 		{
@@ -49,7 +49,7 @@ class Shipyard implements EntityProperty<Shipyard>
 		var componentItemsAsEntities =
 			componentItems.map(x => x.toEntity(uwpe));
 
-		planet.buildableEntitiesRemove(componentItemsAsEntities);
+		planet.buildableEntitiesRemove(universe, componentItemsAsEntities);
 
 		var itemDefns = componentNames.map
 		(

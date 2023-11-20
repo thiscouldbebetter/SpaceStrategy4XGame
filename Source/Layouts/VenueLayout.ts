@@ -58,9 +58,9 @@ class VenueLayout implements Venue
 		var layout = this.layout;
 		var map = layout.map;
 		var cursor = map.cursor;
-		var cursorPos = cursor.pos;
+		var cursorPosInCells = cursor.pos;
 
-		cursorPos.overwriteWith
+		cursorPosInCells.overwriteWith
 		(
 			inputHelper.mouseMovePos
 		).subtract
@@ -69,15 +69,16 @@ class VenueLayout implements Venue
 		).divide
 		(
 			map.cellSizeInPixels
-		).round();
+		).round().clearZ();
 
-		if (cursorPos.isInRangeMax(map.sizeInCellsMinusOnes))
+		if (cursorPosInCells.isInRangeMax(map.sizeInCellsMinusOnes))
 		{
 			if (inputHelper.isMouseClicked())
 			{
 				inputHelper.mouseClickedSet(false);
 
-				var bodyAtCursor = this.layout.map.bodyAtCursor();
+				var layout = this.layout;
+				var bodyAtCursor = layout.map.bodyAtCursor();
 
 				if (bodyAtCursor == null)
 				{
@@ -88,7 +89,7 @@ class VenueLayout implements Venue
 					{
 						var canBuildAtCursor = false;
 
-						var terrainAtCursor = this.layout.map.terrainAtCursor();
+						var terrainAtCursor = layout.map.terrainAtCursor();
 
 						var isSurface = (terrainAtCursor.name != "Orbit");
 						if (isSurface)
@@ -114,7 +115,7 @@ class VenueLayout implements Venue
 						if (canBuildAtCursor)
 						{
 							var controlBuildables =
-								this.controlBuildableSelectBuild(universe, cursorPos);
+								this.controlBuildableSelectBuild(universe, cursorPosInCells);
 							universe.venueNext = new VenueControls(controlBuildables, null);
 						}
 					}
@@ -144,7 +145,7 @@ class VenueLayout implements Venue
 	{
 		var layout = this.layout;
 
-		var buildableAtCursorEntity = this.layout.map.bodyAtCursor();
+		var buildableAtCursorEntity = layout.map.bodyAtCursor();
 		var buildableAtCursor = Buildable.fromEntity(buildableAtCursorEntity);
 
 		var displaySize = universe.display.sizeInPixels;

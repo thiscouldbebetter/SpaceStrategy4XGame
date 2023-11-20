@@ -1,7 +1,7 @@
 "use strict";
 class PlanetIndustry {
-    toStringDescription(world, planet) {
-        var buildableEntityInProgress = planet.buildableEntityInProgress();
+    toStringDescription(universe, world, planet) {
+        var buildableEntityInProgress = planet.buildableEntityInProgress(universe);
         var buildableString = "building ";
         if (buildableEntityInProgress == null) {
             buildableString += "nothing";
@@ -20,9 +20,9 @@ class PlanetIndustry {
     }
     updateForTurn(universe, world, faction, planet) {
         var resourcesAccumulated = planet.resourcesAccumulated;
-        var resourcesProduced = planet.resourcesPerTurn(world);
+        var resourcesProduced = planet.resourcesPerTurn(universe, world);
         Resource.add(resourcesAccumulated, resourcesProduced);
-        var buildableEntityInProgress = planet.buildableEntityInProgress();
+        var buildableEntityInProgress = planet.buildableEntityInProgress(universe);
         if (buildableEntityInProgress == null) {
             var notification = new Notification2("Default", world.turnsSoFar, "Nothing being built.", planet);
             faction.notificationSession.notificationAdd(notification);

@@ -9,10 +9,10 @@ class Planet extends Entity {
             ItemHolder.create(),
             Locatable.fromPos(pos)
         ]);
-        this.typeName = planetType.name();
+        this.planetType = planetType;
         this.demographics = demographics;
         this.industry = industry;
-        this.layout = layout;
+        this._layout = layout;
         this.ships = [];
         this.resourcesAccumulated = [];
     }
@@ -24,23 +24,24 @@ class Planet extends Entity {
         );
     }
     // instance methods
-    cellPositionsAvailableToBuildOnSurface() {
+    cellPositionsAvailableToBuildOnSurface(universe) {
         var returnValues = new Array();
-        var map = this.layout.map;
-        var mapSizeInCells = map.sizeInCells;
+        var layout = this.layout(universe);
+        var layoutMap = layout.map;
+        var mapSizeInCells = layoutMap.sizeInCells;
         var cellPosInCells = Coords.create();
-        var terrainSurface = this.layout.map.terrainByName("Surface");
+        var terrainSurface = layoutMap.terrainByName("Surface");
         for (var y = 0; y < mapSizeInCells.y; y++) {
             cellPosInCells.y = y;
             for (var x = 0; x < mapSizeInCells.x; x++) {
                 cellPosInCells.x = x;
-                var terrainAtPos = map.terrainAtPosInCells(cellPosInCells);
+                var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
                 var isSurface = (terrainAtPos == terrainSurface);
                 if (isSurface) {
-                    var bodyAtPos = map.bodyAtPosInCells(cellPosInCells);
+                    var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
                     var isVacant = (bodyAtPos == null);
                     if (isVacant) {
-                        var bodiesNeighboring = map.bodiesNeighboringPosInCells(cellPosInCells);
+                        var bodiesNeighboring = layoutMap.bodiesNeighboringPosInCells(cellPosInCells);
                         if (bodiesNeighboring.length > 0) {
                             returnValues.push(cellPosInCells.clone());
                         }
@@ -50,20 +51,21 @@ class Planet extends Entity {
         }
         return returnValues;
     }
-    cellPositionsAvailableToOccupyInOrbit() {
+    cellPositionsAvailableToOccupyInOrbit(universe) {
         var returnValues = new Array();
-        var map = this.layout.map;
-        var mapSizeInCells = map.sizeInCells;
+        var layout = this.layout(universe);
+        var layoutMap = layout.map;
+        var mapSizeInCells = layoutMap.sizeInCells;
         var cellPosInCells = Coords.create();
-        var terrainOrbit = this.layout.map.terrainByName("Orbit");
+        var terrainOrbit = layoutMap.terrainByName("Orbit");
         for (var y = 0; y < mapSizeInCells.y; y++) {
             cellPosInCells.y = y;
             for (var x = 0; x < mapSizeInCells.x; x++) {
                 cellPosInCells.x = x;
-                var terrainAtPos = map.terrainAtPosInCells(cellPosInCells);
+                var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
                 var isOrbit = (terrainAtPos == terrainOrbit);
                 if (isOrbit == false) {
-                    var bodyAtPos = map.bodyAtPosInCells(cellPosInCells);
+                    var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
                     var isVacant = (bodyAtPos == null);
                     if (isVacant) {
                         returnValues.push(cellPosInCells.clone());
@@ -84,8 +86,14 @@ class Planet extends Entity {
     }
     jumpTo(universe) {
         var venuePlanet = new VenueLayout(universe.venueCurrent, this, // modelParent
-        this.layout);
+        this.layout(universe));
         universe.venueNext = venuePlanet;
+    }
+    layout(universe) {
+        if (this._layout == null) {
+            this._layout = this.planetType.layoutCreate(universe);
+        }
+        return this._layout;
     }
     shipAdd(shipToAdd) {
         this.ships.push(shipToAdd);
@@ -102,12 +110,12 @@ class Planet extends Entity {
     toEntity() {
         return this;
     }
-    toStringDescription(world) {
-        var resourcesPerTurnAsString = this.resourcesPerTurn(world).join(", ");
+    toStringDescription(universe, world) {
+        var resourcesPerTurnAsString = this.resourcesPerTurn(universe, world).join(", ");
         var returnValue = this.name
             + " - " + this.demographics.toStringDescription()
             + " - " + resourcesPerTurnAsString
-            + " - " + this.industry.toStringDescription(world, this)
+            + " - " + this.industry.toStringDescription(universe, world, this)
             + ".";
         return returnValue;
     }
@@ -138,44 +146,45 @@ class Planet extends Entity {
         if (faction != null) {
             this._resourcesPerTurn = null;
             this._resourcesPerTurnByName = null;
-            this.layout.updateForTurn(universe, world, faction, null);
+            var layout = this.layout(universe);
+            layout.updateForTurn(universe, world, faction, null);
             this.industry.updateForTurn(universe, world, faction, this);
             this.demographics.updateForTurn(universe, world, faction, this);
         }
     }
     // resources
-    buildableEntitiesRemove(entities) {
-        this.layout.buildableEntitiesRemove(entities);
+    buildableEntitiesRemove(universe, entities) {
+        this.layout(universe).buildableEntitiesRemove(entities);
     }
-    buildableEntityBuild(entity) {
-        this.layout.buildableEntityBuild(entity);
+    buildableEntityBuild(universe, entity) {
+        this.layout(universe).buildableEntityBuild(entity);
     }
-    buildableEntityInProgress() {
-        return this.layout.buildableEntityInProgress();
+    buildableEntityInProgress(universe) {
+        return this.layout(universe).buildableEntityInProgress();
     }
-    buildableInProgress() {
-        var buildableEntityInProgress = this.buildableEntityInProgress();
+    buildableInProgress(universe) {
+        var buildableEntityInProgress = this.buildableEntityInProgress(universe);
         var returnValue = (buildableEntityInProgress == null
             ? null
             : Buildable.fromEntity(buildableEntityInProgress));
         return returnValue;
     }
     industryPerTurn(universe, world, faction) {
-        var resource = this.resourcesPerTurnByName(world).get("Industry");
+        var resource = this.resourcesPerTurnByName(universe, world).get("Industry");
         return (resource == null ? 0 : resource.quantity);
     }
     prosperityPerTurn(universe, world, faction) {
-        var resource = this.resourcesPerTurnByName(world).get("Prosperity");
+        var resource = this.resourcesPerTurnByName(universe, world).get("Prosperity");
         return (resource == null ? 0 : resource.quantity);
     }
     researchPerTurn(universe, world, faction) {
-        var resource = this.resourcesPerTurnByName(world).get("Research");
+        var resource = this.resourcesPerTurnByName(universe, world).get("Research");
         return (resource == null ? 0 : resource.quantity);
     }
-    resourcesPerTurn(world) {
+    resourcesPerTurn(universe, world) {
         if (this._resourcesPerTurn == null) {
             var resourcesSoFar = new Array();
-            var layout = this.layout;
+            var layout = this.layout(universe);
             var facilities = layout.facilities();
             for (var f = 0; f < facilities.length; f++) {
                 var facility = Buildable.fromEntity(facilities[f]);
@@ -189,9 +198,9 @@ class Planet extends Entity {
         }
         return this._resourcesPerTurn;
     }
-    resourcesPerTurnByName(world) {
+    resourcesPerTurnByName(universe, world) {
         if (this._resourcesPerTurnByName == null) {
-            var resourcesPerTurn = this.resourcesPerTurn(world);
+            var resourcesPerTurn = this.resourcesPerTurn(universe, world);
             this._resourcesPerTurnByName = ArrayHelper.addLookups(resourcesPerTurn, (x) => x.defnName);
         }
         return this._resourcesPerTurnByName;

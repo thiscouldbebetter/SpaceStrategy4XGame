@@ -1,9 +1,9 @@
 "use strict";
 class PlanetSize {
-    constructor(name, radiusInPixels, sizeInCells) {
+    constructor(name, radiusInPixels, surfaceSizeInCells) {
         this.name = name;
         this.radiusInPixels = radiusInPixels;
-        this.sizeInCells = sizeInCells;
+        this.surfaceSizeInCells = surfaceSizeInCells;
     }
     static byName(name) {
         return PlanetSize.Instances().byName(name);
@@ -18,15 +18,15 @@ class PlanetSize {
 class PlanetSize_Instances {
     constructor() {
         var ps = (name, dimension) => {
-            var radiusInPixels = Math.floor(5 * Math.sqrt(dimension));
+            var radiusInPixels = Math.floor(4 * Math.sqrt(dimension));
             var surfaceSizeInCells = Coords.ones().multiplyScalar(dimension);
             return new PlanetSize(name, radiusInPixels, surfaceSizeInCells);
         };
-        this.Tiny = ps("Tiny", 1);
-        this.Small = ps("Small", 2);
-        this.Medium = ps("Medium", 3);
-        this.Large = ps("Large", 4);
-        this.Enormous = ps("Enormous", 5);
+        this.Tiny = ps("Tiny", 3);
+        this.Small = ps("Small", 4);
+        this.Medium = ps("Medium", 5);
+        this.Large = ps("Large", 6);
+        this.Enormous = ps("Enormous", 7);
         this.Default = this.Medium;
         this._All =
             [

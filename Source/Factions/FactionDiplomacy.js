@@ -69,7 +69,7 @@ class FactionDiplomacy {
         return shouldAccept;
     }
     // Controls.
-    toControl(world, diplomaticSession, pos, containerSize) {
+    toControl(universe, world, diplomaticSession, pos, containerSize) {
         var margin = 10;
         var controlSpacing = 20;
         var listWidth = 260;
@@ -112,7 +112,7 @@ class FactionDiplomacy {
             listSize, DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null
                 ? new Array()
                 : c.factionSelected.planets)), // items
-            DataBinding.fromGet((c) => c.toStringDescription(world)), // bindingForItemText,
+            DataBinding.fromGet((c) => c.toStringDescription(universe, world)), // bindingForItemText,
             fontNameAndHeight, 
             // dataBindingForItemSelected
             new DataBinding(diplomaticSession, (c) => (c.factionSelected == null ? null : c.factionSelected.planetSelected), (c, v) => {

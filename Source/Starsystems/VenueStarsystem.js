@@ -185,7 +185,7 @@ class VenueStarsystem {
             this.selectedEntity = null;
         }
         else if (bodyClicked == planetSelected) {
-            var layout = planetSelected.layout;
+            var layout = planetSelected.layout(universe);
             var venueNext = new VenueLayout(this, bodyClicked, layout);
             universe.venueTransitionTo(venueNext);
         }

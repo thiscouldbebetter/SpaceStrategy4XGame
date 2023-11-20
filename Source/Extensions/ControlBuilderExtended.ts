@@ -153,9 +153,10 @@ class ControlBuilderExtended extends ControlBuilder
 							else if (selectionTypeName == Planet.name)
 							{
 								var selectionAsPlanet = selectedEntity as Planet;
+								var layout = selectionAsPlanet.layout(universe);
 								venueNext = new VenueLayout
 								(
-									venueCurrent, selectionAsPlanet, selectionAsPlanet.layout
+									venueCurrent, selectionAsPlanet, layout
 								);
 							}
 							else if (selectionTypeName == Ship.name)

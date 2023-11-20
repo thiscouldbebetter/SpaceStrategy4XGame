@@ -242,14 +242,15 @@ class Ship extends Entity
 				var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
 				var entityForHub = itemForHub.toEntity(uwpe);
 
-				var planetMap = planetBeingOrbited.layout.map;
+				var planetBeingOrbitedLayout = planetBeingOrbited.layout(universe);
+				var planetMap = planetBeingOrbitedLayout.map;
 				var posToBuildAt =
 					planetMap.sizeInCells.clone().half().clearZ();
 
 				var entityForHubLocatable = Locatable.fromPos(posToBuildAt);
 				entityForHub.propertyAdd(entityForHubLocatable);
 
-				planetBeingOrbited.buildableEntityBuild(entityForHub);
+				planetBeingOrbited.buildableEntityBuild(universe, entityForHub);
 
 				var shipFactionName = this.factionable().factionName;
 

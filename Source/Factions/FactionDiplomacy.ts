@@ -178,6 +178,7 @@ class FactionDiplomacy
 
 	toControl
 	(
+		universe: Universe,
 		world: WorldExtended,
 		diplomaticSession: DiplomaticSession,
 		pos: Coords,
@@ -292,7 +293,7 @@ class FactionDiplomacy
 					), // items
 					DataBinding.fromGet
 					(
-						(c: Planet) => c.toStringDescription(world)
+						(c: Planet) => c.toStringDescription(universe, world)
 					), // bindingForItemText,
 					fontNameAndHeight,
 					// dataBindingForItemSelected

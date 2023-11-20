@@ -1,10 +1,10 @@
 
 class PlanetIndustry
 {
-	toStringDescription(world: WorldExtended, planet: Planet): string
+	toStringDescription(universe: Universe, world: WorldExtended, planet: Planet): string
 	{
 		var buildableEntityInProgress =
-			planet.buildableEntityInProgress();
+			planet.buildableEntityInProgress(universe);
 
 		var buildableString = "building ";
 
@@ -41,10 +41,10 @@ class PlanetIndustry
 	): void
 	{
 		var resourcesAccumulated = planet.resourcesAccumulated;
-		var resourcesProduced = planet.resourcesPerTurn(world);
+		var resourcesProduced = planet.resourcesPerTurn(universe, world);
 		Resource.add(resourcesAccumulated, resourcesProduced);
 
-		var buildableEntityInProgress = planet.buildableEntityInProgress();
+		var buildableEntityInProgress = planet.buildableEntityInProgress(universe);
 		if (buildableEntityInProgress == null)
 		{
 			var notification = new Notification2

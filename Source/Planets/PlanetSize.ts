@@ -3,13 +3,13 @@ class PlanetSize
 {
 	name: string;
 	radiusInPixels: number;
-	sizeInCells: Coords;
+	surfaceSizeInCells: Coords;
 
-	constructor(name: string, radiusInPixels: number, sizeInCells: Coords)
+	constructor(name: string, radiusInPixels: number, surfaceSizeInCells: Coords)
 	{
 		this.name = name;
 		this.radiusInPixels = radiusInPixels;
-		this.sizeInCells = sizeInCells;
+		this.surfaceSizeInCells = surfaceSizeInCells;
 	}
 
 	static byName(name: string): PlanetSize
@@ -44,7 +44,7 @@ class PlanetSize_Instances
 	{
 		var ps = (name: string, dimension: number) =>
 		{
-			var radiusInPixels = Math.floor(5 * Math.sqrt(dimension));
+			var radiusInPixels = Math.floor(4 * Math.sqrt(dimension));
 
 			var surfaceSizeInCells = Coords.ones().multiplyScalar(dimension);
 
@@ -56,11 +56,11 @@ class PlanetSize_Instances
 			);
 		}
 
-		this.Tiny 		= ps("Tiny", 1 );
-		this.Small 		= ps("Small", 2 );
-		this.Medium 	= ps("Medium", 3 );
-		this.Large 		= ps("Large", 4 );
-		this.Enormous 	= ps("Enormous", 5 );
+		this.Tiny 		= ps("Tiny", 3 );
+		this.Small 		= ps("Small", 4 );
+		this.Medium 	= ps("Medium", 5 );
+		this.Large 		= ps("Large", 6 );
+		this.Enormous 	= ps("Enormous", 7 );
 
 		this.Default = this.Medium;
 

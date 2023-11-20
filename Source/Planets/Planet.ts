@@ -2,10 +2,10 @@
 class Planet extends Entity
 {
 	defnName: string;
-	typeName: string;
+	planetType: PlanetType;
 	demographics: PlanetDemographics;
 	industry: PlanetIndustry;
-	layout: Layout;
+	private _layout: Layout;
 	resourcesAccumulated: Resource[];
 	ships: Ship[];
 
@@ -44,10 +44,10 @@ class Planet extends Entity
 			]
 		);
 
-		this.typeName = planetType.name();
+		this.planetType = planetType;
 		this.demographics = demographics;
 		this.industry = industry;
-		this.layout = layout;
+		this._layout = layout;
 
 		this.ships = [];
 
@@ -70,15 +70,16 @@ class Planet extends Entity
 
 	// instance methods
 
-	cellPositionsAvailableToBuildOnSurface(): Coords[]
+	cellPositionsAvailableToBuildOnSurface(universe: Universe): Coords[]
 	{
 		var returnValues = new Array<Coords>();
 
-		var map = this.layout.map;
-		var mapSizeInCells = map.sizeInCells;
+		var layout = this.layout(universe);
+		var layoutMap = layout.map;
+		var mapSizeInCells = layoutMap.sizeInCells;
 		var cellPosInCells = Coords.create();
 
-		var terrainSurface = this.layout.map.terrainByName("Surface");
+		var terrainSurface = layoutMap.terrainByName("Surface");
 
 		for (var y = 0; y < mapSizeInCells.y; y++)
 		{
@@ -88,19 +89,19 @@ class Planet extends Entity
 			{
 				cellPosInCells.x = x;
 
-				var terrainAtPos = map.terrainAtPosInCells(cellPosInCells);
+				var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
 				var isSurface = (terrainAtPos == terrainSurface);
 
 				if (isSurface)
 				{
-					var bodyAtPos = map.bodyAtPosInCells(cellPosInCells);
+					var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
 
 					var isVacant = (bodyAtPos == null);
 
 					if (isVacant)
 					{
 						var bodiesNeighboring =
-							map.bodiesNeighboringPosInCells(cellPosInCells);
+							layoutMap.bodiesNeighboringPosInCells(cellPosInCells);
 						if (bodiesNeighboring.length > 0)
 						{
 							returnValues.push(cellPosInCells.clone());
@@ -113,15 +114,16 @@ class Planet extends Entity
 		return returnValues;
 	}
 
-	cellPositionsAvailableToOccupyInOrbit(): Coords[]
+	cellPositionsAvailableToOccupyInOrbit(universe: Universe): Coords[]
 	{
 		var returnValues = new Array<Coords>();
 
-		var map = this.layout.map;
-		var mapSizeInCells = map.sizeInCells;
+		var layout = this.layout(universe);
+		var layoutMap = layout.map;
+		var mapSizeInCells = layoutMap.sizeInCells;
 		var cellPosInCells = Coords.create();
 
-		var terrainOrbit = this.layout.map.terrainByName("Orbit");
+		var terrainOrbit = layoutMap.terrainByName("Orbit");
 
 		for (var y = 0; y < mapSizeInCells.y; y++)
 		{
@@ -131,12 +133,12 @@ class Planet extends Entity
 			{
 				cellPosInCells.x = x;
 
-				var terrainAtPos = map.terrainAtPosInCells(cellPosInCells);
+				var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
 				var isOrbit = (terrainAtPos == terrainOrbit);
 
 				if (isOrbit == false)
 				{
-					var bodyAtPos = map.bodyAtPosInCells(cellPosInCells);
+					var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
 
 					var isVacant = (bodyAtPos == null);
 
@@ -172,9 +174,19 @@ class Planet extends Entity
 		(
 			universe.venueCurrent,
 			this, // modelParent
-			this.layout
+			this.layout(universe)
 		);
 		universe.venueNext = venuePlanet;
+	}
+
+	layout(universe: Universe): Layout
+	{
+		if (this._layout == null)
+		{
+			this._layout = this.planetType.layoutCreate(universe);
+		}
+
+		return this._layout;
 	}
 
 	shipAdd(shipToAdd: Ship): void
@@ -207,16 +219,16 @@ class Planet extends Entity
 		return this;
 	}
 
-	toStringDescription(world: WorldExtended): string
+	toStringDescription(universe: Universe, world: WorldExtended): string
 	{
 		var resourcesPerTurnAsString =
-			this.resourcesPerTurn(world).join(", ");
+			this.resourcesPerTurn(universe, world).join(", ");
 
 		var returnValue =
 			this.name
 			+ " - " + this.demographics.toStringDescription()
 			+ " - " + resourcesPerTurnAsString
-			+ " - " + this.industry.toStringDescription(world, this)
+			+ " - " + this.industry.toStringDescription(universe, world, this)
 			+ ".";
 
 		return returnValue;
@@ -281,7 +293,8 @@ class Planet extends Entity
 			this._resourcesPerTurn = null;
 			this._resourcesPerTurnByName = null;
 
-			this.layout.updateForTurn(universe, world, faction, null);
+			var layout = this.layout(universe);
+			layout.updateForTurn(universe, world, faction, null);
 			this.industry.updateForTurn(universe, world, faction, this);
 			this.demographics.updateForTurn(universe, world, faction, this);
 		}
@@ -289,24 +302,24 @@ class Planet extends Entity
 
 	// resources
 
-	buildableEntitiesRemove(entities: Entity[]): void
+	buildableEntitiesRemove(universe: Universe, entities: Entity[]): void
 	{
-		this.layout.buildableEntitiesRemove(entities);
+		this.layout(universe).buildableEntitiesRemove(entities);
 	}
 
-	buildableEntityBuild(entity: Entity): void
+	buildableEntityBuild(universe: Universe, entity: Entity): void
 	{
-		this.layout.buildableEntityBuild(entity);
+		this.layout(universe).buildableEntityBuild(entity);
 	}
 
-	buildableEntityInProgress(): Entity
+	buildableEntityInProgress(universe: Universe): Entity
 	{
-		return this.layout.buildableEntityInProgress();
+		return this.layout(universe).buildableEntityInProgress();
 	}
 
-	buildableInProgress(): Buildable
+	buildableInProgress(universe: Universe): Buildable
 	{
-		var buildableEntityInProgress = this.buildableEntityInProgress();
+		var buildableEntityInProgress = this.buildableEntityInProgress(universe);
 
 		var returnValue =
 		(
@@ -325,7 +338,7 @@ class Planet extends Entity
 	{
 		var resource = this.resourcesPerTurnByName
 		(
-			world
+			universe, world
 		).get("Industry");
 		return (resource == null ? 0: resource.quantity);
 	}
@@ -337,7 +350,7 @@ class Planet extends Entity
 	{
 		var resource = this.resourcesPerTurnByName
 		(
-			world
+			universe, world
 		).get("Prosperity");
 		return (resource == null ? 0: resource.quantity);
 	}
@@ -349,18 +362,18 @@ class Planet extends Entity
 	{
 		var resource = this.resourcesPerTurnByName
 		(
-			world
+			universe, world
 		).get("Research");
 		return (resource == null ? 0: resource.quantity);
 	}
 
-	resourcesPerTurn(world: WorldExtended): Resource[]
+	resourcesPerTurn(universe: Universe, world: WorldExtended): Resource[]
 	{
 		if (this._resourcesPerTurn == null)
 		{
 			var resourcesSoFar = new Array<Resource>();
 
-			var layout = this.layout;
+			var layout = this.layout(universe);
 			var facilities = layout.facilities();
 			for (var f = 0; f < facilities.length; f++)
 			{
@@ -378,12 +391,12 @@ class Planet extends Entity
 		return this._resourcesPerTurn;
 	}
 
-	resourcesPerTurnByName(world: WorldExtended): Map<string,Resource>
+	resourcesPerTurnByName(universe: Universe, world: WorldExtended): Map<string,Resource>
 	{
 		if (this._resourcesPerTurnByName == null)
 		{
 			var resourcesPerTurn =
-				this.resourcesPerTurn(world);
+				this.resourcesPerTurn(universe, world);
 
 			this._resourcesPerTurnByName = ArrayHelper.addLookups
 			(

@@ -83,7 +83,7 @@ class DiplomaticSession {
             DataBinding.fromContextAndGet(this, (c) => c.isFactionSelected()), // isEnabled
             () => diplomaticSession.talkSessionInitialize(UniverseWorldPlaceEntities.fromUniverse(universe)) // click
             ),
-            this.factionActing.diplomacy.toControl(world, this, Coords.fromXY(margin * 2 + listWidth, 0), // pos
+            this.factionActing.diplomacy.toControl(universe, world, this, Coords.fromXY(margin * 2 + listWidth, 0), // pos
             Coords.fromXY(containerSize.x - listWidth - margin * 2, containerSize.y))
         ]);
         return returnValue;

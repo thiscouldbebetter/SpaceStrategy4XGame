@@ -162,7 +162,7 @@ class Faction {
             ControlList.from8("listPlanets", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
             DataBinding.fromContextAndGet(faction, (c) => faction.planets), // items
-            DataBinding.fromGet((c) => c.toStringDescription(world)), // bindingForItemText
+            DataBinding.fromGet((c) => c.toStringDescription(universe, world)), // bindingForItemText
             fontNameAndHeight, 
             // dataBindingForItemSelected
             new DataBinding(faction, (c) => c.planetSelected, (c, v) => {

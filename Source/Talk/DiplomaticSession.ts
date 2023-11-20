@@ -186,6 +186,7 @@ class DiplomaticSession
 
 				this.factionActing.diplomacy.toControl
 				(
+					universe,
 					world,
 					this,
 					Coords.fromXY(margin * 2 + listWidth, 0), // pos

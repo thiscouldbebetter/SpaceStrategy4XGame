@@ -2,11 +2,13 @@
 class PlanetSize
 {
 	name: string;
+	radiusInPixels: number;
 	sizeInCells: Coords;
 
-	constructor(name: string, sizeInCells: Coords)
+	constructor(name: string, radiusInPixels: number, sizeInCells: Coords)
 	{
 		this.name = name;
+		this.radiusInPixels = radiusInPixels;
 		this.sizeInCells = sizeInCells;
 	}
 
@@ -41,7 +43,18 @@ class PlanetSize_Instances
 	constructor()
 	{
 		var ps = (name: string, dimension: number) =>
-			new PlanetSize(name, Coords.ones().multiplyScalar(dimension) );
+		{
+			var radiusInPixels = Math.floor(5 * Math.sqrt(dimension));
+
+			var surfaceSizeInCells = Coords.ones().multiplyScalar(dimension);
+
+			return new PlanetSize
+			(
+				name,
+				radiusInPixels,
+				surfaceSizeInCells
+			);
+		}
 
 		this.Tiny 		= ps("Tiny", 1 );
 		this.Small 		= ps("Small", 2 );

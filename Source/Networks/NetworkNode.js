@@ -1,10 +1,10 @@
 "use strict";
 class NetworkNode2 extends Entity {
-    constructor(name, defn, pos, starsystem) {
+    constructor(name, defn, pos, star, starsystem) {
         super(name, [
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(NetworkNode2.toControl),
-            Drawable.fromVisual(NetworkNode2.visualBuild()),
+            Drawable.fromVisual(star.starType.visualFromOutside()),
             Locatable.fromPos(pos)
         ]);
         this.defn = defn;
@@ -54,9 +54,6 @@ class NetworkNode2 extends Entity {
         return returnValue;
     }
     // drawable
-    static visualBuild() {
-        return VisualStar.byName("Default");
-    }
     draw(uwpe) {
         var visual = this.drawable().visual;
         visual.draw(uwpe, uwpe.universe.display);

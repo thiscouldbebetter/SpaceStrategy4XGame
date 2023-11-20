@@ -9,7 +9,6 @@ class Planet extends Entity
 	resourcesAccumulated: Resource[];
 	ships: Ship[];
 
-	bodyDefn: BodyDefn;
 	deviceSelected: Device;
 
 	_resourcesPerTurn: Resource[];
@@ -19,7 +18,6 @@ class Planet extends Entity
 	(
 		name: string,
 		planetType: PlanetType,
-		bodyDefn: BodyDefn,
 		pos: Coords,
 		factionName: string,
 		demographics: PlanetDemographics,
@@ -31,7 +29,7 @@ class Planet extends Entity
 		(
 			name,
 			[
-				bodyDefn,
+				planetType.bodyDefn(),
 				Collidable.fromCollider
 				(
 					Sphere.fromRadiusAndCenter
@@ -47,7 +45,6 @@ class Planet extends Entity
 		);
 
 		this.typeName = planetType.name();
-		this.bodyDefn = bodyDefn;
 		this.demographics = demographics;
 		this.industry = industry;
 		this.layout = layout;
@@ -57,102 +54,18 @@ class Planet extends Entity
 		this.resourcesAccumulated = [];
 	}
 
-	static fromNameBodyDefnAndPos(name: string, bodyDefn: BodyDefn, pos: Coords)
+	static fromNameTypeAndPos(name: string, planetType: PlanetType, pos: Coords)
 	{
-		return new Planet(name, PlanetType.Instances().Default, bodyDefn, pos, null, null, null, null);
-	}
-
-	// constants
-
-	static _bodyDefnPlanet: BodyDefn;
-	static bodyDefnPlanet(): BodyDefn
-	{
-		if (Planet._bodyDefnPlanet == null)
-		{
-			var planetDimension = 10;
-
-			var visualForPlanetType = new VisualCircleGradient
-			(
-				planetDimension, // radius
-				new ValueBreakGroup
-				(
-					[
-						new ValueBreak(0, Color.byName("White")),
-						new ValueBreak(.2, Color.byName("White")),
-						new ValueBreak(.3, Color.byName("Cyan")),
-						new ValueBreak(.75, Color.byName("Cyan")),
-						new ValueBreak(1, Color.byName("Black")),
-					],
-					null // ?
-				),
-				null // colorBorder
-			);
-
-			Planet._bodyDefnPlanet = new BodyDefn
-			(
-				"Planet",
-				Coords.fromXY(1, 1).multiplyScalar(planetDimension), // size
-				new VisualGroup
-				([
-					visualForPlanetType,
-					new VisualDynamic // todo - VisualDynamic2?
-					(
-						(uwpe: UniverseWorldPlaceEntities) =>
-						{
-							var planet = uwpe.entity as Planet;
-							var factionName = planet.factionable().factionName; // todo
-							var returnValue: VisualBase = null;
-							if (factionName == null)
-							{
-								returnValue = new VisualNone();
-							}
-							else
-							{
-								returnValue = new VisualOffset
-								(
-									Coords.fromXY(0, 16),
-									VisualText.fromTextHeightAndColor
-									(
-										factionName, planetDimension, Color.byName("White"),
-									)
-								)
-							}
-							return returnValue;
-						}
-					)
-				])
-			);
-		}
-
-		return Planet._bodyDefnPlanet;
-	}
-
-	static _bodyDefnStar: BodyDefn
-	static bodyDefnStar(): BodyDefn
-	{
-		var starName = "Star";
-		var starRadius = 30;
-		var starColor = Color.Instances().Yellow;
-
-		if (Planet._bodyDefnStar == null)
-		{
-			Planet._bodyDefnStar = 
-				new BodyDefn
-				(
-					"Star",
-					Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
-					new VisualGroup
-					([
-						new VisualCircle(starRadius, starColor, starColor, null),
-						VisualText.fromTextHeightAndColor
-						(
-							starName, 10, Color.byName("Gray")
-						)
-					])
-				);
-		}
-
-		return Planet._bodyDefnStar;
+		return new Planet
+		(
+			name,
+			planetType,
+			pos,
+			null, // factionName
+			null, // demographics
+			null, // industry
+			null // layout
+		);
 	}
 
 	// instance methods

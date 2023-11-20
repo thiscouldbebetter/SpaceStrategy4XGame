@@ -12,6 +12,7 @@ class NetworkNode2 extends Entity
 		name: string,
 		defn: NetworkNodeDefn,
 		pos: Coords,
+		star: Star,
 		starsystem: Starsystem
 	)
 	{
@@ -27,7 +28,7 @@ class NetworkNode2 extends Entity
 					)
 				),
 				new Controllable(NetworkNode2.toControl),
-				Drawable.fromVisual(NetworkNode2.visualBuild()),
+				Drawable.fromVisual(star.starType.visualFromOutside() ),
 				Locatable.fromPos(pos)
 			]
 		);
@@ -127,11 +128,6 @@ class NetworkNode2 extends Entity
 	}
 
 	// drawable
-
-	static visualBuild(): VisualStar
-	{
-		return VisualStar.byName("Default");
-	}
 
 	draw(uwpe: UniverseWorldPlaceEntities): void
 	{

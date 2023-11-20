@@ -143,6 +143,7 @@ class FactionKnowledge
 							"?", // name
 							nodeActual.defn,
 							nodeActual.locatable().loc.pos,
+							nodeActual.starsystem.star,
 							null // starsystem
 						)
 					}

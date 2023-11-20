@@ -39,11 +39,13 @@ class VisualStar {
         }
         var colorAtCenter = this.color.clone().valueMultiplyByScalar(2 * fadeFactor);
         var colorAtBorder = this.color.clone().valueMultiplyByScalar(fadeFactor);
+        var colorSpace = colorAtBorder.clone().alphaSet(0);
         var display = universe.display;
         var gradient = new ValueBreakGroup([
             new ValueBreak(0, colorAtCenter),
             new ValueBreak(0.5, colorAtCenter),
-            new ValueBreak(1, colorAtBorder),
+            new ValueBreak(0.8, colorAtBorder),
+            new ValueBreak(1, colorSpace),
         ], null);
         var visual = new VisualCircleGradient(radiusApparent, gradient, null // colorBorder
         );
@@ -136,7 +138,7 @@ class VisualStar_Instances {
         this.Blue = vs("Blue", colors.Blue, radius);
         this.Green = vs("Green", colors.Green, radius);
         this.Orange = vs("Orange", colors.Orange, radius);
-        this.Red = vs("Blue", colors.Red, radius);
+        this.Red = vs("Red", colors.Red, radius);
         this.White = vs("White", colors.White, radius);
         this.Yellow = vs("Yellow", colors.Yellow, radius);
         this._All =

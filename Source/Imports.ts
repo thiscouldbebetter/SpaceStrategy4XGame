@@ -139,6 +139,7 @@ import SoundFromFile = gf.SoundFromFile;
 import SoundHelper = gf.SoundHelper;
 import SoundHelperLive = gf.SoundHelperLive;
 import TextString = gf.TextString;
+import TextStringFromImage = gf.TextStringFromImage;
 import VenueVideo = gf.VenueVideo;
 import Video = gf.Video;
 import VideoHelper = gf.VideoHelper;

@@ -140,6 +140,7 @@ class Network2 extends Place
 				nodeStarsystem.name,
 				nodeDefn,
 				nodePos.clone(),
+				nodeStarsystem.star,
 				nodeStarsystem
 			);
 

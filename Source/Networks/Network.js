@@ -59,7 +59,7 @@ class Network2 extends Place {
             var nodeDefnIndexRandom = Math.floor(nodeDefns.length * Math.random());
             var nodeDefn = nodeDefns[nodeDefnIndexRandom];
             var nodeStarsystem = Starsystem.generateRandom(universe);
-            var node = new NetworkNode2(nodeStarsystem.name, nodeDefn, nodePos.clone(), nodeStarsystem);
+            var node = new NetworkNode2(nodeStarsystem.name, nodeDefn, nodePos.clone(), nodeStarsystem.star, nodeStarsystem);
             nodesNotYetLinked.push(node);
         }
         var nodePositions = nodesNotYetLinked.map(x => x.locatable().loc.pos);

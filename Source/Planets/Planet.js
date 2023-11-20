@@ -1,8 +1,8 @@
 "use strict";
 class Planet extends Entity {
-    constructor(name, planetType, bodyDefn, pos, factionName, demographics, industry, layout) {
+    constructor(name, planetType, pos, factionName, demographics, industry, layout) {
         super(name, [
-            bodyDefn,
+            planetType.bodyDefn(),
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Planet.toControl),
             new Factionable(factionName),
@@ -10,62 +10,18 @@ class Planet extends Entity {
             Locatable.fromPos(pos)
         ]);
         this.typeName = planetType.name();
-        this.bodyDefn = bodyDefn;
         this.demographics = demographics;
         this.industry = industry;
         this.layout = layout;
         this.ships = [];
         this.resourcesAccumulated = [];
     }
-    static fromNameBodyDefnAndPos(name, bodyDefn, pos) {
-        return new Planet(name, PlanetType.Instances().Default, bodyDefn, pos, null, null, null, null);
-    }
-    static bodyDefnPlanet() {
-        if (Planet._bodyDefnPlanet == null) {
-            var planetDimension = 10;
-            var visualForPlanetType = new VisualCircleGradient(planetDimension, // radius
-            new ValueBreakGroup([
-                new ValueBreak(0, Color.byName("White")),
-                new ValueBreak(.2, Color.byName("White")),
-                new ValueBreak(.3, Color.byName("Cyan")),
-                new ValueBreak(.75, Color.byName("Cyan")),
-                new ValueBreak(1, Color.byName("Black")),
-            ], null // ?
-            ), null // colorBorder
-            );
-            Planet._bodyDefnPlanet = new BodyDefn("Planet", Coords.fromXY(1, 1).multiplyScalar(planetDimension), // size
-            new VisualGroup([
-                visualForPlanetType,
-                new VisualDynamic // todo - VisualDynamic2?
-                ((uwpe) => {
-                    var planet = uwpe.entity;
-                    var factionName = planet.factionable().factionName; // todo
-                    var returnValue = null;
-                    if (factionName == null) {
-                        returnValue = new VisualNone();
-                    }
-                    else {
-                        returnValue = new VisualOffset(Coords.fromXY(0, 16), VisualText.fromTextHeightAndColor(factionName, planetDimension, Color.byName("White")));
-                    }
-                    return returnValue;
-                })
-            ]));
-        }
-        return Planet._bodyDefnPlanet;
-    }
-    static bodyDefnStar() {
-        var starName = "Star";
-        var starRadius = 30;
-        var starColor = Color.Instances().Yellow;
-        if (Planet._bodyDefnStar == null) {
-            Planet._bodyDefnStar =
-                new BodyDefn("Star", Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
-                new VisualGroup([
-                    new VisualCircle(starRadius, starColor, starColor, null),
-                    VisualText.fromTextHeightAndColor(starName, 10, Color.byName("Gray"))
-                ]));
-        }
-        return Planet._bodyDefnStar;
+    static fromNameTypeAndPos(name, planetType, pos) {
+        return new Planet(name, planetType, pos, null, // factionName
+        null, // demographics
+        null, // industry
+        null // layout
+        );
     }
     // instance methods
     cellPositionsAvailableToBuildOnSurface() {

@@ -29,19 +29,19 @@ class Starsystem extends Place {
     static generateRandom(universe) {
         var name = NameGenerator.generateName();
         var size = Starsystem.SizeStandard();
-        var star = Planet.fromNameBodyDefnAndPos(this.name, Planet.bodyDefnStar(), new Coords(0, 0, -10));
+        var starType = StarType.random();
+        var star = Star.fromNameStarTypeAndPos(this.name, starType, new Coords(0, 0, -10) // todo - Why -10?
+        );
         var numberOfPlanetsMin = 1;
         var numberOfPlanetsMax = 4;
         var numberOfPlanetsRange = numberOfPlanetsMax - numberOfPlanetsMin;
         var numberOfPlanets = numberOfPlanetsMin + Math.floor(Math.random() * numberOfPlanetsRange);
-        var bodyDefnPlanet = Planet.bodyDefnPlanet();
-        var planetType = PlanetType.Instances().Default;
         var planets = new Array();
         for (var i = 0; i < numberOfPlanets; i++) {
             var planetName = name + " " + (i + 1);
-            var planet = new Planet(planetName, planetType, bodyDefnPlanet, 
-            // pos
-            Coords.create().randomize(universe.randomizer).multiply(size).multiplyScalar(2).subtract(size), null, // factionName
+            var planetType = PlanetType.random();
+            var planetPos = Coords.create().randomize(universe.randomizer).multiply(size).multiplyScalar(2).subtract(size);
+            var planet = new Planet(planetName, planetType, planetPos, null, // factionName
             new PlanetDemographics(0), new PlanetIndustry(), // 0, null),
             null // layout
             );

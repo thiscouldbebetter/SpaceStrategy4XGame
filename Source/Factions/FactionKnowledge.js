@@ -73,7 +73,7 @@ class FactionKnowledge {
                 }
                 else {
                     returnValue = new NetworkNode2("?", // name
-                    nodeActual.defn, nodeActual.locatable().loc.pos, null // starsystem
+                    nodeActual.defn, nodeActual.locatable().loc.pos, nodeActual.starsystem.star, null // starsystem
                     );
                 }
                 return returnValue;

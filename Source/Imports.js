@@ -99,6 +99,7 @@ var MediaLibrary = gf.MediaLibrary;
 var SoundFromFile = gf.SoundFromFile;
 var SoundHelperLive = gf.SoundHelperLive;
 var TextString = gf.TextString;
+var TextStringFromImage = gf.TextStringFromImage;
 var VenueVideo = gf.VenueVideo;
 var Video = gf.Video;
 var VideoHelper = gf.VideoHelper;

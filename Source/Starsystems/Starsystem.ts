@@ -3,7 +3,7 @@ class Starsystem extends Place
 {
 	name: string;
 	size: Coords;
-	star: Planet;
+	star: Star;
 	linkPortals: LinkPortal[];
 	_linkPortalsByStarsystemName: Map<string,LinkPortal>;
 	planets: Planet[];
@@ -21,7 +21,7 @@ class Starsystem extends Place
 	(
 		name: string,
 		size: Coords,
-		star: Planet,
+		star: Star,
 		linkPortals: LinkPortal[],
 		planets: Planet[],
 		factionName: string
@@ -78,10 +78,13 @@ class Starsystem extends Place
 	{
 		var name = NameGenerator.generateName();
 		var size = Starsystem.SizeStandard();
+		var starType = StarType.random();
 
-		var star = Planet.fromNameBodyDefnAndPos
+		var star = Star.fromNameStarTypeAndPos
 		(
-			this.name, Planet.bodyDefnStar(), new Coords(0, 0, -10)
+			this.name,
+			starType,
+			new Coords(0, 0, -10) // todo - Why -10?
 		);
 
 		var numberOfPlanetsMin = 1;
@@ -92,31 +95,29 @@ class Starsystem extends Place
 		(
 			Math.random() * numberOfPlanetsRange
 		);
-		var bodyDefnPlanet = Planet.bodyDefnPlanet();
-
-		var planetType = PlanetType.Instances().Default;
 
 		var planets = new Array<Planet>();
 		for (var i = 0; i < numberOfPlanets; i++)
 		{
 			var planetName = name + " " + (i + 1);
+			var planetType = PlanetType.random();
+
+			var planetPos = Coords.create().randomize(universe.randomizer).multiply
+			(
+				size
+			).multiplyScalar
+			(
+				2
+			).subtract
+			(
+				size
+			);
 
 			var planet = new Planet
 			(
 				planetName,
 				planetType,
-				bodyDefnPlanet,
-				// pos
-				Coords.create().randomize(universe.randomizer).multiply
-				(
-					size
-				).multiplyScalar
-				(
-					2
-				).subtract
-				(
-					size
-				),
+				planetPos,
 				null, // factionName
 				new PlanetDemographics(0),
 				new PlanetIndustry(), // 0, null),

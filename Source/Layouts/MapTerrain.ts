@@ -4,23 +4,21 @@ class MapTerrain
 	name: string;
 	codeChar: string;
 	visual: VisualBase;
-	isBlocked: boolean;
 
 	constructor
 	(
-		name: string, codeChar: string, visual: VisualBase, isBlocked: boolean
+		name: string, codeChar: string, visual: VisualBase
 	)
 	{
 		this.name = name;
 		this.codeChar = codeChar;
 		this.visual = visual;
-		this.isBlocked = isBlocked;
 	}
 
 	static planet(cellSizeInPixels: Coords): MapTerrain[]
 	{
 		var visualFromColor = (color: Color) =>
-			new VisualRectangle(cellSizeInPixels, null, color, null);
+			VisualRectangle.fromSizeAndColorBorder(cellSizeInPixels.clone().half(), color);
 
 		var colors = Color.Instances();
 
@@ -30,22 +28,19 @@ class MapTerrain
 			(
 				"None",
 				" ",
-				visualFromColor(colors._Transparent),
-				false // isBlocked
+				visualFromColor(colors._Transparent)
 			),
 			new MapTerrain
 			(
 				"Orbit",
 				"-",
-				visualFromColor(colors.Violet),
-				false
+				visualFromColor(colors.Violet)
 			),
 			new MapTerrain
 			(
 				"Surface",
 				".",
-				visualFromColor(colors.GrayLight),
-				false
+				visualFromColor(colors.GrayLight)
 			),
 		];
 

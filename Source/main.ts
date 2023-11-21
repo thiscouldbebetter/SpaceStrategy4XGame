@@ -94,7 +94,7 @@ function main()
 	var universe = Universe.create
 	(
 		"Space_Strategy_4X",
-		"0.0.0-2021-12-12",
+		null, // version,
 		new TimerHelper(20),
 		display,
 		mediaLibrary,

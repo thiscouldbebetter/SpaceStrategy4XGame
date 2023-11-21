@@ -60,7 +60,8 @@ function main() {
     }, (universe, worldCreator) => {
         return worldCreatorToControl(universe, worldCreator);
     }, worldCreatorSettings);
-    var universe = Universe.create("Space_Strategy_4X", "0.0.0-2021-12-12", new TimerHelper(20), display, mediaLibrary, controlBuilder, worldCreator);
+    var universe = Universe.create("Space_Strategy_4X", null, // version,
+    new TimerHelper(20), display, mediaLibrary, controlBuilder, worldCreator);
     universe.initialize((x) => { x.start(); });
 }
 function worldCreatorToControl(universe, worldCreator) {

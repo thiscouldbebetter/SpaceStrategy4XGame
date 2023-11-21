@@ -1,0 +1,2 @@
+_BuildRecord.ts(2,7): error TS2300: Duplicate identifier '_BuildRecord'.
+Framework/Source/_BuildRecord.ts(2,7): error TS2300: Duplicate identifier '_BuildRecord'.

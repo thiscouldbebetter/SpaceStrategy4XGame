@@ -14,6 +14,11 @@ class NotificationSession
 		this.notificationSelected = null;
 	}
 
+	clear(): void
+	{
+		this.notifications.length = 0;
+	}
+
 	notificationAdd(notification: Notification2): void
 	{
 		this.notifications.push(notification);

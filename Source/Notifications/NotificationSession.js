@@ -5,6 +5,9 @@ class NotificationSession {
         this.notifications = notifications;
         this.notificationSelected = null;
     }
+    clear() {
+        this.notifications.length = 0;
+    }
     notificationAdd(notification) {
         this.notifications.push(notification);
     }

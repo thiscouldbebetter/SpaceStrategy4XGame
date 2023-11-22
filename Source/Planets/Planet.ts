@@ -51,7 +51,11 @@ class Planet extends Entity
 
 		this.ships = [];
 
-		this.resourcesAccumulated = [];
+		this.resourcesAccumulated =
+		[
+			new Resource("Industry", 0),
+			new Resource("Prosperity", 0)
+		];
 	}
 
 	static fromNameTypeAndPos(name: string, planetType: PlanetType, pos: Coords)
@@ -331,9 +335,14 @@ class Planet extends Entity
 		return returnValue;
 	}
 
+	industryAccumulated(): number
+	{
+		return this.industry.planetIndustryAccumulated(this);
+	}
+
 	industryPerTurn
 	(
-		universe: Universe, world: WorldExtended, faction: Faction
+		universe: Universe, world: WorldExtended
 	): number
 	{
 		var resource = this.resourcesPerTurnByName

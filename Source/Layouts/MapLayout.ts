@@ -5,7 +5,7 @@ class MapLayout
 	pos: Coords;
 	terrains: MapTerrain[];
 	cellsAsStrings: string[];
-	bodies: Entity[];
+	private _bodies: Entity[];
 
 	cellSizeInPixels: Coords;
 	cellSizeInPixelsHalf: Coords;
@@ -38,7 +38,7 @@ class MapLayout
 		this.terrainsByName = ArrayHelper.addLookupsByName(this.terrains);
 
 		this.cellsAsStrings = cellsAsStrings;
-		this.bodies = bodies;
+		this._bodies = bodies;
 
 		this.sizeInCells = new Coords
 		(
@@ -76,6 +76,11 @@ class MapLayout
 
 	// instance methods
 
+	bodies(): Entity[]
+	{
+		return this._bodies;
+	}
+
 	bodiesNeighboringCursor(): Entity[]
 	{
 		return this.bodiesNeighboringPosInCells(this.cursor.pos);
@@ -101,12 +106,18 @@ class MapLayout
 		return returnValues;
 	}
 
+	bodyAdd(bodyToAdd: Entity): void
+	{
+		this._bodies.push(bodyToAdd);
+	}
+
 	bodyAtPosInCells(cellPos: Coords): Entity
 	{
 		var returnValue = null;
-		for (var i = 0; i < this.bodies.length; i++)
+		var bodies = this.bodies();
+		for (var i = 0; i < bodies.length; i++)
 		{
-			var body = this.bodies[i];
+			var body = bodies[i];
 			var bodyPos = body.locatable().loc.pos;
 			if (bodyPos.equals(cellPos))
 			{
@@ -122,6 +133,13 @@ class MapLayout
 		return this.bodyAtPosInCells(this.cursor.pos);
 	}
 
+	bodyRemove(bodyToRemove: Entity): void
+	{
+		this._bodies.splice
+		(
+			this._bodies.indexOf(bodyToRemove), 1
+		);
+	}
 	terrainAtPosInCells(cellPos: Coords): MapTerrain
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];

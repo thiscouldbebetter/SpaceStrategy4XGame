@@ -15,19 +15,17 @@ class Layout {
                 this.buildableEntityRemove(buildableEntityInProgress);
             }
         }
-        var buildables = this.map.bodies;
-        buildables.push(buildableEntityToBuild);
+        this.map.bodyAdd(buildableEntityToBuild);
     }
     buildableEntityInProgress() {
-        return this.map.bodies.find(x => Buildable.fromEntity(x).isComplete == false);
+        return this.map.bodies().find(x => Buildable.fromEntity(x).isComplete == false);
     }
     buildableEntityRemove(buildableEntityToRemove) {
-        var bodies = this.map.bodies;
-        bodies.splice(bodies.indexOf(buildableEntityToRemove), 1);
+        this.map.bodyRemove(buildableEntityToRemove);
     }
     // turnable
     facilities() {
-        return this.map.bodies;
+        return this.map.bodies();
     }
     initialize(universe) {
         // todo

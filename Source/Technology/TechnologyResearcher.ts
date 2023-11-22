@@ -70,7 +70,7 @@ class TechnologyResearcher
 			{
 				var notification = new Notification2
 				(
-					"Default", world.turnsSoFar,
+					"Default", world.roundsSoFar,
 					"Nothing being researched.", "research" // locus
 				);
 				faction.notificationSession.notifications.push(notification);

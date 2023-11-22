@@ -187,7 +187,7 @@ class VenueLayout implements Venue
 					DataBinding.fromTrue(), // isEnabled,
 					() => // click
 					{
-						ArrayHelper.remove(layout.map.bodies, buildableAtCursorEntity);
+						ArrayHelper.remove(layout.map.bodies(), buildableAtCursorEntity);
 						universe.venueNext = venueThis;
 					}
 				),
@@ -282,7 +282,7 @@ class VenueLayout implements Venue
 				var cursorPos = layout.map.cursor.pos;
 				var buildable = new Buildable(buildableDefnName, cursorPos.clone(), false);
 				var buildableEntity = buildable.toEntity(world);
-				this.modelParent.buildableEntityBuild(buildableEntity)
+				this.modelParent.buildableEntityBuild(universe, buildableEntity);
 			}
 			universe.venueNext = venueLayout;
 		}
@@ -364,8 +364,39 @@ class VenueLayout implements Venue
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
-		var containerInnerSize = Coords.fromXY(100, 60);
+		var containerInnerSize =
+			containerMainSize.clone().divide(Coords.fromXY(8, 6) );
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
+
+		var buttonBack = ControlButton.from8
+		(
+			"buttonBack",
+			Coords.fromXY
+			(
+				(containerMainSize.x - buttonWidth) / 2,
+				containerMainSize.y - margin - controlHeight
+			), // pos
+			Coords.fromXY(buttonWidth, controlHeight), // size
+			"Back",
+			fontNameAndHeight,
+			true, // hasBorder
+			DataBinding.fromTrue(), // isEnabled
+			() => // click
+			{
+				var venue = universe.venueCurrent as VenueLayout;
+				var venueNext = venue.venueParent;
+				universe.venueTransitionTo(venueNext);
+			}
+		);
+
+		var controlVitals = this.toControl_Vitals
+		(
+			universe,
+			containerMainSize,
+			containerInnerSize,
+			margin,
+			controlHeight
+		);
 
 		var container = ControlContainer.from4
 		(
@@ -374,44 +405,19 @@ class VenueLayout implements Venue
 			containerMainSize,
 			// children
 			[
-				ControlButton.from8
-				(
-					"buttonBack",
-					Coords.fromXY
-					(
-						(containerMainSize.x - buttonWidth) / 2,
-						containerMainSize.y - margin - controlHeight
-					), // pos
-					Coords.fromXY(buttonWidth, controlHeight), // size
-					"Back",
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => // click
-					{
-						var venue = universe.venueCurrent as VenueLayout;
-						var venueNext = venue.venueParent;
-						universe.venueTransitionTo(venueNext);
-					}
-				),
-
-				this.toControl_Vitals
-				(
-					universe,
-					containerMainSize,
-					containerInnerSize,
-					margin,
-					controlHeight
-				),
+				buttonBack,
+				controlVitals
 			]
 		);
 
-		var planet = this.modelParent;
-		if (planet.factionName != null)
+		var planet = this.modelParent as Planet;
+		var planetFactionName = planet.factionable().factionName;
+
+		if (planetFactionName != null)
 		{
 			var factionCurrent = world.factionCurrent();
 
-			if (factionCurrent.name == planet.factionName)
+			if (factionCurrent.name == planetFactionName)
 			{
 				var faction = factionCurrent;
 
@@ -454,7 +460,6 @@ class VenueLayout implements Venue
 				);
 
 				container.childAdd(controlSelection);
-
 			}
 		}
 
@@ -534,7 +539,7 @@ class VenueLayout implements Venue
 
 				new ControlLabel
 				(
-					"labelResourcesRequired",
+					"textResourcesAccumulatedOverRequired",
 					Coords.fromXY(margin, controlHeight * 2 + margin), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
@@ -542,20 +547,75 @@ class VenueLayout implements Venue
 					DataBinding.fromContextAndGet
 					(
 						planet,
-						(c) =>
+						(context: any) =>
 						{
-							var buildable = c.buildableInProgress();
+							var c = context as Planet;
+							var buildable = c.buildableInProgress(universe);
 							var returnValue =
 							(
 								buildable == null
 								? "-"
-								: buildable.defn(world).resourcesToBuild.toString()
+								: planet.industryAccumulated()
+									+ " / "
+									+ buildable.defn(world).industryToBuild
 							);
 							return returnValue;
 						}
 					),
 					fontNameAndHeight
 				),
+
+				new ControlLabel
+				(
+					"textExpected",
+					Coords.fromXY(margin, controlHeight * 3 + margin), // pos
+					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						planet,
+						(context: any) =>
+						{
+							var returnValue = "";
+
+							var c = context as Planet;
+							var buildable = c.buildableInProgress(universe);
+							if (buildable == null)
+							{
+								returnValue = "-";
+							}
+							else
+							{
+								var defn = buildable.defn(world);
+								var industryToBuild = defn.industryToBuild;
+								var industryRemaining = 
+									industryToBuild
+									- planet.industryAccumulated();
+								var industryProducedThisTurn =
+									planet.industryPerTurn(universe, world);
+								var roundsToBuild: string;
+								if (industryProducedThisTurn == 0)
+								{
+									roundsToBuild = "infinite";
+								}
+								else
+								{
+									roundsToBuild = "" + Math.ceil
+									(
+										industryRemaining / industryProducedThisTurn
+									);
+									returnValue = roundsToBuild;
+								}
+
+								returnValue = "Rounds left: " + roundsToBuild;
+							}
+
+							return returnValue;
+						}
+					),
+					fontNameAndHeight
+				)
 			]
 		);
 
@@ -610,8 +670,44 @@ class VenueLayout implements Venue
 
 				new ControlLabel
 				(
+					"textPlanetType",
+					Coords.fromXY(margin,  margin + controlHeight * 1), // pos
+					Coords.fromXY
+					(
+						containerInnerSize.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						planet, (c: Planet) => c.planetType.name()
+					),
+					fontNameAndHeight
+				),
+
+				new ControlLabel
+				(
+					"textFaction",
+					Coords.fromXY(margin,  margin + controlHeight * 2), // pos
+					Coords.fromXY
+					(
+						containerInnerSize.x - margin * 2,
+						controlHeight
+					), // size
+					false, // isTextCenteredHorizontally
+					false, // isTextCenteredVertically
+					DataBinding.fromContextAndGet
+					(
+						planet, (c: Planet) => c.factionable().factionName
+					),
+					fontNameAndHeight
+				),
+
+				new ControlLabel
+				(
 					"labelPopulation",
-					Coords.fromXY(margin, margin + controlHeight), // pos
+					Coords.fromXY(margin, margin + controlHeight * 3), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
@@ -622,7 +718,7 @@ class VenueLayout implements Venue
 				new ControlLabel
 				(
 					"textPopulation",
-					Coords.fromXY(column1PosX, margin + controlHeight), // pos
+					Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
@@ -637,7 +733,7 @@ class VenueLayout implements Venue
 				new ControlLabel
 				(
 					"labelIndustry",
-					Coords.fromXY(margin, margin + controlHeight * 2), // pos
+					Coords.fromXY(margin, margin + controlHeight * 4), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
@@ -648,14 +744,14 @@ class VenueLayout implements Venue
 				new ControlLabel
 				(
 					"textIndustry",
-					Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
+					Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
 						planet,
-						(c: Planet) => "" + c.industryPerTurn(universe, world, faction)
+						(c: Planet) => "" + c.industryPerTurn(universe, world)
 					),
 					fontNameAndHeight
 				),
@@ -663,7 +759,7 @@ class VenueLayout implements Venue
 				new ControlLabel
 				(
 					"labelProsperity",
-					Coords.fromXY(margin, margin + controlHeight * 3), // pos
+					Coords.fromXY(margin, margin + controlHeight * 5), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
@@ -674,7 +770,7 @@ class VenueLayout implements Venue
 				new ControlLabel
 				(
 					"textProsperity",
-					Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
+					Coords.fromXY(column1PosX, margin + controlHeight * 5), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
@@ -689,7 +785,7 @@ class VenueLayout implements Venue
 				new ControlLabel
 				(
 					"labelResearch",
-					Coords.fromXY(margin, margin + controlHeight * 4), // pos
+					Coords.fromXY(margin, margin + controlHeight * 6), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically
@@ -700,7 +796,7 @@ class VenueLayout implements Venue
 				new ControlLabel
 				(
 					"textResearch",
-					Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
+					Coords.fromXY(column1PosX, margin + controlHeight * 6), // pos
 					Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 					false, // isTextCenteredHorizontally
 					false, // isTextCenteredVertically

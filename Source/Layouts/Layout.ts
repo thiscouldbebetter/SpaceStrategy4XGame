@@ -28,13 +28,12 @@ class Layout
 			}
 		}
 
-		var buildables = this.map.bodies;
-		buildables.push(buildableEntityToBuild);
+		this.map.bodyAdd(buildableEntityToBuild);
 	}
 
 	buildableEntityInProgress(): Entity
 	{
-		return this.map.bodies.find
+		return this.map.bodies().find
 		(
 			x => Buildable.fromEntity(x).isComplete == false
 		);
@@ -42,18 +41,14 @@ class Layout
 
 	buildableEntityRemove(buildableEntityToRemove: Entity): void
 	{
-		var bodies = this.map.bodies;
-		bodies.splice
-		(
-			bodies.indexOf(buildableEntityToRemove), 1
-		);
+		this.map.bodyRemove(buildableEntityToRemove);
 	}
 
 	// turnable
 
 	facilities(): Entity[]
 	{
-		return this.map.bodies;
+		return this.map.bodies();
 	}
 
 	initialize(universe: Universe): void

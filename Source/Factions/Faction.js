@@ -1,7 +1,8 @@
 "use strict";
 class Faction {
-    constructor(name, homeStarsystemName, homePlanetName, color, diplomacy, technologyResearcher, planets, ships, knowledge, intelligence) {
+    constructor(name, defnName, homeStarsystemName, homePlanetName, color, diplomacy, technologyResearcher, planets, ships, knowledge, intelligence) {
         this.name = name;
+        this.defnName = defnName;
         this.homeStarsystemName = homeStarsystemName;
         this.homePlanetName = homePlanetName;
         this.color = color;
@@ -18,10 +19,13 @@ class Faction {
         return entity.propertyByName(Faction.name);
     }
     static fromName(name) {
-        return new Faction(name, null, // homeStarsystemName,
+        return new Faction(name, null, null, // homeStarsystemName,
         null, // homePlanetName,
         Color.Instances().Red, FactionDiplomacy.fromFactionSelfName(name), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.fromFactionSelfName(name), null // intelligence
         );
+    }
+    defn() {
+        return FactionDefn.byName(this.defnName);
     }
     detailsView(universe) {
         var factionDetailsAsControl = this.toControl_Details(universe);
@@ -62,17 +66,29 @@ class Faction {
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var faction = this;
         var size = Coords.fromXY(containerInnerSize.x, controlHeight * 2 + margin * 3);
+        var labelFaction = new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
+        false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext("Faction:"), fontNameAndHeight);
+        var textFaction = new ControlLabel("textFaction", Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext(faction.name), fontNameAndHeight);
+        var labelFactionType = new ControlLabel("labelFactionType", Coords.fromXY(margin, margin * 2), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
+        false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext("Type:"), fontNameAndHeight);
+        var textFactionType = new ControlLabel("textFactionType", Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin * 2), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext(faction.defn().name), fontNameAndHeight);
         var childControls = [
-            new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
-            Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Faction:"), fontNameAndHeight),
-            new ControlLabel("textFaction", Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
-            Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext(faction.name), fontNameAndHeight)
+            labelFaction, textFaction,
+            labelFactionType, textFactionType,
         ];
         if (includeDetailsButton) {
             var buttonDetails = ControlButton.from8("buttonDetails", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
@@ -100,19 +116,47 @@ class Faction {
         var tabbedControlSize = Coords.fromXY(size.x, size.y - tabButtonSize.y - margin - 2 // hack - Why 2?
         );
         var faction = this;
+        var controlSize = Coords.fromXY(margin * 16, controlHeight);
+        var labelFaction = new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
+        controlSize, false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext("Faction:"), fontNameAndHeight);
+        var textFaction = new ControlLabel("textFaction", Coords.fromXY(margin * 8, margin), // pos
+        controlSize, false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext(faction.name), fontNameAndHeight);
+        var labelFactionType = new ControlLabel("labelFactionType", Coords.fromXY(margin, margin * 2), // pos
+        controlSize, false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext("Type:"), fontNameAndHeight);
+        var textFactionType = new ControlLabel("textFactionType", Coords.fromXY(margin * 8, margin * 2), // pos
+        controlSize, false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext(faction.defnName), fontNameAndHeight);
+        var labelAbility = new ControlLabel("labelAbility", Coords.fromXY(margin, margin * 3), // pos
+        controlSize, false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext("Ability:"), fontNameAndHeight);
+        var textAbility = new ControlLabel("textAbility", Coords.fromXY(margin * 8, margin * 3), // pos
+        controlSize, false, // isTextCenteredHorizontally
+        false, // isTextCenteredVertically
+        DataBinding.fromContext(faction.defn().ability.toString(universe.world)), fontNameAndHeight);
+        var buttonAbilityUse = ControlButton.from8("buttonAbilityUse", Coords.fromXY(margin * 24, margin * 3), // pos
+        controlSize, "Use", fontNameAndHeight, true, // hasBorder
+        DataBinding.fromTrue(), // isEnabled
+        () => {
+            var world = universe.world;
+            var faction = world.factionCurrent();
+            var factionDefn = faction.defn();
+            factionDefn.ability.perform(world);
+        } // click
+        );
         var containerStatus = ControlContainer.from4("Status", Coords.create(), tabbedControlSize, 
         // children
         [
-            new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
-            Coords.fromXY(tabbedControlSize.x - margin * 2, controlHeight), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Faction:"), fontNameAndHeight),
-            new ControlLabel("textBoxFaction", Coords.fromXY(margin * 8, margin), // pos
-            Coords.fromXY(tabbedControlSize.x - margin * 2, controlHeight), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext(faction.name), fontNameAndHeight),
+            labelFaction, textFaction,
+            labelFactionType, textFactionType,
+            labelAbility, textAbility, buttonAbilityUse
         ]);
         var containerNotifications = this.toControl_Details_Notifications(universe, tabbedControlSize);
         var containerDiplomacy = this.toControl_Details_Diplomacy(universe, tabbedControlSize);

@@ -14,7 +14,11 @@ class Planet extends Entity {
         this.industry = industry;
         this._layout = layout;
         this.ships = [];
-        this.resourcesAccumulated = [];
+        this.resourcesAccumulated =
+            [
+                new Resource("Industry", 0),
+                new Resource("Prosperity", 0)
+            ];
     }
     static fromNameTypeAndPos(name, planetType, pos) {
         return new Planet(name, planetType, pos, null, // factionName
@@ -169,7 +173,10 @@ class Planet extends Entity {
             : Buildable.fromEntity(buildableEntityInProgress));
         return returnValue;
     }
-    industryPerTurn(universe, world, faction) {
+    industryAccumulated() {
+        return this.industry.planetIndustryAccumulated(this);
+    }
+    industryPerTurn(universe, world) {
         var resource = this.resourcesPerTurnByName(universe, world).get("Industry");
         return (resource == null ? 0 : resource.quantity);
     }

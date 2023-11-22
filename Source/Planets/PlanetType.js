@@ -55,23 +55,30 @@ class PlanetType {
         }
         return this._bodyDefn;
     }
+    byName(name) {
+        return PlanetType.Instances().byName(name);
+    }
     layoutCreate(universe) {
-        var viewSize = universe.display.sizeInPixels;
-        var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0);
         var mapSizeInCells = this.size.surfaceSizeInCells;
+        var world = universe.world;
+        var mapCellSizeInPixels = world.mapCellSizeInPixels(universe);
         var mapSizeInPixels = mapSizeInCells.clone().multiply(mapCellSizeInPixels);
+        var viewSize = universe.display.sizeInPixels;
         var mapPosInPixels = viewSize.clone().subtract(mapSizeInPixels).divideScalar(2).add(mapCellSizeInPixels.clone().half());
         mapPosInPixels.z = 0;
-        var terrains = MapTerrain.planet(mapCellSizeInPixels);
+        var terrains = MapTerrain.Instances(mapCellSizeInPixels);
+        var terrainDistribution = this.environment.terrainsToWeightedDistribution(terrains);
         var cellRowsAsStrings = new Array();
-        var terrainSurface = terrains.find(x => x.name == "Surface");
         for (var y = 0; y < mapSizeInCells.y; y++) {
-            var terrain = terrainSurface; // todo
-            var cellRowAsString = "".padStart(mapSizeInCells.x, terrain.codeChar);
+            var cellRowAsString = "";
+            for (var x = 0; x < mapSizeInCells.x; x++) {
+                var terrain = terrainDistribution.valueRandom();
+                cellRowAsString += terrain.codeChar;
+            }
             cellRowsAsStrings.push(cellRowAsString);
         }
         var map = new MapLayout(mapSizeInPixels, // mapSizeInPixels
-        mapPosInPixels, terrains, cellRowsAsStrings, [] // bodies
+        mapPosInPixels, terrains._Planet, cellRowsAsStrings, [] // bodies
         );
         var layout = new Layout(viewSize.clone(), // sizeInPixels
         map);

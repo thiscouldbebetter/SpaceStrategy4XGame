@@ -31,6 +31,12 @@ class Network2 extends Place {
         this.drawPosFrom = Coords.create();
         this.drawPosTo = Coords.create();
     }
+    static empty() {
+        return new Network2("dummy", [], // nodes
+        [] // links
+        );
+    }
+    ;
     static generateRandom(universe, name, nodeDefns, numberOfNodes) {
         var nodesNotYetLinked = [];
         var radiusMin = .25;

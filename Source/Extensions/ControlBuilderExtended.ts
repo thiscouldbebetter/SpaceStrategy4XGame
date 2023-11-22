@@ -224,18 +224,18 @@ class ControlBuilderExtended extends ControlBuilder
 
 			new ControlLabel
 			(
-				"labelTurn",
+				"labelRound",
 				Coords.fromXY(margin, margin + controlHeight), // pos
 				Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
-				DataBinding.fromContext("Turn:"),
+				DataBinding.fromContext("Round:"),
 				fontNameAndHeight
 			),
 
 			new ControlLabel
 			(
-				"textTurn",
+				"textRound",
 				Coords.fromXY(margin + 25, margin + controlHeight), // pos
 				Coords.fromXY
 				(
@@ -247,7 +247,7 @@ class ControlBuilderExtended extends ControlBuilder
 				DataBinding.fromContextAndGet
 				(
 					universe,
-					(c: Universe) => "" + (c.world as WorldExtended).turnsSoFar
+					(c: Universe) => "" + ( (c.world as WorldExtended).roundsSoFar + 1)
 				),
 				fontNameAndHeight
 			)

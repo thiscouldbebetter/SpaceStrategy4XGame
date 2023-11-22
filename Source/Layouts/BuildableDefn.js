@@ -1,12 +1,12 @@
 "use strict";
 class BuildableDefn {
-    constructor(name, isItem, terrainNamesAllowed, sizeInPixels, visual, resourcesToBuild, resourcesPerTurn, entityModifyOnBuild) {
+    constructor(name, isItem, terrainNamesAllowed, sizeInPixels, visual, industryToBuild, resourcesPerTurn, entityModifyOnBuild) {
         this.name = name;
         this.isItem = isItem;
         this.terrainNamesAllowed = terrainNamesAllowed;
         this.sizeInPixels = sizeInPixels;
         this.visual = this.visualWrapWithOverlay(visual);
-        this.resourcesToBuild = resourcesToBuild;
+        this.industryToBuild = industryToBuild;
         this.resourcesPerTurn = resourcesPerTurn;
         this.entityModifyOnBuild = entityModifyOnBuild;
     }

@@ -61,17 +61,21 @@ class BuildableDefnsBasic
 	SurfacePlantationAdvanced: BuildableDefn;
 	SurfaceShield: BuildableDefn;
 	SurfaceShieldAdvanced: BuildableDefn;
+	SurfaceTransportTubes: BuildableDefn;
 
 	_All: BuildableDefn[];
 
-	constructor()
+	constructor(mapCellSizeInPixels: Coords)
 	{
-		var mapCellSizeInPixels = Coords.fromXY(20, 20); // hack
 		var fontHeight = mapCellSizeInPixels.y / 2;
 
-		var terrainNamesOrbital = [ "Orbit" ];
-		var terrainNamesShip = [ "Ship" ];
-		var terrainNamesSurface = [ "Surface" ];
+		var terrains = MapTerrain.Instances(mapCellSizeInPixels);
+
+		var terrainNamesOrbital = [ terrains.Orbit.name ];
+		var terrainNamesShip = [ terrains.Ship.name ];
+		var terrainNamesSurface = terrains._Surface.map(x => x.name);
+		var terrainNamesSurfaceUsable =
+			terrainNamesSurface.filter(x => x != terrains.SurfaceUnusable.name);
 
 		var colors = Color.Instances();
 
@@ -90,8 +94,6 @@ class BuildableDefnsBasic
 			]);
 		};
 
-		var industryToBuild = (amount: number) => [ new Resource("Industry", amount) ];
-
 		var facilityOrbital = (name: string, visual: VisualBase, industryToBuildAmount: number) =>
 			new BuildableDefn
 			(
@@ -100,12 +102,25 @@ class BuildableDefnsBasic
 				terrainNamesOrbital,
 				mapCellSizeInPixels,
 				visual,
-				industryToBuild(industryToBuildAmount),
+				industryToBuildAmount,
 				null, // resourcesProducedPerTurn
 				null // entityModifyOnBuild
 			);
 
-		var facilitySurface = (name: string, visual: VisualBase, industryToBuildAmount: number, resourcesProducedPerTurn: Resource[]) =>
+		var facilitySurfaceUsable = (name: string, visual: VisualBase, industryToBuildAmount: number, resourcesProducedPerTurn: Resource[]) =>
+			new BuildableDefn
+			(
+				name,
+				false, // isItem
+				terrainNamesSurfaceUsable,
+				mapCellSizeInPixels,
+				visual,
+				industryToBuildAmount,
+				resourcesProducedPerTurn,
+				null // entityModifyOnBuild
+			);
+
+		var facilitySurfaceAnywhere = (name: string, visual: VisualBase, industryToBuildAmount: number) =>
 			new BuildableDefn
 			(
 				name,
@@ -113,8 +128,8 @@ class BuildableDefnsBasic
 				terrainNamesSurface,
 				mapCellSizeInPixels,
 				visual,
-				industryToBuild(industryToBuildAmount),
-				resourcesProducedPerTurn,
+				industryToBuildAmount,
+				null, // resourcesProducedPerTurn,
 				null // entityModifyOnBuild
 			);
 
@@ -126,7 +141,7 @@ class BuildableDefnsBasic
 				null, // terrainNames,
 				mapCellSizeInPixels,
 				visual,
-				null, // industryToBuild(industryToBuildAmount),
+				null, // industryToBuildAmount,
 				null, // resourcesProducedPerTurn,
 				null // entityModifyOnBuild
 			);
@@ -139,7 +154,7 @@ class BuildableDefnsBasic
 				terrainNamesShip,
 				mapCellSizeInPixels,
 				visual,
-				industryToBuild(industryToBuildAmount),
+				industryToBuildAmount,
 				null, // resourcesProducedPerTurn
 				null // entityModifyOnBuild
 			);
@@ -268,7 +283,7 @@ class BuildableDefnsBasic
 			terrainNamesOrbital,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Blue),
-			industryToBuild(240),
+			240,
 			[], // resourcesPerTurn
 			null // entityModifyOnBuild
 		);
@@ -280,7 +295,7 @@ class BuildableDefnsBasic
 			terrainNamesOrbital,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Green),
-			industryToBuild(120),
+			120,
 			[], // resourcesPerTurn
 			null // entityModifyOnBuild
 		);
@@ -292,7 +307,7 @@ class BuildableDefnsBasic
 			terrainNamesOrbital,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Red),
-			industryToBuild(60),
+			60,
 			[], // resourcesPerTurn
 			null // entityModifyOnBuild
 		);
@@ -304,7 +319,7 @@ class BuildableDefnsBasic
 			terrainNamesOrbital,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Gray),
-			industryToBuild(30),
+			30,
 			[], // resourcesPerTurn
 			null // entityModifyOnBuild
 		);
@@ -427,14 +442,14 @@ class BuildableDefnsBasic
 					mapCellSizeInPixels, Color.byName("Orange")
 				)
 			]),
-			industryToBuild(100),
+			100,
 			[], // resourcesPerTurn
 			// entityModifyOnBuild
 			(entity: Entity) =>
 				entity.propertyAdd(new Shipyard() )
 		);
 
-		this.SurfaceCloak = facilitySurface
+		this.SurfaceCloak = facilitySurfaceUsable
 		(
 			"Surface Cloak",
 			visualBuild("Cloak", colors.Gray),
@@ -442,7 +457,7 @@ class BuildableDefnsBasic
 			null // resourcesPerTurn
 		);
 
-		this.SurfaceColonyHub = facilitySurface
+		this.SurfaceColonyHub = facilitySurfaceUsable
 		(
 			"Colony Hub",
 			visualBuild("H", colors.Gray),
@@ -450,7 +465,7 @@ class BuildableDefnsBasic
 			[ new Resource("Industry", 1), new Resource("Prosperity", 1) ] // resourcesPerTurn
 		);
 
-		this.SurfaceFactory = facilitySurface
+		this.SurfaceFactory = facilitySurfaceUsable
 		(
 			"Factory",
 			visualBuild("F", colors.Red),
@@ -458,7 +473,7 @@ class BuildableDefnsBasic
 			[ new Resource("Industry", 1) ] // resourcesPerTurn
 		);
 
-		this.SurfaceFactoryAdvanced = facilitySurface
+		this.SurfaceFactoryAdvanced = facilitySurfaceUsable
 		(
 			"Factory, Advanced",
 			visualBuild("F", colors.Pink),
@@ -466,7 +481,7 @@ class BuildableDefnsBasic
 			[ new Resource("Industry", 2) ] // resourcesPerTurn
 		);
 
-		this.SurfaceFactoryMultiplier = facilitySurface
+		this.SurfaceFactoryMultiplier = facilitySurfaceUsable
 		(
 			"Factory Multiplier",
 			visualBuild("FM", colors.Pink),
@@ -474,7 +489,7 @@ class BuildableDefnsBasic
 			null // resourcesPerTurn
 		);
 
-		this.SurfaceLaboratory = facilitySurface
+		this.SurfaceLaboratory = facilitySurfaceUsable
 		(
 			"Laboratory",
 			visualBuild("L", colors.Blue),
@@ -482,7 +497,7 @@ class BuildableDefnsBasic
 			[ new Resource("Research", 1) ] // resourcesPerTurn
 		);
 
-		this.SurfaceLaboratoryAdvanced = facilitySurface
+		this.SurfaceLaboratoryAdvanced = facilitySurfaceUsable
 		(
 			"Laboratory, Advanced",
 			visualBuild("L", colors.BlueLight),
@@ -490,7 +505,7 @@ class BuildableDefnsBasic
 			[ new Resource("Research", 2) ] // resourcesPerTurn
 		);
 
-		this.SurfaceLaboratoryMultiplier = facilitySurface
+		this.SurfaceLaboratoryMultiplier = facilitySurfaceUsable
 		(
 			"Laboratory Multiplier",
 			visualBuild("LM", colors.Pink),
@@ -498,7 +513,7 @@ class BuildableDefnsBasic
 			null // resourcesPerTurn
 		);
 
-		this.SurfacePlantation = facilitySurface
+		this.SurfacePlantation = facilitySurfaceUsable
 		(
 			"Plantation",
 			visualBuild("P", colors.Green),
@@ -506,7 +521,7 @@ class BuildableDefnsBasic
 			[ new Resource("Prosperity", 1) ] // resourcesPerTurn
 		);
 
-		this.SurfacePlantationAdvanced = facilitySurface
+		this.SurfacePlantationAdvanced = facilitySurfaceUsable
 		(
 			"Plantation, Advanced",
 			visualBuild("P", colors.GreenLight),
@@ -514,7 +529,7 @@ class BuildableDefnsBasic
 			[ new Resource("Prosperity", 2) ] // resourcesPerTurn
 		);
 
-		this.SurfaceShield = facilitySurface
+		this.SurfaceShield = facilitySurfaceUsable
 		(
 			"Surface Shield",
 			visualBuild("S", colors.Red),
@@ -522,12 +537,19 @@ class BuildableDefnsBasic
 			null // resourcesPerTurn
 		);
 
-		this.SurfaceShieldAdvanced = facilitySurface
+		this.SurfaceShieldAdvanced = facilitySurfaceUsable
 		(
 			"Surface Shield, Advanced",
 			visualBuild("S", colors.Blue),
 			60,
 			null // resourcesPerTurn
+		);
+
+		this.SurfaceTransportTubes = facilitySurfaceAnywhere
+		(
+			"Transport Tubes",
+			visualBuild("T", colors.Red),
+			15
 		);
 
 		this._All =
@@ -591,6 +613,7 @@ class BuildableDefnsBasic
 			this.SurfaceShield,
 			this.SurfaceShieldAdvanced,
 
+			this.SurfaceTransportTubes
 		];
 	}
 }

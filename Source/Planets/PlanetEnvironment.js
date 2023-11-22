@@ -14,6 +14,17 @@ class PlanetEnvironment {
         }
         return PlanetEnvironment._instances;
     }
+    terrainsToWeightedDistribution(terrains) {
+        var proportionsWRGBK = this.relativeProportionsOfCellsWithColorsWRGBK;
+        var distribution = new WeightedDistribution([
+            new Weighted(proportionsWRGBK[0], terrains.SurfaceDefault),
+            new Weighted(proportionsWRGBK[1], terrains.SurfaceIndustry),
+            new Weighted(proportionsWRGBK[2], terrains.SurfaceProsperity),
+            new Weighted(proportionsWRGBK[3], terrains.SurfaceResearch),
+            new Weighted(proportionsWRGBK[4], terrains.SurfaceUnusable)
+        ]);
+        return distribution;
+    }
 }
 class PlanetEnvironment_Instances {
     constructor() {

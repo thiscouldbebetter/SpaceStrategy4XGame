@@ -31,6 +31,26 @@ class PlanetEnvironment
 		}
 		return PlanetEnvironment._instances;
 	}
+
+	terrainsToWeightedDistribution
+	(
+		terrains: MapTerrain_Instances
+	): WeightedDistribution<MapTerrain>
+	{
+		var proportionsWRGBK =
+			this.relativeProportionsOfCellsWithColorsWRGBK;
+
+		var distribution = new WeightedDistribution
+		([
+			new Weighted<MapTerrain>(proportionsWRGBK[0], terrains.SurfaceDefault),
+			new Weighted<MapTerrain>(proportionsWRGBK[1], terrains.SurfaceIndustry),
+			new Weighted<MapTerrain>(proportionsWRGBK[2], terrains.SurfaceProsperity),
+			new Weighted<MapTerrain>(proportionsWRGBK[3], terrains.SurfaceResearch),
+			new Weighted<MapTerrain>(proportionsWRGBK[4], terrains.SurfaceUnusable)
+		]);
+
+		return distribution;
+	}
 }
 
 class PlanetEnvironment_Instances

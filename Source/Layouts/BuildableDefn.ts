@@ -6,7 +6,7 @@ class BuildableDefn
 	terrainNamesAllowed: string[];
 	sizeInPixels: Coords;
 	visual: VisualBase;
-	resourcesToBuild: Resource[];
+	industryToBuild: number;
 	resourcesPerTurn: Resource[];
 	entityModifyOnBuild: (entity: Entity) => void;
 
@@ -17,7 +17,7 @@ class BuildableDefn
 		terrainNamesAllowed: string[],
 		sizeInPixels: Coords,
 		visual: VisualBase,
-		resourcesToBuild: Resource[],
+		industryToBuild: number,
 		resourcesPerTurn: Resource[],
 		entityModifyOnBuild: (entity: Entity) => void
 	)
@@ -27,7 +27,7 @@ class BuildableDefn
 		this.terrainNamesAllowed = terrainNamesAllowed;
 		this.sizeInPixels = sizeInPixels;
 		this.visual = this.visualWrapWithOverlay(visual);
-		this.resourcesToBuild = resourcesToBuild;
+		this.industryToBuild = industryToBuild;
 		this.resourcesPerTurn = resourcesPerTurn;
 		this.entityModifyOnBuild = entityModifyOnBuild;
 	}

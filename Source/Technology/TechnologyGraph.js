@@ -6,16 +6,19 @@ class TechnologyGraph {
         this.technologiesByName =
             ArrayHelper.addLookupsByName(this.technologies);
     }
-    static demo() {
+    static demo(mapCellSizeInPixels) {
         var t = (n, r, p, buildableDefnsAllowed) => new Technology(n, r, p, buildableDefnsAllowed.map(x => x.name));
-        var bds = new BuildableDefnsBasic();
+        var bds = new BuildableDefnsBasic(mapCellSizeInPixels);
         var returnValue = new TechnologyGraph("All Technologies", 
         // technologies
         [
             t("Default", 0, // research
             [], // prerequisites
             [
-                bds.SurfaceFactory, bds.SurfaceLaboratory, bds.SurfacePlantation,
+                bds.SurfaceFactory,
+                bds.SurfaceLaboratory,
+                bds.SurfacePlantation,
+                bds.SurfaceTransportTubes
             ]),
             t("Biology, Basic", 50, ["Default"], [bds.ShipItemColonyBuilder]),
             t("Drives, Basic", 50, ["Default"], [bds.ShipDriveBasic]),

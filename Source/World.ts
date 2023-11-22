@@ -15,7 +15,7 @@ class WorldExtended extends World
 	//private shipsByName: Map<string, Ship>;
 
 	factionIndexCurrent: number;
-	turnsSoFar: number;
+	roundsSoFar: number;
 
 	places: Place[];
 
@@ -45,7 +45,7 @@ class WorldExtended extends World
 			{
 				return this.places.find(x => x.name == placeName)
 			}, // placeGetByName
-			network.name
+			(network == null ? "dummy" : network.name)
 		);
 
 		this.buildableDefns = buildableDefns;
@@ -72,7 +72,7 @@ class WorldExtended extends World
 		this.defn.itemDefns.push(...itemDefns);
 		this.defn.itemDefnsByName = ArrayHelper.addLookupsByName(this.defn.itemDefns);
 
-		this.turnsSoFar = 0;
+		this.roundsSoFar = 0;
 		this.factionIndexCurrent = 0;
 
 		this.places = [];
@@ -100,12 +100,14 @@ class WorldExtended extends World
 			ActivityDefn.Instances()._All
 		]);
 
-		var buildableDefns = WorldExtended.create_BuildableDefns();
+		var viewSize = universe.display.sizeInPixels.clone();
+		var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
 
-		var technologyGraph = TechnologyGraph.demo();
+		var buildableDefns = WorldExtended.create_BuildableDefns(mapCellSizeInPixels);
+
+		var technologyGraph = TechnologyGraph.demo(mapCellSizeInPixels);
 		var technologiesFree = technologyGraph.technologiesFree();
 
-		var viewSize = universe.display.sizeInPixels.clone();
 		var viewDimension = viewSize.y;
 
 		var networkRadius = viewDimension * .25;
@@ -169,9 +171,9 @@ class WorldExtended extends World
 		return returnValue;
 	}
 
-	static create_BuildableDefns(): BuildableDefn[]
+	static create_BuildableDefns(mapCellSizeInPixels: Coords): BuildableDefn[]
 	{
-		return new BuildableDefnsBasic()._All;
+		return new BuildableDefnsBasic(mapCellSizeInPixels)._All;
 	}
 
 	static create_DeviceDefns(): DeviceDefn[]
@@ -192,6 +194,7 @@ class WorldExtended extends World
 		var factions = new Array<Faction>();
 		var ships = new Array<Ship>();
 
+		// hack
 		var worldDummy = new WorldExtended
 		(
 			"WorldDummy", // name
@@ -203,8 +206,9 @@ class WorldExtended extends World
 			network, // network
 			factions,
 			ships, // ships
-			null, // camera
+			null // camera
 		);
+		universe.world = worldDummy;
 
 		var colors = Color.Instances();
 		var colorsForFactions =
@@ -218,12 +222,15 @@ class WorldExtended extends World
 			colors.Gray
 		];
 
+		var factionDefnsChosen = FactionDefn.chooseRandomly(numberOfFactions);
+
 		for (var i = 0; i < numberOfFactions; i++)
 		{
 			this.create_FactionsAndShips_1
 			(
 				universe, worldDummy, network, colorsForFactions,
-				technologiesFree, deviceDefnsByName, i, ships
+				factionDefnsChosen, technologiesFree, deviceDefnsByName,
+				i, ships
 			);
 		}
 
@@ -303,6 +310,7 @@ class WorldExtended extends World
 		worldDummy: WorldExtended,
 		network: Network2,
 		colorsForFactions: Color[],
+		factionDefnsChosen: FactionDefn[],
 		technologiesFree: Technology[],
 		deviceDefnsByName: Map<string, DeviceDefn>,
 		i: number,
@@ -361,6 +369,10 @@ class WorldExtended extends World
 		var factionHomePlanet = planets[planetIndexRandom];
 		factionHomePlanet.factionable().factionSetByName(factionName);
 
+		var factionDefn = factionDefnsChosen[i];
+		var factionHomePlanetType = PlanetType.byName(factionDefn.planetStartingTypeName);
+		factionHomePlanet.planetType = factionHomePlanetType;
+
 		factionHomePlanet.demographics.population = 1;
 
 		var factionHomePlanetLayout = factionHomePlanet.layout(universe);
@@ -370,7 +382,7 @@ class WorldExtended extends World
 		var buildableAsEntity = buildable.toEntity(worldDummy);
 
 		var factionHomePlanetLayout = factionHomePlanet.layout(universe);
-		factionHomePlanetLayout.map.bodies.push
+		factionHomePlanetLayout.map.bodyAdd
 		(
 			buildableAsEntity
 		);
@@ -415,6 +427,7 @@ class WorldExtended extends World
 		var faction = new Faction
 		(
 			factionName,
+			factionDefn.name,
 			factionHomeStarsystem.name,
 			factionHomePlanet.name,
 			factionColor,
@@ -511,10 +524,18 @@ class WorldExtended extends World
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
-		if (this.turnsSoFar == 0)
+		// Do nothing.
+	}
+
+	private _mapCellSizeInPixels: Coords;
+	mapCellSizeInPixels(universe: Universe)
+	{
+		if (this._mapCellSizeInPixels == null)
 		{
-			this.updateForTurn(uwpe);
+			var viewSize = universe.display.sizeInPixels;
+			this._mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0);
 		}
+		return this._mapCellSizeInPixels;
 	}
 
 	placeForEntityLocatable(entityLocatable: Entity): any
@@ -546,34 +567,26 @@ class WorldExtended extends World
 		}
 	}
 
-
 	updateForTurn(uwpe: UniverseWorldPlaceEntities): void
 	{
 		uwpe.world = this;
 		var universe = uwpe.universe;
+		var world = universe.world as WorldExtended;
 
 		var factionForPlayer = this.factions[0];
 		var notifications = factionForPlayer.notificationSession.notifications;
-		if (this.turnsSoFar > 0 && notifications.length > 0)
+		if (this.roundsSoFar > 0 && notifications.length > 0)
 		{
 			factionForPlayer.notificationSessionStart(universe);
 		}
 		else
 		{
-			this.updateForTurn_IgnoringNotifications(universe);
-		}
-	}
-
-	updateForTurn_IgnoringNotifications(universe: Universe): void
-	{
-		this.network.updateForTurn(universe, this);
-
-		for (var i = 0; i < this.factions.length; i++)
-		{
-			var faction = this.factions[i];
-			faction.updateForTurn(universe, this);
+			// this.updateForTurn_IgnoringNotifications(universe);
 		}
 
-		this.turnsSoFar++;
+		this.network.updateForTurn(universe, world);
+		this.factions.forEach(x => x.updateForTurn(universe, world));
+
+		this.roundsSoFar++;
 	}
 }

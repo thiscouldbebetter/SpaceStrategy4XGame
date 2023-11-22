@@ -30,7 +30,7 @@ class TechnologyResearcher {
         var technologyBeingResearched = this.technologyBeingResearched(world);
         if (technologyBeingResearched == null) {
             if (amountToIncrement > 0) {
-                var notification = new Notification2("Default", world.turnsSoFar, "Nothing being researched.", "research" // locus
+                var notification = new Notification2("Default", world.roundsSoFar, "Nothing being researched.", "research" // locus
                 );
                 faction.notificationSession.notifications.push(notification);
             }

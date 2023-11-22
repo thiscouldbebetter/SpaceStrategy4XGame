@@ -96,7 +96,7 @@ class VenueLayout {
             DataBinding.fromTrue(), // isEnabled,
             () => // click
              {
-                ArrayHelper.remove(layout.map.bodies, buildableAtCursorEntity);
+                ArrayHelper.remove(layout.map.bodies(), buildableAtCursorEntity);
                 universe.venueNext = venueThis;
             }),
             ControlButton.from8("buttonDone", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
@@ -138,7 +138,7 @@ class VenueLayout {
                 var cursorPos = layout.map.cursor.pos;
                 var buildable = new Buildable(buildableDefnName, cursorPos.clone(), false);
                 var buildableEntity = buildable.toEntity(world);
-                this.modelParent.buildableEntityBuild(buildableEntity);
+                this.modelParent.buildableEntityBuild(universe, buildableEntity);
             }
             universe.venueNext = venueLayout;
         };
@@ -174,28 +174,31 @@ class VenueLayout {
         var margin = 8;
         var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var containerInnerSize = Coords.fromXY(100, 60);
+        var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(8, 6));
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
+        var buttonBack = ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
+        Coords.fromXY(buttonWidth, controlHeight), // size
+        "Back", fontNameAndHeight, true, // hasBorder
+        DataBinding.fromTrue(), // isEnabled
+        () => // click
+         {
+            var venue = universe.venueCurrent;
+            var venueNext = venue.venueParent;
+            universe.venueTransitionTo(venueNext);
+        });
+        var controlVitals = this.toControl_Vitals(universe, containerMainSize, containerInnerSize, margin, controlHeight);
         var container = ControlContainer.from4("containerMain", Coords.fromXY(0, 0), // pos
         containerMainSize, 
         // children
         [
-            ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
-            Coords.fromXY(buttonWidth, controlHeight), // size
-            "Back", fontNameAndHeight, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            () => // click
-             {
-                var venue = universe.venueCurrent;
-                var venueNext = venue.venueParent;
-                universe.venueTransitionTo(venueNext);
-            }),
-            this.toControl_Vitals(universe, containerMainSize, containerInnerSize, margin, controlHeight),
+            buttonBack,
+            controlVitals
         ]);
         var planet = this.modelParent;
-        if (planet.factionName != null) {
+        var planetFactionName = planet.factionable().factionName;
+        if (planetFactionName != null) {
             var factionCurrent = world.factionCurrent();
-            if (factionCurrent.name == planet.factionName) {
+            if (factionCurrent.name == planetFactionName) {
                 var faction = factionCurrent;
                 var controlFaction = faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, false // includeDetailsButton
                 );
@@ -235,17 +238,49 @@ class VenueLayout {
                     : buildable.defnName);
                 return returnValue;
             }), fontNameAndHeight),
-            new ControlLabel("labelResourcesRequired", Coords.fromXY(margin, controlHeight * 2 + margin), // pos
+            new ControlLabel("textResourcesAccumulatedOverRequired", Coords.fromXY(margin, controlHeight * 2 + margin), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(planet, (c) => {
-                var buildable = c.buildableInProgress();
+            DataBinding.fromContextAndGet(planet, (context) => {
+                var c = context;
+                var buildable = c.buildableInProgress(universe);
                 var returnValue = (buildable == null
                     ? "-"
-                    : buildable.defn(world).resourcesToBuild.toString());
+                    : planet.industryAccumulated()
+                        + " / "
+                        + buildable.defn(world).industryToBuild);
                 return returnValue;
             }), fontNameAndHeight),
+            new ControlLabel("textExpected", Coords.fromXY(margin, controlHeight * 3 + margin), // pos
+            Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContextAndGet(planet, (context) => {
+                var returnValue = "";
+                var c = context;
+                var buildable = c.buildableInProgress(universe);
+                if (buildable == null) {
+                    returnValue = "-";
+                }
+                else {
+                    var defn = buildable.defn(world);
+                    var industryToBuild = defn.industryToBuild;
+                    var industryRemaining = industryToBuild
+                        - planet.industryAccumulated();
+                    var industryProducedThisTurn = planet.industryPerTurn(universe, world);
+                    var roundsToBuild;
+                    if (industryProducedThisTurn == 0) {
+                        roundsToBuild = "infinite";
+                    }
+                    else {
+                        roundsToBuild = "" + Math.ceil(industryRemaining / industryProducedThisTurn);
+                        returnValue = roundsToBuild;
+                    }
+                    returnValue = "Rounds left: " + roundsToBuild;
+                }
+                return returnValue;
+            }), fontNameAndHeight)
         ]);
         return returnValue;
     }
@@ -266,42 +301,52 @@ class VenueLayout {
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(planet, (c) => c.name), fontNameAndHeight),
-            new ControlLabel("labelPopulation", Coords.fromXY(margin, margin + controlHeight), // pos
+            new ControlLabel("textPlanetType", Coords.fromXY(margin, margin + controlHeight * 1), // pos
+            Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContextAndGet(planet, (c) => c.planetType.name()), fontNameAndHeight),
+            new ControlLabel("textFaction", Coords.fromXY(margin, margin + controlHeight * 2), // pos
+            Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+            false, // isTextCenteredHorizontally
+            false, // isTextCenteredVertically
+            DataBinding.fromContextAndGet(planet, (c) => c.factionable().factionName), fontNameAndHeight),
+            new ControlLabel("labelPopulation", Coords.fromXY(margin, margin + controlHeight * 3), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Population:"), fontNameAndHeight),
-            new ControlLabel("textPopulation", Coords.fromXY(column1PosX, margin + controlHeight), // pos
+            new ControlLabel("textPopulation", Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(planet, (c) => "" + c.demographics.population), fontNameAndHeight),
-            new ControlLabel("labelIndustry", Coords.fromXY(margin, margin + controlHeight * 2), // pos
+            new ControlLabel("labelIndustry", Coords.fromXY(margin, margin + controlHeight * 4), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Industry:"), fontNameAndHeight),
-            new ControlLabel("textIndustry", Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
+            new ControlLabel("textIndustry", Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(planet, (c) => "" + c.industryPerTurn(universe, world, faction)), fontNameAndHeight),
-            new ControlLabel("labelProsperity", Coords.fromXY(margin, margin + controlHeight * 3), // pos
+            DataBinding.fromContextAndGet(planet, (c) => "" + c.industryPerTurn(universe, world)), fontNameAndHeight),
+            new ControlLabel("labelProsperity", Coords.fromXY(margin, margin + controlHeight * 5), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Prosperity:"), fontNameAndHeight),
-            new ControlLabel("textProsperity", Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
+            new ControlLabel("textProsperity", Coords.fromXY(column1PosX, margin + controlHeight * 5), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContextAndGet(planet, (c) => "" + c.prosperityPerTurn(universe, world, faction)), fontNameAndHeight),
-            new ControlLabel("labelResearch", Coords.fromXY(margin, margin + controlHeight * 4), // pos
+            new ControlLabel("labelResearch", Coords.fromXY(margin, margin + controlHeight * 6), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Research:"), fontNameAndHeight),
-            new ControlLabel("textResearch", Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
+            new ControlLabel("textResearch", Coords.fromXY(column1PosX, margin + controlHeight * 6), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically

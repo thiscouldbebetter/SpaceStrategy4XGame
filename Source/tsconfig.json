@@ -60,6 +60,7 @@
  
   "exclude":
   [
+    "Framework/Source/_BuildRecord.ts",
     "Framework/Source/Imports.ts",
     "Framework/Source/main.ts",
     "Framework/Source/Demo/",

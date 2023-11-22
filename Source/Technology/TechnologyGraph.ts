@@ -14,12 +14,12 @@ class TechnologyGraph
 			ArrayHelper.addLookupsByName(this.technologies);
 	}
 
-	static demo(): TechnologyGraph
+	static demo(mapCellSizeInPixels: Coords): TechnologyGraph
 	{
 		var t = (n: string, r: number, p: string[], buildableDefnsAllowed: BuildableDefn[]) =>
 			new Technology(n, r, p, buildableDefnsAllowed.map(x => x.name));
 
-		var bds = new BuildableDefnsBasic();
+		var bds = new BuildableDefnsBasic(mapCellSizeInPixels);
 
 		var returnValue = new TechnologyGraph
 		(
@@ -32,7 +32,10 @@ class TechnologyGraph
 					0, // research
 					[], // prerequisites
 					[
-						bds.SurfaceFactory, bds.SurfaceLaboratory, bds.SurfacePlantation,
+						bds.SurfaceFactory,
+						bds.SurfaceLaboratory,
+						bds.SurfacePlantation,
+						bds.SurfaceTransportTubes
 					]
 				),
 

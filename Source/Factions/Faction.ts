@@ -2,6 +2,7 @@
 class Faction implements EntityProperty<Faction>
 {
 	name: string;
+	defnName: string;
 	homeStarsystemName: string;
 	homePlanetName: string;
 	color: Color;
@@ -22,6 +23,7 @@ class Faction implements EntityProperty<Faction>
 	constructor
 	(
 		name: string,
+		defnName: string,
 		homeStarsystemName: string,
 		homePlanetName: string,
 		color: Color,
@@ -34,6 +36,7 @@ class Faction implements EntityProperty<Faction>
 	)
 	{
 		this.name = name;
+		this.defnName = defnName;
 		this.homeStarsystemName = homeStarsystemName;
 		this.homePlanetName = homePlanetName;
 		this.color = color;
@@ -59,6 +62,7 @@ class Faction implements EntityProperty<Faction>
 		return new Faction
 		(
 			name,
+			null,
 			null, // homeStarsystemName,
 			null, // homePlanetName,
 			Color.Instances().Red,
@@ -69,6 +73,11 @@ class Faction implements EntityProperty<Faction>
 			FactionKnowledge.fromFactionSelfName(name),
 			null // intelligence
 		);
+	}
+
+	defn(): FactionDefn
+	{
+		return FactionDefn.byName(this.defnName);
 	}
 
 	detailsView(universe: Universe): void
@@ -151,40 +160,76 @@ class Faction implements EntityProperty<Faction>
 			controlHeight * 2 + margin * 3
 		);
 
+		var labelFaction = new ControlLabel
+		(
+			"labelFaction",
+			Coords.fromXY(margin, margin),// pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 3,
+				controlHeight
+			), // size
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext("Faction:"),
+			fontNameAndHeight
+		);
+
+		var textFaction = new ControlLabel
+		(
+			"textFaction",
+			Coords.fromXY
+			(
+				margin * 2 + containerInnerSize.x * .3, margin
+			), // pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 2,
+				controlHeight
+			), // size
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext(faction.name),
+			fontNameAndHeight
+		);
+
+		var labelFactionType = new ControlLabel
+		(
+			"labelFactionType",
+			Coords.fromXY(margin, margin * 2),// pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 3,
+				controlHeight
+			), // size
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext("Type:"),
+			fontNameAndHeight
+		);
+
+		var textFactionType = new ControlLabel
+		(
+			"textFactionType",
+			Coords.fromXY
+			(
+				margin * 2 + containerInnerSize.x * .3, margin * 2
+			), // pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 2,
+				controlHeight
+			), // size
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext(faction.defn().name),
+			fontNameAndHeight
+		);
+
 		var childControls: Array<ControlBase> =
 		[
-			new ControlLabel
-			(
-				"labelFaction",
-				Coords.fromXY(margin, margin),// pos
-				Coords.fromXY
-				(
-					containerInnerSize.x - margin * 3,
-					controlHeight
-				), // size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext("Faction:"),
-				fontNameAndHeight
-			),
-
-			new ControlLabel
-			(
-				"textFaction",
-				Coords.fromXY
-				(
-					margin * 2 + containerInnerSize.x * .3, margin
-				), // pos
-				Coords.fromXY
-				(
-					containerInnerSize.x - margin * 2,
-					controlHeight
-				), // size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext(faction.name),
-				fontNameAndHeight
-			)
+			labelFaction, textFaction,
+			labelFactionType, textFactionType,
 		];
 
 		if (includeDetailsButton)
@@ -245,6 +290,96 @@ class Faction implements EntityProperty<Faction>
 
 		var faction = this;
 
+		var controlSize = Coords.fromXY
+		(
+			margin * 16,
+			controlHeight
+		);
+
+		var labelFaction = new ControlLabel
+		(
+			"labelFaction",
+			Coords.fromXY(margin, margin),// pos
+			controlSize,
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext("Faction:"),
+			fontNameAndHeight
+		);
+
+		var textFaction = new ControlLabel
+		(
+			"textFaction",
+			Coords.fromXY(margin * 8, margin), // pos
+			controlSize,
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext(faction.name),
+			fontNameAndHeight
+		);
+
+		var labelFactionType = new ControlLabel
+		(
+			"labelFactionType",
+			Coords.fromXY(margin, margin * 2),// pos
+			controlSize,
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext("Type:"),
+			fontNameAndHeight
+		);
+
+		var textFactionType = new ControlLabel
+		(
+			"textFactionType",
+			Coords.fromXY(margin * 8, margin * 2), // pos
+			controlSize,
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext(faction.defnName),
+			fontNameAndHeight
+		);
+
+		var labelAbility = new ControlLabel
+		(
+			"labelAbility",
+			Coords.fromXY(margin, margin * 3),// pos
+			controlSize,
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext("Ability:"),
+			fontNameAndHeight
+		);
+
+		var textAbility = new ControlLabel
+		(
+			"textAbility",
+			Coords.fromXY(margin * 8, margin * 3), // pos
+			controlSize,
+			false, // isTextCenteredHorizontally
+			false, // isTextCenteredVertically
+			DataBinding.fromContext(faction.defn().ability.toString(universe.world as WorldExtended)),
+			fontNameAndHeight
+		);
+
+		var buttonAbilityUse = ControlButton.from8
+		(
+			"buttonAbilityUse",
+			Coords.fromXY(margin * 24, margin * 3), // pos
+			controlSize,
+			"Use",
+			fontNameAndHeight,
+			true, // hasBorder
+			DataBinding.fromTrue(), // isEnabled
+			() =>
+			{
+				var world = universe.world as WorldExtended;
+				var faction = world.factionCurrent();
+				var factionDefn = faction.defn();
+				factionDefn.ability.perform(world);
+			} // click
+		);
+
 		var containerStatus = ControlContainer.from4
 		(
 			"Status",
@@ -252,36 +387,9 @@ class Faction implements EntityProperty<Faction>
 			tabbedControlSize,
 			// children
 			[
-				new ControlLabel
-				(
-					"labelFaction",
-					Coords.fromXY(margin, margin),// pos
-					Coords.fromXY
-					(
-						tabbedControlSize.x - margin * 2,
-						controlHeight
-					), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Faction:"),
-					fontNameAndHeight
-				),
-
-				new ControlLabel
-				(
-					"textBoxFaction",
-					Coords.fromXY(margin * 8, margin), // pos
-					Coords.fromXY
-					(
-						tabbedControlSize.x - margin * 2,
-						controlHeight
-					), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext(faction.name),
-					fontNameAndHeight
-				),
-
+				labelFaction, textFaction,
+				labelFactionType, textFactionType,
+				labelAbility, textAbility, buttonAbilityUse
 			]
 		);
 

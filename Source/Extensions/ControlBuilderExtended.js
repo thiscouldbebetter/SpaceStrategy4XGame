@@ -99,16 +99,16 @@ class ControlBuilderExtended extends ControlBuilder {
                 var venue = c.venueCurrent;
                 return (venue.model == null ? "" : venue.model().name);
             }), fontNameAndHeight),
-            new ControlLabel("labelTurn", Coords.fromXY(margin, margin + controlHeight), // pos
+            new ControlLabel("labelRound", Coords.fromXY(margin, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContext("Turn:"), fontNameAndHeight),
-            new ControlLabel("textTurn", Coords.fromXY(margin + 25, margin + controlHeight), // pos
+            DataBinding.fromContext("Round:"), fontNameAndHeight),
+            new ControlLabel("textRound", Coords.fromXY(margin + 25, margin + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(universe, (c) => "" + c.world.turnsSoFar), fontNameAndHeight)
+            DataBinding.fromContextAndGet(universe, (c) => "" + (c.world.roundsSoFar + 1)), fontNameAndHeight)
         ];
         childControls.push(...childControlsGuaranteed);
         if (includeTurnAdvanceButtons) {

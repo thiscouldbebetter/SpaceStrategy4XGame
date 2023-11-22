@@ -7,7 +7,7 @@ class MapLayout {
         this.terrainsByCodeChar = ArrayHelper.addLookups(this.terrains, (x) => x.codeChar);
         this.terrainsByName = ArrayHelper.addLookupsByName(this.terrains);
         this.cellsAsStrings = cellsAsStrings;
-        this.bodies = bodies;
+        this._bodies = bodies;
         this.sizeInCells = new Coords(this.cellsAsStrings[0].length, this.cellsAsStrings.length, 1);
         this.sizeInCellsMinusOnes =
             this.sizeInCells.clone().subtract(new Coords(1, 1, 1));
@@ -27,6 +27,9 @@ class MapLayout {
             ];
     }
     // instance methods
+    bodies() {
+        return this._bodies;
+    }
     bodiesNeighboringCursor() {
         return this.bodiesNeighboringPosInCells(this.cursor.pos);
     }
@@ -43,10 +46,14 @@ class MapLayout {
         }
         return returnValues;
     }
+    bodyAdd(bodyToAdd) {
+        this._bodies.push(bodyToAdd);
+    }
     bodyAtPosInCells(cellPos) {
         var returnValue = null;
-        for (var i = 0; i < this.bodies.length; i++) {
-            var body = this.bodies[i];
+        var bodies = this.bodies();
+        for (var i = 0; i < bodies.length; i++) {
+            var body = bodies[i];
             var bodyPos = body.locatable().loc.pos;
             if (bodyPos.equals(cellPos)) {
                 returnValue = body;
@@ -57,6 +64,9 @@ class MapLayout {
     }
     bodyAtCursor() {
         return this.bodyAtPosInCells(this.cursor.pos);
+    }
+    bodyRemove(bodyToRemove) {
+        this._bodies.splice(this._bodies.indexOf(bodyToRemove), 1);
     }
     terrainAtPosInCells(cellPos) {
         var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];

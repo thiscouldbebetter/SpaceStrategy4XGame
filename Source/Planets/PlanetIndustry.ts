@@ -1,6 +1,16 @@
 
 class PlanetIndustry
 {
+	planetIndustryAccumulatedClear(planet: Planet): void
+	{
+		planet.resourcesAccumulated.find(x => x.defnName == "Industry").quantity = 0;
+	}
+
+	planetIndustryAccumulated(planet: Planet): number
+	{
+		return planet.resourcesAccumulated.find(x => x.defnName == "Industry").quantity;
+	}
+
 	toStringDescription(universe: Universe, world: WorldExtended, planet: Planet): string
 	{
 		var buildableEntityInProgress =
@@ -17,10 +27,12 @@ class PlanetIndustry
 			var buildableInProgress =
 				Buildable.fromEntity(buildableEntityInProgress);
 			var buildableDefn = buildableInProgress.defn(world);
-			var resourcesToBuild = buildableDefn.resourcesToBuild;
+			var industryToBuild = buildableDefn.industryToBuild;
+
+			var industryAccumulated = this.planetIndustryAccumulated(planet);
 
 			var resourcesAccumulatedOverNeeded =
-				planet.resourcesAccumulated + "/" + resourcesToBuild;
+				industryAccumulated + "/" + industryToBuild;
 
 			buildableString +=
 				buildableDefn.name
@@ -49,7 +61,7 @@ class PlanetIndustry
 		{
 			var notification = new Notification2
 			(
-				"Default", world.turnsSoFar, "Nothing being built.", planet
+				"Default", world.roundsSoFar, "Nothing being built.", planet
 			);
 			faction.notificationSession.notificationAdd(notification);
 		}
@@ -58,10 +70,11 @@ class PlanetIndustry
 			var buildableInProgress =
 				Buildable.fromEntity(buildableEntityInProgress);
 			var buildableDefn = buildableInProgress.defn(world);
-			var resourcesToBuild = buildableDefn.resourcesToBuild;
-			if (Resource.isSupersetOf(resourcesAccumulated, resourcesToBuild))
+			var industryAccumulated = planet.industryAccumulated();
+			var industryToBuild = buildableDefn.industryToBuild;
+			if (industryAccumulated >= industryToBuild)
 			{
-				Resource.subtract(resourcesAccumulated, resourcesToBuild);
+				this.planetIndustryAccumulatedClear(planet);
 				buildableInProgress.isComplete = true;
 				buildableInProgress._visual = null;
 

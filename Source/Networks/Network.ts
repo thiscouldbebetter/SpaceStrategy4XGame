@@ -72,6 +72,16 @@ class Network2 extends Place
 		this.drawPosTo = Coords.create();
 	}
 
+	static empty(): Network2
+	{
+		return new Network2
+		(
+			"dummy",
+			[], // nodes
+			[] // links
+		);
+	};
+
 	static generateRandom
 	(
 		universe: Universe,

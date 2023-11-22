@@ -36,7 +36,7 @@ class PlanetSize_Instances
 	Small: PlanetSize;
 	Medium: PlanetSize;
 	Large: PlanetSize;
-	Enormous: PlanetSize;
+	Giant: PlanetSize;
 
 	_All: PlanetSize[];
 
@@ -60,7 +60,7 @@ class PlanetSize_Instances
 		this.Small 		= ps("Small", 4 );
 		this.Medium 	= ps("Medium", 5 );
 		this.Large 		= ps("Large", 6 );
-		this.Enormous 	= ps("Enormous", 7 );
+		this.Giant 	= ps("Giant", 7 );
 
 		this.Default = this.Medium;
 
@@ -72,7 +72,7 @@ class PlanetSize_Instances
 			this.Small,
 			this.Medium,
 			this.Large,
-			this.Enormous
+			this.Giant
 		];
 	}
 

@@ -37,7 +37,8 @@ class VisualStar {
         if (fadeFactor > 1) {
             fadeFactor = 1;
         }
-        var colorAtCenter = this.color.clone().valueMultiplyByScalar(2 * fadeFactor);
+        var colors = Color.Instances();
+        var colorAtCenter = colors.White.clone().valueMultiplyByScalar(2 * fadeFactor);
         var colorAtBorder = this.color.clone().valueMultiplyByScalar(fadeFactor);
         var colorSpace = colorAtBorder.clone().alphaSet(0);
         var display = universe.display;

@@ -41,7 +41,7 @@ class BuildableDefnsLegacy {
         this.OrbitalShield1OrbitalShield = facilityOrbital("Orbital Shield", visualBuild("S", colors.Red), 60);
         this.OrbitalShield2OrbitalMegaShield = facilityOrbital("Orbital Mega Shield", visualBuild("S", colors.Blue), 120);
         this.OrbitalShipyard = facilityOrbital("Shipyard", visualBuild("Y", colors.Blue), 120);
-        this.OrbitalWeapon1MissileBase = facilityOrbital("Orbital Missile Base", visualBuild("W", colors.Gray), 60);
+        this.OrbitalWeapon1OrbitalMissileBase = facilityOrbital("Orbital Missile Base", visualBuild("W", colors.Gray), 60);
         this.OrbitalWeapon2ShortRangeOrbitalWhopper = facilityOrbital("Short-Range Orbital Whopper", visualBuild("W", colors.Red), 90);
         this.OrbitalWeapon3LongRangeOrbitalWhopper = facilityOrbital("Long-Range Orbital Whopper", visualBuild("W", colors.Green), 180);
         // Planetwide.
@@ -189,7 +189,7 @@ class BuildableDefnsLegacy {
                 this.OrbitalShield1OrbitalShield,
                 this.OrbitalShield2OrbitalMegaShield,
                 this.OrbitalShipyard,
-                this.OrbitalWeapon1MissileBase,
+                this.OrbitalWeapon1OrbitalMissileBase,
                 this.OrbitalWeapon2ShortRangeOrbitalWhopper,
                 this.OrbitalWeapon3LongRangeOrbitalWhopper,
                 this.PlanetwideFocusAlienHospitality,

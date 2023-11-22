@@ -6,7 +6,7 @@ class BuildableDefnsLegacy
 	OrbitalShield1OrbitalShield: BuildableDefn;
 	OrbitalShield2OrbitalMegaShield: BuildableDefn;
 	OrbitalShipyard: BuildableDefn;
-	OrbitalWeapon1MissileBase: BuildableDefn;
+	OrbitalWeapon1OrbitalMissileBase: BuildableDefn;
 	OrbitalWeapon2ShortRangeOrbitalWhopper: BuildableDefn;
 	OrbitalWeapon3LongRangeOrbitalWhopper: BuildableDefn;
 	PlanetwideFocusAlienHospitality: BuildableDefn;
@@ -252,7 +252,7 @@ class BuildableDefnsLegacy
 			120
 		);
 
-		this.OrbitalWeapon1MissileBase = facilityOrbital
+		this.OrbitalWeapon1OrbitalMissileBase = facilityOrbital
 		(
 			"Orbital Missile Base",
 			visualBuild("W", colors.Gray),
@@ -579,7 +579,7 @@ class BuildableDefnsLegacy
 			this.OrbitalShield1OrbitalShield,
 			this.OrbitalShield2OrbitalMegaShield,
 			this.OrbitalShipyard,
-			this.OrbitalWeapon1MissileBase,
+			this.OrbitalWeapon1OrbitalMissileBase,
 			this.OrbitalWeapon2ShortRangeOrbitalWhopper,
 			this.OrbitalWeapon3LongRangeOrbitalWhopper,
 			this.PlanetwideFocusAlienHospitality,

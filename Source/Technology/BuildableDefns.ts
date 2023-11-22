@@ -1,5 +1,4 @@
 
-
 class BuildableDefnsBasic
 {
 	OrbitalCloak: BuildableDefn;

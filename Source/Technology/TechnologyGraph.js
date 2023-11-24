@@ -60,75 +60,141 @@ class TechnologyGraph {
         // Technologies from the game _Ascendancy_.
         var t = (n, p, r, a) => new Technology(n, r, p, a.map(x => x.name)); // Note different orders.
         var bds = new BuildableDefnsLegacy(mapCellSizeInPixels);
+        var OrbitalStructures = "Orbital Structures";
+        var InterplanetaryExploration = "Interplanetary Exploration";
+        var TonklinDiary = "Tonklin Diary";
+        var Xenobiology = "Xenobiology";
+        var EnvironmentalEncapsulation = "Environmental Encapsulation";
+        var SpectralAnalysis = "Spectral Analysis";
+        var Superconductivity = "Superconductivity";
+        var SpacetimeSurfing = "Spacetime Surfing";
+        var AdvancedChemistry = "Advanced Chemistry";
+        var AdvancedInterferometry = "Advanced Interferometry";
+        var Cloaking = "Cloaking";
+        var PowerConversion = "Power Conversion";
+        var GravityControl = "Gravity Control";
+        var Hyperlogic = "Hyperlogic";
+        var MomentumDeconservation = "Momentum Deconservation";
+        var Diplomatics = "Diplomatics";
+        var MolecularExplosives = "Molecular Explosives";
+        var StrongForceWeakening = "Strong Force Weakening";
+        var LevelLogic = "Level Logic";
+        var LightBending = "Light Bending";
+        var Gravimetrics = "Gravimetrics";
+        var EMFieldCoupling = "EM Field Coupling";
+        var MassPhasing = "Mass Phasing";
+        var ThoughtAnalysis = "Thought Analysis";
+        var AdvancedFunTechniques = "Advanced Fun Techniques";
+        var PositronGuidance = "Positron Guidance";
+        var Subatomics = "Subatomics";
+        var AdvancedExploration = "Advanced Exploration";
+        var GravimetricCombustion = "Gravimetric Combustion";
+        var Plasmatics = "Plasmatics";
+        var PlanetaryReplenishment = "Planetary Replenishment";
+        var MomentumReflection = "Momentum Reflection";
+        var LargeScaleConstruction = "Large Scale Construction";
+        var Hyperradiation = "Hyperradiation";
+        var SuperstringCompression = "Superstring Compression";
+        var MuratroydHypothesis = "Muratroyd Hypothesis";
+        var EnergyRedirection = "Energy Redirection";
+        var StasisFieldScience = "Stasis Field Science";
+        var MatterDuplication = "Matter Duplication";
+        var ScientificSorcery = "Scientific Sorcery";
+        var StarlaneAnatomy = "Starlane Anatomy";
+        var CoherentPhotonics = "Coherent Photonics";
+        var Microbotics = "Microbotics";
+        var EnergyFocusing = "Energy Focusing";
+        var InertialControl = "Inertial Control";
+        var AdvancedPlanetaryArmaments = "Advanced Planetary Armaments";
+        var FergnatzsLastTheorem = "Fergnatz's Last Theorem";
+        var Hypergeometry = "Hypergeometry";
+        var RepulsionBeamTech = "Repulsion Beam Tech";
+        var HyperwaveTechnology = "Hyperwave Technology";
+        var MegagraphTheory = "Megagraph Theory";
+        var Nanoenergons = "Nanoenergons";
+        var EcospherePhaseControl = "Ecosphere Phase Control";
+        var Teleinfiltration = "Teleinfiltration";
+        var HyperwaveEmissionControl = "Hyperwave Emission Control";
+        var HyperdriveTechnology = "Hyperdrive Technology";
+        var Action, tADistance = "Action at a Distance";
+        var Doom, Mechanization = "Doom Mechanization";
+        var Nanofocusing = "Nanofocusing";
+        var Snooping = "Snooping";
+        var SelfModifyingStructures = "Self Modifying Structures";
+        var Nanopropulsion = "Nanopropulsion";
+        var Nanodeflection = "Nanodeflection";
+        var AccelEnergyReplenishment = "Accel Energy Replenishment";
+        var GravityFlowControl = "Gravity Flow Control";
+        var IllusoryMachinations = "Illusory Machinations";
         var returnValue = new TechnologyGraph("All Technologies", 
         // technologies
         [
-            t("Orbital Structures", [], 50, [bds.OrbitalShipyard, bds.OrbitalShield1OrbitalShield]),
-            t("Interplanetary Exploration", ["Orbital Structures"], 50, [bds.ShipHull1Small, bds.ShipHull2Medium, bds.ShipGenerator1ProtonShaver]),
-            t("Tonklin Diary", [], 50, [bds.ShipDrive1TonklinMotor, bds.ShipSensor1TonklinFrequencyAnalyzer]),
-            t("Xenobiology", [], 90, [bds.SurfaceXenoArchaeologicalDig]),
-            t("Environmental Encapsulation", ["Xenobiology"], 50, [bds.SurfaceColonyHub, bds.ShipShield1IonWrap, bds.ShipItemColonizer]),
-            t("Spectral Analysis", ["Tonklin Diary"], 120, [bds.ShipWeapon02FourierMissiles]),
-            t("Superconductivity", ["Tonklin Diary"], 100, [bds.SurfaceShield1SurfaceShield, bds.ShipWeapon01MassBarrageGun]),
-            t("Spacetime Surfing", ["Tonklin Diary", "Interplantary Exploration"], 90, [bds.ShipStarlaneDrive1StarLaneDrive]),
-            t("Advanced Chemistry", ["Environmental Encapsulation"], 100, [bds.SurfaceArtificialHypdroponifer, bds.ShipDrive2IonBanger]),
-            t("Advanced Interferometry", ["Spectral Analysis"], 90, [bds.ShipSensor2SubspacePhaseArray, bds.ShipItemInvasionModule]),
-            t("Cloaking", ["Advanced Interferometry"], 1800, [bds.SurfaceCloaker, bds.OrbitalCloaker, bds.ShipItemCloaker]),
-            t("Power Conversion", ["Spacetime Surfing"], 100, [bds.OrbitalWeapon1OrbitalMissileBase, bds.ShipGenerator2SubatomicScoop]),
-            t("Gravity Control", ["Spacetime Surfing"], 560, [bds.ShipWeapon03QuantumSingularityLauncher]),
-            t("Hyperlogic", ["Advanced Interferometry", "Xenobiology"], 1120, [bds.SurfaceResearchCampus, bds.ShipItemIntellectScrambler, bds.ShipItemXRayMegaglasses]),
-            t("Momentum Deconservation", ["Spacetime Surfing"], 280, [bds.ShipShield2ConcussionShield]),
-            t("Diplomatics", ["Hyperlogic"], 2000, [bds.SurfaceObservationInstallation, bds.PlanetwideFocusAlienHospitality]),
-            t("Molecular Explosives", ["Spectral Analysis", "Power Conversion"], 720, [bds.ShipItemPhaseBomb, bds.ShipItemMassCondensor]),
-            t("Strong Force Weakening", ["Power Conversion"], 980, [bds.ShipWeapon04MolecularDisassociator]),
-            t("Level Logic", ["Hyperlogic"], 3300, [bds.PlanetwideFocusScientistTakeover]),
-            t("Light Bending", ["Gravity Control"], 2560, [bds.ShipShield3WaveScatterer, bds.ShipItemReplenisher]),
-            t("Gravimetrics", ["Gravity Control"], 1320, [bds.OrbitalDocks, bds.ShipItemMolecularTieDown]),
-            t("EM Field Coupling", ["Light Bending"], 4200, [bds.ShipWeapon05ElectromagneticPulser, bds.ShipSensor3AuralCloudConstrictor]),
-            t("Mass Phasing", ["Gravimetrics"], 2200, [bds.ShipItemGravimetricCatapult]),
-            t("Thought Analysis", ["Level Logic"], 7700, [bds.SurfaceEngineeringRetreat]),
-            t("Advanced Fun Techniques", ["Diplomatics"], 5580, [bds.SurfaceLogicFactory, bds.PlanetwideFocusEndlessParty]),
-            t("Positron Guidance", ["Molecular Explosives"], 2400, [bds.SurfaceIndustrialMegafacility, bds.ShipItemPositronBouncer]),
-            t("Subatomics", ["Positron Guidance"], 3300, [bds.SurfaceHyperpowerPlant, bds.ShipGenerator3QuarkExpress]),
-            t("Advanced Exploration", ["Mass Phasing, Hyperlogic"], 4140, [bds.ShipStarlaneDrive2StarLaneHyperdrive, bds.ShipHull3Large]),
-            t("Gravimetric Combustion", ["Gravimetrics", "Positron Guidance"], 2600, [bds.ShipDrive3GravitonProjector, bds.ShipItemToroidalBlaster]),
-            t("Plasmatics", ["Subatomics"], 5700, [bds.ShipWeapon06Plasmatron, bds.ShipItemPlasmaCoupler]),
-            t("Planetary Replenishment", ["Gravimetric Combustion", "Environmental Encapsulation"], 2560, [bds.SurfaceHabitat, bds.SurfaceTerraforming]),
-            t("Momentum Reflection", ["Subatomics, Momentum Deconservation"], 4420, [bds.ShipItemGravityDistorter]),
-            t("Large Scale Construction", ["Gravimetric Combustion", "Advanced Exploration"], 4200, [bds.SurfaceMetroplex, bds.ShipHull4Enormous]),
-            t("Hyperradiation", ["Momentum Reflection", "EM Field Coupling"], 5040, [bds.ShipSensor4HyperwaveTympanum, bds.ShipGenerator4VanKreegHypersplicer]),
-            t("Superstring Compression", ["Plasmatics"], 3640, [bds.ShipItemHyperfuel]),
-            t("Muratroyd Hypothesis", ["Superstring Compression", "Level Logic"], 5940, [bds.OrbitalWeapon2ShortRangeOrbitalWhopper, bds.ShipSensor5MurgatroydsKnower, bds.ShipItemGyroInductor]),
-            t("Energy Redirection", ["Hyperradiation"], 4400, [bds.ShipShield4Deactotron, bds.ShipItemRecaller, bds.ShipItemSacrificialOrb]),
-            t("Stasis Field Science", ["Hyperradiation"], 3600, [bds.ShipItemTractorBeam, bds.ShipItemBrunswikDissipator, bds.SurfacePlanetaryTractorBeam]),
-            t("Matter Duplication", ["Superstring Compression", "Momentum Reflection"], 5040, [bds.SurfaceCloningPlant, bds.ShipItemDisarmer]),
-            t("Scientific Sorcery", ["Mergatroyd Hypothesis"], 5400, [bds.ShipItemSmartBomb, bds.ShipItemContainmentDevice]),
-            t("Starlane Anatomy", ["Energy Redirection", "Plasmatics"], 3450, [bds.ShipItemLaneBlocker, bds.ShipItemLaneDestabilizer]),
-            t("Coherent Photonics", ["Energy Redirection"], 7000, [bds.ShipWeapon07Ueberlaser, bds.ShipItemCannibalizer]),
-            t("Microbotics", ["Matter Duplication"], 9020, [bds.SurfaceAutomation]),
-            t("Energy Focusing", ["Coherent Photonics", "Muratroyd Hypothesis"], 5220, [bds.ShipItemMyrmidonicCarbonizer, bds.ShipItemAccutron]),
-            t("Inertial Control", ["Starlane Anatomy", "Matter Duplication"], 10080, [bds.ShipDrive4InertiaNegator]),
-            t("Advanced Planetary Armaments", ["Coherent Photonics", "Large Scale Construction"], 12240, [bds.SurfaceShield2SurfaceMegaShield, bds.OrbitalWeapon3LongRangeOrbitalWhopper]),
-            t("Fergnatz's Last Theorem", ["Scientific Sorcery"], 10880, [bds.ShipWeapon08FergnatzLens, bds.ShipItemGizmogrifier]),
-            t("Hypergeometry", ["Fergnatz's Last Theorem"], 12920, [bds.ShipWeapon09HypersphereDriver, bds.ShipItemHyperswapper]),
-            t("Repulsion Beam Tech", ["Energy Focusing"], 7040, [bds.ShipItemFleetDisperser]),
-            t("Hyperwave Technology", ["Energy Focusing", "Hyperradiation"], 7260, [bds.OrbitalShield2OrbitalMegaShield, bds.ShipShield5HyperwaveNullifier]),
-            t("Megagraph Theory", ["Fergnatz's Last Theorem"], 11760, [bds.SurfaceInternet]),
-            t("Nanoenergons", ["Fergnatz's Last Theorem", "Hyperwave Technology"], 12580, [bds.ShipSensor6NanowaveDecouplingNet, bds.ShipGenerator5Nanotwirler]),
-            t("Ecosphere Phase Control", ["Hypergeometry", "Planetary Replenishment"], 9240, [bds.SurfaceFertilizationPlant]),
-            t("Teleinfiltration", ["Hyperwave Technology", "Thought Analysis"], 8580, [bds.ShipItemShieldBlaster, bds.ShipItemSpecialtyBlaster]),
-            t("Hyperwave Emission Control", ["Hyperwave Technology"], 9460, [bds.ShipItemBackfirer]),
-            t("Hyperdrive Technology", ["Starlane Anatomy", "Teleinfiltration"], 8800, [bds.ShipItemLaneMagnetron]),
-            t("Action At A Distance", ["Teleinfiltration", "Megagraph Theory"], 12960, [bds.ShipItemMovingPartExploiter]),
-            t("Doom Mechanization", ["Teleinfiltration", "Hyperwave Emission Control"], 37600, [bds.ShipItemDisintegrator, bds.ShipItemSelfDestructotron]),
-            t("Nanofocusing", ["Nanoenergons"], 22080, [bds.ShipWeapon10Nanomanipulator]),
-            t("Snooping", ["Thought Analysis", "Hyperwave Emmision Control"], 11520, [bds.ShipItemLaneEndoscope]),
-            t("Self Modifying Structures", ["Nanofocusing", "Microbotics"], 12000, [bds.ShipItemRemoteRepairFacility]),
-            t("Nanopropulsion", ["Nanoenergons", "Hyperdrive Technology"], 17600, [bds.ShipDrive5NanowaveSpaceBender]),
-            t("Nanodeflection", ["Nanofocusing", "Inertia Control"], 21600, [bds.ShipShield6Nanoshell]),
-            t("Accel Energy Replenishment", ["Megagraph Theory", "Nanopropulsion"], 12480, [bds.PlanetwideLushGrowthBomb]),
-            t("Gravity Flow Control", ["Nanopropulsion"], 12720, [bds.ShipItemGravimetricCondensor]),
-            t("Illusory Machinations", ["Accel. Energy Replenishment", "Nanofocusing"], 33000, [bds.ShipItemInvulnerablizer])
+            t(OrbitalStructures, [], 50, [bds.OrbitalShipyard, bds.OrbitalShield1OrbitalShield]),
+            t(InterplanetaryExploration, [OrbitalStructures], 50, [bds.ShipHull1Small, bds.ShipHull2Medium, bds.ShipGenerator1ProtonShaver]),
+            t(TonklinDiary, [], 50, [bds.ShipDrive1TonklinMotor, bds.ShipSensor1TonklinFrequencyAnalyzer]),
+            t(Xenobiology, [], 90, [bds.SurfaceXenoArchaeologicalDig]),
+            t(EnvironmentalEncapsulation, [Xenobiology], 50, [bds.SurfaceColonyHub, bds.ShipShield1IonWrap, bds.ShipItemColonizer]),
+            t(SpectralAnalysis, [TonklinDiary], 120, [bds.ShipWeapon02FourierMissiles]),
+            t(Superconductivity, [TonklinDiary], 100, [bds.SurfaceShield1SurfaceShield, bds.ShipWeapon01MassBarrageGun]),
+            t(SpacetimeSurfing, [TonklinDiary, InterplantaryExploration], 90, [bds.ShipStarlaneDrive1StarLaneDrive]),
+            t(AdvancedChemistry, [EnvironmentalEncapsulation], 100, [bds.SurfaceArtificialHypdroponifer, bds.ShipDrive2IonBanger]),
+            t(AdvancedInterferometry, [SpectralAnalysis], 90, [bds.ShipSensor2SubspacePhaseArray, bds.ShipItemInvasionModule]),
+            t(Cloaking, [AdvancedInterferometry], 1800, [bds.SurfaceCloaker, bds.OrbitalCloaker, bds.ShipItemCloaker]),
+            t(PowerConversion, [SpacetimeSurfing], 100, [bds.OrbitalWeapon1OrbitalMissileBase, bds.ShipGenerator2SubatomicScoop]),
+            t(GravityControl, [SpacetimeSurfing], 560, [bds.ShipWeapon03QuantumSingularityLauncher]),
+            t(Hyperlogic, [AdvancedInterferometry, Xenobiology], 1120, [bds.SurfaceResearchCampus, bds.ShipItemIntellectScrambler, bds.ShipItemXRayMegaglasses]),
+            t(MomentumDeconservation, [SpacetimeSurfing], 280, [bds.ShipShield2ConcussionShield]),
+            t(Diplomatics, [Hyperlogic], 2000, [bds.SurfaceObservationInstallation, bds.PlanetwideFocusAlienHospitality]),
+            t(MolecularExplosives, [SpectralAnalysis, PowerConversion], 720, [bds.ShipItemPhaseBomb, bds.ShipItemMassCondensor]),
+            t(StrongForceWeakening, [PowerConversion], 980, [bds.ShipWeapon04MolecularDisassociator]),
+            t(LevelLogic, [Hyperlogic], 3300, [bds.PlanetwideFocusScientistTakeover]),
+            t(LightBending, [GravityControl], 2560, [bds.ShipShield3WaveScatterer, bds.ShipItemReplenisher]),
+            t(Gravimetrics, [GravityControl], 1320, [bds.OrbitalDocks, bds.ShipItemMolecularTieDown]),
+            t(EMFieldCoupling, [LightBending], 4200, [bds.ShipWeapon05ElectromagneticPulser, bds.ShipSensor3AuralCloudConstrictor]),
+            t(MassPhasing, [Gravimetrics], 2200, [bds.ShipItemGravimetricCatapult]),
+            t(ThoughtAnalysis, [LevelLogic], 7700, [bds.SurfaceEngineeringRetreat]),
+            t(AdvancedFunTechniques, [Diplomatics], 5580, [bds.SurfaceLogicFactory, bds.PlanetwideFocusEndlessParty]),
+            t(PositronGuidance, [MolecularExplosives], 2400, [bds.SurfaceIndustrialMegafacility, bds.ShipItemPositronBouncer]),
+            t(Subatomics, [PositronGuidance], 3300, [bds.SurfaceHyperpowerPlant, bds.ShipGenerator3QuarkExpress]),
+            t(AdvancedExploration, [MassPhasing, Hyperlogic], 4140, [bds.ShipStarlaneDrive2StarLaneHyperdrive, bds.ShipHull3Large]),
+            t(GravimetricCombustion, [Gravimetrics, PositronGuidance], 2600, [bds.ShipDrive3GravitonProjector, bds.ShipItemToroidalBlaster]),
+            t(Plasmatics, [Subatomics], 5700, [bds.ShipWeapon06Plasmatron, bds.ShipItemPlasmaCoupler]),
+            t(PlanetaryReplenishment, [GravimetricCombustion, EnvironmentalEncapsulation], 2560, [bds.SurfaceHabitat, bds.SurfaceTerraforming]),
+            t(MomentumReflection, [Subatomics, MomentumDeconservation], 4420, [bds.ShipItemGravityDistorter]),
+            t(LargeScaleConstruction, [GravimetricCombustion, AdvancedExploration], 4200, [bds.SurfaceMetroplex, bds.ShipHull4Enormous]),
+            t(Hyperradiation, [MomentumReflection, EMFieldCoupling], 5040, [bds.ShipSensor4HyperwaveTympanum, bds.ShipGenerator4VanKreegHypersplicer]),
+            t(Superstring, Compression, [Plasmatics], 3640, [bds.ShipItemHyperfuel]),
+            t(Muratroyd, Hypothesis, [SuperstringCompression, LevelLogic], 5940, [bds.OrbitalWeapon2ShortRangeOrbitalWhopper, bds.ShipSensor5MurgatroydsKnower, bds.ShipItemGyroInductor]),
+            t(Energy, Redirection, [Hyperradiation], 4400, [bds.ShipShield4Deactotron, bds.ShipItemRecaller, bds.ShipItemSacrificialOrb]),
+            t(Stasis, Field, Science, [Hyperradiation], 3600, [bds.ShipItemTractorBeam, bds.ShipItemBrunswikDissipator, bds.SurfacePlanetaryTractorBeam]),
+            t(MatterDuplication, [SuperstringCompression, MomentumReflection], 5040, [bds.SurfaceCloningPlant, bds.ShipItemDisarmer]),
+            t(ScientificSorcery, [MergatroydHypothesis], 5400, [bds.ShipItemSmartBomb, bds.ShipItemContainmentDevice]),
+            t(StarlaneAnatomy, [EnergyRedirection, Plasmatics], 3450, [bds.ShipItemLaneBlocker, bds.ShipItemLaneDestabilizer]),
+            t(CoherentPhotonics, [EnergyRedirection], 7000, [bds.ShipWeapon07Ueberlaser, bds.ShipItemCannibalizer]),
+            t(Microbotics, [MatterDuplication], 9020, [bds.SurfaceAutomation]),
+            t(EnergyFocusing, [CoherentPhotonics, MuratroydHypothesis], 5220, [bds.ShipItemMyrmidonicCarbonizer, bds.ShipItemAccutron]),
+            t(InertialControl, [StarlaneAnatomy, MatterDuplication], 10080, [bds.ShipDrive4InertiaNegator]),
+            t(AdvancedPlanetaryArmaments, [CoherentPhotonics, LargeScaleConstruction], 12240, [bds.SurfaceShield2SurfaceMegaShield, bds.OrbitalWeapon3LongRangeOrbitalWhopper]),
+            t(FergnatzsLastTheorem, [ScientificSorcery], 10880, [bds.ShipWeapon08FergnatzLens, bds.ShipItemGizmogrifier]),
+            t(Hypergeometry, [FergnatzsLastTheorem], 12920, [bds.ShipWeapon09HypersphereDriver, bds.ShipItemHyperswapper]),
+            t(RepulsionBeamTech, [EnergyFocusing], 7040, [bds.ShipItemFleetDisperser]),
+            t(HyperwaveTechnology, [EnergyFocusing, Hyperradiation], 7260, [bds.OrbitalShield2OrbitalMegaShield, bds.ShipShield5HyperwaveNullifier]),
+            t(MegagraphTheory, [FergnatzsLastTheorem], 11760, [bds.SurfaceInternet]),
+            t(Nanoenergons, [FergnatzsLastTheorem, HyperwaveTechnology], 12580, [bds.ShipSensor6NanowaveDecouplingNet, bds.ShipGenerator5Nanotwirler]),
+            t(EcospherePhaseControl, [Hypergeometry, PlanetaryReplenishment], 9240, [bds.SurfaceFertilizationPlant]),
+            t(Teleinfiltration, [HyperwaveTechnology, ThoughtAnalysis], 8580, [bds.ShipItemShieldBlaster, bds.ShipItemSpecialtyBlaster]),
+            t(HyperwaveEmissionControl, [HyperwaveTechnology], 9460, [bds.ShipItemBackfirer]),
+            t(HyperdriveTechnology, [StarlaneAnatomy, Teleinfiltration], 8800, [bds.ShipItemLaneMagnetron]),
+            t(ActionAtADistance, [Teleinfiltration, MegagraphTheory], 12960, [bds.ShipItemMovingPartExploiter]),
+            t(Doom, Mechanization, [Teleinfiltration, HyperwaveEmissionControl], 37600, [bds.ShipItemDisintegrator, bds.ShipItemSelfDestructotron]),
+            t(Nanofocusing, [Nanoenergons], 22080, [bds.ShipWeapon10Nanomanipulator]),
+            t(Snooping, [ThoughtAnalysis, HyperwaveEmmisionControl], 11520, [bds.ShipItemLaneEndoscope]),
+            t(SelfModifyingStructures, [Nanofocusing, Microbotics], 12000, [bds.ShipItemRemoteRepairFacility]),
+            t(Nanopropulsion, [Nanoenergons, HyperdriveTechnology], 17600, [bds.ShipDrive5NanowaveSpaceBender]),
+            t(Nanodeflection, [Nanofocusing, InertiaControl], 21600, [bds.ShipShield6Nanoshell]),
+            t(AccelEnergyReplenishment, [Megagraph, Theory, Nanopropulsion], 12480, [bds.PlanetwideLushGrowthBomb]),
+            t(GravityFlowControl, [Nanopropulsion], 12720, [bds.ShipItemGravimetricCondensor]),
+            t(IllusoryMachinations, [AccelEnergyReplenishment, Nanofocusing], 33000, [bds.ShipItemInvulnerablizer])
         ]);
         return returnValue;
     }

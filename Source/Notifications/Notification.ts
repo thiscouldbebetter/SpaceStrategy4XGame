@@ -19,7 +19,7 @@ class Notification2
 
 	defn(): NotificationType
 	{
-		return NotificationType.Instances()._AllByName.get(this.defnName);
+		return (this.defnName == null ? null : NotificationType.byName(this.defnName) );
 	}
 
 	jumpTo(universe: Universe): void

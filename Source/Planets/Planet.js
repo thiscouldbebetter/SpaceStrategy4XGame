@@ -142,9 +142,12 @@ class Planet extends Entity {
         return returnValue;
     }
     // Demographics.
+    prosperityAccumulated() {
+        return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
+    }
     prosperityNetWithNeededToGrow(universe) {
         var prosperityNet = this.prosperityPerTurn(universe, universe.world, null);
-        var prosperityAccumulated = this.prosperityPerTurn(universe, universe.world, null);
+        var prosperityAccumulated = this.prosperityAccumulated();
         var prosperityNeededToGrow = this.demographics.prosperityNeededToGrow();
         var returnValue = "+" + prosperityNet + "(" + prosperityAccumulated + "/" + prosperityNeededToGrow + " to grow)";
         return returnValue;
@@ -219,6 +222,7 @@ class Planet extends Entity {
         var prosperityNet = prosperityGross - prosperityConsumed;
         var inefficiencyExponent = 0.85;
         prosperityNet = Math.pow(prosperityNet, inefficiencyExponent);
+        prosperityNet = Math.round(prosperityNet);
         return prosperityNet;
     }
     researchPerTurn(universe, world, faction) {

@@ -243,7 +243,7 @@ class ControlBuilderExtended extends ControlBuilder
 				Coords.fromXY(controlHeight, controlHeight), // size,
 				">>", // text,
 				fontNameAndHeight,
-				() => world.roundAdvanceUntilNotification(uwpe)
+				() => world.roundAdvanceUntilNotificationToggle(uwpe)
 			);
 
 			var roundAdvanceButtons = 

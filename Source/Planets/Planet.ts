@@ -280,14 +280,18 @@ class Planet extends Entity
 
 	// Demographics.
 
+	prosperityAccumulated(): number
+	{
+		return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
+	}
+
 	prosperityNetWithNeededToGrow(universe: Universe): string
 	{
 		var prosperityNet = this.prosperityPerTurn
 		(
 			universe, universe.world as WorldExtended, null
 		);
-		var prosperityAccumulated =
-			this.prosperityPerTurn(universe, universe.world as WorldExtended, null);
+		var prosperityAccumulated = this.prosperityAccumulated();
 		var prosperityNeededToGrow =
 			this.demographics.prosperityNeededToGrow();
 		var returnValue =
@@ -421,6 +425,8 @@ class Planet extends Entity
 
 		var inefficiencyExponent = 0.85;
 		prosperityNet = Math.pow(prosperityNet, inefficiencyExponent);
+
+		prosperityNet = Math.round(prosperityNet);
 
 		return prosperityNet;
 	}

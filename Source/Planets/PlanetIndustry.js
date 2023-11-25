@@ -50,6 +50,9 @@ class PlanetIndustry {
                 if (buildableAsItem != null) {
                     planet.itemHolder().itemAdd(buildableAsItem);
                 }
+                var notificationText = "Planet " + planet.name + " is done building " + buildableDefn.name + ".";
+                var notification = new Notification2("Default", world.roundNumberCurrent(), notificationText, planet);
+                faction.notificationSession.notificationAdd(notification);
             }
         }
     }

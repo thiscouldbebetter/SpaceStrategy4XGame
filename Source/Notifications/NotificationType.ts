@@ -17,6 +17,11 @@ class NotificationType
 		}
 		return NotificationType._instances;
 	}
+
+	static byName(name: string): NotificationType
+	{
+		return NotificationType.Instances().byName(name);
+	}
 }
 
 class NotificationType_Instances
@@ -28,7 +33,14 @@ class NotificationType_Instances
 	constructor()
 	{
 		this.Default = new NotificationType("Default");
+
 		this._All = [ this.Default ];
+
 		this._AllByName = ArrayHelper.addLookupsByName(this._All);
+	}
+
+	byName(name: string): NotificationType
+	{
+		return (this._AllByName.has(name) ? this._AllByName.get(name) : this.Default);
 	}
 }

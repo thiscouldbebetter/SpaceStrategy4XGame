@@ -7,7 +7,7 @@ class Notification2 {
         this.locus = locus;
     }
     defn() {
-        return NotificationType.Instances()._AllByName.get(this.defnName);
+        return (this.defnName == null ? null : NotificationType.byName(this.defnName));
     }
     jumpTo(universe) {
         this.locus.jumpTo(universe);

@@ -244,18 +244,30 @@ class WorldExtended extends World {
     placeForEntityLocatable(entityLocatable) {
         return this.network.placeForEntityLocatable(entityLocatable);
     }
-    roundAdvanceUntilNotification(uwpe) {
-        var world = this;
-        var factionForPlayer = world.factions[0];
-        var notificationSession = factionForPlayer.notificationSession;
-        if (notificationSession.notificationsExist()) {
-            world.updateForRound(uwpe);
+    roundAdvanceUntilNotificationToggle(uwpe) {
+        this._isAdvancingThroughRoundsUntilNotification =
+            (this._isAdvancingThroughRoundsUntilNotification == false);
+        if (this._isAdvancingThroughRoundsUntilNotification) {
+            this.roundAdvanceUntilNotification(uwpe);
         }
-        else {
-            world.updateForRound(uwpe);
-            // hack
-            if (notificationSession.notificationsExist() == false) {
-                setTimeout(() => this.roundAdvanceUntilNotification(uwpe), 500);
+    }
+    roundAdvanceUntilNotification(uwpe) {
+        if (this._isAdvancingThroughRoundsUntilNotification) {
+            var world = this;
+            var factionForPlayer = world.factions[0];
+            var notificationSession = factionForPlayer.notificationSession;
+            if (notificationSession.notificationsExist()) {
+                world.updateForRound(uwpe);
+            }
+            else {
+                world.updateForRound(uwpe);
+                // hack
+                if (notificationSession.notificationsExist()) {
+                    this.roundAdvanceUntilNotificationToggle(uwpe);
+                }
+                else {
+                    setTimeout(() => this.roundAdvanceUntilNotification(uwpe), 500);
+                }
             }
         }
     }

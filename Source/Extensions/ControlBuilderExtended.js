@@ -98,7 +98,7 @@ class ControlBuilderExtended extends ControlBuilder {
             var buttonRoundFastForward = ControlButton.from5(Coords.fromXY(margin + 50 + controlHeight, margin + controlHeight), // pos
             Coords.fromXY(controlHeight, controlHeight), // size,
             ">>", // text,
-            fontNameAndHeight, () => world.roundAdvanceUntilNotification(uwpe));
+            fontNameAndHeight, () => world.roundAdvanceUntilNotificationToggle(uwpe));
             var roundAdvanceButtons = [
                 buttonRoundNext,
                 buttonRoundFastForward

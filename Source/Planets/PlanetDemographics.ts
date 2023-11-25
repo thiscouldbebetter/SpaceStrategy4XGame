@@ -8,13 +8,37 @@ class PlanetDemographics
 		this.population = population;
 	}
 
+	prosperityNeededToGrow(): number
+	{
+		return this.population * 30;
+	}
+
 	toStringDescription(): string
 	{
 		return "Population " + this.population;
 	}
 
-	updateForTurn(universe: Universe, world: World, faction: Faction, planet: Planet): void
+	updateForRound
+	(
+		universe: Universe,
+		world: WorldExtended,
+		faction: Faction,
+		planet: Planet
+	): void
 	{
-		// todo
+		var resourcesAccumulated = planet.resourcesAccumulated;
+		var prosperityAccumulated =
+			resourcesAccumulated.find(x => x.defnName == "Prosperity");
+
+		var prosperityThisTurnNet = planet.prosperityPerTurn(universe, world, faction);
+
+		prosperityAccumulated.addQuantity(prosperityThisTurnNet);
+
+		var quantityToGrow = this.prosperityNeededToGrow();
+
+		if (prosperityAccumulated.quantity >= quantityToGrow)
+		{
+			prosperityAccumulated.clear();
+		}
 	}
 }

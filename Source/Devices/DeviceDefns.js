@@ -5,7 +5,7 @@ class DeviceDefns {
         false, // needsTarget
         [], // categoryNames
         (uwpe) => // init
-         { }, (uwpe) => // updateForTurn
+         { }, (uwpe) => // updateForRound
          { }, (uwpe) => // use
          {
             var ship = uwpe.entity;
@@ -15,7 +15,7 @@ class DeviceDefns {
         false, // needsTarget
         ["Drive"], // categoryNames
         (uwpe) => // init
-         { }, (uwpe) => // updateForTurn
+         { }, (uwpe) => // updateForRound
          {
             var ship = uwpe.entity;
             var shipTurnTaker = ship.turnTaker();
@@ -31,7 +31,7 @@ class DeviceDefns {
         false, // needsTarget
         ["Generator"], // categoryNames
         (uwpe) => // init
-         { }, (uwpe) => // updateForTurn
+         { }, (uwpe) => // updateForRound
          {
             var ship = uwpe.entity;
             var shipTurnTaker = ship.turnTaker();
@@ -47,7 +47,7 @@ class DeviceDefns {
          {
             var device = Device.fromEntity(uwpe.entity2);
             device.isActive = false;
-        }, (uwpe) => // updateForTurn
+        }, (uwpe) => // updateForRound
          {
             var ship = uwpe.entity;
             var device = Device.fromEntity(uwpe.entity2);
@@ -93,7 +93,7 @@ class DeviceDefns {
         (uwpe) => // initialize
          {
             // todo
-        }, (uwpe) => // updateForTurn
+        }, (uwpe) => // updateForRound
          {
             var device = Device.fromEntity(uwpe.entity2);
             device.usesThisTurn = 3;
@@ -105,7 +105,7 @@ class DeviceDefns {
         if (device.usesThisTurn > 0) {
             var target = device.targetEntity; // todo
             if (target == null) {
-                var venue = uwpe.universe.venueCurrent;
+                var venue = uwpe.universe.venueCurrent();
                 venue.cursor.entityAndOrderNameSet(ship, "UseDevice");
             }
             else // if (target != null)

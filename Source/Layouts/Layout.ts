@@ -35,7 +35,7 @@ class Layout
 	{
 		return this.map.bodies().find
 		(
-			x => Buildable.fromEntity(x).isComplete == false
+			x => Buildable.ofEntity(x).isComplete == false
 		);
 	}
 
@@ -56,7 +56,7 @@ class Layout
 		// todo
 	}
 
-	updateForTurn(universe: Universe, world: World, faction: Faction, parentModel: Entity): void
+	updateForRound(universe: Universe, world: World, faction: Faction, parentModel: Entity): void
 	{
 		// todo
 	}

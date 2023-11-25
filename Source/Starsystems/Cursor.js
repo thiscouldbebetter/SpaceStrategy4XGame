@@ -78,7 +78,7 @@ class Cursor extends Entity {
     // drawable
     draw(uwpe, display) {
         var universe = uwpe.universe;
-        var venue = universe.venueCurrent;
+        var venue = universe.venueCurrent();
         var venueTypeName = venue.constructor.name;
         if (venueTypeName == VenueFader.name) {
             venue = venue.venueCurrent();

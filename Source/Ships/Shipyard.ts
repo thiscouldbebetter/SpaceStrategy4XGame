@@ -80,7 +80,7 @@ class Shipyard implements EntityProperty<Shipyard>
 			items
 		);
 
-		returnValue.updateForTurn(universe, world, faction);
+		returnValue.updateForRound(universe, world, faction);
 
 		return returnValue;
 	}
@@ -91,7 +91,7 @@ class Shipyard implements EntityProperty<Shipyard>
 	{
 		var universe = uwpe.universe;
 		var world = uwpe.world as WorldExtended;
-		var planet = (universe.venueCurrent as VenueLayout).modelParent;
+		var planet = (universe.venueCurrent() as VenueLayout).modelParent;
 		var ship = uwpe.entity as Ship;
 
 		var size = universe.display.sizeDefault();
@@ -109,7 +109,7 @@ class Shipyard implements EntityProperty<Shipyard>
 		var itemHolderShipyard = planet.itemHolder();
 		var itemHolderShip = ship.itemHolder();
 
-		var venuePrev = universe.venueCurrent;
+		var venuePrev = universe.venueCurrent();
 
 		var back = () => universe.venueTransitionTo(venuePrev);
 

@@ -5,7 +5,7 @@ class DeviceDefn extends ItemDefn
 	needsTarget: boolean;
 	categoryNames: string[];
 	_initialize: (uwpe: UniverseWorldPlaceEntities) => void;
-	updateForTurn: (uwpe: UniverseWorldPlaceEntities) => void;
+	updateForRound: (uwpe: UniverseWorldPlaceEntities) => void;
 
 	constructor
 	(
@@ -14,7 +14,7 @@ class DeviceDefn extends ItemDefn
 		needsTarget: boolean,
 		categoryNames: string[],
 		initialize: (uwpe: UniverseWorldPlaceEntities) => void,
-		updateForTurn: (uwpe: UniverseWorldPlaceEntities) => void,
+		updateForRound: (uwpe: UniverseWorldPlaceEntities) => void,
 		use: (uwpe: UniverseWorldPlaceEntities) => void
 	)
 	{
@@ -34,7 +34,7 @@ class DeviceDefn extends ItemDefn
 		this.isActive = isActive;
 		this.needsTarget = needsTarget;
 		this._initialize = initialize;
-		this.updateForTurn = updateForTurn;
+		this.updateForRound = updateForRound;
 		this.use = use;
 	}
 

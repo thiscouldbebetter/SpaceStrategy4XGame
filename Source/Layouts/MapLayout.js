@@ -68,13 +68,13 @@ class MapLayout {
     bodyRemove(bodyToRemove) {
         this._bodies.splice(this._bodies.indexOf(bodyToRemove), 1);
     }
+    terrainAtCursor() {
+        return this.terrainAtPosInCells(this.cursor.pos);
+    }
     terrainAtPosInCells(cellPos) {
         var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
         var returnValue = this.terrainByCode(terrainCode);
         return returnValue;
-    }
-    terrainAtCursor() {
-        return this.terrainAtPosInCells(this.cursor.pos);
     }
     terrainByCode(terrainCode) {
         return this.terrainsByCodeChar.get(terrainCode);

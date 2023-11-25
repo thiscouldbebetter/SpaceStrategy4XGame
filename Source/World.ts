@@ -375,10 +375,10 @@ class WorldExtended extends World
 
 		factionHomePlanet.demographics.population = 1;
 
-		var factionHomePlanetLayout = factionHomePlanet.layout(universe);
-		var factionHomePlanetSizeInCells = factionHomePlanetLayout.map.sizeInCells;
-		var hubPos = factionHomePlanetSizeInCells.clone().half().floor();
-		var buildable = new Buildable("Colony Hub", hubPos, true);
+		var factionHomePlanetSizeInCells = factionHomePlanet.planetType.size.surfaceSizeInCells;
+		var offsetForSurface = 3;
+		var hubPos = factionHomePlanetSizeInCells.clone().half().floor().addXY(0, offsetForSurface);
+		var buildable = new Buildable("Colony Hub", hubPos, true, true);
 		var buildableAsEntity = buildable.toEntity(worldDummy);
 
 		var factionHomePlanetLayout = factionHomePlanet.layout(universe);
@@ -543,49 +543,56 @@ class WorldExtended extends World
 		return this.network.placeForEntityLocatable(entityLocatable);
 	}
 
+	roundAdvanceUntilNotification(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var world = this;
+		var factionForPlayer = world.factions[0];
+		var notificationSession = factionForPlayer.notificationSession;
+		if (notificationSession.notificationsExist() )
+		{
+			world.updateForRound(uwpe);
+		}
+		else
+		{
+			world.updateForRound(uwpe);
+
+			// hack
+			if (notificationSession.notificationsExist() == false)
+			{
+				setTimeout
+				(
+					() => this.roundAdvanceUntilNotification(uwpe),
+					500
+				)
+			}
+		}
+	}
+
+	roundNumberCurrent(): number
+	{
+		return this.roundsSoFar + 1;
+	}
+
 	toVenue(): VenueWorld
 	{
 		return new VenueWorldExtended(this);
 	}
 
-	turnAdvanceUntilNotification(uwpe: UniverseWorldPlaceEntities): void
-	{
-		var world = this;
-		var factionForPlayer = world.factions[0];
-		var notificationSession = factionForPlayer.notificationSession;
-		var notifications = notificationSession.notifications;
-		if (notifications.length > 0)
-		{
-			world.updateForTurn(uwpe);
-		}
-		else
-		{
-			while (notifications.length == 0)
-			{
-				world.updateForTurn(uwpe);
-			}
-		}
-	}
-
-	updateForTurn(uwpe: UniverseWorldPlaceEntities): void
+	updateForRound(uwpe: UniverseWorldPlaceEntities): void
 	{
 		uwpe.world = this;
 		var universe = uwpe.universe;
 		var world = universe.world as WorldExtended;
 
+		this.network.updateForRound(universe, world);
+		this.factions.forEach(x => x.updateForRound(universe, world));
+
 		var factionForPlayer = this.factions[0];
-		var notifications = factionForPlayer.notificationSession.notifications;
-		if (this.roundsSoFar > 0 && notifications.length > 0)
+		var notificationSession = factionForPlayer.notificationSession;
+		if (notificationSession.notificationsExist() )
 		{
 			factionForPlayer.notificationSessionStart(universe);
 		}
-		else
-		{
-			// this.updateForTurn_IgnoringNotifications(universe);
-		}
-
-		this.network.updateForTurn(universe, world);
-		this.factions.forEach(x => x.updateForTurn(universe, world));
 
 		this.roundsSoFar++;
 	}

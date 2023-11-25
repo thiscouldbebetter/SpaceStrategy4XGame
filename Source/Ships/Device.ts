@@ -28,10 +28,10 @@ class Device extends Item
 		return this._deviceDefn;
 	}
 
-	updateForTurn(uwpe: UniverseWorldPlaceEntities): void
+	updateForRound(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var defn = this.deviceDefn(uwpe.world);
-		defn.updateForTurn(uwpe);
+		defn.updateForRound(uwpe);
 	}
 
 	use(uwpe: UniverseWorldPlaceEntities): void

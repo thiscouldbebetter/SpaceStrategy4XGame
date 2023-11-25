@@ -4,7 +4,7 @@ class ResourceGroup {
         this.resources = resources;
     }
     add(other) {
-        Resource.add(this.resources, other.resources);
+        Resource.addManyToMany(this.resources, other.resources);
         return this;
     }
     isSupersetOf(other) {

@@ -17,7 +17,7 @@ class Constraint_Cursor {
         var universe = uwpe.universe;
         var body = uwpe.entity;
         var cursor = body;
-        var venue = universe.venueCurrent;
+        var venue = universe.venueCurrent();
         var camera = venue.camera();
         var cameraLoc = camera.loc;
         var cameraPos = cameraLoc.pos;

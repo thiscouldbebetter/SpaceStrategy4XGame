@@ -130,22 +130,22 @@ class Starsystem extends Place {
         alert("todo");
     }
     // turns
-    updateForTurn(universe, world) {
+    updateForRound(universe, world) {
         for (var i = 0; i < this.planets.length; i++) {
             var planet = this.planets[i];
             var faction = planet.faction(world);
-            planet.updateForTurn(universe, world, faction);
+            planet.updateForRound(universe, world, faction);
         }
         for (var i = 0; i < this.ships.length; i++) {
             var ship = this.ships[i];
             var faction = ship.faction(world);
-            ship.updateForTurn(universe, world, faction);
+            ship.updateForRound(universe, world, faction);
         }
     }
     // drawing
     camera2(universe) {
         // hack - Get a camera, without a Place.
-        var venue = universe.venueCurrent;
+        var venue = universe.venueCurrent();
         var venueTypeName = venue.constructor.name;
         if (venueTypeName == VenueFader.name) {
             var venueAsVenueFader = venue;

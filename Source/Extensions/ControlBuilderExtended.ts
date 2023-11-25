@@ -24,6 +24,115 @@ class ControlBuilderExtended extends ControlBuilder
 			size.y - margin * 4 - controlHeight * 3
 		);
 
+		var labelSelection = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin), // pos
+			Coords.fromXY(size.x - margin * 2, controlHeight), // size
+			DataBinding.fromContext("Selection:"), // text
+			fontNameAndHeight
+		);
+
+		var textSelectionName = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin + controlHeight * .6), // pos
+			Coords.fromXY(size.x - margin * 2, controlHeight), // size
+			DataBinding.fromContextAndGet
+			(
+				universe,
+				(c: Universe) =>
+				{
+					var returnValue = null;
+					var venue = c.venueCurrent();
+					var venueTypeName = venue.constructor.name;
+					if (venueTypeName == VenueWorldExtended.name)
+					{
+						returnValue = (venue as VenueWorldExtended).selectionName();
+					}
+					else if (venueTypeName == VenueStarsystem.name)
+					{
+						returnValue = (venue as VenueStarsystem).selectionName();
+					}
+					return returnValue;
+				}
+			),
+			fontNameAndHeight
+		);
+
+		var dynamicSelection = new ControlDynamic
+		(
+			"dynamicSelection",
+			Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
+			controlSelectionSize, // size
+			DataBinding.fromContextAndGet
+			(
+				universe,
+				(c: Universe) =>
+					(c.venueCurrent() as VenueStarsystem).selectedEntity, // get
+			),
+			(v: Entity) =>
+			{
+				return v.controllable().toControl
+				(
+					new UniverseWorldPlaceEntities
+					(
+						universe, null, null, v, null
+					),
+					controlSelectionSize,
+					Starsystem.name
+				);
+			}
+		);
+
+		var buttonCenter = ControlButton.from8
+		(
+			"buttonCenter", // name,
+			Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+			Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
+			"Center", // text,
+			fontNameAndHeight,
+			true, // hasBorder
+			DataBinding.fromContextAndGet
+			(
+				universe.venueCurrent() as VenueStarsystem,
+				(c: VenueStarsystem) => (c.selectedEntity != null)
+			), // isEnabled
+			() => // click
+			{
+				(universe.venueCurrent() as VenueStarsystem).cameraCenterOnSelection();
+			},
+		);
+
+		var buttonDetailsIsEnabledGet = (c: VenueStarsystem) => // hack
+			(c.constructor.name == VenueStarsystem.name ? c.entitySelectedDetailsAreViewable(universe) : false);
+
+		var buttonDetailsIsEnabled = DataBinding.fromContextAndGet
+		(
+			universe.venueCurrent() as VenueStarsystem,
+			buttonDetailsIsEnabledGet
+		);
+
+		var buttonDetailsClick = () =>
+		{
+			var venueCurrent = universe.venueCurrent() as VenueStarsystem;
+			venueCurrent.entitySelectedDetailsView(universe);
+		};
+
+		var buttonDetails = ControlButton.from8
+		(
+			"buttonDetails", // name,
+			Coords.fromXY
+			(
+				margin * 2 + ((size.x - margin * 3) / 2),
+				size.y - margin - controlHeight
+			), // pos
+			Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
+			"Details", // text,
+			fontNameAndHeight,
+			true, // hasBorder
+			buttonDetailsIsEnabled,
+			buttonDetailsClick
+		)
+
 		var returnValue = new ControlContainer
 		(
 			"containerSelected",
@@ -31,146 +140,11 @@ class ControlBuilderExtended extends ControlBuilder
 			size.clone(),
 			// children
 			[
-				new ControlLabel
-				(
-					"labelSelected",
-					Coords.fromXY(margin, margin), // pos
-					Coords.fromXY(size.x - margin * 2, controlHeight), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Selection:"), // text
-					fontNameAndHeight
-				),
-
-				new ControlLabel
-				(
-					"textSelectionName",
-					Coords.fromXY(margin, margin + controlHeight * .6), // pos
-					Coords.fromXY(size.x - margin * 2, controlHeight), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						universe,
-						(c: Universe) =>
-						{
-							var returnValue = null;
-							var venue = c.venueCurrent;
-							var venueTypeName = venue.constructor.name;
-							if (venueTypeName == VenueWorldExtended.name)
-							{
-								returnValue = (venue as VenueWorldExtended).selectionName();
-							}
-							else if (venueTypeName == VenueStarsystem.name)
-							{
-								returnValue = (venue as VenueStarsystem).selectionName();
-							}
-							return returnValue;
-						}
-					),
-					fontNameAndHeight
-				),
-
-				new ControlDynamic
-				(
-					"dynamicSelection",
-					Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
-					controlSelectionSize, // size
-					DataBinding.fromContextAndGet
-					(
-						universe,
-						(c: Universe) =>
-							(c.venueCurrent as VenueStarsystem).selectedEntity, // get
-					),
-					(v: Entity) =>
-					{
-						return v.controllable().toControl
-						(
-							new UniverseWorldPlaceEntities
-							(
-								universe, null, null, v, null
-							),
-							controlSelectionSize,
-							Starsystem.name
-						);
-					}
-				),
-
-				ControlButton.from8
-				(
-					"buttonCenter", // name,
-					Coords.fromXY(margin, size.y - margin - controlHeight), // pos
-					Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
-					"Center", // text,
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromContextAndGet
-					(
-						universe.venueCurrent as VenueStarsystem,
-						(c: VenueStarsystem) => (c.selectedEntity != null)
-					), // isEnabled
-					() => // click
-					{
-						(universe.venueCurrent as VenueStarsystem).cameraCenterOnSelection();
-					},
-				),
-
-				ControlButton.from8
-				(
-					"buttonDetails", // name,
-					Coords.fromXY
-					(
-						margin * 2 + ((size.x - margin * 3) / 2),
-						size.y - margin - controlHeight
-					), // pos
-					Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
-					"Details", // text,
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromContextAndGet
-					(
-						universe.venueCurrent as VenueStarsystem,
-						(c: VenueStarsystem) => (c.selectedEntity != null)
-					), // isEnabled
-					() => // click
-					{
-						var venueCurrent = universe.venueCurrent;
-						var selectedEntity = (venueCurrent as VenueStarsystem).selectedEntity;
-						if (selectedEntity != null)
-						{
-							var venueNext: Venue;
-							var selectionTypeName = selectedEntity.constructor.name;
-
-							if (selectionTypeName == NetworkNode2.name)
-							{
-								var selectionAsNetworkNode = selectedEntity as NetworkNode2;
-								var starsystem = selectionAsNetworkNode.starsystem;
-								if (starsystem != null)
-								{
-									venueNext = new VenueStarsystem(venueCurrent, starsystem);
-								}
-							}
-							else if (selectionTypeName == Planet.name)
-							{
-								var selectionAsPlanet = selectedEntity as Planet;
-								var layout = selectionAsPlanet.layout(universe);
-								venueNext = new VenueLayout
-								(
-									venueCurrent, selectionAsPlanet, layout
-								);
-							}
-							else if (selectionTypeName == Ship.name)
-							{
-								throw new Error("Not yet implemented!");
-							}
-
-							if (venueNext != null)
-							{
-								universe.venueTransitionTo(venueNext);
-							}
-						}
-					}
-				)
+				labelSelection,
+				textSelectionName,
+				dynamicSelection,
+				buttonCenter,
+				buttonDetails
 			],
 			null, null // actions, actionToInputsMappings
 		);
@@ -185,7 +159,7 @@ class ControlBuilderExtended extends ControlBuilder
 		containerInnerSize: Coords,
 		margin: number,
 		controlHeight: number,
-		includeTurnAdvanceButtons: boolean
+		includeRoundAdvanceButtons: boolean
 	)
 	{
 		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
@@ -194,99 +168,91 @@ class ControlBuilderExtended extends ControlBuilder
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
+		var textPlace = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin,  margin), // pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 2,
+				controlHeight
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				universe,
+				(c: Universe) =>
+				{
+					// hack
+					var venue = c.venueCurrent() as VenueStarsystem;
+					return (venue.model == null ? "" : venue.model().name);
+				}
+			),
+			fontNameAndHeight
+		);
+
+		var labelRound = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin + controlHeight), // pos
+			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+			DataBinding.fromContext("Round:"),
+			fontNameAndHeight
+		);
+
+		var textRound = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin + 25, margin + controlHeight), // pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 3,
+				controlHeight
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				universe,
+				(c: Universe) => "" + ( (c.world as WorldExtended).roundsSoFar + 1)
+			),
+			fontNameAndHeight
+		);
+
 		var childControls = new Array<ControlBase>();
 
 		var childControlsGuaranteed =
 		[
-			new ControlLabel
-			(
-				"textPlace",
-				Coords.fromXY(margin,  margin), // pos
-				Coords.fromXY
-				(
-					containerInnerSize.x - margin * 2,
-					controlHeight
-				), // size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContextAndGet
-				(
-					universe,
-					(c: Universe) =>
-					{
-						// hack
-						var venue = c.venueCurrent as VenueStarsystem;
-						return (venue.model == null ? "" : venue.model().name);
-					}
-				),
-				fontNameAndHeight
-			),
-
-			new ControlLabel
-			(
-				"labelRound",
-				Coords.fromXY(margin, margin + controlHeight), // pos
-				Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext("Round:"),
-				fontNameAndHeight
-			),
-
-			new ControlLabel
-			(
-				"textRound",
-				Coords.fromXY(margin + 25, margin + controlHeight), // pos
-				Coords.fromXY
-				(
-					containerInnerSize.x - margin * 3,
-					controlHeight
-				), // size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContextAndGet
-				(
-					universe,
-					(c: Universe) => "" + ( (c.world as WorldExtended).roundsSoFar + 1)
-				),
-				fontNameAndHeight
-			)
+			textPlace,
+			labelRound,
+			textRound
 		];
 
 		childControls.push(...childControlsGuaranteed);
 
-		if (includeTurnAdvanceButtons)
+		if (includeRoundAdvanceButtons)
 		{
 			var world = universe.world as WorldExtended;
 
-			var turnAdvanceButtons = 
-			[
-				ControlButton.from8
-				(
-					"buttonTurnNext", // name,
-					Coords.fromXY(margin + 50, margin + controlHeight), // pos
-					Coords.fromXY(controlHeight, controlHeight), // size,
-					">", // text,
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => world.updateForTurn(uwpe)
-				),
+			var buttonRoundNext = ControlButton.from5
+			(
+				Coords.fromXY(margin + 50, margin + controlHeight), // pos
+				Coords.fromXY(controlHeight, controlHeight), // size,
+				">", // text,
+				fontNameAndHeight,
+				() => world.updateForRound(uwpe)
+			);
 
-				ControlButton.from8
-				(
-					"buttonTurnFastForward", // name,
-					Coords.fromXY(margin + 50 + controlHeight, margin + controlHeight), // pos
-					Coords.fromXY(controlHeight, controlHeight), // size,
-					">>", // text,
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => world.turnAdvanceUntilNotification(uwpe)
-				)
+			var buttonRoundFastForward = ControlButton.from5
+			(
+				Coords.fromXY(margin + 50 + controlHeight, margin + controlHeight), // pos
+				Coords.fromXY(controlHeight, controlHeight), // size,
+				">>", // text,
+				fontNameAndHeight,
+				() => world.roundAdvanceUntilNotification(uwpe)
+			);
+
+			var roundAdvanceButtons = 
+			[
+				buttonRoundNext,
+				buttonRoundFastForward
 			];
 
-			childControls.push(...turnAdvanceButtons);
+			childControls.push(...roundAdvanceButtons);
 		}
 
 		var size = Coords.fromXY
@@ -367,7 +333,7 @@ class ControlBuilderExtended extends ControlBuilder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						(universe.venueCurrent as VenueStarsystem).cameraUp(cameraSpeed);
+						(universe.venueCurrent() as VenueStarsystem).cameraUp(cameraSpeed);
 					},
 					true // canBeHeldDown
 				),
@@ -387,7 +353,7 @@ class ControlBuilderExtended extends ControlBuilder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						(universe.venueCurrent as VenueStarsystem).cameraDown(cameraSpeed);
+						(universe.venueCurrent() as VenueStarsystem).cameraDown(cameraSpeed);
 					},
 					true // canBeHeldDown
 				),
@@ -407,7 +373,7 @@ class ControlBuilderExtended extends ControlBuilder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						(universe.venueCurrent as VenueStarsystem).cameraLeft(cameraSpeed);
+						(universe.venueCurrent() as VenueStarsystem).cameraLeft(cameraSpeed);
 					},
 					true // canBeHeldDown
 				),
@@ -427,7 +393,7 @@ class ControlBuilderExtended extends ControlBuilder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						(universe.venueCurrent as VenueStarsystem).cameraRight(cameraSpeed);
+						(universe.venueCurrent() as VenueStarsystem).cameraRight(cameraSpeed);
 					},
 					true // canBeHeldDown
 				),
@@ -447,7 +413,7 @@ class ControlBuilderExtended extends ControlBuilder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						(universe.venueCurrent as VenueStarsystem).cameraIn(cameraSpeed);
+						(universe.venueCurrent() as VenueStarsystem).cameraIn(cameraSpeed);
 					},
 					true // canBeHeldDown
 				),
@@ -467,7 +433,7 @@ class ControlBuilderExtended extends ControlBuilder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						(universe.venueCurrent as VenueStarsystem).cameraOut(cameraSpeed);
+						(universe.venueCurrent() as VenueStarsystem).cameraOut(cameraSpeed);
 					},
 					true // canBeHeldDown
 				),
@@ -487,7 +453,7 @@ class ControlBuilderExtended extends ControlBuilder
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						(universe.venueCurrent as VenueStarsystem).cameraReset();
+						(universe.venueCurrent() as VenueStarsystem).cameraReset();
 					},
 					false // canBeHeldDown
 				),

@@ -1,18 +1,22 @@
 "use strict";
 class Buildable {
-    constructor(defnName, pos, isComplete) {
+    constructor(defnName, pos, isComplete, isAutomated) {
         this.defnName = defnName;
         var loc = Disposition.fromPos(pos);
         this._locatable = new Locatable(loc);
-        this.isComplete = (isComplete || false);
+        this.isComplete = isComplete || false;
+        this.isAutomated = isAutomated || false;
     }
     static fromDefnName(defnName) {
-        return new Buildable(defnName, null, false);
+        return new Buildable(defnName, null, // pos
+        false, // isComplete
+        false // isAutomated
+        );
     }
     static fromDefnNameAndPos(defnName, pos) {
-        return new Buildable(defnName, pos, false);
+        return new Buildable(defnName, pos, false, false);
     }
-    static fromEntity(entity) {
+    static ofEntity(entity) {
         return entity.propertyByName(Buildable.name);
     }
     defn(world) {

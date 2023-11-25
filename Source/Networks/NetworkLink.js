@@ -39,7 +39,7 @@ class NetworkLink2 {
         return this._entity;
     }
     // turns
-    updateForTurn(universe, world) {
+    updateForRound(universe, world) {
         if (this.ships.length > 0) {
             var cluster = world.network;
             var nodesLinked = this.nodesLinked(cluster);

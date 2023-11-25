@@ -19,7 +19,7 @@ class DeviceDefns
 			[], // categoryNames
 			(uwpe: UniverseWorldPlaceEntities) => // init
 			{},
-			(uwpe: UniverseWorldPlaceEntities) => // updateForTurn
+			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
 			{},
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
@@ -36,7 +36,7 @@ class DeviceDefns
 			[ "Drive" ], // categoryNames
 			(uwpe: UniverseWorldPlaceEntities) => // init
 			{},
-			(uwpe: UniverseWorldPlaceEntities) => // updateForTurn
+			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
 			{
 				var ship = uwpe.entity as Ship;
 				var shipTurnTaker = ship.turnTaker();
@@ -59,7 +59,7 @@ class DeviceDefns
 			[ "Generator" ], // categoryNames
 			(uwpe: UniverseWorldPlaceEntities) =>  // init
 			{},
-			(uwpe: UniverseWorldPlaceEntities) =>  // updateForTurn
+			(uwpe: UniverseWorldPlaceEntities) =>  // updateForRound
 			{
 				var ship = uwpe.entity as Ship;
 				var shipTurnTaker = ship.turnTaker();
@@ -82,7 +82,7 @@ class DeviceDefns
 				var device = Device.fromEntity(uwpe.entity2);
 				device.isActive = false;
 			},
-			(uwpe: UniverseWorldPlaceEntities) =>  // updateForTurn
+			(uwpe: UniverseWorldPlaceEntities) =>  // updateForRound
 			{
 				var ship = uwpe.entity as Ship;
 				var device = Device.fromEntity(uwpe.entity2);
@@ -148,7 +148,7 @@ class DeviceDefns
 			{
 				// todo
 			},
-			(uwpe: UniverseWorldPlaceEntities) =>  // updateForTurn
+			(uwpe: UniverseWorldPlaceEntities) =>  // updateForRound
 			{
 				var device = Device.fromEntity(uwpe.entity2);
 				device.usesThisTurn = 3;
@@ -167,7 +167,7 @@ class DeviceDefns
 			var target = device.targetEntity; // todo
 			if (target == null)
 			{
-				var venue = uwpe.universe.venueCurrent as VenueStarsystem;
+				var venue = uwpe.universe.venueCurrent() as VenueStarsystem;
 				venue.cursor.entityAndOrderNameSet(ship, "UseDevice");
 			}
 			else // if (target != null)

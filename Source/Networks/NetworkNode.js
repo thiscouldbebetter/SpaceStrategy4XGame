@@ -25,35 +25,31 @@ class NetworkNode2 extends Entity {
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var buttonSize = Coords.fromXY(containerSize.x - margin * 4, 10);
+        var labelStarsystemName = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), Coords.fromXY(0, 0), // this.size
+        DataBinding.fromContext(this.name), fontNameAndHeight);
+        var labelStarsystemHolder = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(0, 0), // this.size
+        DataBinding.fromContextAndGet(networkNode, (c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)), fontNameAndHeight);
+        var buttonView = ControlButton.from5(Coords.fromXY(margin, margin + controlSpacing * 2), // pos
+        buttonSize, // size
+        "View", fontNameAndHeight, () => // click
+         {
+            var venueCurrent = universe.venueCurrent();
+            var starsystemToView = venueCurrent.selectedEntity.starsystem;
+            if (starsystemToView != null) {
+                universe.venueTransitionTo(new VenueStarsystem(venueCurrent, starsystemToView));
+            }
+        });
         var returnValue = ControlContainer.from4("containerStarsystem", Coords.fromXY(viewSize.x - margin - containerSize.x, margin), // pos
         Coords.fromXY(containerSize.x - margin * 2, 40), // size
         // children
         [
-            new ControlLabel("labelStarsystemName", Coords.fromXY(margin, margin), Coords.fromXY(0, 0), // this.size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext(this.name), fontNameAndHeight),
-            new ControlLabel("labelStarsystemHolder", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(0, 0), // this.size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(networkNode, (c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)), fontNameAndHeight),
-            ControlButton.from8("buttonView", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
-            buttonSize, // size
-            "View", fontNameAndHeight, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            () => // click
-             {
-                var venueCurrent = universe.venueCurrent;
-                var starsystemToView = venueCurrent.selectedEntity.starsystem;
-                if (starsystemToView != null) {
-                    universe.venueNext =
-                        new VenueStarsystem(venueCurrent, starsystemToView);
-                }
-            }),
+            labelStarsystemName,
+            labelStarsystemHolder,
+            buttonView
         ]);
         return returnValue;
     }
-    // drawable
+    // Drawable.
     draw(uwpe) {
         var visual = this.drawable().visual;
         visual.draw(uwpe, uwpe.universe.display);

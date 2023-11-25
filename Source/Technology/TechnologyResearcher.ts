@@ -70,10 +70,10 @@ class TechnologyResearcher
 			{
 				var notification = new Notification2
 				(
-					"Default", world.roundsSoFar,
+					"Default", world.roundNumberCurrent(),
 					"Nothing being researched.", "research" // locus
 				);
-				faction.notificationSession.notifications.push(notification);
+				faction.notificationSession.notificationAdd(notification);
 			}
 		}
 		else
@@ -223,7 +223,7 @@ class TechnologyResearcher
 
 	// turns
 
-	updateForTurn
+	updateForRound
 	(
 		universe: Universe, world: WorldExtended, faction: Faction
 	): void

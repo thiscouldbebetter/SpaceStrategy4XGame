@@ -140,16 +140,17 @@ class MapLayout
 			this._bodies.indexOf(bodyToRemove), 1
 		);
 	}
+
+	terrainAtCursor(): MapTerrain
+	{
+		return this.terrainAtPosInCells(this.cursor.pos);
+	}
+
 	terrainAtPosInCells(cellPos: Coords): MapTerrain
 	{
 		var terrainCode = this.cellsAsStrings[cellPos.y][cellPos.x];
 		var returnValue = this.terrainByCode(terrainCode);
 		return returnValue;
-	}
-
-	terrainAtCursor(): MapTerrain
-	{
-		return this.terrainAtPosInCells(this.cursor.pos);
 	}
 
 	terrainByCode(terrainCode: string): MapTerrain

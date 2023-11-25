@@ -33,7 +33,7 @@ class Ship extends Entity {
     }
     buildable() {
         if (this._buildable == null) {
-            this._buildable = new Buildable(this.defn.name, Coords.create(), false);
+            this._buildable = new Buildable(this.defn.name, Coords.create(), false, false);
             this.propertyAdd(this._buildable);
         }
         return this._buildable;
@@ -49,7 +49,7 @@ class Ship extends Entity {
         }
         else if (targetDefnName == Planet.name) {
             var planet = target;
-            var venue = universe.venueCurrent;
+            var venue = universe.venueCurrent();
             var starsystem = venue.starsystem;
             ship.planetOrbitEnter(universe, starsystem, planet);
         }
@@ -81,10 +81,10 @@ class Ship extends Entity {
     }
     jumpTo(universe) {
         var starsystem = this.starsystem(universe.world);
-        var venueStarsystem = new VenueStarsystem(universe.venueCurrent, // venueToReturnTo
+        var venueStarsystem = new VenueStarsystem(universe.venueCurrent(), // venueToReturnTo
         starsystem // modelParent
         );
-        universe.venueNext = venueStarsystem;
+        universe.venueTransitionTo(venueStarsystem);
     }
     link(world) {
         var linkFound = world.network.links.find(x => (x.ships.indexOf(this) >= 0));
@@ -330,7 +330,7 @@ class Ship extends Entity {
                 DataBinding.fromTrue(), // isEnabled
                 () => // click
                  {
-                    var venue = universe.venueCurrent;
+                    var venue = universe.venueCurrent();
                     var ship = venue.selectedEntity;
                     ship.deviceSelected = ship.devicesDrives(world)[0];
                     var orderDefns = OrderDefn.Instances();
@@ -341,7 +341,7 @@ class Ship extends Entity {
                 DataBinding.fromTrue(), // isEnabled
                 () => // click
                  {
-                    var venue = universe.venueCurrent;
+                    var venue = universe.venueCurrent();
                     var ship = venue.selectedEntity;
                     var order = Orderable.fromEntity(ship).order;
                     if (order != null) {
@@ -364,7 +364,7 @@ class Ship extends Entity {
                 buttonSize, "Use Device", fontNameAndHeight, true, // hasBorder
                 DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected != null)), () => // click
                  {
-                    var venue = universe.venueCurrent;
+                    var venue = universe.venueCurrent();
                     var ship = venue.selectedEntity;
                     var device = ship.deviceSelected;
                     device.use(uwpe);
@@ -381,14 +381,14 @@ class Ship extends Entity {
         return 1; // todo
     }
     // turns
-    updateForTurn(universe, world, faction) {
+    updateForRound(universe, world, faction) {
         this.turnTaker().clear();
         var devices = this.devices();
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
         for (var i = 0; i < devices.length; i++) {
             var device = devices[i];
             uwpe.entity2Set(device.toEntity(uwpe));
-            device.updateForTurn(uwpe);
+            device.updateForRound(uwpe);
         }
     }
     // TurnTaker.

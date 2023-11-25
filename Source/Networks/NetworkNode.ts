@@ -66,6 +66,48 @@ class NetworkNode2 extends Entity
 			10
 		);
 
+		var labelStarsystemName = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin),
+			Coords.fromXY(0, 0), // this.size
+			DataBinding.fromContext(this.name),
+			fontNameAndHeight
+		);
+
+		var labelStarsystemHolder = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin + controlSpacing),
+			Coords.fromXY(0, 0), // this.size
+			DataBinding.fromContextAndGet
+			(
+				networkNode,
+				(c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)
+			),
+			fontNameAndHeight
+		);
+
+		var buttonView = ControlButton.from5
+		(
+			Coords.fromXY(margin, margin + controlSpacing * 2), // pos
+			buttonSize, // size
+			"View",
+			fontNameAndHeight,
+			() => // click
+			{
+				var venueCurrent =
+					universe.venueCurrent() as VenueWorldExtended;
+				var starsystemToView =
+					(venueCurrent.selectedEntity as NetworkNode2).starsystem;
+				if (starsystemToView != null)
+				{
+					universe.venueTransitionTo
+					(
+						new VenueStarsystem(venueCurrent, starsystemToView)
+					);
+				}
+			}
+		);
+
 		var returnValue = ControlContainer.from4
 		(
 			"containerStarsystem",
@@ -73,61 +115,16 @@ class NetworkNode2 extends Entity
 			Coords.fromXY(containerSize.x - margin * 2, 40), // size
 			// children
 			[
-				new ControlLabel
-				(
-					"labelStarsystemName",
-					Coords.fromXY(margin, margin),
-					Coords.fromXY(0, 0), // this.size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext(this.name),
-					fontNameAndHeight
-				),
-
-				new ControlLabel
-				(
-					"labelStarsystemHolder",
-					Coords.fromXY(margin, margin + controlSpacing),
-					Coords.fromXY(0, 0), // this.size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						networkNode,
-						(c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)
-					),
-					fontNameAndHeight
-				),
-
-				ControlButton.from8
-				(
-					"buttonView",
-					Coords.fromXY(margin, margin + controlSpacing * 2), // pos
-					buttonSize, // size
-					"View",
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => // click
-					{
-						var venueCurrent =
-							universe.venueCurrent as VenueWorldExtended;
-						var starsystemToView =
-							(venueCurrent.selectedEntity as NetworkNode2).starsystem;
-						if (starsystemToView != null)
-						{
-							universe.venueNext =
-								new VenueStarsystem(venueCurrent, starsystemToView);
-						}
-					}
-				),
+				labelStarsystemName,
+				labelStarsystemHolder,
+				buttonView
 			]
 		);
 
 		return returnValue;
 	}
 
-	// drawable
+	// Drawable.
 
 	draw(uwpe: UniverseWorldPlaceEntities): void
 	{

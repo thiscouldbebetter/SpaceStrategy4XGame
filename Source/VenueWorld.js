@@ -95,7 +95,7 @@ class VenueWorldExtended extends VenueWorld {
                 var venueNext = universe.controlBuilder.gameAndSettings1(universe).toVenue();
                 universe.venueTransitionTo(venueNext);
             }),
-            controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, true // includeTurnAdvanceButtons
+            controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, true // includeRoundAdvanceButtons
             ),
             faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, true // includeDetailsButton
             ),
@@ -169,7 +169,7 @@ class VenueWorldExtended extends VenueWorld {
                 }
                 var bodyClicked = collisionNearest.colliders[0]; // todo
                 if (bodyClicked == this.selectedEntity) {
-                    var venueCurrent = universe.venueCurrent;
+                    var venueCurrent = universe.venueCurrent();
                     var bodyClickedNetworkNode = bodyClicked;
                     var starsystem = bodyClickedNetworkNode.starsystem;
                     if (starsystem != null) {

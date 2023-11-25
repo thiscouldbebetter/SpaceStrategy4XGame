@@ -59,7 +59,9 @@ class PlanetType {
         return PlanetType.Instances().byName(name);
     }
     layoutCreate(universe) {
-        var mapSizeInCells = this.size.surfaceSizeInCells;
+        var rowsForOrbit = 2;
+        var rowsForOrbitAndSeparator = rowsForOrbit + 1;
+        var mapSizeInCells = this.size.surfaceSizeInCells.clone().addXY(0, rowsForOrbitAndSeparator);
         var world = universe.world;
         var mapCellSizeInPixels = world.mapCellSizeInPixels(universe);
         var mapSizeInPixels = mapSizeInCells.clone().multiply(mapCellSizeInPixels);
@@ -71,9 +73,19 @@ class PlanetType {
         var cellRowsAsStrings = new Array();
         for (var y = 0; y < mapSizeInCells.y; y++) {
             var cellRowAsString = "";
-            for (var x = 0; x < mapSizeInCells.x; x++) {
-                var terrain = terrainDistribution.valueRandom();
-                cellRowAsString += terrain.codeChar;
+            if (y < rowsForOrbit) {
+                var terrainOrbit = terrains.Orbit;
+                cellRowAsString = "".padEnd(mapSizeInCells.x, terrainOrbit.codeChar);
+            }
+            else if (y < rowsForOrbitAndSeparator) {
+                var terrainNone = terrains.None;
+                cellRowAsString = "".padEnd(mapSizeInCells.x, terrainNone.codeChar);
+            }
+            else {
+                for (var x = 0; x < mapSizeInCells.x; x++) {
+                    var terrain = terrainDistribution.valueRandom();
+                    cellRowAsString += terrain.codeChar;
+                }
             }
             cellRowsAsStrings.push(cellRowAsString);
         }

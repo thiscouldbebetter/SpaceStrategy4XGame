@@ -24,6 +24,12 @@ class Faction {
         Color.Instances().Red, FactionDiplomacy.fromFactionSelfName(name), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.fromFactionSelfName(name), null // intelligence
         );
     }
+    abilityCanBeUsed(world) {
+        var defn = this.defn();
+        var ability = defn.ability;
+        var returnValue = ability.isCharged(world);
+        return returnValue;
+    }
     defn() {
         return FactionDefn.byName(this.defnName);
     }
@@ -147,8 +153,13 @@ class Faction {
         () => {
             var world = universe.world;
             var faction = world.factionCurrent();
-            var factionDefn = faction.defn();
-            factionDefn.ability.perform(world);
+            if (faction.abilityCanBeUsed(world)) {
+                var factionDefn = faction.defn();
+                factionDefn.ability.perform(world);
+            }
+            else {
+                VenueMessage.fromText("todo - Can't use ability yet.");
+            }
         } // click
         );
         var containerStatus = ControlContainer.from4("Status", Coords.create(), tabbedControlSize, 
@@ -171,8 +182,8 @@ class Faction {
             containerPlanets,
             containerShips
         ];
-        var venueToReturnTo = universe.venueCurrent;
-        var back = () => universe.venueNext = venueToReturnTo;
+        var venueToReturnTo = universe.venueCurrent();
+        var back = () => universe.venueTransitionTo(venueToReturnTo);
         var returnControl = new ControlTabbed("tabbedItems", Coords.create(), // pos
         size, tabButtonSize, controlsForTabs, fontNameAndHeight, back, faction // context
         );
@@ -180,7 +191,7 @@ class Faction {
     }
     toControl_Details_Diplomacy(universe, size) {
         var factionCurrent = this;
-        var diplomaticSession = DiplomaticSession.demo(factionCurrent, universe.venueCurrent);
+        var diplomaticSession = DiplomaticSession.demo(factionCurrent, universe.venueCurrent());
         var diplomaticSessionAsControl = diplomaticSession.toControl(universe, size);
         return diplomaticSessionAsControl;
     }
@@ -307,8 +318,7 @@ class Faction {
     notificationSessionStart(universe) {
         var notificationSessionAsControl = this.toControl_Details_Notifications(universe, universe.display.sizeInPixels);
         var venueNext = notificationSessionAsControl.toVenue();
-        venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-        universe.venueNext = venueNext;
+        universe.venueTransitionTo(venueNext);
     }
     // turns
     researchPerTurn(universe, world) {
@@ -320,16 +330,16 @@ class Faction {
         }
         return returnValue;
     }
-    updateForTurn(universe, world) {
+    updateForRound(universe, world) {
         for (var i = 0; i < this.planets.length; i++) {
             var planet = this.planets[i];
-            planet.updateForTurn(universe, world, this);
+            planet.updateForRound(universe, world, this);
         }
         for (var i = 0; i < this.ships.length; i++) {
             var ship = this.ships[i];
-            ship.updateForTurn(universe, world, this);
+            ship.updateForRound(universe, world, this);
         }
-        this.technologyResearcher.updateForTurn(universe, world, this);
+        this.technologyResearcher.updateForRound(universe, world, this);
     }
     // EntityProperty.
     finalize(uwpe) { }

@@ -10,7 +10,7 @@ class Resource
 		this.quantity = quantity;
 	}
 
-	static add(resourcesToAddTo: Resource[], resourcesToBeAdded: Resource[]): void
+	static addManyToMany(resourcesToAddTo: Resource[], resourcesToBeAdded: Resource[]): void
 	{
 		for (var r = 0; r < resourcesToBeAdded.length; r++)
 		{
@@ -86,6 +86,25 @@ class Resource
 	}
 
 	// instance methods
+
+	add(resourceToBeAdded: Resource): void
+	{
+		var resourceToBeAddedDefnName = resourceToBeAdded.defnName;
+		if (this.defnName == resourceToBeAddedDefnName)
+		{
+			this.addQuantity(resourceToBeAdded.quantity);
+		}
+	}
+
+	addQuantity(quantity: number): void
+	{
+		this.quantity += quantity;
+	}
+
+	clear(): void
+	{
+		this.quantity = 0;
+	}
 
 	toString(): string
 	{

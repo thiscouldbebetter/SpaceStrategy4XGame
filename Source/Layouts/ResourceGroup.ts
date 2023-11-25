@@ -10,7 +10,7 @@ class ResourceGroup
 
 	add(other: ResourceGroup)
 	{
-		Resource.add(this.resources, other.resources);
+		Resource.addManyToMany(this.resources, other.resources);
 		return this;
 	}
 

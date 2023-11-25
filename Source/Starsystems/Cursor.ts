@@ -149,7 +149,7 @@ class Cursor extends Entity
 	{
 		var universe = uwpe.universe;
 
-		var venue = universe.venueCurrent;
+		var venue = universe.venueCurrent();
 		var venueTypeName = venue.constructor.name;
 		if (venueTypeName == VenueFader.name)
 		{

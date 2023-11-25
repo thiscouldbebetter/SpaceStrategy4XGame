@@ -30,9 +30,9 @@ class TechnologyResearcher {
         var technologyBeingResearched = this.technologyBeingResearched(world);
         if (technologyBeingResearched == null) {
             if (amountToIncrement > 0) {
-                var notification = new Notification2("Default", world.roundsSoFar, "Nothing being researched.", "research" // locus
+                var notification = new Notification2("Default", world.roundNumberCurrent(), "Nothing being researched.", "research" // locus
                 );
-                faction.notificationSession.notifications.push(notification);
+                faction.notificationSession.notificationAdd(notification);
             }
         }
         else {
@@ -115,7 +115,7 @@ class TechnologyResearcher {
         }
     }
     // turns
-    updateForTurn(universe, world, faction) {
+    updateForRound(universe, world, faction) {
         var researchThisTurn = this.researchPerTurn(universe, world);
         this.researchAccumulatedIncrement(world, faction, researchThisTurn);
     }

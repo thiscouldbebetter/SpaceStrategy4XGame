@@ -7,7 +7,7 @@ class VisualElevationStem {
     }
     draw(uwpe, display) {
         var universe = uwpe.universe;
-        var starsystem = universe.venueCurrent.starsystem;
+        var starsystem = universe.venueCurrent().starsystem;
         if (starsystem == null) {
             return;
         }

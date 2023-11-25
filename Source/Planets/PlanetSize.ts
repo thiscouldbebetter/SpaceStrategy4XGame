@@ -26,6 +26,11 @@ class PlanetSize
 		}
 		return PlanetSize._instances;
 	}
+
+	populationMax(): number
+	{
+		return this.surfaceSizeInCells.x * this.surfaceSizeInCells.y;
+	}
 }
 
 class PlanetSize_Instances
@@ -46,7 +51,7 @@ class PlanetSize_Instances
 		{
 			var radiusInPixels = Math.floor(4 * Math.sqrt(dimension));
 
-			var surfaceSizeInCells = Coords.ones().multiplyScalar(dimension);
+			var surfaceSizeInCells = Coords.fromXY(1, 1).multiplyScalar(dimension);
 
 			return new PlanetSize
 			(
@@ -60,7 +65,7 @@ class PlanetSize_Instances
 		this.Small 		= ps("Small", 4 );
 		this.Medium 	= ps("Medium", 5 );
 		this.Large 		= ps("Large", 6 );
-		this.Giant 	= ps("Giant", 7 );
+		this.Giant 		= ps("Giant", 7 );
 
 		this.Default = this.Medium;
 

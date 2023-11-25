@@ -85,7 +85,7 @@ class Ship extends Entity
 		{
 			this._buildable = new Buildable
 			(
-				this.defn.name, Coords.create(), false
+				this.defn.name, Coords.create(), false, false
 			);
 			this.propertyAdd(this._buildable);
 		}
@@ -109,7 +109,7 @@ class Ship extends Entity
 		else if (targetDefnName == Planet.name)
 		{
 			var planet = target as Planet;
-			var venue = universe.venueCurrent as VenueStarsystem;
+			var venue = universe.venueCurrent() as VenueStarsystem;
 			var starsystem = venue.starsystem;
 			ship.planetOrbitEnter(universe, starsystem, planet);
 		}
@@ -164,10 +164,10 @@ class Ship extends Entity
 			this.starsystem(universe.world as WorldExtended);
 		var venueStarsystem = new VenueStarsystem
 		(
-			universe.venueCurrent, // venueToReturnTo
+			universe.venueCurrent(), // venueToReturnTo
 			starsystem // modelParent
 		);
-		universe.venueNext = venueStarsystem;
+		universe.venueTransitionTo(venueStarsystem);
 	}
 
 	link(world: WorldExtended): NetworkLink2
@@ -628,7 +628,7 @@ class Ship extends Entity
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						var venue = universe.venueCurrent as VenueStarsystem;
+						var venue = universe.venueCurrent() as VenueStarsystem;
 						var ship = venue.selectedEntity as Ship;
 
 						ship.deviceSelected = ship.devicesDrives(world)[0];
@@ -653,7 +653,7 @@ class Ship extends Entity
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						var venue = universe.venueCurrent as VenueStarsystem;
+						var venue = universe.venueCurrent() as VenueStarsystem;
 						var ship = venue.selectedEntity;
 						var order = Orderable.fromEntity(ship).order;
 						if (order != null)
@@ -713,7 +713,7 @@ class Ship extends Entity
 					),
 					() => // click
 					{
-						var venue = universe.venueCurrent as VenueStarsystem;
+						var venue = universe.venueCurrent() as VenueStarsystem;
 						var ship = venue.selectedEntity as Ship;
 						var device = ship.deviceSelected;
 						device.use(uwpe);
@@ -744,7 +744,7 @@ class Ship extends Entity
 
 	// turns
 
-	updateForTurn(universe: Universe, world: World, faction: Faction): void
+	updateForRound(universe: Universe, world: World, faction: Faction): void
 	{
 		this.turnTaker().clear();
 
@@ -758,7 +758,7 @@ class Ship extends Entity
 		{
 			var device = devices[i];
 			uwpe.entity2Set(device.toEntity(uwpe));
-			device.updateForTurn(uwpe);
+			device.updateForRound(uwpe);
 		}
 	}
 

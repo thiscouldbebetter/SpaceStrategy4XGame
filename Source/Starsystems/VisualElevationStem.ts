@@ -15,7 +15,7 @@ class VisualElevationStem implements VisualBase
 	{
 		var universe = uwpe.universe;
 
-		var starsystem = (universe.venueCurrent as VenueStarsystem).starsystem;
+		var starsystem = (universe.venueCurrent() as VenueStarsystem).starsystem;
 		if (starsystem == null)
 		{
 			return;

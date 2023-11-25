@@ -14,12 +14,15 @@ class PlanetSize {
         }
         return PlanetSize._instances;
     }
+    populationMax() {
+        return this.surfaceSizeInCells.x * this.surfaceSizeInCells.y;
+    }
 }
 class PlanetSize_Instances {
     constructor() {
         var ps = (name, dimension) => {
             var radiusInPixels = Math.floor(4 * Math.sqrt(dimension));
-            var surfaceSizeInCells = Coords.ones().multiplyScalar(dimension);
+            var surfaceSizeInCells = Coords.fromXY(1, 1).multiplyScalar(dimension);
             return new PlanetSize(name, radiusInPixels, surfaceSizeInCells);
         };
         this.Tiny = ps("Tiny", 3);

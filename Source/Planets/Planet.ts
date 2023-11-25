@@ -176,11 +176,11 @@ class Planet extends Entity
 	{
 		var venuePlanet = new VenueLayout
 		(
-			universe.venueCurrent,
+			universe.venueCurrent(),
 			this, // modelParent
 			this.layout(universe)
 		);
-		universe.venueNext = venuePlanet;
+		universe.venueTransitionTo(venuePlanet);
 	}
 
 	layout(universe: Universe): Layout
@@ -278,6 +278,59 @@ class Planet extends Entity
 		return returnValue;
 	}
 
+	// Demographics.
+
+	prosperityNetWithNeededToGrow(universe: Universe): string
+	{
+		var prosperityNet = this.prosperityPerTurn
+		(
+			universe, universe.world as WorldExtended, null
+		);
+		var prosperityAccumulated =
+			this.prosperityPerTurn(universe, universe.world as WorldExtended, null);
+		var prosperityNeededToGrow =
+			this.demographics.prosperityNeededToGrow();
+		var returnValue =
+			"+" + prosperityNet + "(" + prosperityAccumulated + "/" + prosperityNeededToGrow + " to grow)";
+		return returnValue;
+	}
+
+	populationIdle(universe: Universe): number
+	{
+		var populationCurrent = this.demographics.population;
+		var populationOccupied = this.populationOccupied(universe);
+		var populationIdle = populationCurrent - populationOccupied;
+		return populationIdle;
+	}
+
+	populationIdleExists(universe: Universe): boolean
+	{
+		return this.populationIdle(universe) > 0;
+	}
+
+	populationMax(): number
+	{
+		return this.planetType.size.populationMax();
+	}
+
+	populationOccupied(universe: Universe): number
+	{
+		var layout = this.layout(universe);
+		var facilities = layout.facilities();
+		var facilitiesAutomated = facilities.filter(x => Buildable.ofEntity(x).isAutomated);
+		var returnValue = facilities.length - facilitiesAutomated.length;
+		return returnValue;
+	}
+
+	populationOverMaxPlusIdle(universe: Universe): string
+	{
+		var populationCurrent = this.demographics.population;
+		var populationIdle = this.populationIdle(universe);
+		var returnValue =
+			"" + populationCurrent + "/" + this.populationMax() + " (Idle: " + populationIdle + ")";
+		return returnValue;
+	}
+
 	// diplomacy
 
 	strategicValue(world: WorldExtended): number
@@ -287,7 +340,7 @@ class Planet extends Entity
 
 	// turns
 
-	updateForTurn
+	updateForRound
 	(
 		universe: Universe, world: WorldExtended, faction: Faction
 	): void
@@ -298,9 +351,9 @@ class Planet extends Entity
 			this._resourcesPerTurnByName = null;
 
 			var layout = this.layout(universe);
-			layout.updateForTurn(universe, world, faction, null);
-			this.industry.updateForTurn(universe, world, faction, this);
-			this.demographics.updateForTurn(universe, world, faction, this);
+			layout.updateForRound(universe, world, faction, null);
+			this.industry.updateForRound(universe, world, faction, this);
+			this.demographics.updateForRound(universe, world, faction, this);
 		}
 	}
 
@@ -329,7 +382,7 @@ class Planet extends Entity
 		(
 			buildableEntityInProgress == null
 			? null
-			: Buildable.fromEntity(buildableEntityInProgress)
+			: Buildable.ofEntity(buildableEntityInProgress)
 		);
 
 		return returnValue;
@@ -357,11 +410,19 @@ class Planet extends Entity
 		universe: Universe, world: WorldExtended, faction: Faction
 	): number
 	{
-		var resource = this.resourcesPerTurnByName
+		var prosperityGross = this.resourcesPerTurnByName
 		(
 			universe, world
-		).get("Prosperity");
-		return (resource == null ? 0: resource.quantity);
+		).get("Prosperity").quantity;
+
+		var prosperityConsumed = Math.floor(this.demographics.population / 4);
+
+		var prosperityNet = prosperityGross - prosperityConsumed;
+
+		var inefficiencyExponent = 0.85;
+		prosperityNet = Math.pow(prosperityNet, inefficiencyExponent);
+
+		return prosperityNet;
 	}
 
 	researchPerTurn
@@ -386,12 +447,12 @@ class Planet extends Entity
 			var facilities = layout.facilities();
 			for (var f = 0; f < facilities.length; f++)
 			{
-				var facility = Buildable.fromEntity(facilities[f]);
+				var facility = Buildable.ofEntity(facilities[f]);
 				if (facility.isComplete)
 				{
 					var facilityDefn = facility.defn(world);
 					var facilityResources = facilityDefn.resourcesPerTurn;
-					Resource.add(resourcesSoFar, facilityResources);
+					Resource.addManyToMany(resourcesSoFar, facilityResources);
 				}
 			}
 

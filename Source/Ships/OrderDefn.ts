@@ -101,7 +101,7 @@ class OrderDefn_Instances
 		var device = ship.deviceSelected;
 		if (device != null)
 		{
-			var venue = universe.venueCurrent as VenueStarsystem;
+			var venue = universe.venueCurrent() as VenueStarsystem;
 			var starsystem = venue.starsystem;
 
 			var projectile = device.projectile;

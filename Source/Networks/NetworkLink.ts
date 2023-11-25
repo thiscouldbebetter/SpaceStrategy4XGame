@@ -75,7 +75,7 @@ class NetworkLink2 implements EntityPropertyBase
 
 	// turns
 
-	updateForTurn(universe: Universe, world: WorldExtended): void
+	updateForRound(universe: Universe, world: WorldExtended): void
 	{
 		if (this.ships.length > 0)
 		{

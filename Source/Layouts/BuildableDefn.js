@@ -7,7 +7,7 @@ class BuildableDefn {
         this.sizeInPixels = sizeInPixels;
         this.visual = this.visualWrapWithOverlay(visual);
         this.industryToBuild = industryToBuild;
-        this.resourcesPerTurn = resourcesPerTurn;
+        this.resourcesPerTurn = resourcesPerTurn || [];
         this.entityModifyOnBuild = entityModifyOnBuild;
     }
     buildableToEntity(buildable) {
@@ -46,7 +46,7 @@ class BuildableDefn {
         return visualWrapped;
     }
     visualWrap_SelectChildNames(uwpe, d) {
-        var buildable = Buildable.fromEntity(uwpe.entity2);
+        var buildable = Buildable.ofEntity(uwpe.entity2);
         return (buildable.isComplete ? ["Complete"] : ["Incomplete"]);
     }
 }

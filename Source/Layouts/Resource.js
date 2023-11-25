@@ -4,7 +4,7 @@ class Resource {
         this.defnName = defnName;
         this.quantity = quantity;
     }
-    static add(resourcesToAddTo, resourcesToBeAdded) {
+    static addManyToMany(resourcesToAddTo, resourcesToBeAdded) {
         for (var r = 0; r < resourcesToBeAdded.length; r++) {
             var resourceToBeAdded = resourcesToBeAdded[r];
             var resourceDefnName = resourceToBeAdded.defnName;
@@ -51,6 +51,18 @@ class Resource {
         }
     }
     // instance methods
+    add(resourceToBeAdded) {
+        var resourceToBeAddedDefnName = resourceToBeAdded.defnName;
+        if (this.defnName == resourceToBeAddedDefnName) {
+            this.addQuantity(resourceToBeAdded.quantity);
+        }
+    }
+    addQuantity(quantity) {
+        this.quantity += quantity;
+    }
+    clear() {
+        this.quantity = 0;
+    }
     toString() {
         return this.defnName + ": " + this.quantity;
     }

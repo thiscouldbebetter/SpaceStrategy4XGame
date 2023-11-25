@@ -3,6 +3,9 @@ class Factionable {
     constructor(factionName) {
         this.factionName = factionName;
     }
+    static ofEntity(entity) {
+        return entity.propertyByName(Factionable.name);
+    }
     faction(world) {
         var factionName = this.factionName;
         var faction = (factionName == null ? null : world.factionByName(factionName));

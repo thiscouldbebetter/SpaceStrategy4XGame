@@ -43,6 +43,76 @@ class VenueStarsystem implements Venue
 		this.venueControls.draw(universe);
 	}
 
+	entitySelectedDetailsAreViewable(universe: Universe): boolean
+	{
+		var entitySelectedDetailsAreViewable = false;
+
+		var entitySelected = this.selectedEntity;
+
+		if (entitySelected != null)
+		{
+			var world = universe.world as WorldExtended;
+			var factionable = Factionable.ofEntity(entitySelected);
+			if (factionable == null)
+			{
+				entitySelectedDetailsAreViewable = true;
+			}
+			else
+			{
+				var entitySelectedFaction = factionable.faction(world);
+				var factionCurrent = world.factionCurrent();
+				entitySelectedDetailsAreViewable = (entitySelectedFaction == factionCurrent);
+			}
+		}
+
+		return entitySelectedDetailsAreViewable;
+	}
+
+	entitySelectedDetailsView(universe: Universe): void
+	{
+		var detailsAreViewable = this.entitySelectedDetailsAreViewable(universe);
+
+		if (detailsAreViewable == false)
+		{
+			return;
+		}
+
+		var selectedEntity = this.selectedEntity;
+		if (selectedEntity != null)
+		{
+			var venueNext: Venue;
+			var selectionTypeName = selectedEntity.constructor.name;
+
+			if (selectionTypeName == NetworkNode2.name)
+			{
+				var selectionAsNetworkNode = selectedEntity as NetworkNode2;
+				var starsystem = selectionAsNetworkNode.starsystem;
+				if (starsystem != null)
+				{
+					venueNext = new VenueStarsystem(this, starsystem);
+				}
+			}
+			else if (selectionTypeName == Planet.name)
+			{
+				var selectionAsPlanet = selectedEntity as Planet;
+				var layout = selectionAsPlanet.layout(universe);
+				venueNext = new VenueLayout
+				(
+					this, selectionAsPlanet, layout
+				);
+			}
+			else if (selectionTypeName == Ship.name)
+			{
+				throw new Error("Not yet implemented!");
+			}
+
+			if (venueNext != null)
+			{
+				universe.venueTransitionTo(venueNext);
+			}
+		}
+	}
+
 	finalize(universe: Universe): void
 	{
 		universe.soundHelper.soundForMusic.pause(universe);
@@ -353,10 +423,15 @@ class VenueStarsystem implements Venue
 		}
 		else if (bodyClicked == planetSelected)
 		{
-			var layout = planetSelected.layout(universe);
-			var venueNext =
-				new VenueLayout(this, bodyClicked, layout);
-			universe.venueTransitionTo(venueNext);
+			var detailsAreViewable = this.entitySelectedDetailsAreViewable(universe);
+
+			if (detailsAreViewable)
+			{
+				var layout = planetSelected.layout(universe);
+				var venueNext =
+					new VenueLayout(this, bodyClicked, layout);
+				universe.venueTransitionTo(venueNext);
+			}
 		}
 		else if (planetSelected.isAwaitingTarget())
 		{
@@ -565,7 +640,7 @@ class VenueStarsystem implements Venue
 					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
-						var venue = universe.venueCurrent as VenueStarsystem;
+						var venue = universe.venueCurrent() as VenueStarsystem;
 						var venueNext = venue.venueParent;
 						universe.venueTransitionTo(venueNext);
 					}
@@ -578,7 +653,7 @@ class VenueStarsystem implements Venue
 					containerInnerSize,
 					margin,
 					controlHeight,
-					false // includeTurnAdvanceButtons
+					false // includeRoundAdvanceButtons
 				),
 
 				controlBuilder.view

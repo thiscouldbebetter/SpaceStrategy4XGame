@@ -13,7 +13,7 @@ class PlanetIndustry {
             buildableString += "nothing";
         }
         else {
-            var buildableInProgress = Buildable.fromEntity(buildableEntityInProgress);
+            var buildableInProgress = Buildable.ofEntity(buildableEntityInProgress);
             var buildableDefn = buildableInProgress.defn(world);
             var industryToBuild = buildableDefn.industryToBuild;
             var industryAccumulated = this.planetIndustryAccumulated(planet);
@@ -25,22 +25,25 @@ class PlanetIndustry {
         var returnValue = buildableString;
         return returnValue;
     }
-    updateForTurn(universe, world, faction, planet) {
+    updateForRound(universe, world, faction, planet) {
         var resourcesAccumulated = planet.resourcesAccumulated;
-        var resourcesProduced = planet.resourcesPerTurn(universe, world);
-        Resource.add(resourcesAccumulated, resourcesProduced);
+        var industryAccumulated = resourcesAccumulated.find(x => x.defnName == "Industry");
+        var industryProduced = planet.industryPerTurn(universe, world);
+        industryAccumulated.addQuantity(industryProduced);
         var buildableEntityInProgress = planet.buildableEntityInProgress(universe);
         if (buildableEntityInProgress == null) {
-            var notification = new Notification2("Default", world.roundsSoFar, "Nothing being built.", planet);
-            faction.notificationSession.notificationAdd(notification);
+            var hasIdlePopulation = planet.populationIdleExists(universe);
+            if (hasIdlePopulation) {
+                var notification = new Notification2("Default", world.roundNumberCurrent(), "Planet has free population, but nothing is being built.", planet);
+                faction.notificationSession.notificationAdd(notification);
+            }
         }
         else {
-            var buildableInProgress = Buildable.fromEntity(buildableEntityInProgress);
+            var buildableInProgress = Buildable.ofEntity(buildableEntityInProgress);
             var buildableDefn = buildableInProgress.defn(world);
-            var industryAccumulated = planet.industryAccumulated();
             var industryToBuild = buildableDefn.industryToBuild;
-            if (industryAccumulated >= industryToBuild) {
-                this.planetIndustryAccumulatedClear(planet);
+            if (industryAccumulated.quantity >= industryToBuild) {
+                industryAccumulated.clear();
                 buildableInProgress.isComplete = true;
                 buildableInProgress._visual = null;
                 var buildableAsItem = buildableEntityInProgress.item();

@@ -1,32 +1,40 @@
 
-class Buildable implements EntityPropertyBase
+class Buildable implements EntityProperty<Buildable>
 {
 	defnName: string;
 	pos: Coords;
 	isComplete: boolean;
+	isAutomated: boolean;
 
 	_locatable: Locatable;
 	_visual: VisualBase;
 
-	constructor(defnName: string, pos: Coords, isComplete: boolean)
+	constructor(defnName: string, pos: Coords, isComplete: boolean, isAutomated: boolean)
 	{
 		this.defnName = defnName;
 		var loc = Disposition.fromPos(pos);
 		this._locatable = new Locatable(loc);
-		this.isComplete = (isComplete || false);
+		this.isComplete = isComplete || false;
+		this.isAutomated = isAutomated || false;
 	}
 
 	static fromDefnName(defnName: string): Buildable
 	{
-		return new Buildable(defnName, null, false);
+		return new Buildable
+		(
+			defnName,
+			null, // pos
+			false, // isComplete
+			false // isAutomated
+		);
 	}
 
 	static fromDefnNameAndPos(defnName: string, pos: Coords): Buildable
 	{
-		return new Buildable(defnName, pos, false);
+		return new Buildable(defnName, pos, false, false);
 	}
 
-	static fromEntity(entity: Entity): Buildable
+	static ofEntity(entity: Entity): Buildable
 	{
 		return entity.propertyByName(Buildable.name) as Buildable;
 	}

@@ -47,7 +47,7 @@ class OrderDefn_Instances {
         var ship = entity;
         var device = ship.deviceSelected;
         if (device != null) {
-            var venue = universe.venueCurrent;
+            var venue = universe.venueCurrent();
             var starsystem = venue.starsystem;
             var projectile = device.projectile;
             if (projectile == null) {

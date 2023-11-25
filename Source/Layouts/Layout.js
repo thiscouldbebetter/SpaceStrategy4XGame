@@ -18,7 +18,7 @@ class Layout {
         this.map.bodyAdd(buildableEntityToBuild);
     }
     buildableEntityInProgress() {
-        return this.map.bodies().find(x => Buildable.fromEntity(x).isComplete == false);
+        return this.map.bodies().find(x => Buildable.ofEntity(x).isComplete == false);
     }
     buildableEntityRemove(buildableEntityToRemove) {
         this.map.bodyRemove(buildableEntityToRemove);
@@ -30,7 +30,7 @@ class Layout {
     initialize(universe) {
         // todo
     }
-    updateForTurn(universe, world, faction, parentModel) {
+    updateForRound(universe, world, faction, parentModel) {
         // todo
     }
     // drawable

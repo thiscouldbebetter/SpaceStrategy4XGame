@@ -1,6 +1,6 @@
 "use strict";
 class DeviceDefn extends ItemDefn {
-    constructor(name, isActive, needsTarget, categoryNames, initialize, updateForTurn, use) {
+    constructor(name, isActive, needsTarget, categoryNames, initialize, updateForRound, use) {
         super(name, name, // appearance
         name, // description
         null, // mass
@@ -11,7 +11,7 @@ class DeviceDefn extends ItemDefn {
         this.isActive = isActive;
         this.needsTarget = needsTarget;
         this._initialize = initialize;
-        this.updateForTurn = updateForTurn;
+        this.updateForRound = updateForRound;
         this.use = use;
     }
     initialize(uwpe) {

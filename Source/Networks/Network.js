@@ -172,11 +172,11 @@ class Network2 extends Place {
     starsystemByName(starsystemName) {
         return this.nodesByName.get(starsystemName).starsystem;
     }
-    // turns
-    updateForTurn(universe, world) {
+    // Rounds.
+    updateForRound(universe, world) {
         for (var i = 0; i < this.links.length; i++) {
             var link = this.links[i];
-            link.updateForTurn(universe, world);
+            link.updateForRound(universe, world);
         }
     }
     // drawing

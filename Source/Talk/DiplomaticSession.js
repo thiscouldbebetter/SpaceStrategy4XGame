@@ -29,7 +29,7 @@ class DiplomaticSession {
         var conversationDefn = ConversationDefn.deserialize(conversationDefnAsJSON);
         */
         var conversationDefn = this.factionActing.diplomacy.toConversationDefn(universe);
-        var venueToReturnTo = universe.venueCurrent;
+        var venueToReturnTo = universe.venueCurrent();
         var conversationQuit = () => // quit
          {
             universe.venueTransitionTo(venueToReturnTo);

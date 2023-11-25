@@ -75,6 +75,14 @@ class Faction implements EntityProperty<Faction>
 		);
 	}
 
+	abilityCanBeUsed(world: WorldExtended): boolean
+	{
+		var defn = this.defn();
+		var ability = defn.ability;
+		var returnValue = ability.isCharged(world);
+		return returnValue;
+	}
+
 	defn(): FactionDefn
 	{
 		return FactionDefn.byName(this.defnName);
@@ -375,8 +383,15 @@ class Faction implements EntityProperty<Faction>
 			{
 				var world = universe.world as WorldExtended;
 				var faction = world.factionCurrent();
-				var factionDefn = faction.defn();
-				factionDefn.ability.perform(world);
+				if (faction.abilityCanBeUsed(world) )
+				{
+					var factionDefn = faction.defn();
+					factionDefn.ability.perform(world);
+				}
+				else
+				{
+					VenueMessage.fromText("todo - Can't use ability yet.");
+				}
 			} // click
 		);
 
@@ -422,8 +437,8 @@ class Faction implements EntityProperty<Faction>
 			containerShips
 		];
 
-		var venueToReturnTo = universe.venueCurrent;
-		var back = () => universe.venueNext = venueToReturnTo;
+		var venueToReturnTo = universe.venueCurrent();
+		var back = () => universe.venueTransitionTo(venueToReturnTo);
 
 		var returnControl = new ControlTabbed<Faction>
 		(
@@ -449,7 +464,7 @@ class Faction implements EntityProperty<Faction>
 		var diplomaticSession = DiplomaticSession.demo
 		(
 			factionCurrent,
-			universe.venueCurrent
+			universe.venueCurrent()
 		);
 		var diplomaticSessionAsControl =
 			diplomaticSession.toControl(universe, size);
@@ -794,8 +809,7 @@ class Faction implements EntityProperty<Faction>
 				universe, universe.display.sizeInPixels
 			);
 		var venueNext: Venue = notificationSessionAsControl.toVenue();
-		venueNext = VenueFader.fromVenuesToAndFrom(venueNext, universe.venueCurrent);
-		universe.venueNext = venueNext;
+		universe.venueTransitionTo(venueNext);
 	}
 
 	// turns
@@ -817,21 +831,21 @@ class Faction implements EntityProperty<Faction>
 		return returnValue;
 	}
 
-	updateForTurn(universe: Universe, world: WorldExtended): void
+	updateForRound(universe: Universe, world: WorldExtended): void
 	{
 		for (var i = 0; i < this.planets.length; i++)
 		{
 			var planet = this.planets[i];
-			planet.updateForTurn(universe, world, this);
+			planet.updateForRound(universe, world, this);
 		}
 
 		for (var i = 0; i < this.ships.length; i++)
 		{
 			var ship = this.ships[i];
-			ship.updateForTurn(universe, world, this);
+			ship.updateForRound(universe, world, this);
 		}
 
-		this.technologyResearcher.updateForTurn
+		this.technologyResearcher.updateForRound
 		(
 			universe, world, this
 		);

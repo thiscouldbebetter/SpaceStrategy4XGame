@@ -341,14 +341,14 @@ class Network2 extends Place
 		return this.nodesByName.get(starsystemName).starsystem;
 	}
 
-	// turns
+	// Rounds.
 
-	updateForTurn(universe: Universe, world: WorldExtended): void
+	updateForRound(universe: Universe, world: WorldExtended): void
 	{
 		for (var i = 0; i < this.links.length; i++)
 		{
 			var link = this.links[i];
-			link.updateForTurn(universe, world);
+			link.updateForRound(universe, world);
 		}
 	}
 

@@ -10,9 +10,9 @@ class Device extends Item {
     deviceDefn(world) {
         return this._deviceDefn;
     }
-    updateForTurn(uwpe) {
+    updateForRound(uwpe) {
         var defn = this.deviceDefn(uwpe.world);
-        defn.updateForTurn(uwpe);
+        defn.updateForRound(uwpe);
     }
     use(uwpe) {
         uwpe.entity2 = this.toEntity(uwpe);

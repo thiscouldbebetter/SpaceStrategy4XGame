@@ -8,6 +8,11 @@ class Factionable implements EntityProperty<Factionable>
 		this.factionName = factionName;
 	}
 
+	static ofEntity(entity: Entity): Factionable
+	{
+		return entity.propertyByName(Factionable.name) as Factionable;
+	}
+
 	faction(world: WorldExtended): Faction
 	{
 		var factionName = this.factionName;

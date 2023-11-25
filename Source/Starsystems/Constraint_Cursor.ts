@@ -37,7 +37,7 @@ class Constraint_Cursor implements Constraint
 		var body = uwpe.entity;
 
 		var cursor = body as Cursor;
-		var venue = (universe.venueCurrent as VenueStarsystem);
+		var venue = (universe.venueCurrent() as VenueStarsystem);
 
 		var camera = venue.camera();
 		var cameraLoc = camera.loc;

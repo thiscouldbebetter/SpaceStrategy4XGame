@@ -171,7 +171,7 @@ class VenueWorldExtended extends VenueWorld
 					containerInnerSize,
 					margin,
 					controlHeight,
-					true // includeTurnAdvanceButtons
+					true // includeRoundAdvanceButtons
 				),
 
 				faction.toControl_ClusterOverlay
@@ -340,7 +340,7 @@ class VenueWorldExtended extends VenueWorld
 
 				if (bodyClicked == this.selectedEntity)
 				{
-					var venueCurrent = universe.venueCurrent;
+					var venueCurrent = universe.venueCurrent();
 					var bodyClickedNetworkNode = bodyClicked as NetworkNode2;
 					var starsystem = bodyClickedNetworkNode.starsystem;
 					if (starsystem != null)

@@ -7,7 +7,7 @@ class BuildableDefn
 	sizeInPixels: Coords;
 	visual: VisualBase;
 	industryToBuild: number;
-	resourcesPerTurn: Resource[];
+	resourcesPerTurn: Resource[]; // hack
 	entityModifyOnBuild: (entity: Entity) => void;
 
 	constructor
@@ -28,7 +28,7 @@ class BuildableDefn
 		this.sizeInPixels = sizeInPixels;
 		this.visual = this.visualWrapWithOverlay(visual);
 		this.industryToBuild = industryToBuild;
-		this.resourcesPerTurn = resourcesPerTurn;
+		this.resourcesPerTurn = resourcesPerTurn || [];
 		this.entityModifyOnBuild = entityModifyOnBuild;
 	}
 
@@ -110,7 +110,7 @@ class BuildableDefn
 
 	visualWrap_SelectChildNames(uwpe: UniverseWorldPlaceEntities, d: Display): string[]
 	{
-		var buildable = Buildable.fromEntity(uwpe.entity2);
+		var buildable = Buildable.ofEntity(uwpe.entity2);
 		return (buildable.isComplete ? ["Complete"] : ["Incomplete"] );
 	}
 

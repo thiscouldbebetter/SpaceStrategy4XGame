@@ -28,14 +28,14 @@ class Shipyard {
             + " " + shipNumber;
         var shipBodyDefn = Ship.bodyDefnBuild(faction.color);
         returnValue = new Ship(shipName, shipBodyDefn, cellPosToLaunchAt, faction.name, items);
-        returnValue.updateForTurn(universe, world, faction);
+        returnValue.updateForRound(universe, world, faction);
         return returnValue;
     }
     // Controllable.
     toControl(uwpe) {
         var universe = uwpe.universe;
         var world = uwpe.world;
-        var planet = universe.venueCurrent.modelParent;
+        var planet = universe.venueCurrent().modelParent;
         var ship = uwpe.entity;
         var size = universe.display.sizeDefault();
         var fontHeight = 10;
@@ -45,7 +45,7 @@ class Shipyard {
         var listSize = Coords.fromXY((size.x - margin * 4 - buttonSize.x) / 2, size.y - margin * 4 - fontHeight * 2);
         var itemHolderShipyard = planet.itemHolder();
         var itemHolderShip = ship.itemHolder();
-        var venuePrev = universe.venueCurrent;
+        var venuePrev = universe.venueCurrent();
         var back = () => universe.venueTransitionTo(venuePrev);
         var transferItemFromShipyardToShip = () => {
             // todo

@@ -1,9 +1,0 @@
-Technology/TechnologyGraph.ts(149,14): error TS1005: ',' expected.
-Technology/TechnologyGraph.ts(150,12): error TS1005: ',' expected.
-Technology/TechnologyGraph.ts(199,15): error TS1005: ',' expected.
-Technology/TechnologyGraph.ts(200,13): error TS1005: ',' expected.
-Technology/TechnologyGraph.ts(201,10): error TS1005: ',' expected.
-Technology/TechnologyGraph.ts(202,10): error TS1005: ',' expected.
-Technology/TechnologyGraph.ts(202,16): error TS1005: ',' expected.
-Technology/TechnologyGraph.ts(222,8): error TS1005: ',' expected.
-Technology/TechnologyGraph.ts(228,43): error TS1005: ',' expected.

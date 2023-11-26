@@ -27,6 +27,7 @@ class WorldExtended extends World {
         this.defn.itemDefns.push(...itemDefns);
         this.defn.itemDefnsByName = ArrayHelper.addLookupsByName(this.defn.itemDefns);
         this.roundsSoFar = 0;
+        this._isAdvancingThroughRoundsUntilNotification = false;
         this.factionIndexCurrent = 0;
         this.places = [];
         this.places.push(this.network);
@@ -45,7 +46,9 @@ class WorldExtended extends World {
         var viewSize = universe.display.sizeInPixels.clone();
         var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
         var buildableDefns = WorldExtended.create_BuildableDefns(mapCellSizeInPixels);
-        var technologyGraph = TechnologyGraph.demo(mapCellSizeInPixels);
+        var technologyGraph = 
+        // TechnologyGraph.demo(mapCellSizeInPixels);
+        TechnologyGraph.legacy(mapCellSizeInPixels);
         var technologiesFree = technologyGraph.technologiesFree();
         var viewDimension = viewSize.y;
         var networkRadius = viewDimension * .25;
@@ -64,7 +67,10 @@ class WorldExtended extends World {
         return returnValue;
     }
     static create_BuildableDefns(mapCellSizeInPixels) {
-        return new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+        var returnValues = 
+        // new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+        new BuildableDefnsLegacy(mapCellSizeInPixels)._All;
+        return returnValues;
     }
     static create_DeviceDefns() {
         return DeviceDefns.Instance()._All;
@@ -234,6 +240,9 @@ class WorldExtended extends World {
     initialize(uwpe) {
         // Do nothing.
     }
+    isAdvancingThroughRoundsUntilNotification() {
+        return this._isAdvancingThroughRoundsUntilNotification;
+    }
     mapCellSizeInPixels(universe) {
         if (this._mapCellSizeInPixels == null) {
             var viewSize = universe.display.sizeInPixels;
@@ -244,32 +253,12 @@ class WorldExtended extends World {
     placeForEntityLocatable(entityLocatable) {
         return this.network.placeForEntityLocatable(entityLocatable);
     }
+    roundAdvanceUntilNotificationDisable() {
+        this._isAdvancingThroughRoundsUntilNotification = false;
+    }
     roundAdvanceUntilNotificationToggle(uwpe) {
         this._isAdvancingThroughRoundsUntilNotification =
             (this._isAdvancingThroughRoundsUntilNotification == false);
-        if (this._isAdvancingThroughRoundsUntilNotification) {
-            this.roundAdvanceUntilNotification(uwpe);
-        }
-    }
-    roundAdvanceUntilNotification(uwpe) {
-        if (this._isAdvancingThroughRoundsUntilNotification) {
-            var world = this;
-            var factionForPlayer = world.factions[0];
-            var notificationSession = factionForPlayer.notificationSession;
-            if (notificationSession.notificationsExist()) {
-                world.updateForRound(uwpe);
-            }
-            else {
-                world.updateForRound(uwpe);
-                // hack
-                if (notificationSession.notificationsExist()) {
-                    this.roundAdvanceUntilNotificationToggle(uwpe);
-                }
-                else {
-                    setTimeout(() => this.roundAdvanceUntilNotification(uwpe), 500);
-                }
-            }
-        }
     }
     roundNumberCurrent() {
         return this.roundsSoFar + 1;
@@ -278,16 +267,41 @@ class WorldExtended extends World {
         return new VenueWorldExtended(this);
     }
     updateForRound(uwpe) {
-        uwpe.world = this;
         var universe = uwpe.universe;
-        var world = universe.world;
-        this.network.updateForRound(universe, world);
-        this.factions.forEach(x => x.updateForRound(universe, world));
+        var isThereANotification = this.updateForRound_Notifications(universe);
+        if (isThereANotification == false) {
+            uwpe.world = this;
+            var world = universe.world;
+            this.network.updateForRound(universe, world);
+            this.factions.forEach(x => x.updateForRound(universe, world));
+            this.roundsSoFar++;
+            this.updateForRound_Notifications(universe);
+        }
+    }
+    updateForRound_Notifications(universe) {
         var factionForPlayer = this.factions[0];
         var notificationSession = factionForPlayer.notificationSession;
-        if (notificationSession.notificationsExist()) {
+        var isThereANotification = notificationSession.notificationsExist();
+        if (isThereANotification) {
             factionForPlayer.notificationSessionStart(universe);
+            this.roundAdvanceUntilNotificationDisable();
         }
-        this.roundsSoFar++;
+        return isThereANotification;
+    }
+    updateForTimerTick(uwpe) {
+        //super.updateForTimerTick(uwpe);
+        var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
+        if (isFastForwarding) {
+            var world = this;
+            var factionForPlayer = world.factions[0];
+            var notificationSession = factionForPlayer.notificationSession;
+            var areThereAnyNotifications = notificationSession.notificationsExist();
+            if (areThereAnyNotifications) {
+                this.roundAdvanceUntilNotificationToggle(uwpe);
+            }
+            else {
+                world.updateForRound(uwpe);
+            }
+        }
     }
 }

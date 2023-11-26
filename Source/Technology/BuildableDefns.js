@@ -91,29 +91,29 @@ class BuildableDefnsBasic {
         (entity) => entity.propertyAdd(new Shipyard()));
         this.SurfaceCloak = facilitySurfaceUsable("Surface Cloak", visualBuild("Cloak", colors.Gray), 120, null // resourcesPerTurn
         );
-        this.SurfaceColonyHub = facilitySurfaceUsable("Colony Hub", visualBuild("H", colors.Gray), 30, [new Resource("Industry", 1), new Resource("Prosperity", 1)] // resourcesPerTurn
+        this.SurfaceColonyHub = facilitySurfaceUsable("Colony Hub", visualBuild("Hub", colors.Gray), 30, [new Resource("Industry", 1), new Resource("Prosperity", 1)] // resourcesPerTurn
         );
-        this.SurfaceFactory = facilitySurfaceUsable("Factory", visualBuild("F", colors.Red), 30, [new Resource("Industry", 1)] // resourcesPerTurn
+        this.SurfaceFactory = facilitySurfaceUsable("Factory", visualBuild("Factory", colors.Red), 30, [new Resource("Industry", 1)] // resourcesPerTurn
         );
-        this.SurfaceFactoryAdvanced = facilitySurfaceUsable("Factory, Advanced", visualBuild("F", colors.Pink), 60, [new Resource("Industry", 2)] // resourcesPerTurn
+        this.SurfaceFactoryAdvanced = facilitySurfaceUsable("Factory, Advanced", visualBuild("Factory2", colors.Pink), 60, [new Resource("Industry", 2)] // resourcesPerTurn
         );
-        this.SurfaceFactoryMultiplier = facilitySurfaceUsable("Factory Multiplier", visualBuild("FM", colors.Pink), 120, null // resourcesPerTurn
+        this.SurfaceFactoryMultiplier = facilitySurfaceUsable("Factory Multiplier", visualBuild("FacX", colors.Pink), 120, null // resourcesPerTurn
         );
-        this.SurfaceLaboratory = facilitySurfaceUsable("Laboratory", visualBuild("L", colors.Blue), 30, [new Resource("Research", 1)] // resourcesPerTurn
+        this.SurfaceLaboratory = facilitySurfaceUsable("Laboratory", visualBuild("Lab", colors.Blue), 30, [new Resource("Research", 1)] // resourcesPerTurn
         );
-        this.SurfaceLaboratoryAdvanced = facilitySurfaceUsable("Laboratory, Advanced", visualBuild("L", colors.BlueLight), 30, [new Resource("Research", 2)] // resourcesPerTurn
+        this.SurfaceLaboratoryAdvanced = facilitySurfaceUsable("Laboratory, Advanced", visualBuild("L", colors.BlueLight), 60, [new Resource("Research", 2)] // resourcesPerTurn
         );
         this.SurfaceLaboratoryMultiplier = facilitySurfaceUsable("Laboratory Multiplier", visualBuild("LM", colors.Pink), 120, null // resourcesPerTurn
         );
-        this.SurfacePlantation = facilitySurfaceUsable("Plantation", visualBuild("P", colors.Green), 30, [new Resource("Prosperity", 1)] // resourcesPerTurn
+        this.SurfacePlantation = facilitySurfaceUsable("Plantation", visualBuild("Plant", colors.Green), 30, [new Resource("Prosperity", 1)] // resourcesPerTurn
         );
-        this.SurfacePlantationAdvanced = facilitySurfaceUsable("Plantation, Advanced", visualBuild("P", colors.GreenLight), 30, [new Resource("Prosperity", 2)] // resourcesPerTurn
+        this.SurfacePlantationAdvanced = facilitySurfaceUsable("Plantation, Advanced", visualBuild("Plant2", colors.GreenLight), 60, [new Resource("Prosperity", 2)] // resourcesPerTurn
         );
-        this.SurfaceShield = facilitySurfaceUsable("Surface Shield", visualBuild("S", colors.Red), 30, null // resourcesPerTurn
+        this.SurfaceShield = facilitySurfaceUsable("Surface Shield", visualBuild("Shield", colors.Red), 30, null // resourcesPerTurn
         );
-        this.SurfaceShieldAdvanced = facilitySurfaceUsable("Surface Shield, Advanced", visualBuild("S", colors.Blue), 60, null // resourcesPerTurn
+        this.SurfaceShieldAdvanced = facilitySurfaceUsable("Surface Shield, Advanced", visualBuild("Shield2", colors.Blue), 60, null // resourcesPerTurn
         );
-        this.SurfaceTransportTubes = facilitySurfaceAnywhere("Transport Tubes", visualBuild("T", colors.Red), 15);
+        this.SurfaceTransportTubes = facilitySurfaceAnywhere("Transport Tubes", visualBuild("Transp", colors.Red), 15);
         this._All =
             [
                 this.OrbitalCloak,

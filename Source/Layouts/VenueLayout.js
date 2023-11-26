@@ -185,7 +185,6 @@ class VenueLayout {
     }
     toControl(universe) {
         var world = universe.world;
-        var controlBuilder = universe.controlBuilder;
         var display = universe.display;
         var containerMainSize = display.sizeInPixels.clone();
         var controlHeight = 14;
@@ -221,89 +220,9 @@ class VenueLayout {
                 var controlFaction = faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, false // includeDetailsButton
                 );
                 container.childAdd(controlFaction);
-                var controlIndustry = this.toControl_Industry(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth);
-                container.childAdd(controlIndustry);
-                var controlSelection = controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, containerMainSize.y - margin - containerInnerSize.y), containerInnerSize, margin, controlHeight);
-                container.childAdd(controlSelection);
             }
         }
         var returnValue = new ControlContainerTransparent(container);
-        return returnValue;
-    }
-    toControl_Industry(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth) {
-        var world = universe.world;
-        var planet = this.modelParent;
-        var fontHeightInPixels = margin;
-        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var labelBuilding = new ControlLabel("labelBuilding", Coords.fromXY(margin, margin), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContext("Building:"), fontNameAndHeight);
-        var labelBuildable = new ControlLabel("labelBuildable", Coords.fromXY(margin, controlHeight + margin), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size,
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContextAndGet(planet, (c) => {
-            var buildable = c.buildableInProgress();
-            var returnValue = (buildable == null
-                ? "[none]"
-                : buildable.defnName);
-            return returnValue;
-        }), fontNameAndHeight);
-        var textResourcesAccumulatedOverRequired = new ControlLabel("textResourcesAccumulatedOverRequired", Coords.fromXY(margin, controlHeight * 2 + margin), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContextAndGet(planet, (context) => {
-            var c = context;
-            var buildable = c.buildableInProgress(universe);
-            var returnValue = (buildable == null
-                ? "-"
-                : planet.industryAccumulated()
-                    + " / "
-                    + buildable.defn(world).industryToBuild);
-            return returnValue;
-        }), fontNameAndHeight);
-        var textExpected = new ControlLabel("textExpected", Coords.fromXY(margin, controlHeight * 3 + margin), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContextAndGet(planet, (context) => {
-            var returnValue = "";
-            var c = context;
-            var buildable = c.buildableInProgress(universe);
-            if (buildable == null) {
-                returnValue = "-";
-            }
-            else {
-                var defn = buildable.defn(world);
-                var industryToBuild = defn.industryToBuild;
-                var industryRemaining = industryToBuild
-                    - planet.industryAccumulated();
-                var industryProducedThisTurn = planet.industryPerTurn(universe, world);
-                var roundsToBuild;
-                if (industryProducedThisTurn == 0) {
-                    roundsToBuild = "infinite";
-                }
-                else {
-                    roundsToBuild = "" + Math.ceil(industryRemaining / industryProducedThisTurn);
-                    returnValue = roundsToBuild;
-                }
-                returnValue = "Rounds left: " + roundsToBuild;
-            }
-            return returnValue;
-        }), fontNameAndHeight);
-        var returnValue = ControlContainer.from4("containerViewControls", Coords.fromXY(margin, containerMainSize.y
-            - margin
-            - containerInnerSize.y), containerInnerSize, 
-        // children
-        [
-            labelBuilding,
-            labelBuildable,
-            textResourcesAccumulatedOverRequired,
-            textExpected
-        ]);
         return returnValue;
     }
     toControl_Vitals(universe, containerMainSize, containerInnerSize, margin, controlHeight) {
@@ -345,7 +264,7 @@ class VenueLayout {
         DataBinding.fromContext("Industry:"), fontNameAndHeight);
         var textIndustry = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => "" + c.industryPerTurn(universe, world)), fontNameAndHeight);
+        DataBinding.fromContextAndGet(planet, (c) => "" + c.industryAndBuildableInProgress(universe, world)), fontNameAndHeight);
         var labelProsperity = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 5), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
         DataBinding.fromContext("Prosperity:"), fontNameAndHeight);

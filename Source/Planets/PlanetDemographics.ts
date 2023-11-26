@@ -8,6 +8,11 @@ class PlanetDemographics
 		this.population = population;
 	}
 
+	populationIncrement(): number
+	{
+		this.population++;
+	}
+	
 	prosperityNeededToGrow(): number
 	{
 		return this.population * 30;
@@ -39,6 +44,7 @@ class PlanetDemographics
 		if (prosperityAccumulated.quantity >= quantityToGrow)
 		{
 			prosperityAccumulated.clear();
+			planet.populationIncrement();
 		}
 	}
 }

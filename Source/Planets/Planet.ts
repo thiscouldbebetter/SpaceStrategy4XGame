@@ -280,6 +280,11 @@ class Planet extends Entity
 
 	// Demographics.
 
+	populationIncrement(): void
+	{
+		this.demographics.populationIncrement();
+	}
+	
 	prosperityAccumulated(): number
 	{
 		return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
@@ -397,6 +402,37 @@ class Planet extends Entity
 		return this.industry.planetIndustryAccumulated(this);
 	}
 
+	industryAndBuildableInProgress(universe: Universe, world: WorldExtended): string
+	{		
+		var industryPerTurn = this.industryPerTurn(universe, world);
+		
+		var buildable = this.buildableInProgress(universe);
+
+		var buildableAndProgress: string;
+		
+		if (buildable == null)
+		{
+			buildableAndProgress = "(building nothing)"
+		}
+		else
+		{
+			var buildableDefn = buildable.defn(world);
+			var industryAccumulated = this.industryAccumulated();
+			var industryRequired = buildableDefn.industryToBuild;
+			buildableAndProgress =
+				"(" + industryAccumulated
+				+ "/" + industryRequired
+				+ " for " + buildableDefn.name + ")";
+		}
+		
+		var returnValue =
+			industryPerTurn
+			+ " " + buildableAndProgress
+			
+			
+		return returnValue;		
+	}
+	
 	industryPerTurn
 	(
 		universe: Universe, world: WorldExtended
@@ -408,7 +444,7 @@ class Planet extends Entity
 		).get("Industry");
 		return (resource == null ? 0: resource.quantity);
 	}
-
+	
 	prosperityPerTurn
 	(
 		universe: Universe, world: WorldExtended, faction: Faction
@@ -463,6 +499,7 @@ class Planet extends Entity
 			}
 
 			this._resourcesPerTurn = resourcesSoFar;
+			this._resourcesPerTurnByName = null;
 		}
 		return this._resourcesPerTurn;
 	}
@@ -481,5 +518,11 @@ class Planet extends Entity
 		}
 
 		return this._resourcesPerTurnByName;
+	}
+	
+	resourcesPerTurnReset(): void
+	{
+		this._resourcesPerTurn = null;
+		this._resourcesPerTurnByName = null;
 	}
 }

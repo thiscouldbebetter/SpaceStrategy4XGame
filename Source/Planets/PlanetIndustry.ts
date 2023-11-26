@@ -62,6 +62,8 @@ class PlanetIndustry
 
 		if (buildableEntityInProgress == null)
 		{
+			industryAccumulated.clear();
+
 			var hasIdlePopulation = planet.populationIdleExists(universe);
 			if (hasIdlePopulation)
 			{
@@ -96,6 +98,8 @@ class PlanetIndustry
 					"Default", world.roundNumberCurrent(), notificationText, planet
 				);
 				faction.notificationSession.notificationAdd(notification);
+				
+				planet.resourcesPerTurnReset();
 			}
 		}
 	}

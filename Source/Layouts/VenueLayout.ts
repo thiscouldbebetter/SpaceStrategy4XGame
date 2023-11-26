@@ -412,7 +412,6 @@ class VenueLayout implements Venue
 	toControl(universe: Universe): ControlBase
 	{
 		var world = universe.world as WorldExtended;
-		var controlBuilder = universe.controlBuilder as ControlBuilderExtended;
 
 		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
@@ -491,196 +490,10 @@ class VenueLayout implements Venue
 				);
 
 				container.childAdd(controlFaction);
-
-				var controlIndustry = this.toControl_Industry
-				(
-					universe,
-					containerMainSize,
-					containerInnerSize,
-					margin,
-					controlHeight,
-					buttonWidth
-				);
-
-				container.childAdd(controlIndustry);
-
-				var controlSelection = controlBuilder.selection
-				(
-					universe,
-					Coords.fromXY
-					(
-						containerMainSize.x - margin - containerInnerSize.x,
-						containerMainSize.y - margin - containerInnerSize.y
-					),
-					containerInnerSize,
-					margin,
-					controlHeight
-				);
-
-				container.childAdd(controlSelection);
 			}
 		}
 
 		var returnValue = new ControlContainerTransparent(container);
-
-		return returnValue;
-	}
-
-	toControl_Industry
-	(
-		universe: Universe,
-		containerMainSize: Coords,
-		containerInnerSize: Coords,
-		margin: number,
-		controlHeight: number,
-		buttonWidth: number
-	)
-	{
-		var world = universe.world as WorldExtended;
-		var planet = this.modelParent;
-		var fontHeightInPixels = margin;
-		var fontNameAndHeight =
-			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-
-		var labelBuilding = new ControlLabel
-		(
-			"labelBuilding",
-			Coords.fromXY(margin, margin), // pos
-			Coords.fromXY
-			(
-				containerInnerSize.x - margin * 2,
-				controlHeight
-			), // size
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
-			DataBinding.fromContext("Building:"),
-			fontNameAndHeight
-		);
-
-		var labelBuildable = new ControlLabel
-		(
-			"labelBuildable",
-			Coords.fromXY(margin, controlHeight + margin), // pos
-			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size,
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
-			DataBinding.fromContextAndGet
-			(
-				planet,
-				(c) =>
-				{
-					var buildable = c.buildableInProgress();
-					var returnValue =
-					(
-						buildable == null
-						? "[none]"
-						: buildable.defnName
-					);
-					return returnValue;
-				}
-			),
-			fontNameAndHeight
-		);
-
-		var textResourcesAccumulatedOverRequired = new ControlLabel
-		(
-			"textResourcesAccumulatedOverRequired",
-			Coords.fromXY(margin, controlHeight * 2 + margin), // pos
-			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
-			DataBinding.fromContextAndGet
-			(
-				planet,
-				(context: any) =>
-				{
-					var c = context as Planet;
-					var buildable = c.buildableInProgress(universe);
-					var returnValue =
-					(
-						buildable == null
-						? "-"
-						: planet.industryAccumulated()
-							+ " / "
-							+ buildable.defn(world).industryToBuild
-					);
-					return returnValue;
-				}
-			),
-			fontNameAndHeight
-		);
-
-		var textExpected = new ControlLabel
-		(
-			"textExpected",
-			Coords.fromXY(margin, controlHeight * 3 + margin), // pos
-			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
-			DataBinding.fromContextAndGet
-			(
-				planet,
-				(context: any) =>
-				{
-					var returnValue = "";
-
-					var c = context as Planet;
-					var buildable = c.buildableInProgress(universe);
-					if (buildable == null)
-					{
-						returnValue = "-";
-					}
-					else
-					{
-						var defn = buildable.defn(world);
-						var industryToBuild = defn.industryToBuild;
-						var industryRemaining = 
-							industryToBuild
-							- planet.industryAccumulated();
-						var industryProducedThisTurn =
-							planet.industryPerTurn(universe, world);
-						var roundsToBuild: string;
-						if (industryProducedThisTurn == 0)
-						{
-							roundsToBuild = "infinite";
-						}
-						else
-						{
-							roundsToBuild = "" + Math.ceil
-							(
-								industryRemaining / industryProducedThisTurn
-							);
-							returnValue = roundsToBuild;
-						}
-
-						returnValue = "Rounds left: " + roundsToBuild;
-					}
-
-					return returnValue;
-				}
-			),
-			fontNameAndHeight
-		);
-
-		var returnValue = ControlContainer.from4
-		(
-			"containerViewControls",
-			Coords.fromXY
-			(
-				margin,
-				containerMainSize.y
-					- margin
-					- containerInnerSize.y
-			),
-			containerInnerSize,
-			// children
-			[
-				labelBuilding,
-				labelBuildable,
-				textResourcesAccumulatedOverRequired,
-				textExpected
-			]
-		);
 
 		return returnValue;
 	}
@@ -800,7 +613,7 @@ class VenueLayout implements Venue
 			DataBinding.fromContextAndGet
 			(
 				planet,
-				(c: Planet) => "" + c.industryPerTurn(universe, world)
+				(c: Planet) => "" + c.industryAndBuildableInProgress(universe, world)
 			),
 			fontNameAndHeight
 		);

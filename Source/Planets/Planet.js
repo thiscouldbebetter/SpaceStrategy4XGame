@@ -142,6 +142,9 @@ class Planet extends Entity {
         return returnValue;
     }
     // Demographics.
+    populationIncrement() {
+        this.demographics.populationIncrement();
+    }
     prosperityAccumulated() {
         return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
     }
@@ -212,6 +215,26 @@ class Planet extends Entity {
     industryAccumulated() {
         return this.industry.planetIndustryAccumulated(this);
     }
+    industryAndBuildableInProgress(universe, world) {
+        var industryPerTurn = this.industryPerTurn(universe, world);
+        var buildable = this.buildableInProgress(universe);
+        var buildableAndProgress;
+        if (buildable == null) {
+            buildableAndProgress = "(building nothing)";
+        }
+        else {
+            var buildableDefn = buildable.defn(world);
+            var industryAccumulated = this.industryAccumulated();
+            var industryRequired = buildableDefn.industryToBuild;
+            buildableAndProgress =
+                "(" + industryAccumulated
+                    + "/" + industryRequired
+                    + " for " + buildableDefn.name + ")";
+        }
+        var returnValue = industryPerTurn
+            + " " + buildableAndProgress;
+        return returnValue;
+    }
     industryPerTurn(universe, world) {
         var resource = this.resourcesPerTurnByName(universe, world).get("Industry");
         return (resource == null ? 0 : resource.quantity);
@@ -243,6 +266,7 @@ class Planet extends Entity {
                 }
             }
             this._resourcesPerTurn = resourcesSoFar;
+            this._resourcesPerTurnByName = null;
         }
         return this._resourcesPerTurn;
     }
@@ -252,5 +276,9 @@ class Planet extends Entity {
             this._resourcesPerTurnByName = ArrayHelper.addLookups(resourcesPerTurn, (x) => x.defnName);
         }
         return this._resourcesPerTurnByName;
+    }
+    resourcesPerTurnReset() {
+        this._resourcesPerTurn = null;
+        this._resourcesPerTurnByName = null;
     }
 }

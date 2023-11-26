@@ -144,6 +144,7 @@ class VenueWorldExtended extends VenueWorld {
     updateForTimerTick(universe) {
         var world = universe.world;
         var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
+        world.updateForTimerTick(uwpe);
         this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
@@ -169,12 +170,15 @@ class VenueWorldExtended extends VenueWorld {
                 }
                 var bodyClicked = collisionNearest.colliders[0]; // todo
                 if (bodyClicked == this.selectedEntity) {
-                    var venueCurrent = universe.venueCurrent();
-                    var bodyClickedNetworkNode = bodyClicked;
-                    var starsystem = bodyClickedNetworkNode.starsystem;
-                    if (starsystem != null) {
-                        var venueNext = new VenueStarsystem(venueCurrent, starsystem);
-                        universe.venueTransitionTo(venueNext);
+                    var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
+                    if (isFastForwarding == false) {
+                        var venueCurrent = universe.venueCurrent();
+                        var bodyClickedNetworkNode = bodyClicked;
+                        var starsystem = bodyClickedNetworkNode.starsystem;
+                        if (starsystem != null) {
+                            var venueNext = new VenueStarsystem(venueCurrent, starsystem);
+                            universe.venueTransitionTo(venueNext);
+                        }
                     }
                 }
                 this.selectedEntity = bodyClicked;

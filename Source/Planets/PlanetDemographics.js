@@ -3,6 +3,9 @@ class PlanetDemographics {
     constructor(population) {
         this.population = population;
     }
+    populationIncrement() {
+        this.population++;
+    }
     prosperityNeededToGrow() {
         return this.population * 30;
     }
@@ -17,6 +20,7 @@ class PlanetDemographics {
         var quantityToGrow = this.prosperityNeededToGrow();
         if (prosperityAccumulated.quantity >= quantityToGrow) {
             prosperityAccumulated.clear();
+            planet.populationIncrement();
         }
     }
 }

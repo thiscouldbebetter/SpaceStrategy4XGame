@@ -280,6 +280,8 @@ class VenueWorldExtended extends VenueWorld
 			universe, world
 		);
 
+		world.updateForTimerTick(uwpe);
+
 		this.cameraEntity.constrainable().constrain
 		(
 			uwpe.entitySet(this.cameraEntity)
@@ -291,7 +293,7 @@ class VenueWorldExtended extends VenueWorld
 
 		var inputHelper = universe.inputHelper;
 		if (inputHelper.isMouseClicked())
-		{
+		{	
 			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 
 			var mouseClickPos = inputHelper.mouseClickPos.clone();
@@ -340,14 +342,19 @@ class VenueWorldExtended extends VenueWorld
 
 				if (bodyClicked == this.selectedEntity)
 				{
-					var venueCurrent = universe.venueCurrent();
-					var bodyClickedNetworkNode = bodyClicked as NetworkNode2;
-					var starsystem = bodyClickedNetworkNode.starsystem;
-					if (starsystem != null)
-					{
-						var venueNext: Venue
-							= new VenueStarsystem(venueCurrent, starsystem);
-						universe.venueTransitionTo(venueNext);
+					var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
+					
+					if (isFastForwarding == false)
+					{					
+						var venueCurrent = universe.venueCurrent();
+						var bodyClickedNetworkNode = bodyClicked as NetworkNode2;
+						var starsystem = bodyClickedNetworkNode.starsystem;
+						if (starsystem != null)
+						{
+							var venueNext: Venue
+								= new VenueStarsystem(venueCurrent, starsystem);
+							universe.venueTransitionTo(venueNext);
+						}
 					}
 				}
 

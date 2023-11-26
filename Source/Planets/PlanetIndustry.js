@@ -32,6 +32,7 @@ class PlanetIndustry {
         industryAccumulated.addQuantity(industryProduced);
         var buildableEntityInProgress = planet.buildableEntityInProgress(universe);
         if (buildableEntityInProgress == null) {
+            industryAccumulated.clear();
             var hasIdlePopulation = planet.populationIdleExists(universe);
             if (hasIdlePopulation) {
                 var notification = new Notification2("Default", world.roundNumberCurrent(), "Planet has free population, but nothing is being built.", planet);
@@ -53,6 +54,7 @@ class PlanetIndustry {
                 var notificationText = "Planet " + planet.name + " is done building " + buildableDefn.name + ".";
                 var notification = new Notification2("Default", world.roundNumberCurrent(), notificationText, planet);
                 faction.notificationSession.notificationAdd(notification);
+                planet.resourcesPerTurnReset();
             }
         }
     }

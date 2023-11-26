@@ -459,7 +459,7 @@ class BuildableDefnsBasic
 		this.SurfaceColonyHub = facilitySurfaceUsable
 		(
 			"Colony Hub",
-			visualBuild("H", colors.Gray),
+			visualBuild("Hub", colors.Gray),
 			30,
 			[ new Resource("Industry", 1), new Resource("Prosperity", 1) ] // resourcesPerTurn
 		);
@@ -467,7 +467,7 @@ class BuildableDefnsBasic
 		this.SurfaceFactory = facilitySurfaceUsable
 		(
 			"Factory",
-			visualBuild("F", colors.Red),
+			visualBuild("Factory", colors.Red),
 			30,
 			[ new Resource("Industry", 1) ] // resourcesPerTurn
 		);
@@ -475,7 +475,7 @@ class BuildableDefnsBasic
 		this.SurfaceFactoryAdvanced = facilitySurfaceUsable
 		(
 			"Factory, Advanced",
-			visualBuild("F", colors.Pink),
+			visualBuild("Factory2", colors.Pink),
 			60,
 			[ new Resource("Industry", 2) ] // resourcesPerTurn
 		);
@@ -483,7 +483,7 @@ class BuildableDefnsBasic
 		this.SurfaceFactoryMultiplier = facilitySurfaceUsable
 		(
 			"Factory Multiplier",
-			visualBuild("FM", colors.Pink),
+			visualBuild("FacX", colors.Pink),
 			120,
 			null // resourcesPerTurn
 		);
@@ -491,7 +491,7 @@ class BuildableDefnsBasic
 		this.SurfaceLaboratory = facilitySurfaceUsable
 		(
 			"Laboratory",
-			visualBuild("L", colors.Blue),
+			visualBuild("Lab", colors.Blue),
 			30,
 			[ new Resource("Research", 1) ] // resourcesPerTurn
 		);
@@ -500,7 +500,7 @@ class BuildableDefnsBasic
 		(
 			"Laboratory, Advanced",
 			visualBuild("L", colors.BlueLight),
-			30,
+			60,
 			[ new Resource("Research", 2) ] // resourcesPerTurn
 		);
 
@@ -515,7 +515,7 @@ class BuildableDefnsBasic
 		this.SurfacePlantation = facilitySurfaceUsable
 		(
 			"Plantation",
-			visualBuild("P", colors.Green),
+			visualBuild("Plant", colors.Green),
 			30,
 			[ new Resource("Prosperity", 1) ] // resourcesPerTurn
 		);
@@ -523,15 +523,15 @@ class BuildableDefnsBasic
 		this.SurfacePlantationAdvanced = facilitySurfaceUsable
 		(
 			"Plantation, Advanced",
-			visualBuild("P", colors.GreenLight),
-			30,
+			visualBuild("Plant2", colors.GreenLight),
+			60,
 			[ new Resource("Prosperity", 2) ] // resourcesPerTurn
 		);
 
 		this.SurfaceShield = facilitySurfaceUsable
 		(
 			"Surface Shield",
-			visualBuild("S", colors.Red),
+			visualBuild("Shield", colors.Red),
 			30,
 			null // resourcesPerTurn
 		);
@@ -539,7 +539,7 @@ class BuildableDefnsBasic
 		this.SurfaceShieldAdvanced = facilitySurfaceUsable
 		(
 			"Surface Shield, Advanced",
-			visualBuild("S", colors.Blue),
+			visualBuild("Shield2", colors.Blue),
 			60,
 			null // resourcesPerTurn
 		);
@@ -547,7 +547,7 @@ class BuildableDefnsBasic
 		this.SurfaceTransportTubes = facilitySurfaceAnywhere
 		(
 			"Transport Tubes",
-			visualBuild("T", colors.Red),
+			visualBuild("Transp", colors.Red),
 			15
 		);
 

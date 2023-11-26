@@ -73,6 +73,7 @@ class WorldExtended extends World
 		this.defn.itemDefnsByName = ArrayHelper.addLookupsByName(this.defn.itemDefns);
 
 		this.roundsSoFar = 0;
+		this._isAdvancingThroughRoundsUntilNotification = false;
 		this.factionIndexCurrent = 0;
 
 		this.places = [];
@@ -105,7 +106,9 @@ class WorldExtended extends World
 
 		var buildableDefns = WorldExtended.create_BuildableDefns(mapCellSizeInPixels);
 
-		var technologyGraph = TechnologyGraph.demo(mapCellSizeInPixels);
+		var technologyGraph =
+			// TechnologyGraph.demo(mapCellSizeInPixels);
+			TechnologyGraph.legacy(mapCellSizeInPixels);
 		var technologiesFree = technologyGraph.technologiesFree();
 
 		var viewDimension = viewSize.y;
@@ -173,7 +176,11 @@ class WorldExtended extends World
 
 	static create_BuildableDefns(mapCellSizeInPixels: Coords): BuildableDefn[]
 	{
-		return new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+		var returnValues =
+			// new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+			new BuildableDefnsLegacy(mapCellSizeInPixels)._All;
+
+		return returnValues;
 	}
 
 	static create_DeviceDefns(): DeviceDefn[]
@@ -527,6 +534,12 @@ class WorldExtended extends World
 		// Do nothing.
 	}
 
+	private _isAdvancingThroughRoundsUntilNotification: boolean;	
+	isAdvancingThroughRoundsUntilNotification(): boolean
+	{
+		return this._isAdvancingThroughRoundsUntilNotification;
+	}
+
 	private _mapCellSizeInPixels: Coords;
 	mapCellSizeInPixels(universe: Universe)
 	{
@@ -543,49 +556,15 @@ class WorldExtended extends World
 		return this.network.placeForEntityLocatable(entityLocatable);
 	}
 
-	private _isAdvancingThroughRoundsUntilNotification: boolean;
+	roundAdvanceUntilNotificationDisable(): void
+	{
+		this._isAdvancingThroughRoundsUntilNotification = false;
+	}
 
 	roundAdvanceUntilNotificationToggle(uwpe: UniverseWorldPlaceEntities): void
 	{
 		this._isAdvancingThroughRoundsUntilNotification =
 			(this._isAdvancingThroughRoundsUntilNotification == false);
-
-		if (this._isAdvancingThroughRoundsUntilNotification)
-		{
-			this.roundAdvanceUntilNotification(uwpe);
-		}
-	}
-
-	roundAdvanceUntilNotification(uwpe: UniverseWorldPlaceEntities): void
-	{
-		if (this._isAdvancingThroughRoundsUntilNotification)
-		{
-			var world = this;
-			var factionForPlayer = world.factions[0];
-			var notificationSession = factionForPlayer.notificationSession;
-			if (notificationSession.notificationsExist() )
-			{
-				world.updateForRound(uwpe);
-			}
-			else
-			{
-				world.updateForRound(uwpe);
-
-				// hack
-				if (notificationSession.notificationsExist() )
-				{
-					this.roundAdvanceUntilNotificationToggle(uwpe);
-				}
-				else
-				{
-					setTimeout
-					(
-						() => this.roundAdvanceUntilNotification(uwpe),
-						500
-					)
-				}
-			}
-		}
 	}
 
 	roundNumberCurrent(): number
@@ -600,20 +579,61 @@ class WorldExtended extends World
 
 	updateForRound(uwpe: UniverseWorldPlaceEntities): void
 	{
-		uwpe.world = this;
 		var universe = uwpe.universe;
-		var world = universe.world as WorldExtended;
 
-		this.network.updateForRound(universe, world);
-		this.factions.forEach(x => x.updateForRound(universe, world));
+		var isThereANotification = this.updateForRound_Notifications(universe);
+		
+		if (isThereANotification == false)
+		{
+			uwpe.world = this;
+			var world = universe.world as WorldExtended;
 
+			this.network.updateForRound(universe, world);
+			this.factions.forEach(x => x.updateForRound(universe, world));
+
+			this.roundsSoFar++;
+
+			this.updateForRound_Notifications(universe);
+		}
+	}
+	
+	updateForRound_Notifications(universe: Universe): boolean
+	{
 		var factionForPlayer = this.factions[0];
 		var notificationSession = factionForPlayer.notificationSession;
-		if (notificationSession.notificationsExist() )
+		var isThereANotification = notificationSession.notificationsExist();
+
+		if (isThereANotification)
 		{
 			factionForPlayer.notificationSessionStart(universe);
+			this.roundAdvanceUntilNotificationDisable();
 		}
-
-		this.roundsSoFar++;
+		
+		return isThereANotification;
+	}
+	
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
+	{
+		//super.updateForTimerTick(uwpe);
+		
+		var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
+		
+		if (isFastForwarding)
+		{
+			var world = this;
+			var factionForPlayer = world.factions[0];
+			var notificationSession = factionForPlayer.notificationSession;
+			var areThereAnyNotifications =
+				notificationSession.notificationsExist();
+				
+			if (areThereAnyNotifications)
+			{
+				this.roundAdvanceUntilNotificationToggle(uwpe);
+			}
+			else
+			{
+				world.updateForRound(uwpe);				
+			}
+		}		
 	}
 }

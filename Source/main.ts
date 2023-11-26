@@ -110,12 +110,95 @@ function worldCreatorToControl
 ): ControlBase
 {
 	var size = universe.display.sizeInPixels;
-	var margin = 8;
-	var fontHeightInPixels = 10;
+	var margin = size.x / 40;
+	var fontHeightInPixels = margin;
 	var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 	var controlHeight = fontHeightInPixels + margin;
 	var buttonSize =
 		Coords.fromXY(4, 1).multiplyScalar(controlHeight);
+
+	var labelWorldCreationSettings = ControlLabel.from4Uncentered
+	(
+		Coords.fromXY(margin, margin), // pos
+		Coords.fromXY(size.x - margin * 2, controlHeight),
+		DataBinding.fromContext("World Creation Settings"),
+		fontNameAndHeight
+	);
+
+	var labelWorldStarsystemCount = ControlLabel.from4Uncentered
+	(
+		Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+		Coords.fromXY(size.x - margin * 2, controlHeight),
+		DataBinding.fromContext("Starsystems:"),
+		fontNameAndHeight
+	);
+
+	var numberStarsystemCount = new ControlNumber
+	(
+		"numberStarsystemCount",
+		Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
+		Coords.fromXY(controlHeight * 2, controlHeight), // size
+		new DataBinding
+		(
+			worldCreator,
+			(c: WorldCreator) => c.settings.starsystemCount,
+			(c: WorldCreator, v: number) => c.settings.starsystemCount = v
+		), // value
+		DataBinding.fromGet( (c: WorldCreator) => 12), // valueMin
+		DataBinding.fromGet( (c: WorldCreator) => 128), // valueMax
+		fontNameAndHeight,
+		DataBinding.fromTrue() // isEnabled
+	);
+
+	var labelWorldFactionCount = ControlLabel.from4Uncentered
+	(
+		Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
+		Coords.fromXY(size.x - margin * 2, controlHeight),
+		DataBinding.fromContext("Factions:"),
+		fontNameAndHeight
+	);
+
+	var numberFactionCount = new ControlNumber
+	(
+		"numberFactionCount",
+		Coords.fromXY(margin * 8, margin * 3 + controlHeight * 2), // pos
+		Coords.fromXY(controlHeight * 2, controlHeight), // size
+		new DataBinding
+		(
+			worldCreator,
+			(c: WorldCreator) => c.settings.factionCount,
+			(c: WorldCreator, v: number) => c.settings.factionCount = v
+		), // value
+		DataBinding.fromGet( (c: WorldCreator) => 2), // valueMin
+		DataBinding.fromGet( (c: WorldCreator) => 7), // valueMax
+		fontNameAndHeight,
+		DataBinding.fromTrue() // isEnabled
+	);
+
+	var buttonCreate = new ControlButton
+	(
+		"buttonCreate",
+		Coords.fromXY
+		(
+			size.x - margin - buttonSize.x,
+			size.y - margin - buttonSize.y
+		),
+		buttonSize,
+		"Create",
+		fontNameAndHeight,
+		true, // hasBorder
+		DataBinding.fromContextAndGet
+		(
+			worldCreator,
+			(wc: WorldCreator) => wc.settings.isValid(worldCreator)
+		), // isEnabled
+		() =>
+			universe.venueTransitionTo
+			(
+				worldCreator.venueWorldGenerate(universe)
+			),
+		false // canBeHeldDown
+	);
 
 	var returnControl = ControlContainer.from4
 	(
@@ -123,97 +206,12 @@ function worldCreatorToControl
 		Coords.zeroes(), // pos
 		size,
 		[
-			new ControlLabel
-			(
-				"labelWorldCreationSettings",
-				Coords.fromXY(margin, margin), // pos
-				Coords.fromXY(size.x - margin * 2, controlHeight),
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext("World Creation Settings"),
-				fontNameAndHeight
-			),
-
-			new ControlLabel
-			(
-				"labelWorldStarsystemCount",
-				Coords.fromXY(margin, margin * 2 + controlHeight), // pos
-				Coords.fromXY(size.x - margin * 2, controlHeight),
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext("Starsystems:"),
-				fontNameAndHeight
-			),
-
-			new ControlNumber
-			(
-				"numberStarsystemCount",
-				Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
-				Coords.fromXY(controlHeight * 2, controlHeight), // size
-				new DataBinding
-				(
-					worldCreator,
-					(c: WorldCreator) => c.settings.starsystemCount,
-					(c: WorldCreator, v: number) => c.settings.starsystemCount = v
-				), // value
-				DataBinding.fromGet( (c: WorldCreator) => 12), // valueMin
-				DataBinding.fromGet( (c: WorldCreator) => 128), // valueMax
-				fontNameAndHeight,
-				DataBinding.fromTrue() // isEnabled
-			),
-
-			new ControlLabel
-			(
-				"labelWorldFactionCount",
-				Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
-				Coords.fromXY(size.x - margin * 2, controlHeight),
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext("Factions:"),
-				fontNameAndHeight
-			),
-
-			new ControlNumber
-			(
-				"numberFactionCount",
-				Coords.fromXY(margin * 8, margin * 3 + controlHeight * 2), // pos
-				Coords.fromXY(controlHeight * 2, controlHeight), // size
-				new DataBinding
-				(
-					worldCreator,
-					(c: WorldCreator) => c.settings.factionCount,
-					(c: WorldCreator, v: number) => c.settings.factionCount = v
-				), // value
-				DataBinding.fromGet( (c: WorldCreator) => 2), // valueMin
-				DataBinding.fromGet( (c: WorldCreator) => 7), // valueMax
-				fontNameAndHeight,
-				DataBinding.fromTrue() // isEnabled
-			),
-
-			new ControlButton
-			(
-				"buttonCreate",
-				Coords.fromXY
-				(
-					size.x - margin - buttonSize.x,
-					size.y - margin - buttonSize.y
-				),
-				buttonSize,
-				"Create",
-				fontNameAndHeight,
-				true, // hasBorder
-				DataBinding.fromContextAndGet
-				(
-					worldCreator,
-					(wc: WorldCreator) => wc.settings.isValid(worldCreator)
-				), // isEnabled
-				() =>
-					universe.venueTransitionTo
-					(
-						worldCreator.venueWorldGenerate(universe)
-					),
-				false // canBeHeldDown
-			)
+			labelWorldCreationSettings,
+			labelWorldStarsystemCount,
+			numberStarsystemCount,
+			labelWorldFactionCount,
+			numberFactionCount,
+			buttonCreate
 		]
 	);
 

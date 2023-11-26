@@ -85,13 +85,12 @@ class NotificationSession
 	{
 		var notificationSession = this;
 
-		var display = universe.display;
 		var controlHeight = containerSize.y / 16;
 		var margin = 10;
 		var columnWidth = containerSize.x - margin * 2;
-		var buttonCount = 4;
-		var buttonWidth = (containerSize.x - margin * 5) / buttonCount;
-		var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+		var buttonCount = 3;
+		var buttonWidth = (containerSize.x - margin * 4) / buttonCount;
+		var fontHeightInPixels = controlHeight / 2;
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var listHeight = controlHeight * 8;
@@ -158,23 +157,7 @@ class NotificationSession
 				margin, buttonPosY
 			), // pos
 			Coords.fromXY(buttonWidth, controlHeight), // size
-			"Go To",
-			fontNameAndHeight,
-			() => // click
-			{
-				var notification = notificationSession.notificationSelected;
-				notification.jumpTo(universe);
-			}
-		);
-
-		var buttonGoToAndDismiss = ControlButton.from5
-		(
-			Coords.fromXY
-			(
-				margin * 2 + buttonWidth, buttonPosY
-			), // pos
-			Coords.fromXY(buttonWidth, controlHeight), // size
-			"Go To + Dismiss",
+			"Go To Selected",
 			fontNameAndHeight,
 			() => // click
 			{
@@ -188,7 +171,7 @@ class NotificationSession
 		(
 			Coords.fromXY
 			(
-				margin * 3 + buttonWidth * 2, buttonPosY
+				margin * 2 + buttonWidth * 1, buttonPosY
 			), // pos
 			Coords.fromXY(buttonWidth, controlHeight), // size
 			"Dismiss",
@@ -207,7 +190,7 @@ class NotificationSession
 		(
 			Coords.fromXY
 			(
-				margin * 4 + buttonWidth * 3, buttonPosY
+				margin * 3 + buttonWidth * 2, buttonPosY
 			), // pos
 			Coords.fromXY(buttonWidth, controlHeight), // size
 			"Dismiss All",
@@ -262,7 +245,6 @@ class NotificationSession
 				labelSelected,
 				textNotificationSelected,
 				buttonGoTo,
-				buttonGoToAndDismiss,
 				buttonDismiss,
 				buttonDismissAll,
 				textMessage,

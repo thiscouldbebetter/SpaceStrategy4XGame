@@ -11,6 +11,7 @@ class PlanetDemographics
 	populationIncrement(): number
 	{
 		this.population++;
+		return this.population;
 	}
 	
 	prosperityNeededToGrow(): number

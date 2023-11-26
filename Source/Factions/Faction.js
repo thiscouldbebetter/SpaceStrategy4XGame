@@ -68,7 +68,7 @@ class Faction {
     }
     // controls
     toControl_ClusterOverlay(universe, containerOuterSize, containerInnerSize, margin, controlHeight, buttonWidth, includeDetailsButton) {
-        var fontHeightInPixels = 10;
+        var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var faction = this;
         var size = Coords.fromXY(containerInnerSize.x, controlHeight * 2 + margin * 3);
@@ -77,24 +77,20 @@ class Faction {
         false, // isTextCenteredHorizontally
         false, // isTextCenteredVertically
         DataBinding.fromContext("Faction:"), fontNameAndHeight);
-        var textFaction = new ControlLabel("textFaction", Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
+        var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
         DataBinding.fromContext(faction.name), fontNameAndHeight);
-        var labelFactionType = new ControlLabel("labelFactionType", Coords.fromXY(margin, margin * 2), // pos
+        var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2), // pos
         Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
         DataBinding.fromContext("Type:"), fontNameAndHeight);
-        var textFactionType = new ControlLabel("textFactionType", Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin * 2), // pos
+        var textFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin * 2), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
         DataBinding.fromContext(faction.defn().name), fontNameAndHeight);
         var childControls = [
-            labelFaction, textFaction,
-            labelFactionType, textFactionType,
+            labelFaction,
+            textFaction,
+            labelFactionType,
+            textFactionType
         ];
         if (includeDetailsButton) {
             var buttonDetails = ControlButton.from8("buttonDetails", Coords.fromXY(margin, margin * 2 + controlHeight), // pos

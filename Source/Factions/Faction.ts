@@ -156,7 +156,7 @@ class Faction implements EntityProperty<Faction>
 		includeDetailsButton: boolean
 	): ControlBase
 	{
-		var fontHeightInPixels = 10;
+		var fontHeightInPixels = margin;
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
@@ -183,9 +183,8 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var textFaction = new ControlLabel
+		var textFaction = ControlLabel.from4Uncentered
 		(
-			"textFaction",
 			Coords.fromXY
 			(
 				margin * 2 + containerInnerSize.x * .3, margin
@@ -195,30 +194,24 @@ class Faction implements EntityProperty<Faction>
 				containerInnerSize.x - margin * 2,
 				controlHeight
 			), // size
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext(faction.name),
 			fontNameAndHeight
 		);
 
-		var labelFactionType = new ControlLabel
+		var labelFactionType = ControlLabel.from4Uncentered
 		(
-			"labelFactionType",
 			Coords.fromXY(margin, margin * 2),// pos
 			Coords.fromXY
 			(
 				containerInnerSize.x - margin * 3,
 				controlHeight
 			), // size
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext("Type:"),
 			fontNameAndHeight
 		);
 
-		var textFactionType = new ControlLabel
+		var textFactionType = ControlLabel.from4Uncentered
 		(
-			"textFactionType",
 			Coords.fromXY
 			(
 				margin * 2 + containerInnerSize.x * .3, margin * 2
@@ -228,16 +221,16 @@ class Faction implements EntityProperty<Faction>
 				containerInnerSize.x - margin * 2,
 				controlHeight
 			), // size
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext(faction.defn().name),
 			fontNameAndHeight
 		);
 
 		var childControls: Array<ControlBase> =
 		[
-			labelFaction, textFaction,
-			labelFactionType, textFactionType,
+			labelFaction,
+			textFaction,
+			labelFactionType,
+			textFactionType
 		];
 
 		if (includeDetailsButton)

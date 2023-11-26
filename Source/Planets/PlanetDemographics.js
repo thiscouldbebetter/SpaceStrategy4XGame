@@ -5,6 +5,7 @@ class PlanetDemographics {
     }
     populationIncrement() {
         this.population++;
+        return this.population;
     }
     prosperityNeededToGrow() {
         return this.population * 30;

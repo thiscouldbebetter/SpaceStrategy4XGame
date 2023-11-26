@@ -204,9 +204,9 @@ class VenueStarsystem {
                     }
                 }
             }
+            inputHelper.mouseClickedSet(false);
         }
         this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
-        inputHelper.mouseClickedSet(false);
     }
     updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked) {
         var selectionTypeName = (this.selectedEntity == null
@@ -332,22 +332,20 @@ class VenueStarsystem {
     toControl(universe) {
         var display = universe.display;
         var containerMainSize = display.sizeInPixels.clone();
-        var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
-        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var controlHeight = 16;
-        var margin = 10;
-        var containerInnerSize = Coords.fromXY(100, 60);
+        var margin = containerMainSize.x / 60;
+        var controlHeight = margin * 1.5;
+        var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 10));
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
+        var fontHeightInPixels = margin;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var controlBuilder = universe.controlBuilder;
         var container = ControlContainer.from4("containerStarsystem", Coords.fromXY(0, 0), // pos
         containerMainSize, 
         // children
         [
-            ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
+            ControlButton.from5(Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
             Coords.fromXY(buttonWidth, controlHeight), // size
-            "Back", fontNameAndHeight, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
-            () => // click
+            "Back", fontNameAndHeight, () => // click
              {
                 var venue = universe.venueCurrent();
                 var venueNext = venue.venueParent;
@@ -356,7 +354,9 @@ class VenueStarsystem {
             controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, false // includeRoundAdvanceButtons
             ),
             controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight),
-            controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, margin), Coords.fromXY(containerInnerSize.x, containerMainSize.y - margin * 2), margin, controlHeight),
+            controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, margin), // pos
+            Coords.fromXY(containerInnerSize.x, containerMainSize.y - margin * 2), // size
+            margin, controlHeight),
         ]);
         var returnValue = new ControlContainerTransparent(container);
         return returnValue;

@@ -121,13 +121,14 @@ class VenueWorldExtended extends VenueWorld
 	toControl(universe: Universe): ControlBase
 	{
 		var containerMainSize = universe.display.sizeInPixels.clone();
-		var controlHeight = 14;
 
-		var margin = 8;
-		var fontHeightInPixels = 10;//universe.display.fontHeightInPixels;
+		var margin = containerMainSize.x / 60;
+		var controlHeight = margin * 1.5;
+
+		var fontHeightInPixels = margin;
 		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
-		var containerInnerSize = Coords.fromXY(100, 60);
+		var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 8) );
 
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
@@ -136,6 +137,67 @@ class VenueWorldExtended extends VenueWorld
 
 		var controlBuilder = universe.controlBuilder as ControlBuilderExtended;
 
+		var buttonMenu = ControlButton.from5
+		(
+			Coords.fromXY
+			(
+				(containerMainSize.x - buttonWidth) / 2,
+				containerMainSize.y - margin - controlHeight
+			), // pos
+			Coords.fromXY(buttonWidth, controlHeight), // size
+			"Menu",
+			fontNameAndHeight,
+			() => // click
+			{
+				var venueNext =
+					universe.controlBuilder.gameAndSettings1(universe).toVenue();
+				universe.venueTransitionTo(venueNext);
+			}
+		);
+
+		var containerTimeAndPlace = controlBuilder.timeAndPlace
+		(
+			universe,
+			containerMainSize,
+			containerInnerSize,
+			margin,
+			controlHeight,
+			true // includeRoundAdvanceButtons
+		);
+
+		var containerFaction = faction.toControl_ClusterOverlay
+		(
+			universe,
+			containerMainSize,
+			containerInnerSize,
+			margin,
+			controlHeight,
+			buttonWidth,
+			true // includeDetailsButton
+		);
+
+		var containerView = controlBuilder.view
+		(
+			universe,
+			containerMainSize,
+			containerInnerSize,
+			margin,
+			controlHeight
+		);
+
+		var containerSelection = controlBuilder.selection
+		(
+			universe,
+			Coords.fromXY
+			(
+				containerMainSize.x - margin - containerInnerSize.x,
+				containerMainSize.y - margin - containerInnerSize.y
+			), // pos
+			containerInnerSize,
+			margin,
+			controlHeight
+		);
+
 		var container = ControlContainer.from4
 		(
 			"containerNetwork",
@@ -143,69 +205,11 @@ class VenueWorldExtended extends VenueWorld
 			containerMainSize,
 			// children
 			[
-				ControlButton.from8
-				(
-					"buttonMenu",
-					Coords.fromXY
-					(
-						(containerMainSize.x - buttonWidth) / 2,
-						containerMainSize.y - margin - controlHeight
-					), // pos
-					Coords.fromXY(buttonWidth, controlHeight), // size
-					"Menu",
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => // click
-					{
-						var venueNext =
-							universe.controlBuilder.gameAndSettings1(universe).toVenue();
-						universe.venueTransitionTo(venueNext);
-					}
-				),
-
-				controlBuilder.timeAndPlace
-				(
-					universe,
-					containerMainSize,
-					containerInnerSize,
-					margin,
-					controlHeight,
-					true // includeRoundAdvanceButtons
-				),
-
-				faction.toControl_ClusterOverlay
-				(
-					universe,
-					containerMainSize,
-					containerInnerSize,
-					margin,
-					controlHeight,
-					buttonWidth,
-					true // includeDetailsButton
-				),
-
-				controlBuilder.view
-				(
-					universe,
-					containerMainSize,
-					containerInnerSize,
-					margin,
-					controlHeight
-				),
-
-				controlBuilder.selection
-				(
-					universe,
-					Coords.fromXY
-					(
-						containerMainSize.x - margin - containerInnerSize.x,
-						containerMainSize.y - margin - containerInnerSize.y
-					),
-					containerInnerSize,
-					margin,
-					controlHeight
-				),
+				buttonMenu,
+				containerTimeAndPlace,
+				containerFaction,
+				containerView,
+				containerSelection
 			]
 		);
 

@@ -367,11 +367,11 @@ class VenueStarsystem implements Venue
 					}
 				}
 			}
+
+			inputHelper.mouseClickedSet(false); 
 		}
 
 		this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
-
-		inputHelper.mouseClickedSet(false);
 	}
 
 	updateForTimerTick_Input_Mouse_Selection
@@ -609,12 +609,13 @@ class VenueStarsystem implements Venue
 	{
 		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
-		var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
-		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-		var controlHeight = 16;
-		var margin = 10;
-		var containerInnerSize = Coords.fromXY(100, 60);
+		var margin = containerMainSize.x / 60;
+		var controlHeight = margin * 1.5;
+		var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 10) );
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
+
+		var fontHeightInPixels = margin;
+		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
 		var controlBuilder = universe.controlBuilder as ControlBuilderExtended;
 
@@ -625,9 +626,8 @@ class VenueStarsystem implements Venue
 			containerMainSize,
 			// children
 			[
-				ControlButton.from8
+				ControlButton.from5
 				(
-					"buttonBack",
 					Coords.fromXY
 					(
 						(containerMainSize.x - buttonWidth) / 2,
@@ -636,8 +636,6 @@ class VenueStarsystem implements Venue
 					Coords.fromXY(buttonWidth, controlHeight), // size
 					"Back",
 					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
 					() => // click
 					{
 						var venue = universe.venueCurrent() as VenueStarsystem;
@@ -672,12 +670,12 @@ class VenueStarsystem implements Venue
 					(
 						containerMainSize.x - margin - containerInnerSize.x,
 						margin
-					),
+					), // pos
 					Coords.fromXY
 					(
 						containerInnerSize.x,
 						containerMainSize.y - margin * 2
-					),
+					), // size
 					margin,
 					controlHeight
 				),

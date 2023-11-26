@@ -51,13 +51,12 @@ class NotificationSession {
     // controls
     toControl(universe, containerSize) {
         var notificationSession = this;
-        var display = universe.display;
         var controlHeight = containerSize.y / 16;
         var margin = 10;
         var columnWidth = containerSize.x - margin * 2;
-        var buttonCount = 4;
-        var buttonWidth = (containerSize.x - margin * 5) / buttonCount;
-        var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+        var buttonCount = 3;
+        var buttonWidth = (containerSize.x - margin * 4) / buttonCount;
+        var fontHeightInPixels = controlHeight / 2;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var listHeight = controlHeight * 8;
         var buttonPosY = containerSize.y - margin * 2 - controlHeight * 2;
@@ -79,20 +78,13 @@ class NotificationSession {
         DataBinding.fromContextAndGet(this, (c) => (c.notificationSelected == null ? "[none]" : c.notificationSelected.message)), fontNameAndHeight);
         var buttonGoTo = ControlButton.from5(Coords.fromXY(margin, buttonPosY), // pos
         Coords.fromXY(buttonWidth, controlHeight), // size
-        "Go To", fontNameAndHeight, () => // click
-         {
-            var notification = notificationSession.notificationSelected;
-            notification.jumpTo(universe);
-        });
-        var buttonGoToAndDismiss = ControlButton.from5(Coords.fromXY(margin * 2 + buttonWidth, buttonPosY), // pos
-        Coords.fromXY(buttonWidth, controlHeight), // size
-        "Go To + Dismiss", fontNameAndHeight, () => // click
+        "Go To Selected", fontNameAndHeight, () => // click
          {
             var notification = notificationSession.notificationSelected;
             notificationSession.notificationDismiss(notification);
             notification.jumpTo(universe);
         });
-        var buttonDismiss = ControlButton.from5(Coords.fromXY(margin * 3 + buttonWidth * 2, buttonPosY), // pos
+        var buttonDismiss = ControlButton.from5(Coords.fromXY(margin * 2 + buttonWidth * 1, buttonPosY), // pos
         Coords.fromXY(buttonWidth, controlHeight), // size
         "Dismiss", fontNameAndHeight, () => // click
          {
@@ -102,7 +94,7 @@ class NotificationSession {
             var notification = notificationSession.notificationSelected;
             notificationSession.notificationDismiss(notification);
         });
-        var buttonDismissAll = ControlButton.from5(Coords.fromXY(margin * 4 + buttonWidth * 3, buttonPosY), // pos
+        var buttonDismissAll = ControlButton.from5(Coords.fromXY(margin * 3 + buttonWidth * 2, buttonPosY), // pos
         Coords.fromXY(buttonWidth, controlHeight), // size
         "Dismiss All", fontNameAndHeight, () => // click
          {
@@ -131,7 +123,6 @@ class NotificationSession {
             labelSelected,
             textNotificationSelected,
             buttonGoTo,
-            buttonGoToAndDismiss,
             buttonDismiss,
             buttonDismissAll,
             textMessage,

@@ -93,6 +93,10 @@ class BuildableDefnsBasic
 			]);
 		};
 
+		var effects = BuildableEffect.Instances();
+		var effectNone = effects.None;
+		var effectTodo = effects.ThrowError;
+
 		var facilityOrbital = (name: string, visual: VisualBase, industryToBuildAmount: number) =>
 			new BuildableDefn
 			(
@@ -102,11 +106,11 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
-				null, // resourcesProducedPerTurn
+				effectTodo, // effect
 				null // entityModifyOnBuild
 			);
 
-		var facilitySurfaceUsable = (name: string, visual: VisualBase, industryToBuildAmount: number, resourcesProducedPerTurn: Resource[]) =>
+		var facilitySurfaceUsable = (name: string, visual: VisualBase, industryToBuildAmount: number, effect: BuildableEffect) =>
 			new BuildableDefn
 			(
 				name,
@@ -115,7 +119,7 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
-				resourcesProducedPerTurn,
+				effect,
 				null // entityModifyOnBuild
 			);
 
@@ -128,7 +132,7 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
-				null, // resourcesProducedPerTurn,
+				effectTodo,
 				null // entityModifyOnBuild
 			);
 
@@ -141,7 +145,7 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				null, // industryToBuildAmount,
-				null, // resourcesProducedPerTurn,
+				effectTodo,
 				null // entityModifyOnBuild
 			);
 
@@ -154,7 +158,7 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
-				null, // resourcesProducedPerTurn
+				effectTodo,
 				null // entityModifyOnBuild
 			);
 
@@ -283,7 +287,7 @@ class BuildableDefnsBasic
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Blue),
 			240,
-			[], // resourcesPerTurn
+			null, // effect
 			null // entityModifyOnBuild
 		);
 
@@ -295,7 +299,7 @@ class BuildableDefnsBasic
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Green),
 			120,
-			[], // resourcesPerTurn
+			null, // effect
 			null // entityModifyOnBuild
 		);
 
@@ -307,7 +311,7 @@ class BuildableDefnsBasic
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Red),
 			60,
-			[], // resourcesPerTurn
+			null, // effect
 			null // entityModifyOnBuild
 		);
 
@@ -319,7 +323,7 @@ class BuildableDefnsBasic
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Gray),
 			30,
-			[], // resourcesPerTurn
+			null, // effect
 			null // entityModifyOnBuild
 		);
 
@@ -442,7 +446,7 @@ class BuildableDefnsBasic
 				)
 			]),
 			100,
-			[], // resourcesPerTurn
+			effectNone,
 			// entityModifyOnBuild
 			(entity: Entity) =>
 				entity.propertyAdd(new Shipyard() )
@@ -453,7 +457,7 @@ class BuildableDefnsBasic
 			"Surface Cloak",
 			visualBuild("Cloak", colors.Gray),
 			120,
-			null // resourcesPerTurn
+			effectNone
 		);
 
 		this.SurfaceColonyHub = facilitySurfaceUsable
@@ -461,7 +465,7 @@ class BuildableDefnsBasic
 			"Colony Hub",
 			visualBuild("Hub", colors.Gray),
 			30,
-			[ new Resource("Industry", 1), new Resource("Prosperity", 1) ] // resourcesPerTurn
+			effectTodo // [ new Resource("Industry", 1), new Resource("Prosperity", 1) ] // resourcesPerTurn
 		);
 
 		this.SurfaceFactory = facilitySurfaceUsable
@@ -469,7 +473,7 @@ class BuildableDefnsBasic
 			"Factory",
 			visualBuild("Factory", colors.Red),
 			30,
-			[ new Resource("Industry", 1) ] // resourcesPerTurn
+			effectTodo // [ new Resource("Industry", 1) ] // resourcesPerTurn
 		);
 
 		this.SurfaceFactoryAdvanced = facilitySurfaceUsable
@@ -477,7 +481,7 @@ class BuildableDefnsBasic
 			"Factory, Advanced",
 			visualBuild("Factory2", colors.Pink),
 			60,
-			[ new Resource("Industry", 2) ] // resourcesPerTurn
+			effectTodo // [ new Resource("Industry", 2) ] // resourcesPerTurn
 		);
 
 		this.SurfaceFactoryMultiplier = facilitySurfaceUsable
@@ -485,7 +489,7 @@ class BuildableDefnsBasic
 			"Factory Multiplier",
 			visualBuild("FacX", colors.Pink),
 			120,
-			null // resourcesPerTurn
+			effectTodo // resourcesPerTurn
 		);
 
 		this.SurfaceLaboratory = facilitySurfaceUsable
@@ -493,7 +497,7 @@ class BuildableDefnsBasic
 			"Laboratory",
 			visualBuild("Lab", colors.Blue),
 			30,
-			[ new Resource("Research", 1) ] // resourcesPerTurn
+			effectNone // [ new Resource("Research", 1) ] // resourcesPerTurn
 		);
 
 		this.SurfaceLaboratoryAdvanced = facilitySurfaceUsable
@@ -501,7 +505,7 @@ class BuildableDefnsBasic
 			"Laboratory, Advanced",
 			visualBuild("L", colors.BlueLight),
 			60,
-			[ new Resource("Research", 2) ] // resourcesPerTurn
+			effectNone // [ new Resource("Research", 2) ] // resourcesPerTurn
 		);
 
 		this.SurfaceLaboratoryMultiplier = facilitySurfaceUsable
@@ -509,7 +513,7 @@ class BuildableDefnsBasic
 			"Laboratory Multiplier",
 			visualBuild("LM", colors.Pink),
 			120,
-			null // resourcesPerTurn
+			effectNone
 		);
 
 		this.SurfacePlantation = facilitySurfaceUsable
@@ -517,7 +521,7 @@ class BuildableDefnsBasic
 			"Plantation",
 			visualBuild("Plant", colors.Green),
 			30,
-			[ new Resource("Prosperity", 1) ] // resourcesPerTurn
+			effectTodo // [ new Resource("Prosperity", 1) ] // resourcesPerTurn
 		);
 
 		this.SurfacePlantationAdvanced = facilitySurfaceUsable
@@ -525,7 +529,7 @@ class BuildableDefnsBasic
 			"Plantation, Advanced",
 			visualBuild("Plant2", colors.GreenLight),
 			60,
-			[ new Resource("Prosperity", 2) ] // resourcesPerTurn
+			effectTodo // [ new Resource("Prosperity", 2) ] // resourcesPerTurn
 		);
 
 		this.SurfaceShield = facilitySurfaceUsable

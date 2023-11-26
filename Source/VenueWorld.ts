@@ -349,7 +349,7 @@ class VenueWorldExtended extends VenueWorld
 					var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
 					
 					if (isFastForwarding == false)
-					{					
+					{
 						var venueCurrent = universe.venueCurrent();
 						var bodyClickedNetworkNode = bodyClicked as NetworkNode2;
 						var starsystem = bodyClickedNetworkNode.starsystem;

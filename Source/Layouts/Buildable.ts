@@ -44,6 +44,12 @@ class Buildable implements EntityProperty<Buildable>
 		return world.buildableDefnByName(this.defnName);
 	}
 
+	effectApply(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var defn = this.defn(uwpe.world as WorldExtended);
+		defn.effectApply(uwpe);
+	}
+
 	locatable(): Locatable
 	{
 		return this._locatable;

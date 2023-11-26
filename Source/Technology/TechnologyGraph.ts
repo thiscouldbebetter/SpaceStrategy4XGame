@@ -14,12 +14,10 @@ class TechnologyGraph
 			ArrayHelper.addLookupsByName(this.technologies);
 	}
 
-	static demo(mapCellSizeInPixels: Coords): TechnologyGraph
+	static demo(mapCellSizeInPixels: Coords, bds: BuildableDefnsBasic): TechnologyGraph
 	{
 		var t = (n: string, r: number, p: string[], buildableDefnsAllowed: BuildableDefn[]) =>
 			new Technology(n, r, p, buildableDefnsAllowed.map(x => x.name));
-
-		var bds = new BuildableDefnsBasic(mapCellSizeInPixels);
 
 		var returnValue = new TechnologyGraph
 		(
@@ -81,14 +79,12 @@ class TechnologyGraph
 		return returnValue;
 	}
 
-	static legacy(mapCellSizeInPixels: Coords): TechnologyGraph
+	static legacy(mapCellSizeInPixels: Coords, bds: BuildableDefnsLegacy): TechnologyGraph
 	{
 		// Technologies from the game _Ascendancy_.
 
 		var t = (n: string, p: string[], r: number, a: BuildableDefn[]) =>
 			new Technology(n, r, p, a.map(x => x.name) ); // Note different orders.
-
-		var bds = new BuildableDefnsLegacy(mapCellSizeInPixels);
 
 		var OrbitalStructures 				= "Orbital Structures";
 		var InterplanetaryExploration 		= "Interplanetary Exploration";

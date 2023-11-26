@@ -1,14 +1,43 @@
 
 class PlanetIndustry
 {
-	planetIndustryAccumulatedClear(planet: Planet): void
+	notificationsForRoundAddToArray
+	(
+		universe: Universe,
+		world: WorldExtended,
+		planet: Planet,
+		notificationsSoFar: Notification2[]
+	): Notification2[]
 	{
-		planet.resourcesAccumulated.find(x => x.defnName == "Industry").quantity = 0;
+		var buildableEntityInProgress =
+			planet.buildableEntityInProgress(universe);
+
+		if (buildableEntityInProgress == null)
+		{
+			var hasIdlePopulation = planet.populationIdleExists(universe);
+
+			if (hasIdlePopulation)
+			{
+				var notification = new Notification2
+				(
+					"Planet " + planet.name + " has free population, but nothing is being built.",
+					() => planet.jumpTo(universe)
+				);
+				notificationsSoFar.push(notification);
+			}
+		}
+
+		return notificationsSoFar;
 	}
 
-	planetIndustryAccumulated(planet: Planet): number
+	planetIndustryAccumulatedClear(planet: Planet): void
 	{
-		return planet.resourcesAccumulated.find(x => x.defnName == "Industry").quantity;
+		this.planetIndustryAccumulated(planet).quantity = 0;
+	}
+
+	planetIndustryAccumulated(planet: Planet): Resource
+	{
+		return planet.resourcesAccumulated.find(x => x.defnName == "Industry");
 	}
 
 	toStringDescription(universe: Universe, world: WorldExtended, planet: Planet): string
@@ -29,7 +58,8 @@ class PlanetIndustry
 			var buildableDefn = buildableInProgress.defn(world);
 			var industryToBuild = buildableDefn.industryToBuild;
 
-			var industryAccumulated = this.planetIndustryAccumulated(planet);
+			var industryAccumulated =
+				this.planetIndustryAccumulated(planet).quantity;
 
 			var resourcesAccumulatedOverNeeded =
 				industryAccumulated + "/" + industryToBuild;
@@ -52,30 +82,15 @@ class PlanetIndustry
 		planet: Planet
 	): void
 	{
-		var resourcesAccumulated = planet.resourcesAccumulated;
-		var industryAccumulated = resourcesAccumulated.find(x => x.defnName == "Industry");
-		var industryProduced = planet.industryPerTurn(universe, world);
-		industryAccumulated.addQuantity(industryProduced);
-
 		var buildableEntityInProgress =
 			planet.buildableEntityInProgress(universe);
 
-		if (buildableEntityInProgress == null)
+		if (buildableEntityInProgress != null)
 		{
-			industryAccumulated.clear();
+			var industryAccumulated = this.planetIndustryAccumulated(planet);
+			var industryProducedQuantity = planet.industryPerTurn(universe, world);
+			industryAccumulated.addQuantity(industryProducedQuantity);
 
-			var hasIdlePopulation = planet.populationIdleExists(universe);
-			if (hasIdlePopulation)
-			{
-				var notification = new Notification2
-				(
-					"Default", world.roundNumberCurrent(), "Planet has free population, but nothing is being built.", planet
-				);
-				faction.notificationSession.notificationAdd(notification);
-			}
-		}
-		else
-		{
 			var buildableInProgress =
 				Buildable.ofEntity(buildableEntityInProgress);
 			var buildableDefn = buildableInProgress.defn(world);
@@ -92,13 +107,17 @@ class PlanetIndustry
 					planet.itemHolder().itemAdd(buildableAsItem);
 				}
 
-				var notificationText = "Planet " + planet.name + " is done building " + buildableDefn.name + ".";
+				var populationIdle = planet.populationIdle(universe);
+				var notificationText =
+					"Planet " + planet.name + " is done building " + buildableDefn.name + ", "
+					+ (populationIdle > 0 ? "and" : "but")
+					+ " has " + populationIdle + " free population.";
 				var notification = new Notification2
 				(
-					"Default", world.roundNumberCurrent(), notificationText, planet
+					notificationText, () => planet.jumpTo(universe)
 				);
-				faction.notificationSession.notificationAdd(notification);
-				
+				faction.notificationAdd(notification);
+
 				planet.resourcesPerTurnReset();
 			}
 		}

@@ -23,12 +23,14 @@ class Layout {
     buildableEntityRemove(buildableEntityToRemove) {
         this.map.bodyRemove(buildableEntityToRemove);
     }
-    // turnable
     facilities() {
         return this.map.bodies();
     }
     initialize(universe) {
         // todo
+    }
+    notificationsForRoundAddToArray(universe, world, faction, planet, notificationsSoFar) {
+        return notificationsSoFar; // todo
     }
     updateForRound(universe, world, faction, parentModel) {
         // todo

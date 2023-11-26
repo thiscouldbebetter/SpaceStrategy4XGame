@@ -14,26 +14,33 @@ class BuildableDefnsLegacy {
                 VisualText.fromTextHeightAndColor(labelText, fontHeight, colors.White)
             ]);
         };
+        var effects = BuildableEffect.Instances();
+        var effectNone = effects.None;
+        var effectTodo = effects.ThrowError;
+        var effectResourcesAdd = (resourcesToAdd) => {
+            var effect = new BuildableEffect("ResourcesAdd", 0, // order
+            (uwpe) => {
+                var planet = uwpe.entity;
+                planet.resourcesPerTurnAdd(resourcesToAdd);
+            });
+            return effect;
+        };
         var facilityOrbital = (name, visual, industryToBuildAmount) => new BuildableDefn(name, false, // isItem
-        terrainNamesOrbital, mapCellSizeInPixels, visual, industryToBuildAmount, null, // resourcesProducedPerTurn
-        null // entityModifyOnBuild
+        terrainNamesOrbital, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null // entityModifyOnBuild
         );
-        var facilitySurfaceUsable = (name, visual, industryToBuildAmount, resourcesProducedPerTurn) => new BuildableDefn(name, false, // isItem
-        terrainNamesSurfaceUsable, mapCellSizeInPixels, visual, industryToBuildAmount, resourcesProducedPerTurn, null // entityModifyOnBuild
+        var facilitySurfaceUsable = (name, visual, industryToBuildAmount, effect) => new BuildableDefn(name, false, // isItem
+        terrainNamesSurfaceUsable, mapCellSizeInPixels, visual, industryToBuildAmount, effect, null // entityModifyOnBuild
         );
-        var facilitySurfaceAnywhere = (name, visual, industryToBuildAmount) => new BuildableDefn(name, false, // isItem
-        terrainNamesSurface, mapCellSizeInPixels, visual, industryToBuildAmount, null, // resourcesProducedPerTurn,
-        null // entityModifyOnBuild
+        var facilitySurfaceAnywhere = (name, visual, industryToBuildAmount, effect) => new BuildableDefn(name, false, // isItem
+        terrainNamesSurface, mapCellSizeInPixels, visual, industryToBuildAmount, effect, null // entityModifyOnBuild
         );
         var planetwideFocus = (name, visual) => new BuildableDefn(name, null, // isItem
         null, // terrainNames,
         mapCellSizeInPixels, visual, null, // industryToBuildAmount,
-        null, // resourcesProducedPerTurn,
-        null // entityModifyOnBuild
+        effectTodo, null // entityModifyOnBuild
         );
         var shipComponent = (name, visual, industryToBuildAmount) => new BuildableDefn(name, true, // isItem
-        terrainNamesShip, mapCellSizeInPixels, visual, industryToBuildAmount, null, // resourcesProducedPerTurn
-        null // entityModifyOnBuild
+        terrainNamesShip, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null // entityModifyOnBuild
         );
         // Planet - Orbit.
         this.OrbitalCloaker = facilityOrbital("Orbital Cloak", visualBuild("C", colors.Gray), 40);
@@ -65,65 +72,65 @@ class BuildableDefnsLegacy {
         this.ShipGenerator5Nanotwirler = shipComponent("Nanotwirler", visualBuild("Generator", colors.Violet), 100);
         // Hulls.
         this.ShipHull1Small = new BuildableDefn("Small Ship Hull", true, // isItem // Is it, though?
-        terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Gray), 30, [], // resourcesPerTurn
+        terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Gray), 30, effectNone, // resourcesPerTurn
         null // entityModifyOnBuild
         );
         this.ShipHull2Medium = new BuildableDefn("Medium Ship Hull", true, // isItem // Is it, though?
-        terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Red), 60, [], // resourcesPerTurn
+        terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Red), 60, effectNone, // resourcesPerTurn
         null // entityModifyOnBuild
         );
         this.ShipHull3Large = new BuildableDefn("Large Ship Hull", true, // isItem // Is it, though?
-        terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Green), 120, [], // resourcesPerTurn
+        terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Green), 120, effectNone, // resourcesPerTurn
         null // entityModifyOnBuild
         );
         this.ShipHull4Enormous = new BuildableDefn("Enormous Ship Hull", true, // isItem // Is it, though?
-        terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Blue), 240, [], // resourcesPerTurn
+        terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Blue), 240, effectNone, // resourcesPerTurn
         null // entityModifyOnBuild
         );
         // Items.
         var sc = (name, industry) => shipComponent(name, visualBuild(name, colors.Gray), industry);
         this.ShipItemAccutron = sc("Accutron", 60);
-        this.ShipItemBackfirer = sc("Backfirer", 99999);
-        this.ShipItemBrunswikDissipator = sc("Brunswik Dissipator", 99999);
-        this.ShipItemCannibalizer = sc("Cannibalizer", 99999);
-        this.ShipItemCloaker = sc("Cloaker", 99999);
-        this.ShipItemColonizer = sc("Colonizer", 99999);
-        this.ShipItemContainmentDevice = sc("ContainmentDevice", 99999);
-        this.ShipItemDisarmer = sc("Disarmer", 99999);
-        this.ShipItemDisintegrator = sc("Disintegrator", 99999);
-        this.ShipItemFleetDisperser = sc("FleetDisperser", 99999);
-        this.ShipItemGizmogrifier = sc("Gizmogrifier", 99999);
-        this.ShipItemGravimetricCatapult = sc("GravimetricCatapult", 99999);
-        this.ShipItemGravimetricCondensor = sc("GravimetricCondensor", 99999);
-        this.ShipItemGravityDistorter = sc("GravityDistorter", 99999);
-        this.ShipItemGyroInductor = sc("GyroInductor", 99999);
-        this.ShipItemHyperfuel = sc("Hyperfuel", 99999);
-        this.ShipItemHyperswapper = sc("Hyperswapper", 99999);
-        this.ShipItemIntellectScrambler = sc("IntellectScrambler", 99999);
-        this.ShipItemInvasionModule = sc("InvasionModule", 99999);
-        this.ShipItemInvulnerablizer = sc("Invulnerablizer", 99999);
-        this.ShipItemLaneBlocker = sc("LaneBlocker", 99999);
-        this.ShipItemLaneDestabilizer = sc("LaneDestabilizer", 99999);
-        this.ShipItemLaneEndoscope = sc("LaneEndoscope", 99999);
-        this.ShipItemLaneMagnetron = sc("LaneMagnetron", 99999);
-        this.ShipItemMassCondensor = sc("MassCondensor", 99999);
-        this.ShipItemMolecularTieDown = sc("MolecularTieDown", 99999);
-        this.ShipItemMovingPartExploiter = sc("MovingPartExploiter", 99999);
-        this.ShipItemMyrmidonicCarbonizer = sc("MyrmidonicCarbonizer", 99999);
-        this.ShipItemPhaseBomb = sc("PhaseBomb", 99999);
-        this.ShipItemPlasmaCoupler = sc("PlasmaCoupler", 99999);
-        this.ShipItemPositronBouncer = sc("PositronBouncer", 99999);
-        this.ShipItemRecaller = sc("Recaller", 99999);
-        this.ShipItemRemoteRepairFacility = sc("RemoteRepairFacility", 99999);
-        this.ShipItemReplenisher = sc("Replenisher", 99999);
-        this.ShipItemSacrificialOrb = sc("SacrificialOrb", 99999);
-        this.ShipItemSelfDestructotron = sc("SelfDestructotron", 99999);
-        this.ShipItemShieldBlaster = sc("ShieldBlaster", 99999);
-        this.ShipItemSmartBomb = sc("SmartBomb", 99999);
-        this.ShipItemSpecialtyBlaster = sc("SpecialtyBlaster", 99999);
-        this.ShipItemToroidalBlaster = sc("ToroidalBlaster", 99999);
-        this.ShipItemTractorBeam = sc("TractorBeam", 99999);
-        this.ShipItemXRayMegaglasses = sc("XRayMegaglasses", 99999);
+        this.ShipItemBackfirer = sc("Backfirer", 60);
+        this.ShipItemBrunswikDissipator = sc("Brunswik Dissipator", 100);
+        this.ShipItemCannibalizer = sc("Cannibalizer", 20);
+        this.ShipItemCloaker = sc("Cloaker", 30);
+        this.ShipItemColonizer = sc("Colonizer", 35);
+        this.ShipItemContainmentDevice = sc("Containment Device", 15);
+        this.ShipItemDisarmer = sc("Disarmer", 30);
+        this.ShipItemDisintegrator = sc("Disintegrator", 150);
+        this.ShipItemFleetDisperser = sc("Fleet Disperser", 30);
+        this.ShipItemGizmogrifier = sc("Gizmogrifier", 30);
+        this.ShipItemGravimetricCatapult = sc("Gravimetric Catapult", 16);
+        this.ShipItemGravimetricCondensor = sc("Gravimetric Condensor", 30);
+        this.ShipItemGravityDistorter = sc("Gravity Distorter", 20);
+        this.ShipItemGyroInductor = sc("Gyro-Inductor", 20);
+        this.ShipItemHyperfuel = sc("Hyperfuel", 20);
+        this.ShipItemHyperswapper = sc("Hyperswapper", 20);
+        this.ShipItemIntellectScrambler = sc("Intellect Scrambler", 20);
+        this.ShipItemInvasionModule = sc("Invasion Module", 70);
+        this.ShipItemInvulnerablizer = sc("Invulnerablizer", 60);
+        this.ShipItemLaneBlocker = sc("Lane Blocker", 30);
+        this.ShipItemLaneDestabilizer = sc("Lane Destabilizer", 40);
+        this.ShipItemLaneEndoscope = sc("Lane Endoscope", 20);
+        this.ShipItemLaneMagnetron = sc("Lane Magnetron", 50);
+        this.ShipItemMassCondensor = sc("Mass Condensor", 50);
+        this.ShipItemMolecularTieDown = sc("Molecular Tie Down", 20);
+        this.ShipItemMovingPartExploiter = sc("Moving Part Exploiter", 60);
+        this.ShipItemMyrmidonicCarbonizer = sc("Myrmidonic Carbonizer", 70);
+        this.ShipItemPhaseBomb = sc("PhaseBomb", 40);
+        this.ShipItemPlasmaCoupler = sc("Plasma Coupler", 20);
+        this.ShipItemPositronBouncer = sc("Positron Bouncer", 10);
+        this.ShipItemRecaller = sc("Recaller", 40);
+        this.ShipItemRemoteRepairFacility = sc("Remote Repair Facility", 70);
+        this.ShipItemReplenisher = sc("Replenisher", 60);
+        this.ShipItemSacrificialOrb = sc("Sacrificial Orb", 20);
+        this.ShipItemSelfDestructotron = sc("Self-Destructotron", 50);
+        this.ShipItemShieldBlaster = sc("Shield Blaster", 30);
+        this.ShipItemSmartBomb = sc("Smart Bomb", 30);
+        this.ShipItemSpecialtyBlaster = sc("Specialty Blaster", 30);
+        this.ShipItemToroidalBlaster = sc("Toroidal Blaster", 20);
+        this.ShipItemTractorBeam = sc("Tractor Beam", 30);
+        this.ShipItemXRayMegaglasses = sc("X-Ray Megaglasses", 100);
         // Sensors.
         this.ShipSensor1TonklinFrequencyAnalyzer = shipComponent("Tonklin Frequency Analyzer", visualBuild("Sensors", colors.Gray), 30);
         this.ShipSensor2SubspacePhaseArray = shipComponent("Subspace Phase Array", visualBuild("Sensors", colors.Gray), 30);
@@ -173,15 +180,11 @@ class BuildableDefnsLegacy {
         this.SurfaceTerraforming = facilitySurfaceUsable("Terraforming", visualBuild("todo", colors.Gray), 9999, null);
         this.SurfaceXenoArchaeologicalDig = facilitySurfaceUsable("XenoArchaeologicalDig", visualBuild("todo", colors.Gray), 9999, null);
         // Default tech.
-        this.SurfaceAgriplot = facilitySurfaceUsable("Agriplot", visualBuild("P", colors.Green), 30, [new Resource("Prosperity", 1)] // resourcesPerTurn
-        );
-        this.SurfaceColonyHub = facilitySurfaceUsable("Colony Hub", visualBuild("H", colors.Gray), 30, [new Resource("Industry", 1), new Resource("Prosperity", 1)] // resourcesPerTurn
-        );
-        this.SurfaceFactory = facilitySurfaceUsable("Factory", visualBuild("F", colors.Red), 30, [new Resource("Industry", 1)] // resourcesPerTurn
-        );
-        this.SurfaceLaboratory = facilitySurfaceUsable("Laboratory", visualBuild("L", colors.Blue), 30, [new Resource("Research", 1)] // resourcesPerTurn
-        );
-        this.SurfaceTransportTubes = facilitySurfaceAnywhere("Transport Tubes", visualBuild("T", colors.Red), 15);
+        this.SurfaceAgriplot = facilitySurfaceUsable("Agriplot", visualBuild("Agriplot", colors.GreenDark), 30, effectResourcesAdd([new Resource("Prosperity", 1)]));
+        this.SurfaceColonyHub = facilitySurfaceUsable("Colony Hub", visualBuild("Hub", colors.Gray), 30, effectResourcesAdd([new Resource("Industry", 1), new Resource("Prosperity", 1)]));
+        this.SurfaceFactory = facilitySurfaceUsable("Factory", visualBuild("Factory", colors.Red), 30, effectResourcesAdd([new Resource("Industry", 1)]));
+        this.SurfaceLaboratory = facilitySurfaceUsable("Laboratory", visualBuild("Laboratory", colors.Blue), 30, effectResourcesAdd([new Resource("Research", 1)]));
+        this.SurfaceTransportTubes = facilitySurfaceAnywhere("Transport Tubes", visualBuild("Transport", colors.GrayDark), 15, effectNone);
         this._All =
             [
                 this.OrbitalCloaker,

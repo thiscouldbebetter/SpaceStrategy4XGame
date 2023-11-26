@@ -104,11 +104,13 @@ class WorldExtended extends World
 		var viewSize = universe.display.sizeInPixels.clone();
 		var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
 
-		var buildableDefns = WorldExtended.create_BuildableDefns(mapCellSizeInPixels);
+		var buildableDefns =
+			// new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+			new BuildableDefnsLegacy(mapCellSizeInPixels);
 
 		var technologyGraph =
 			// TechnologyGraph.demo(mapCellSizeInPixels);
-			TechnologyGraph.legacy(mapCellSizeInPixels);
+			TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
 		var technologiesFree = technologyGraph.technologiesFree();
 
 		var viewDimension = viewSize.y;
@@ -136,7 +138,7 @@ class WorldExtended extends World
 			universe,
 			network, 
 			technologiesFree,
-			buildableDefns,
+			buildableDefns._All,
 			deviceDefnsByName,
 			factionCount
 		);
@@ -162,7 +164,7 @@ class WorldExtended extends World
 			worldName,
 			DateTime.now(),
 			activityDefns,
-			buildableDefns,
+			buildableDefns._All,
 			deviceDefns,
 			technologyGraph,
 			network,
@@ -172,15 +174,6 @@ class WorldExtended extends World
 		);
 
 		return returnValue;
-	}
-
-	static create_BuildableDefns(mapCellSizeInPixels: Coords): BuildableDefn[]
-	{
-		var returnValues =
-			// new BuildableDefnsBasic(mapCellSizeInPixels)._All;
-			new BuildableDefnsLegacy(mapCellSizeInPixels)._All;
-
-		return returnValues;
 	}
 
 	static create_DeviceDefns(): DeviceDefn[]
@@ -551,6 +544,14 @@ class WorldExtended extends World
 		return this._mapCellSizeInPixels;
 	}
 
+	notificationsExist(): boolean
+	{
+		var faction = this.factionCurrent();
+		var notificationSession = faction.notificationSession;
+		var areThereAnyNotifications = notificationSession.notificationsExist();
+		return areThereAnyNotifications;
+	}
+
 	placeForEntityLocatable(entityLocatable: Entity): any
 	{
 		return this.network.placeForEntityLocatable(entityLocatable);
@@ -581,37 +582,28 @@ class WorldExtended extends World
 	{
 		var universe = uwpe.universe;
 
-		var isThereANotification = this.updateForRound_Notifications(universe);
-		
-		if (isThereANotification == false)
+		var factionCurrent = this.factionCurrent();
+		var notificationsBlocking = factionCurrent.notificationsForRoundAddToArray(universe, []);
+
+		if (notificationsBlocking.length > 0)
+		{
+			this.roundAdvanceUntilNotificationDisable();
+
+			factionCurrent.notificationsAdd(notificationsBlocking);
+			factionCurrent.notificationSessionStart(universe);
+		}
+		else
 		{
 			uwpe.world = this;
 			var world = universe.world as WorldExtended;
 
 			this.network.updateForRound(universe, world);
-			this.factions.forEach(x => x.updateForRound(universe, world));
+			this.factions.forEach(x => x.updateForRound(universe, world) );
 
 			this.roundsSoFar++;
-
-			this.updateForRound_Notifications(universe);
 		}
 	}
-	
-	updateForRound_Notifications(universe: Universe): boolean
-	{
-		var factionForPlayer = this.factions[0];
-		var notificationSession = factionForPlayer.notificationSession;
-		var isThereANotification = notificationSession.notificationsExist();
 
-		if (isThereANotification)
-		{
-			factionForPlayer.notificationSessionStart(universe);
-			this.roundAdvanceUntilNotificationDisable();
-		}
-		
-		return isThereANotification;
-	}
-	
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		//super.updateForTimerTick(uwpe);
@@ -621,19 +613,19 @@ class WorldExtended extends World
 		if (isFastForwarding)
 		{
 			var world = this;
-			var factionForPlayer = world.factions[0];
-			var notificationSession = factionForPlayer.notificationSession;
+			var factionCurrent = world.factionCurrent();
 			var areThereAnyNotifications =
-				notificationSession.notificationsExist();
-				
+				factionCurrent.notificationsExist();
+
 			if (areThereAnyNotifications)
 			{
 				this.roundAdvanceUntilNotificationToggle(uwpe);
+				factionCurrent.notificationSessionStart(uwpe.universe);
 			}
 			else
 			{
-				world.updateForRound(uwpe);				
+				world.updateForRound(uwpe);
 			}
-		}		
+		}
 	}
 }

@@ -44,8 +44,6 @@ class Layout
 		this.map.bodyRemove(buildableEntityToRemove);
 	}
 
-	// turnable
-
 	facilities(): Entity[]
 	{
 		return this.map.bodies();
@@ -54,6 +52,14 @@ class Layout
 	initialize(universe: Universe): void
 	{
 		// todo
+	}
+
+	notificationsForRoundAddToArray
+	(
+		universe: Universe, world: WorldExtended, faction: Faction, planet: Planet, notificationsSoFar: Notification2[]
+	): Notification2[]
+	{
+		return notificationsSoFar; // todo
 	}
 
 	updateForRound(universe: Universe, world: World, faction: Faction, parentModel: Entity): void

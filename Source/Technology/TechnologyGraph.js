@@ -6,9 +6,8 @@ class TechnologyGraph {
         this.technologiesByName =
             ArrayHelper.addLookupsByName(this.technologies);
     }
-    static demo(mapCellSizeInPixels) {
+    static demo(mapCellSizeInPixels, bds) {
         var t = (n, r, p, buildableDefnsAllowed) => new Technology(n, r, p, buildableDefnsAllowed.map(x => x.name));
-        var bds = new BuildableDefnsBasic(mapCellSizeInPixels);
         var returnValue = new TechnologyGraph("All Technologies", 
         // technologies
         [
@@ -56,10 +55,9 @@ class TechnologyGraph {
         ]);
         return returnValue;
     }
-    static legacy(mapCellSizeInPixels) {
+    static legacy(mapCellSizeInPixels, bds) {
         // Technologies from the game _Ascendancy_.
         var t = (n, p, r, a) => new Technology(n, r, p, a.map(x => x.name)); // Note different orders.
-        var bds = new BuildableDefnsLegacy(mapCellSizeInPixels);
         var OrbitalStructures = "Orbital Structures";
         var InterplanetaryExploration = "Interplanetary Exploration";
         var TonklinDiary = "Tonklin Diary";

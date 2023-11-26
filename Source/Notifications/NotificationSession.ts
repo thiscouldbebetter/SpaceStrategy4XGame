@@ -32,35 +32,6 @@ class NotificationSession
 		this.notificationSelected = notifications[notificationIndex];
 	}
 
-	notificationGoTo(universe: Universe, notification: Notification2): void
-	{
-		var notificationLoc = notification.locus;
-		var notificationLocType = notificationLoc.constructor.name;
-		if (notificationLocType == TechnologyResearcher.name)
-		{
-			var factionName = notificationLoc;
-			var faction = (universe.world as WorldExtended).factionByName(factionName);
-			faction.researchSessionStart(universe);
-		}
-		else if (notificationLocType == Starsystem.name)
-		{
-			alert("todo - Go to Starsystem");
-		}
-		else if (notificationLocType == Planet.name)
-		{
-			var planet = notificationLoc;
-			var planetLayout = null; // todo
-			var venueCurrent = universe.venueCurrent();
-			var venueNext =
-				new VenueLayout(venueCurrent, planet, planetLayout);
-			universe.venueTransitionTo(venueNext);
-		}
-		else
-		{
-			throw "Unrecognized notification type."
-		}
-	}
-
 	notificationsDismissAll(): void
 	{
 		this.clear();
@@ -150,8 +121,15 @@ class NotificationSession
 			fontNameAndHeight
 		);
 
-		var buttonGoTo = ControlButton.from5
+		var dataBindingIsEnabled = DataBinding.fromContextAndGet
 		(
+			this,
+			(c: NotificationSession) => (c.notificationSelected != null)
+		);
+
+		var buttonGoToSelected = ControlButton.from8
+		(
+			"buttonGoToSelected",
 			Coords.fromXY
 			(
 				margin, buttonPosY
@@ -159,23 +137,32 @@ class NotificationSession
 			Coords.fromXY(buttonWidth, controlHeight), // size
 			"Go To Selected",
 			fontNameAndHeight,
+			true, // hasBorder
+			dataBindingIsEnabled,
 			() => // click
 			{
 				var notification = notificationSession.notificationSelected;
 				notificationSession.notificationDismiss(notification);
-				notification.jumpTo(universe);
+				if (notificationSession.notificationsExist() == false)
+				{
+					universe.venueCurrentRemove(); // Don't return to the notifications list if empty.
+				}
+				notification.jumpTo();
 			}
 		);
 
-		var buttonDismiss = ControlButton.from5
+		var buttonDismissSelected = ControlButton.from8
 		(
+			"buttonDismissSelected",
 			Coords.fromXY
 			(
 				margin * 2 + buttonWidth * 1, buttonPosY
 			), // pos
 			Coords.fromXY(buttonWidth, controlHeight), // size
-			"Dismiss",
+			"Dismiss Selected",
 			fontNameAndHeight,
+			true, // hasBorder
+			dataBindingIsEnabled,
 			() => // click
 			{
 				var world = universe.world as WorldExtended;
@@ -183,6 +170,13 @@ class NotificationSession
 				var notificationSession = faction.notificationSession;
 				var notification = notificationSession.notificationSelected;
 				notificationSession.notificationDismiss(notification);
+
+				var areThereAnyMoreNotifications = notificationSession.notificationsExist();
+				if (areThereAnyMoreNotifications == false)
+				{
+					var venueNext: Venue = world.toVenue();
+					universe.venueTransitionTo(venueNext);
+				}
 			}
 		);
 
@@ -201,6 +195,9 @@ class NotificationSession
 				var faction = world.factions[0]; // hack
 				var notificationSession = faction.notificationSession;
 				notificationSession.notificationsDismissAll();
+
+				var venueNext: Venue = world.toVenue();
+				universe.venueTransitionTo(venueNext);
 			}
 		);
 
@@ -210,11 +207,12 @@ class NotificationSession
 			Coords.fromXY(columnWidth, controlHeight), // size
 			DataBinding.fromContext
 			(
-				"All notifications must be dismissed before turn can be ended."
+				"All notifications must be handled before the round can be ended."
 			),
 			fontNameAndHeight
 		);
 
+		/*
 		var buttonBack = ControlButton.from5
 		(
 			Coords.fromXY
@@ -232,6 +230,7 @@ class NotificationSession
 				universe.venueTransitionTo(venueNext);
 			}
 		);
+		*/
 
 		var returnValue = ControlContainer.from4
 		(
@@ -244,11 +243,11 @@ class NotificationSession
 				listNotifications,
 				labelSelected,
 				textNotificationSelected,
-				buttonGoTo,
-				buttonDismiss,
+				buttonGoToSelected,
+				buttonDismissSelected,
 				buttonDismissAll,
-				textMessage,
-				buttonBack
+				textMessage
+				//buttonBack
 			]
 		);
 

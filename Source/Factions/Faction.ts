@@ -794,6 +794,11 @@ class Faction implements EntityProperty<Faction>
 
 	// notifications
 
+	notificationAdd(notification: Notification2): void
+	{
+		this.notificationSession.notificationAdd(notification);
+	}
+
 	notificationSessionStart(universe: Universe): void
 	{
 		var notificationSessionAsControl =
@@ -805,7 +810,33 @@ class Faction implements EntityProperty<Faction>
 		universe.venueTransitionTo(venueNext);
 	}
 
-	// turns
+	notificationsAdd(notificationsToAdd: Notification2[]): void
+	{
+		notificationsToAdd.forEach(x => this.notificationAdd(x) );
+	}
+
+	notificationsExist(): boolean
+	{
+		return this.notificationSession.notificationsExist();
+	}
+
+	notificationsForRoundAddToArray
+	(
+		universe: Universe, notificationsSoFar: Notification2[]
+	): Notification2[]
+	{
+		var world = universe.world as WorldExtended;
+
+		this.planets.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar) );
+
+		this.ships.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar) );
+
+		this.technologyResearcher.notificationsForRoundAddToArray(universe, notificationsSoFar);
+
+		return notificationsSoFar;
+	}
+
+	// rounds
 
 	researchPerTurn(universe: Universe, world: WorldExtended): number
 	{

@@ -45,10 +45,12 @@ class WorldExtended extends World {
         ]);
         var viewSize = universe.display.sizeInPixels.clone();
         var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
-        var buildableDefns = WorldExtended.create_BuildableDefns(mapCellSizeInPixels);
+        var buildableDefns = 
+        // new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+        new BuildableDefnsLegacy(mapCellSizeInPixels);
         var technologyGraph = 
         // TechnologyGraph.demo(mapCellSizeInPixels);
-        TechnologyGraph.legacy(mapCellSizeInPixels);
+        TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
         var technologiesFree = technologyGraph.technologiesFree();
         var viewDimension = viewSize.y;
         var networkRadius = viewDimension * .25;
@@ -57,20 +59,14 @@ class WorldExtended extends World {
         viewSize.z = focalLength;
         var deviceDefns = WorldExtended.create_DeviceDefns();
         var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
-        var factionsAndShips = WorldExtended.create_FactionsAndShips(universe, network, technologiesFree, buildableDefns, deviceDefnsByName, factionCount);
+        var factionsAndShips = WorldExtended.create_FactionsAndShips(universe, network, technologiesFree, buildableDefns._All, deviceDefnsByName, factionCount);
         var factions = factionsAndShips[0];
         var ships = factionsAndShips[1];
         factions.forEach(x => x.diplomacy.initializeForFactions(factions));
         var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
         );
-        var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns, deviceDefns, technologyGraph, network, factions, ships, camera);
+        var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns._All, deviceDefns, technologyGraph, network, factions, ships, camera);
         return returnValue;
-    }
-    static create_BuildableDefns(mapCellSizeInPixels) {
-        var returnValues = 
-        // new BuildableDefnsBasic(mapCellSizeInPixels)._All;
-        new BuildableDefnsLegacy(mapCellSizeInPixels)._All;
-        return returnValues;
     }
     static create_DeviceDefns() {
         return DeviceDefns.Instance()._All;
@@ -250,6 +246,12 @@ class WorldExtended extends World {
         }
         return this._mapCellSizeInPixels;
     }
+    notificationsExist() {
+        var faction = this.factionCurrent();
+        var notificationSession = faction.notificationSession;
+        var areThereAnyNotifications = notificationSession.notificationsExist();
+        return areThereAnyNotifications;
+    }
     placeForEntityLocatable(entityLocatable) {
         return this.network.placeForEntityLocatable(entityLocatable);
     }
@@ -268,36 +270,31 @@ class WorldExtended extends World {
     }
     updateForRound(uwpe) {
         var universe = uwpe.universe;
-        var isThereANotification = this.updateForRound_Notifications(universe);
-        if (isThereANotification == false) {
+        var factionCurrent = this.factionCurrent();
+        var notificationsBlocking = factionCurrent.notificationsForRoundAddToArray(universe, []);
+        if (notificationsBlocking.length > 0) {
+            this.roundAdvanceUntilNotificationDisable();
+            factionCurrent.notificationsAdd(notificationsBlocking);
+            factionCurrent.notificationSessionStart(universe);
+        }
+        else {
             uwpe.world = this;
             var world = universe.world;
             this.network.updateForRound(universe, world);
             this.factions.forEach(x => x.updateForRound(universe, world));
             this.roundsSoFar++;
-            this.updateForRound_Notifications(universe);
         }
-    }
-    updateForRound_Notifications(universe) {
-        var factionForPlayer = this.factions[0];
-        var notificationSession = factionForPlayer.notificationSession;
-        var isThereANotification = notificationSession.notificationsExist();
-        if (isThereANotification) {
-            factionForPlayer.notificationSessionStart(universe);
-            this.roundAdvanceUntilNotificationDisable();
-        }
-        return isThereANotification;
     }
     updateForTimerTick(uwpe) {
         //super.updateForTimerTick(uwpe);
         var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
         if (isFastForwarding) {
             var world = this;
-            var factionForPlayer = world.factions[0];
-            var notificationSession = factionForPlayer.notificationSession;
-            var areThereAnyNotifications = notificationSession.notificationsExist();
+            var factionCurrent = world.factionCurrent();
+            var areThereAnyNotifications = factionCurrent.notificationsExist();
             if (areThereAnyNotifications) {
                 this.roundAdvanceUntilNotificationToggle(uwpe);
+                factionCurrent.notificationSessionStart(uwpe.universe);
             }
             else {
                 world.updateForRound(uwpe);

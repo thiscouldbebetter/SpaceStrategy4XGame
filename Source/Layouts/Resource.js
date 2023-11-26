@@ -4,7 +4,7 @@ class Resource {
         this.defnName = defnName;
         this.quantity = quantity;
     }
-    static addManyToMany(resourcesToAddTo, resourcesToBeAdded) {
+    static addManyToMany(resourcesToBeAdded, resourcesToAddTo) {
         for (var r = 0; r < resourcesToBeAdded.length; r++) {
             var resourceToBeAdded = resourcesToBeAdded[r];
             var resourceDefnName = resourceToBeAdded.defnName;

@@ -99,6 +99,13 @@ class Planet extends Entity {
         }
         return this._layout;
     }
+    notificationsForRoundAddToArray(universe, world, faction, notificationsSoFar) {
+        var layout = this.layout(universe);
+        layout.notificationsForRoundAddToArray(universe, world, faction, this, notificationsSoFar);
+        this.industry.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar);
+        this.demographics.notificationsForRoundAddToArray(notificationsSoFar);
+        return notificationsSoFar;
+    }
     shipAdd(shipToAdd) {
         this.ships.push(shipToAdd);
         shipToAdd.locatable().loc.placeName = Planet.name + ":" + this.name;
@@ -142,8 +149,8 @@ class Planet extends Entity {
         return returnValue;
     }
     // Demographics.
-    populationIncrement() {
-        this.demographics.populationIncrement();
+    populationIncrement(universe) {
+        this.demographics.populationIncrement(universe, this);
     }
     prosperityAccumulated() {
         return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
@@ -156,10 +163,7 @@ class Planet extends Entity {
         return returnValue;
     }
     populationIdle(universe) {
-        var populationCurrent = this.demographics.population;
-        var populationOccupied = this.populationOccupied(universe);
-        var populationIdle = populationCurrent - populationOccupied;
-        return populationIdle;
+        return this.demographics.populationIdle(universe, this);
     }
     populationIdleExists(universe) {
         return this.populationIdle(universe) > 0;
@@ -168,11 +172,7 @@ class Planet extends Entity {
         return this.planetType.size.populationMax();
     }
     populationOccupied(universe) {
-        var layout = this.layout(universe);
-        var facilities = layout.facilities();
-        var facilitiesAutomated = facilities.filter(x => Buildable.ofEntity(x).isAutomated);
-        var returnValue = facilities.length - facilitiesAutomated.length;
-        return returnValue;
+        return this.demographics.populationOccupied(universe, this);
     }
     populationOverMaxPlusIdle(universe) {
         var populationCurrent = this.demographics.population;
@@ -187,12 +187,11 @@ class Planet extends Entity {
     // turns
     updateForRound(universe, world, faction) {
         if (faction != null) {
-            this._resourcesPerTurn = null;
-            this._resourcesPerTurnByName = null;
+            this.resourcesPerTurnReset();
             var layout = this.layout(universe);
             layout.updateForRound(universe, world, faction, null);
-            this.industry.updateForRound(universe, world, faction, this);
             this.demographics.updateForRound(universe, world, faction, this);
+            this.industry.updateForRound(universe, world, faction, this);
         }
     }
     // resources
@@ -212,8 +211,8 @@ class Planet extends Entity {
             : Buildable.ofEntity(buildableEntityInProgress));
         return returnValue;
     }
-    industryAccumulated() {
-        return this.industry.planetIndustryAccumulated(this);
+    industryAccumulatedQuantity() {
+        return this.industry.planetIndustryAccumulated(this).quantity;
     }
     industryAndBuildableInProgress(universe, world) {
         var industryPerTurn = this.industryPerTurn(universe, world);
@@ -224,7 +223,7 @@ class Planet extends Entity {
         }
         else {
             var buildableDefn = buildable.defn(world);
-            var industryAccumulated = this.industryAccumulated();
+            var industryAccumulated = this.industryAccumulatedQuantity();
             var industryRequired = buildableDefn.industryToBuild;
             buildableAndProgress =
                 "(" + industryAccumulated
@@ -254,18 +253,18 @@ class Planet extends Entity {
     }
     resourcesPerTurn(universe, world) {
         if (this._resourcesPerTurn == null) {
-            var resourcesSoFar = new Array();
+            this._resourcesPerTurn = new Array();
+            var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
             var layout = this.layout(universe);
             var facilities = layout.facilities();
             for (var f = 0; f < facilities.length; f++) {
-                var facility = Buildable.ofEntity(facilities[f]);
+                var facilityAsEntity = facilities[f];
+                var facility = Buildable.ofEntity(facilityAsEntity);
                 if (facility.isComplete) {
-                    var facilityDefn = facility.defn(world);
-                    var facilityResources = facilityDefn.resourcesPerTurn;
-                    Resource.addManyToMany(resourcesSoFar, facilityResources);
+                    uwpe.entity2Set(facilityAsEntity);
+                    facility.effectApply(uwpe);
                 }
             }
-            this._resourcesPerTurn = resourcesSoFar;
             this._resourcesPerTurnByName = null;
         }
         return this._resourcesPerTurn;
@@ -276,6 +275,9 @@ class Planet extends Entity {
             this._resourcesPerTurnByName = ArrayHelper.addLookups(resourcesPerTurn, (x) => x.defnName);
         }
         return this._resourcesPerTurnByName;
+    }
+    resourcesPerTurnAdd(resourcesToAdd) {
+        Resource.addManyToMany(resourcesToAdd, this._resourcesPerTurn);
     }
     resourcesPerTurnReset() {
         this._resourcesPerTurn = null;

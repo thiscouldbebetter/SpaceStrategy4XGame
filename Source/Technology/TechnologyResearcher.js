@@ -26,13 +26,34 @@ class TechnologyResearcher {
     faction(world) {
         return world.factionByName(this.factionName);
     }
-    researchAccumulatedIncrement(world, faction, amountToIncrement) {
+    notificationBuildNothingBeingResearched(universe, world) {
+        var technologyResearcher = this;
+        var faction = this.faction(world);
+        var notification = new Notification2("The " + faction.name + " have research facilities, but nothing is being researched.", () => {
+            var session = technologyResearcher.toSession(world.technologyGraph);
+            var venueNext = session.toControl(universe, universe.display.sizeInPixels).toVenue();
+            universe.venueTransitionTo(venueNext);
+        });
+        return notification;
+    }
+    notificationsForRoundAddToArray(universe, notificationsSoFar) {
+        var world = universe.world;
+        var techBeingResearched = this.technologyBeingResearched(world);
+        if (techBeingResearched == null) {
+            var researchPerTurn = this.researchPerTurn(universe, world);
+            if (researchPerTurn > 0) {
+                var notification = this.notificationBuildNothingBeingResearched(universe, world);
+                notificationsSoFar.push(notification);
+            }
+        }
+        return notificationsSoFar;
+    }
+    researchAccumulatedIncrement(universe, world, faction, amountToIncrement) {
         var technologyBeingResearched = this.technologyBeingResearched(world);
         if (technologyBeingResearched == null) {
             if (amountToIncrement > 0) {
-                var notification = new Notification2("Default", world.roundNumberCurrent(), "Nothing being researched.", "research" // locus
-                );
-                faction.notificationSession.notificationAdd(notification);
+                var notification = this.notificationBuildNothingBeingResearched(universe, world);
+                faction.notificationAdd(notification);
             }
         }
         else {
@@ -42,6 +63,13 @@ class TechnologyResearcher {
                 this.namesOfTechnologiesKnown.push(this.nameOfTechnologyBeingResearched);
                 this.nameOfTechnologyBeingResearched = null;
                 this.researchAccumulated = 0;
+                var technologyResearcher = this;
+                var notification = new Notification2("The " + faction.name + " have discovered the technology of " + technologyBeingResearched.name + ".", () => {
+                    var session = technologyResearcher.toSession(world.technologyGraph);
+                    var venueNext = session.toControl(universe, universe.display.sizeInPixels).toVenue();
+                    universe.venueTransitionTo(venueNext);
+                });
+                faction.notificationAdd(notification);
             }
         }
     }
@@ -114,9 +142,12 @@ class TechnologyResearcher {
             throw Error("Technology not available for research!");
         }
     }
+    toSession(technologyGraph) {
+        return new TechnologyResearchSession(technologyGraph, this);
+    }
     // turns
     updateForRound(universe, world, faction) {
         var researchThisTurn = this.researchPerTurn(universe, world);
-        this.researchAccumulatedIncrement(world, faction, researchThisTurn);
+        this.researchAccumulatedIncrement(universe, world, faction, researchThisTurn);
     }
 }

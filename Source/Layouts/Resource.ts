@@ -10,7 +10,7 @@ class Resource
 		this.quantity = quantity;
 	}
 
-	static addManyToMany(resourcesToAddTo: Resource[], resourcesToBeAdded: Resource[]): void
+	static addManyToMany(resourcesToBeAdded: Resource[], resourcesToAddTo: Resource[]): void
 	{
 		for (var r = 0; r < resourcesToBeAdded.length; r++)
 		{

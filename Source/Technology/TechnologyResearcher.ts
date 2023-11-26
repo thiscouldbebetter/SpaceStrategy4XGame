@@ -57,9 +57,60 @@ class TechnologyResearcher
 		return world.factionByName(this.factionName);
 	}
 
+	notificationBuildNothingBeingResearched
+	(
+		universe: Universe, world: WorldExtended
+	): Notification2
+	{
+		var technologyResearcher = this;
+
+		var faction = this.faction(world);
+		var notification = new Notification2
+		(
+			"The " + faction.name + " have research facilities, but nothing is being researched.",
+			() =>
+			{
+				var session = technologyResearcher.toSession(world.technologyGraph);
+				var venueNext = session.toControl(universe, universe.display.sizeInPixels).toVenue();
+				universe.venueTransitionTo(venueNext);
+			}
+		);
+
+		return notification;
+	}
+
+	notificationsForRoundAddToArray
+	(
+		universe: Universe,
+		notificationsSoFar: Notification2[]
+	): Notification2[]
+	{
+		var world = universe.world as WorldExtended;
+
+		var techBeingResearched = this.technologyBeingResearched(world);
+
+		if (techBeingResearched == null)
+		{
+			var researchPerTurn = this.researchPerTurn(universe, world);
+
+			if (researchPerTurn > 0)
+			{
+				var notification =
+					this.notificationBuildNothingBeingResearched(universe, world);
+
+				notificationsSoFar.push(notification);
+			}
+		}
+
+		return notificationsSoFar;
+	}
+
 	researchAccumulatedIncrement
 	(
-		world: WorldExtended, faction: Faction, amountToIncrement: number
+		universe: Universe,
+		world: WorldExtended,
+		faction: Faction,
+		amountToIncrement: number
 	): void
 	{
 		var technologyBeingResearched = this.technologyBeingResearched(world);
@@ -68,12 +119,8 @@ class TechnologyResearcher
 		{
 			if (amountToIncrement > 0)
 			{
-				var notification = new Notification2
-				(
-					"Default", world.roundNumberCurrent(),
-					"Nothing being researched.", "research" // locus
-				);
-				faction.notificationSession.notificationAdd(notification);
+				var notification = this.notificationBuildNothingBeingResearched(universe, world);
+				faction.notificationAdd(notification);
 			}
 		}
 		else
@@ -89,6 +136,19 @@ class TechnologyResearcher
 				);
 				this.nameOfTechnologyBeingResearched = null;
 				this.researchAccumulated = 0;
+
+				var technologyResearcher = this;
+				var notification = new Notification2
+				(
+					"The " + faction.name + " have discovered the technology of " + technologyBeingResearched.name + ".",
+					() =>
+					{
+						var session = technologyResearcher.toSession(world.technologyGraph);
+						var venueNext = session.toControl(universe, universe.display.sizeInPixels).toVenue();
+						universe.venueTransitionTo(venueNext);
+					}
+				);
+				faction.notificationAdd(notification);
 			}
 		}
 	}
@@ -221,6 +281,11 @@ class TechnologyResearcher
 		}
 	}
 
+	toSession(technologyGraph: TechnologyGraph): TechnologyResearchSession
+	{
+		return new TechnologyResearchSession(technologyGraph, this);
+	}
+
 	// turns
 
 	updateForRound
@@ -229,6 +294,6 @@ class TechnologyResearcher
 	): void
 	{
 		var researchThisTurn = this.researchPerTurn(universe, world);
-		this.researchAccumulatedIncrement(world, faction, researchThisTurn);
+		this.researchAccumulatedIncrement(universe, world, faction, researchThisTurn);
 	}
 }

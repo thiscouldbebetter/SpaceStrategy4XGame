@@ -100,7 +100,7 @@ class ControlBuilderExtended extends ControlBuilder
 			() => // click
 			{
 				(universe.venueCurrent() as VenueStarsystem).cameraCenterOnSelection();
-			},
+			}
 		);
 
 		var buttonDetailsIsEnabledGet = (c: VenueStarsystem) => // hack

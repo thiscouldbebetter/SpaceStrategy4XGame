@@ -1,38 +1,28 @@
 
 class Notification2
 {
-	defnName: string;
-	turnCreated: number;
 	message: string;
-	locus: any;
+	_jumpTo: () => void;
 
-	constructor
-	(
-		defnName: string, turnCreated: number, message: string, locus: any
-	)
+	constructor(message: string, jumpTo: () => void)
 	{
-		this.defnName = defnName;
-		this.turnCreated = turnCreated;
 		this.message = message;
-		this.locus = locus;
+		this._jumpTo = jumpTo;
 	}
 
-	defn(): NotificationType
-	{
-		return (this.defnName == null ? null : NotificationType.byName(this.defnName) );
-	}
+	// static jumpTo(message: string, jumpTo: () => void): Notification2
+	// {
+		// return new Notification2(message, jumpTo);
+	// }
 
-	jumpTo(universe: Universe): void
+	jumpTo(): void
 	{
-		this.locus.jumpTo(universe);
+		this._jumpTo();
 	}
 
 	toString(): string
 	{
-		var returnValue =
-			this.turnCreated + " - "
-			+ this.locus.name + " - "
-			+ this.message;
+		var returnValue = this.message;
 		return returnValue;
 	}
 }

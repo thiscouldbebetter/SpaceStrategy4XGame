@@ -1,21 +1,18 @@
 "use strict";
 class Notification2 {
-    constructor(defnName, turnCreated, message, locus) {
-        this.defnName = defnName;
-        this.turnCreated = turnCreated;
+    constructor(message, jumpTo) {
         this.message = message;
-        this.locus = locus;
+        this._jumpTo = jumpTo;
     }
-    defn() {
-        return (this.defnName == null ? null : NotificationType.byName(this.defnName));
-    }
-    jumpTo(universe) {
-        this.locus.jumpTo(universe);
+    // static jumpTo(message: string, jumpTo: () => void): Notification2
+    // {
+    // return new Notification2(message, jumpTo);
+    // }
+    jumpTo() {
+        this._jumpTo();
     }
     toString() {
-        var returnValue = this.turnCreated + " - "
-            + this.locus.name + " - "
-            + this.message;
+        var returnValue = this.message;
         return returnValue;
     }
 }

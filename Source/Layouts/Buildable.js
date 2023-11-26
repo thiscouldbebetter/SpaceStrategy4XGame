@@ -22,6 +22,10 @@ class Buildable {
     defn(world) {
         return world.buildableDefnByName(this.defnName);
     }
+    effectApply(uwpe) {
+        var defn = this.defn(uwpe.world);
+        defn.effectApply(uwpe);
+    }
     locatable() {
         return this._locatable;
     }

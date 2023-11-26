@@ -311,12 +311,28 @@ class Faction {
         return returnValue;
     }
     // notifications
+    notificationAdd(notification) {
+        this.notificationSession.notificationAdd(notification);
+    }
     notificationSessionStart(universe) {
         var notificationSessionAsControl = this.toControl_Details_Notifications(universe, universe.display.sizeInPixels);
         var venueNext = notificationSessionAsControl.toVenue();
         universe.venueTransitionTo(venueNext);
     }
-    // turns
+    notificationsAdd(notificationsToAdd) {
+        notificationsToAdd.forEach(x => this.notificationAdd(x));
+    }
+    notificationsExist() {
+        return this.notificationSession.notificationsExist();
+    }
+    notificationsForRoundAddToArray(universe, notificationsSoFar) {
+        var world = universe.world;
+        this.planets.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar));
+        this.ships.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar));
+        this.technologyResearcher.notificationsForRoundAddToArray(universe, notificationsSoFar);
+        return notificationsSoFar;
+    }
+    // rounds
     researchPerTurn(universe, world) {
         var returnValue = 0;
         for (var i = 0; i < this.planets.length; i++) {

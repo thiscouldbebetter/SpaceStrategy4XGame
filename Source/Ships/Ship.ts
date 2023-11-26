@@ -185,6 +185,14 @@ class Ship extends Entity
 		return this.factionable().factionName + this.name;
 	}
 
+	notificationsForRoundAddToArray
+	(
+		universe: Universe, world: WorldExtended, faction: Faction, notificationsSoFar: Notification2[]
+	): Notification2[]
+	{
+		return notificationsSoFar; // todo
+	}
+
 	order(): Order
 	{
 		return this.orderable().order;

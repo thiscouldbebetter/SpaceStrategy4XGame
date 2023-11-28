@@ -1,24 +1,33 @@
 Issues
 ======
 
-Cluster - Clicking starsystem immediately transfers to it.
-Cluster - Camera In button doesn't work (but out does!).
+Cluster
+-------
 
-Diplomacy - Errors on load.
+Faction box not wide enough for faction type.
 
-Planet - Can't view details.
 
-Planet Summary - Shows "todo" popup.
+Notifications
+-------------
 
-Ships Summary - Shows "todo" popup.
+First should be auto-selected, or only a single one.
+Double-clicking a list item should do something.
 
-Starsystem - Planets labeled with "todo".
-Starsystem - Error means can't finish move.
-Starsystem - Can't select planet after moving ship.
-Starsystem - Ships can't fire weapons.
 
-Technology - Errors on load.
+Planet
+------
 
-Turn - Advance Single Turn - Doesn't actually advance to turn 2.
-Turn - Fast Forward - Does same thing as Advance Single Turn.
+Getting an error dialog (like "Already building something") causes Back button font size to change.
+Some dialogs are full-screen, instead of half-screen.
+
+
+Startup
+-------
+If "Tough" is faction type, might end up on husk planet with no special ability to use black cells.
+
+
+Technology
+----------
+
+Text is too small.
 

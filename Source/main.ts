@@ -175,6 +175,41 @@ function worldCreatorToControl
 		DataBinding.fromTrue() // isEnabled
 	);
 
+	var labelFactionType = ControlLabel.from4Uncentered
+	(
+		Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
+		Coords.fromXY(size.x - margin * 2, controlHeight),
+		DataBinding.fromContext("Faction Type:"),
+		fontNameAndHeight
+	);
+
+	var selectFactionType = new ControlSelect
+	(
+		"selectFactionType",
+		Coords.fromXY(margin * 8, margin * 4 + controlHeight * 3), // pos
+		Coords.fromXY(controlHeight * 3, controlHeight), // size
+		new DataBinding
+		(
+			worldCreator,
+			(c: WorldCreator) => c.settings.factionDefnName,
+			(c: WorldCreator, v: string) => c.settings.factionDefnName = v
+		), // valueSelected
+		DataBinding.fromContextAndGet
+		(
+			worldCreator,
+			(c: WorldCreator) => FactionDefn.Instances()._All
+		), // options
+		DataBinding.fromGet
+		(
+			(c: FactionDefn) => c.name
+		), // bindingForOptionValues,
+		DataBinding.fromGet
+		(
+			(c: FactionDefn) => c.name
+		), // bindingForOptionText
+		fontNameAndHeight
+	);
+
 	var buttonCreate = new ControlButton
 	(
 		"buttonCreate",
@@ -211,6 +246,8 @@ function worldCreatorToControl
 			numberStarsystemCount,
 			labelWorldFactionCount,
 			numberFactionCount,
+			labelFactionType,
+			selectFactionType,
 			buttonCreate
 		]
 	);

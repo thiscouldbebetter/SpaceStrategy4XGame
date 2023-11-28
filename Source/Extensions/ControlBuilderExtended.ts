@@ -190,7 +190,7 @@ class ControlBuilderExtended extends ControlBuilder
 			fontNameAndHeight
 		);
 
-		var textRoundColonSpace = "Round: ";
+		var textRoundColonSpace = "Round:";
 		var labelRound = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight), // pos
@@ -203,7 +203,7 @@ class ControlBuilderExtended extends ControlBuilder
 		(
 			Coords.fromXY
 			(
-				margin + textRoundColonSpace.length * fontHeightInPixels / 2,
+				margin + textRoundColonSpace.length * fontHeightInPixels * 0.45,
 				margin + controlHeight
 			), // pos
 			Coords.fromXY

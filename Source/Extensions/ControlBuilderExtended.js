@@ -76,11 +76,11 @@ class ControlBuilderExtended extends ControlBuilder {
             var venue = c.venueCurrent();
             return (venue.model == null ? "" : venue.model().name);
         }), fontNameAndHeight);
-        var textRoundColonSpace = "Round: ";
+        var textRoundColonSpace = "Round:";
         var labelRound = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
         DataBinding.fromContext(textRoundColonSpace), fontNameAndHeight);
-        var textRound = ControlLabel.from4Uncentered(Coords.fromXY(margin + textRoundColonSpace.length * fontHeightInPixels / 2, margin + controlHeight), // pos
+        var textRound = ControlLabel.from4Uncentered(Coords.fromXY(margin + textRoundColonSpace.length * fontHeightInPixels * 0.45, margin + controlHeight), // pos
         Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
         DataBinding.fromContextAndGet(universe, (c) => "" + (c.world.roundsSoFar + 1)), fontNameAndHeight);
         var childControls = new Array();

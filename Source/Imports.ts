@@ -4,6 +4,7 @@ import gf = ThisCouldBeBetter.GameFramework;
 // hack
 // These classes currently have to come first.
 
+import Randomizer = gf.Randomizer;
 import RandomizerLCG = gf.RandomizerLCG;
 
 // Extensions.

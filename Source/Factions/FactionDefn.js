@@ -15,17 +15,6 @@ class FactionDefn {
     static byName(name) {
         return FactionDefn.Instances().byName(name);
     }
-    static chooseRandomly(numberToChoose) {
-        var factionsChosen = [];
-        var factionsRemaining = FactionDefn.Instances().all();
-        for (var i = 0; i < numberToChoose; i++) {
-            var factionIndexRandom = Math.floor(Math.random() * factionsRemaining.length);
-            var factionChosen = factionsRemaining[factionIndexRandom];
-            factionsChosen.push(factionChosen);
-            factionsRemaining.splice(factionsRemaining.indexOf(factionChosen), 1);
-        }
-        return factionsChosen;
-    }
 }
 class FactionDefn_Instances {
     constructor() {

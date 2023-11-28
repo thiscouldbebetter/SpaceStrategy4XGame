@@ -191,6 +191,8 @@ class VenueLayout implements Venue
 		var map = layout.map;
 		var buildableAtCursorEntity = map.bodyAtCursor();
 		var buildableAtCursor = Buildable.ofEntity(buildableAtCursorEntity);
+		var world = universe.world as WorldExtended;
+		var buildableAtCursorDefn = buildableAtCursor.defn(world);
 		var terrainAtCursor = map.terrainAtCursor();
 
 		var displaySize = universe.display.sizeInPixels;
@@ -204,6 +206,8 @@ class VenueLayout implements Venue
 
 		var venueThis = this; // hack
 
+		var childControls = new Array<ControlBase>();
+
 		var labelBuildableName = new ControlLabel
 		(
 			"labelBuildableName",
@@ -211,29 +215,115 @@ class VenueLayout implements Venue
 			listSize,
 			false, // isTextCenteredHorizontally
 			false, // isTextCenteredVertically
-			DataBinding.fromContext(buildableAtCursor.defnName + " on " + terrainAtCursor.name), // text
+			DataBinding.fromContext
+			(
+				buildableAtCursorDefn.name
+				+ " on " + terrainAtCursor.name + " cell"
+			), // text
 			fontNameAndHeight
 		);
 
-		var buttonDemolish = ControlButton.from8
+		childControls.push(labelBuildableName);
+
+		// hack - Make this more dynamic.
+
+		var isShipyard = (buildableAtCursorDefn.name == "Shipyard");
+
+		if (isShipyard)
+		{
+			var venueLayout = this;
+			var planet = venueLayout.modelParent as Planet;
+
+			var buttonBuildShip = ControlButton.from5
+			(
+				Coords.fromXY
+				(
+					margin.x,
+					containerSize.y - (margin.y + buttonSize.y) * 3
+				), //pos,
+				buttonSize,
+				"Build Ship", // text,
+				fontNameAndHeight,
+				() => // click
+				{
+					var dialogSize = universe.display.sizeInPixels.clone().half();
+
+					var buildableEntityInProgress =
+						planet.buildableEntityInProgress(universe);
+
+					var cannotBuildAcknowledge =
+						() => universe.venuePrevJumpTo();
+
+					if (buildableEntityInProgress != null)
+					{
+						universe.venueJumpTo
+						(
+							VenueMessage.fromTextAcknowledgeAndSize
+							(
+								"Already building something.",
+								cannotBuildAcknowledge,
+								dialogSize
+							)
+						);
+					}
+					else if (planet.populationIdle(universe) == 0)
+					{
+						universe.venueJumpTo
+						(
+							VenueMessage.fromTextAcknowledgeAndSize
+							(
+								"No free population yet.",
+								cannotBuildAcknowledge,
+								dialogSize
+							)
+						);
+					}
+					else
+					{
+						/*
+						var venueBuildShip = VenueMessage.fromTextAcknowledgeAndSize
+						(
+							"todo - Build ship.",
+							cannotBuildAcknowledge,
+							dialogSize
+						);
+						*/
+
+						var shipBuilder = new ShipBuilder();
+						var shipBuilderAsControl =
+							shipBuilder.toControl(universe, dialogSize, universe.venueCurrent() );
+						var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
+						universe.venueTransitionTo(shipBuilderAsVenue);
+					}
+				}
+			);
+
+			childControls.push(buttonBuildShip);
+
+		} // end if shipyard
+
+		var buttonDemolish = ControlButton.from5
 		(
-			"buttonDemolish",
-			Coords.fromXY(margin.x, containerSize.y - margin.y * 2 - buttonSize.y * 2), //pos,
+			Coords.fromXY
+			(
+				margin.x,
+				containerSize.y - (margin.y + buttonSize.y) * 2
+			), //pos,
 			buttonSize,
 			"Demolish", // text,
 			fontNameAndHeight,
-			true, // hasBorder,
-			DataBinding.fromTrue(), // isEnabled,
 			() => // click
 			{
-				var controlConfirm = universe.controlBuilder.confirmForUniverseSizeMessageConfirmCancel
+				var controlBuilder = universe.controlBuilder;
+				var controlConfirm = controlBuilder.confirmForUniverseSizeMessageConfirmCancel
 				(
 					universe,
 					containerSize,
 					"Really demolish?",
 					() => // confirm
 					{
-						ArrayHelper.remove(layout.map.bodies(), buildableAtCursorEntity);
+						var mapBodies = layout.map.bodies();
+						ArrayHelper.remove(mapBodies, buildableAtCursorEntity);
 						universe.venueNextSet(venueThis);
 					},
 					null // cancel
@@ -242,6 +332,8 @@ class VenueLayout implements Venue
 				universe.venueNextSet(controlConfirmAsVenue);
 			}
 		);
+
+		childControls.push(buttonDemolish);
 
 		var buttonDone = ControlButton.from5
 		(
@@ -252,16 +344,14 @@ class VenueLayout implements Venue
 			() => universe.venueJumpTo(venueThis) // click
 		);
 
+		childControls.push(buttonDone);
+
 		var returnValue = ControlContainer.from4
 		(
 			"containerBuildableDetails",
 			displaySize.clone().subtract(containerSize).half(), // pos
 			containerSize,
-			[
-				labelBuildableName,
-				buttonDemolish,
-				buttonDone
-			]
+			childControls
 		);
 
 		return returnValue;
@@ -415,9 +505,9 @@ class VenueLayout implements Venue
 
 		var display = universe.display;
 		var containerMainSize = display.sizeInPixels.clone();
-		var controlHeight = 14;
 		var margin = 8;
-		var fontHeightInPixels = display.fontNameAndHeight.heightInPixels;
+		var fontHeightInPixels = margin;
+		var controlHeight = margin * 2;
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 

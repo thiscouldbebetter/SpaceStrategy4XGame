@@ -38,13 +38,13 @@ class TechnologyResearchSession {
     toControl(universe, size) {
         var world = universe.world;
         var margin = size.x / 80;
-        var fontHeightInPixels = margin;
+        var fontHeightInPixels = margin * 1.5;
         var labelHeight = fontHeightInPixels;
         var buttonHeight = labelHeight * 2.5;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var listSize = Coords.fromXY((size.x - margin * 3) / 2, size.y / 2);
-        var columnWidth = margin * 12;
-        var rowHeight = margin;
+        var columnWidth = margin * 16;
+        var rowHeight = margin * 2;
         var listPosY = margin * 3 + rowHeight * 4;
         var researcher = this.researcher;
         var labelResearcher = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos,
@@ -85,16 +85,16 @@ class TechnologyResearchSession {
         );
         var labelTechnologyBeingResearched = ControlLabel.from4Uncentered(Coords.fromXY(margin, listPosY + listSize.y + margin), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-        DataBinding.fromContext("Technology Being Researched:"), // text
+        DataBinding.fromContext("Researching:"), // text
         fontNameAndHeight);
-        var textTechnologyBeingResearched = ControlLabel.from4Uncentered(Coords.fromXY(140, listPosY + listSize.y + margin), // pos,
+        var textTechnologyBeingResearched = ControlLabel.from4Uncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContextAndGet(this.researcher, (c) => c.nameOfTechnologyBeingResearched), fontNameAndHeight);
         var labelResearchAccumulated = ControlLabel.from4Uncentered(Coords.fromXY(margin, listPosY + listSize.y + margin + labelHeight), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Research Accumulated:"), // text
         fontNameAndHeight);
-        var textResearchAccumulatedOverRequired = ControlLabel.from4Uncentered(Coords.fromXY(110, listPosY + listSize.y + margin + labelHeight), // pos,
+        var textResearchAccumulatedOverRequired = ControlLabel.from4Uncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin + labelHeight), // pos,
         Coords.fromXY(30, labelHeight), // size,
         DataBinding.fromContextAndGet(this, (c) => c.researchAccumulatedOverRequired()), // text
         fontNameAndHeight);
@@ -102,17 +102,18 @@ class TechnologyResearchSession {
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Grants:"), // text
         fontNameAndHeight);
-        var textGrants = ControlLabel.from4Uncentered(Coords.fromXY(110, listPosY + listSize.y + margin + labelHeight * 2), // pos,
+        var textGrants = ControlLabel.from4Uncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin + labelHeight * 2), // pos,
         Coords.fromXY(size.x - margin * 2 - buttonHeight, labelHeight), // size,
         DataBinding.fromContextAndGet(this, (c) => {
             var tech = c.technologyBeingResearched();
             return (tech == null ? "-" : tech.namesOfBuildablesEnabled.join("; "));
         }), // text
         fontNameAndHeight);
-        var buttonBack = ControlButton.from5(Coords.fromXY(size.x - margin - buttonHeight, size.y - margin - buttonHeight), //pos,
-        Coords.fromXY(buttonHeight, buttonHeight), // size,
-        "Back", // text,
-        FontNameAndHeight.fromHeightInPixels(labelHeight), () => // click
+        var buttonWidth = buttonHeight * 2;
+        var buttonDone = ControlButton.from5(Coords.fromXY(size.x - margin - buttonWidth, size.y - margin - buttonHeight), //pos,
+        Coords.fromXY(buttonWidth, buttonHeight), // size,
+        "Done", // text,
+        fontNameAndHeight, () => // click
          {
             var venueNext = universe.world.toVenue();
             universe.venueTransitionTo(venueNext);
@@ -136,7 +137,7 @@ class TechnologyResearchSession {
             textResearchAccumulatedOverRequired,
             labelGrants,
             textGrants,
-            buttonBack
+            buttonDone
         ]);
         this.control = returnValue;
         return returnValue;

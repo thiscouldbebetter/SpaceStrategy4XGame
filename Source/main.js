@@ -91,6 +91,15 @@ function worldCreatorToControl(universe, worldCreator) {
     DataBinding.fromGet((c) => 7), // valueMax
     fontNameAndHeight, DataBinding.fromTrue() // isEnabled
     );
+    var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
+    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Faction Type:"), fontNameAndHeight);
+    var selectFactionType = new ControlSelect("selectFactionType", Coords.fromXY(margin * 8, margin * 4 + controlHeight * 3), // pos
+    Coords.fromXY(controlHeight * 3, controlHeight), // size
+    new DataBinding(worldCreator, (c) => c.settings.factionDefnName, (c, v) => c.settings.factionDefnName = v), // valueSelected
+    DataBinding.fromContextAndGet(worldCreator, (c) => FactionDefn.Instances()._All), // options
+    DataBinding.fromGet((c) => c.name), // bindingForOptionValues,
+    DataBinding.fromGet((c) => c.name), // bindingForOptionText
+    fontNameAndHeight);
     var buttonCreate = new ControlButton("buttonCreate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Create", fontNameAndHeight, true, // hasBorder
     DataBinding.fromContextAndGet(worldCreator, (wc) => wc.settings.isValid(worldCreator)), // isEnabled
     () => universe.venueTransitionTo(worldCreator.venueWorldGenerate(universe)), false // canBeHeldDown
@@ -102,6 +111,8 @@ function worldCreatorToControl(universe, worldCreator) {
         numberStarsystemCount,
         labelWorldFactionCount,
         numberFactionCount,
+        labelFactionType,
+        selectFactionType,
         buttonCreate
     ]);
     return returnControl;

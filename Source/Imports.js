@@ -2,6 +2,7 @@
 var gf = ThisCouldBeBetter.GameFramework;
 // hack
 // These classes currently have to come first.
+var Randomizer = gf.Randomizer;
 var RandomizerLCG = gf.RandomizerLCG;
 // Extensions.
 var ArrayHelper = gf.ArrayHelper;

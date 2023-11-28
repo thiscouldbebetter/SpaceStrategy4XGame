@@ -127,6 +127,7 @@ class BuildableDefnsLegacy
 
 		var terrains = MapTerrain.Instances(mapCellSizeInPixels);
 
+		var terrainNamesNone = new Array<string>();
 		var terrainNamesOrbital = [ terrains.Orbit.name ];
 		var terrainNamesShip = [ terrains.Ship.name ];
 		var terrainNamesSurface = terrains._Surface.map(x => x.name);
@@ -178,7 +179,7 @@ class BuildableDefnsLegacy
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
-				effectTodo,
+				effectNone,
 				null // entityModifyOnBuild
 			);
 
@@ -267,28 +268,28 @@ class BuildableDefnsLegacy
 		this.OrbitalShipyard = facilityOrbital
 		(
 			"Shipyard",
-			visualBuild("Y", colors.Blue),
+			visualBuild("Shipyard", colors.Blue),
 			120
 		);
 
 		this.OrbitalWeapon1OrbitalMissileBase = facilityOrbital
 		(
 			"Orbital Missile Base",
-			visualBuild("W", colors.Gray),
+			visualBuild("Missile Base", colors.Gray),
 			60
 		);
 
 		this.OrbitalWeapon2ShortRangeOrbitalWhopper = facilityOrbital
 		(
 			"Short-Range Orbital Whopper",
-			visualBuild("W", colors.Red),
+			visualBuild("Short-Range Whopper", colors.Red),
 			90
 		);
 
 		this.OrbitalWeapon3LongRangeOrbitalWhopper = facilityOrbital
 		(
 			"Long-Range Orbital Whopper",
-			visualBuild("W", colors.Green),
+			visualBuild("Long-Range Whopper", colors.Green),
 			180
 		);
 
@@ -400,7 +401,7 @@ class BuildableDefnsLegacy
 		(
 			"Small Ship Hull",
 			true, // isItem // Is it, though?
-			terrainNamesOrbital,
+			terrainNamesNone,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Gray),
 			30,
@@ -412,7 +413,7 @@ class BuildableDefnsLegacy
 		(
 			"Medium Ship Hull",
 			true, // isItem // Is it, though?
-			terrainNamesOrbital,
+			terrainNamesNone,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Red),
 			60,
@@ -424,7 +425,7 @@ class BuildableDefnsLegacy
 		(
 			"Large Ship Hull",
 			true, // isItem // Is it, though?
-			terrainNamesOrbital,
+			terrainNamesNone,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Green),
 			120,
@@ -436,7 +437,7 @@ class BuildableDefnsLegacy
 		(
 			"Enormous Ship Hull",
 			true, // isItem // Is it, though?
-			terrainNamesOrbital,
+			terrainNamesNone,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Blue),
 			240,
@@ -494,61 +495,61 @@ class BuildableDefnsLegacy
 
 		// Sensors.
 
-		this.ShipSensor1TonklinFrequencyAnalyzer 		= shipComponent("Tonklin Frequency Analyzer", 	visualBuild("Sensors", colors.Gray), 30);
-		this.ShipSensor2SubspacePhaseArray 				= shipComponent("Subspace Phase Array", 		visualBuild("Sensors", colors.Gray), 30);
-		this.ShipSensor3AuralCloudConstrictor 			= shipComponent("Aural Cloud Constrictor", 		visualBuild("Sensors", colors.Gray), 30);
-		this.ShipSensor4HyperwaveTympanum 				= shipComponent("Hyperwave Tympanum", 			visualBuild("Sensors", colors.Gray), 30);
-		this.ShipSensor5MurgatroydsKnower 				= shipComponent("Murgatroyd's Knower", 			visualBuild("Sensors", colors.Gray), 30);
-		this.ShipSensor6NanowaveDecouplingNet 			= shipComponent("Nanowave Decoupling Net", 		visualBuild("Sensors", colors.Gray), 30);
+		this.ShipSensor1TonklinFrequencyAnalyzer 		= shipComponent("Tonklin Frequency Analyzer", 	visualBuild("Sensors1", colors.Gray), 20);
+		this.ShipSensor2SubspacePhaseArray 				= shipComponent("Subspace Phase Array", 		visualBuild("Sensors2", colors.Gray), 40);
+		this.ShipSensor3AuralCloudConstrictor 			= shipComponent("Aural Cloud Constrictor", 		visualBuild("Sensors3", colors.Gray), 60);
+		this.ShipSensor4HyperwaveTympanum 				= shipComponent("Hyperwave Tympanum", 			visualBuild("Sensors4", colors.Gray), 80);
+		this.ShipSensor5MurgatroydsKnower 				= shipComponent("Murgatroyd's Knower", 			visualBuild("Sensors5", colors.Gray), 100);
+		this.ShipSensor6NanowaveDecouplingNet 			= shipComponent("Nanowave Decoupling Net", 		visualBuild("Sensors6", colors.Gray), 200);
 
 		// Shields.
 
-		this.ShipShield1IonWrap 						= shipComponent("Ion Wrap", 					visualBuild("Shield", colors.Gray), 30);
-		this.ShipShield2ConcussionShield 				= shipComponent("Concussion Shield", 			visualBuild("Shield", colors.Gray), 30);
-		this.ShipShield3WaveScatterer 					= shipComponent("Wave Scatterer", 				visualBuild("Shield", colors.Gray), 30);
-		this.ShipShield4Deactotron 						= shipComponent("Deactotron", 					visualBuild("Shield", colors.Gray), 30);
-		this.ShipShield5HyperwaveNullifier 				= shipComponent("Hyperwave Nullifier", 			visualBuild("Shield", colors.Gray), 30);
-		this.ShipShield6Nanoshell 						= shipComponent("Nanoshell", 					visualBuild("Shield", colors.Gray), 30);
+		this.ShipShield1IonWrap 						= shipComponent("Ion Wrap", 					visualBuild("Shield1", colors.Gray), 10);
+		this.ShipShield2ConcussionShield 				= shipComponent("Concussion Shield", 			visualBuild("Shield2", colors.Gray), 30);
+		this.ShipShield3WaveScatterer 					= shipComponent("Wave Scatterer", 				visualBuild("Shield3", colors.Gray), 50);
+		this.ShipShield4Deactotron 						= shipComponent("Deactotron", 					visualBuild("Shield4", colors.Gray), 50);
+		this.ShipShield5HyperwaveNullifier 				= shipComponent("Hyperwave Nullifier", 			visualBuild("Shield5", colors.Gray), 100);
+		this.ShipShield6Nanoshell 						= shipComponent("Nanoshell", 					visualBuild("Shield6", colors.Gray), 200);
 
 		// Starlane Drives.
 
 		this.ShipStarlaneDrive1StarLaneDrive 			= shipComponent("Star Lane Drive", 				visualBuild("StarDrive", colors.Gray), 30);
-		this.ShipStarlaneDrive2StarLaneHyperdrive 		= shipComponent("Star Lane Hyperdrive", 		visualBuild("StarDrive", colors.Gray), 30);
+		this.ShipStarlaneDrive2StarLaneHyperdrive 		= shipComponent("Star Lane Hyperdrive", 		visualBuild("StarDrive2", colors.Gray), 30);
 
 		// Weapons.
 
-		this.ShipWeapon01MassBarrageGun 				= shipComponent("MassBarrageGun", 				visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon02FourierMissiles 				= shipComponent("FourierMissiles", 				visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon03QuantumSingularityLauncher 	= shipComponent("QuantumSingularityLauncher", 	visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon04MolecularDisassociator 		= shipComponent("MolecularDisassociator", 		visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon05ElectromagneticPulser 			= shipComponent("ElectromagneticPulser", 		visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon06Plasmatron 					= shipComponent("Plasmatron", 					visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon07Ueberlaser 					= shipComponent("Ueberlaser", 					visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon08FergnatzLens 					= shipComponent("FergnatzLens", 				visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon09HypersphereDriver 				= shipComponent("HypersphereDriver", 			visualBuild("Weapon", colors.Gray), 30);
-		this.ShipWeapon10Nanomanipulator 				= shipComponent("Nanomanipulator", 				visualBuild("Weapon", colors.Gray), 30);
+		this.ShipWeapon01MassBarrageGun 				= shipComponent("Mass Barrage Gun", 				visualBuild("Weapon", colors.Gray), 10);
+		this.ShipWeapon02FourierMissiles 				= shipComponent("Fourier Missiles", 				visualBuild("Weapon", colors.Gray), 20);
+		this.ShipWeapon03QuantumSingularityLauncher 	= shipComponent("Quantum Singularity Launcher", 	visualBuild("Weapon", colors.Gray), 30);
+		this.ShipWeapon04MolecularDisassociator 		= shipComponent("Molecular Disassociator", 			visualBuild("Weapon", colors.Gray), 40);
+		this.ShipWeapon05ElectromagneticPulser 			= shipComponent("Electromagnetic Pulser", 			visualBuild("Weapon", colors.Gray), 50);
+		this.ShipWeapon06Plasmatron 					= shipComponent("Plasmatron", 						visualBuild("Weapon", colors.Gray), 50);
+		this.ShipWeapon07Ueberlaser 					= shipComponent("Ueberlaser", 						visualBuild("Weapon", colors.Gray), 70);
+		this.ShipWeapon08FergnatzLens 					= shipComponent("Fergnatz Lens", 					visualBuild("Weapon", colors.Gray), 50);
+		this.ShipWeapon09HypersphereDriver 				= shipComponent("Hypersphere Driver", 				visualBuild("Weapon", colors.Gray), 100);
+		this.ShipWeapon10Nanomanipulator 				= shipComponent("Nanomanipulator", 					visualBuild("Weapon", colors.Gray), 100);
 
 		// Surface.
 
-		this.SurfaceArtificialHypdroponifer 	= facilitySurfaceUsable("Artificial Hydroponifier", visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceAutomation 					= facilitySurfaceUsable("Automation", 				visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceCloaker 					= facilitySurfaceUsable("Surface Cloak", 			visualBuild("Cloak", colors.Gray), 120, null);
-		this.SurfaceCloningPlant 				= facilitySurfaceUsable("Cloning Plant", 			visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceEngineeringRetreat 			= facilitySurfaceUsable("EngineeringRetreat", 		visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceFertilizationPlant 			= facilitySurfaceUsable("FertilizationPlant", 		visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceHabitat 					= facilitySurfaceUsable("Habitat", 					visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceHyperpowerPlant 			= facilitySurfaceUsable("HyperpowerPlant", 			visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceIndustrialMegafacility 		= facilitySurfaceUsable("IndustrialMegafacility", 	visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceInternet 					= facilitySurfaceUsable("Internet", 				visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceLogicFactory 				= facilitySurfaceUsable("LogicFactory", 			visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceMetroplex 					= facilitySurfaceUsable("Metroplex", 				visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceObservationInstallation 	= facilitySurfaceUsable("ObservationInstallation", 	visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfacePlanetaryTractorBeam 		= facilitySurfaceUsable("PlanetaryTractorBeam", 	visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceResearchCampus 				= facilitySurfaceUsable("ResearchCampus", 			visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceShield1SurfaceShield 		= facilitySurfaceUsable("Shield1SurfaceShield", 	visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceShield2SurfaceMegaShield 	= facilitySurfaceUsable("Shield2SurfaceMegaShield",	visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceTerraforming 				= facilitySurfaceUsable("Terraforming", 			visualBuild("todo", colors.Gray), 9999, null);
-		this.SurfaceXenoArchaeologicalDig 		= facilitySurfaceUsable("XenoArchaeologicalDig", 	visualBuild("todo", colors.Gray), 9999, null);
+		this.SurfaceArtificialHypdroponifer 	= facilitySurfaceUsable("Artificial Hydroponifier", visualBuild("Artificial Hydroponifier", colors.Gray), 	100, null);
+		this.SurfaceAutomation 					= facilitySurfaceUsable("Automation", 				visualBuild("todo", colors.Gray), 						9999, null);
+		this.SurfaceCloaker 					= facilitySurfaceUsable("Surface Cloak", 			visualBuild("Cloak", colors.Gray), 						120, null);
+		this.SurfaceCloningPlant 				= facilitySurfaceUsable("Cloning Plant", 			visualBuild("Cloning Plant", colors.Gray), 				250, null);
+		this.SurfaceEngineeringRetreat 			= facilitySurfaceUsable("Engineering Retreat", 		visualBuild("Engineering Retreat", colors.Gray), 		80, null);
+		this.SurfaceFertilizationPlant 			= facilitySurfaceUsable("Fertilization Plant", 		visualBuild("Fertilization Plant", colors.Gray), 		200, null);
+		this.SurfaceHabitat 					= facilitySurfaceUsable("Habitat", 					visualBuild("Habitat", colors.Gray), 					160, null);
+		this.SurfaceHyperpowerPlant 			= facilitySurfaceUsable("Hyperpower Plant", 		visualBuild("Hyperpower Plant", colors.Gray), 			200, null);
+		this.SurfaceIndustrialMegafacility 		= facilitySurfaceUsable("Industrial Megafacility", 	visualBuild("Industrial Megafacility", colors.Gray), 	110, null);
+		this.SurfaceInternet 					= facilitySurfaceUsable("Internet", 				visualBuild("Internet", colors.Gray), 					250, null);
+		this.SurfaceLogicFactory 				= facilitySurfaceUsable("Logic Factory", 			visualBuild("Logic Factory", colors.Gray), 				80, null);
+		this.SurfaceMetroplex 					= facilitySurfaceUsable("Metroplex", 				visualBuild("Metroplex", colors.Gray), 					200, null);
+		this.SurfaceObservationInstallation 	= facilitySurfaceUsable("Observation Installation", visualBuild("Observation Installation", colors.Gray), 	40, null);
+		this.SurfacePlanetaryTractorBeam 		= facilitySurfaceUsable("Tractor Beam", 			visualBuild("Tractor Beam", colors.Gray), 				50, null);
+		this.SurfaceResearchCampus 				= facilitySurfaceUsable("Research Campus", 			visualBuild("Research Campus", colors.Gray), 			160, null);
+		this.SurfaceShield1SurfaceShield 		= facilitySurfaceUsable("Surface Shield", 			visualBuild("Surface Shield", colors.Gray), 			100, null);
+		this.SurfaceShield2SurfaceMegaShield 	= facilitySurfaceUsable("Surface Mega-Shield",		visualBuild("Surface Mega-Shield", colors.Gray), 		180, null);
+		this.SurfaceTerraforming 				= facilitySurfaceUsable("Terraforming", 			visualBuild("Terraforming", colors.Gray), 				50, null);
+		this.SurfaceXenoArchaeologicalDig 		= facilitySurfaceUsable("Xeno Archaeological Dig", 	visualBuild("Xeno Archaeological Dig", colors.Gray), 	50, null);
 
 		// Default tech.
 
@@ -580,7 +581,7 @@ class BuildableDefnsLegacy
 		(
 			"Laboratory",
 			visualBuild("Laboratory", colors.Blue),
-			30,
+			50,
 			effectResourcesAdd( [ new Resource("Research", 1) ] )
 		);
 
@@ -588,7 +589,7 @@ class BuildableDefnsLegacy
 		(
 			"Transport Tubes",
 			visualBuild("Transport", colors.GrayDark),
-			15,
+			10,
 			effectNone
 		);
 

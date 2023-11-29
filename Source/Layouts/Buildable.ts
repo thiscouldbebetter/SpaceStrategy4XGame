@@ -29,7 +29,12 @@ class Buildable implements EntityProperty<Buildable>
 		);
 	}
 
-	static fromDefnNameAndPos(defnName: string, pos: Coords): Buildable
+	static fromDefnNameAndPosComplete(defnName: string, pos: Coords): Buildable
+	{
+		return new Buildable(defnName, pos, true, false);
+	}
+
+	static fromDefnNameAndPosIncomplete(defnName: string, pos: Coords): Buildable
 	{
 		return new Buildable(defnName, pos, false, false);
 	}

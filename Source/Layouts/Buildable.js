@@ -13,7 +13,10 @@ class Buildable {
         false // isAutomated
         );
     }
-    static fromDefnNameAndPos(defnName, pos) {
+    static fromDefnNameAndPosComplete(defnName, pos) {
+        return new Buildable(defnName, pos, true, false);
+    }
+    static fromDefnNameAndPosIncomplete(defnName, pos) {
         return new Buildable(defnName, pos, false, false);
     }
     static ofEntity(entity) {

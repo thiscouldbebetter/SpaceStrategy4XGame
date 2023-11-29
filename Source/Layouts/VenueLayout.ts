@@ -141,7 +141,7 @@ class VenueLayout implements Venue
 
 				var terrainAtCursor = layout.map.terrainAtCursor();
 
-				var isSurface = (terrainAtCursor.name != "Orbit");
+				var isSurface = terrainAtCursor.isSurface();
 				if (isSurface)
 				{
 					var map = layout.map;
@@ -291,7 +291,7 @@ class VenueLayout implements Venue
 
 						var shipBuilder = new ShipBuilder();
 						var shipBuilderAsControl =
-							shipBuilder.toControl(universe, dialogSize, universe.venueCurrent() );
+							shipBuilder.toControl(universe, displaySize, universe.venueCurrent() );
 						var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
 						universe.venueTransitionTo(shipBuilderAsVenue);
 					}

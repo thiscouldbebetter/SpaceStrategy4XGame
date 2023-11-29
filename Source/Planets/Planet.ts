@@ -74,7 +74,11 @@ class Planet extends Entity
 
 	// instance methods
 
-	cellPositionsAvailableToBuildOnSurface(universe: Universe): Coords[]
+	cellPositionsAvailableToBuildBuildableDefn
+	(
+		universe: Universe,
+		buildableDefn: BuildableDefn
+	): Coords[]
 	{
 		var returnValues = new Array<Coords>();
 
@@ -82,8 +86,6 @@ class Planet extends Entity
 		var layoutMap = layout.map;
 		var mapSizeInCells = layoutMap.sizeInCells;
 		var cellPosInCells = Coords.create();
-
-		var terrainSurface = layoutMap.terrainByName("Surface");
 
 		for (var y = 0; y < mapSizeInCells.y; y++)
 		{
@@ -94,7 +96,50 @@ class Planet extends Entity
 				cellPosInCells.x = x;
 
 				var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
-				var isSurface = (terrainAtPos == terrainSurface);
+				var canBuildableBeBuiltOnTerrain =
+					buildableDefn.isAllowedOnTerrain(terrainAtPos);
+
+				if (canBuildableBeBuiltOnTerrain)
+				{
+					var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
+
+					var isVacant = (bodyAtPos == null);
+
+					if (isVacant)
+					{
+						var bodiesNeighboring =
+							layoutMap.bodiesNeighboringPosInCells(cellPosInCells);
+						if (bodiesNeighboring.length > 0)
+						{
+							returnValues.push(cellPosInCells.clone());
+						}
+					}
+				}
+			}
+		}
+
+		return returnValues;		
+	}
+	
+	cellPositionsAvailableToBuildOnSurface(universe: Universe): Coords[]
+	{
+		var returnValues = new Array<Coords>();
+
+		var layout = this.layout(universe);
+		var layoutMap = layout.map;
+		var mapSizeInCells = layoutMap.sizeInCells;
+		var cellPosInCells = Coords.create();
+
+		for (var y = 0; y < mapSizeInCells.y; y++)
+		{
+			cellPosInCells.y = y;
+
+			for (var x = 0; x < mapSizeInCells.x; x++)
+			{
+				cellPosInCells.x = x;
+
+				var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
+				var isSurface = terrainAtPos.isSurface();
 
 				if (isSurface)
 				{
@@ -295,9 +340,14 @@ class Planet extends Entity
 
 	// Demographics.
 
+	populationAdd(universe: Universe, amountToAdd: number): void
+	{
+		this.demographics.populationAdd(universe, this, amountToAdd);
+	}
+	
 	populationIncrement(universe: Universe): void
 	{
-		this.demographics.populationIncrement(universe, this);
+		this.populationAdd(universe, 1);
 	}
 	
 	prosperityAccumulated(): number

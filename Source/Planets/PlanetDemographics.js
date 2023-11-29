@@ -12,10 +12,12 @@ class PlanetDemographics {
         var populationIdle = populationCurrent - populationOccupied;
         return populationIdle;
     }
-    populationIncrement(universe, planet) {
-        this.population++;
-        var populationIdle = this.populationIdle(universe, planet);
-        if (populationIdle == 1) {
+    populationAdd(universe, planet, amountToAdd) {
+        var populationIdleBefore = this.populationIdle(universe, planet);
+        this.population += amountToAdd;
+        var populationIdleAfter = this.populationIdle(universe, planet);
+        var populationIdleNet = populationIdleAfter - populationIdleBefore;
+        if (populationIdleNet == 1) {
             var buildableInProgress = planet.buildableInProgress(universe);
             if (buildableInProgress == null) {
                 var notification = new Notification2("Planet " + planet.name + " now has free population.", () => planet.jumpTo(universe));

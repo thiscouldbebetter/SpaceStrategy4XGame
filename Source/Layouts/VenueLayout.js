@@ -58,7 +58,7 @@ class VenueLayout {
             else {
                 var canBuildAtCursor = false;
                 var terrainAtCursor = layout.map.terrainAtCursor();
-                var isSurface = (terrainAtCursor.name != "Orbit");
+                var isSurface = terrainAtCursor.isSurface();
                 if (isSurface) {
                     var map = layout.map;
                     var neighboringBodies = map.bodiesNeighboringCursor();
@@ -131,7 +131,7 @@ class VenueLayout {
                     );
                     */
                     var shipBuilder = new ShipBuilder();
-                    var shipBuilderAsControl = shipBuilder.toControl(universe, dialogSize, universe.venueCurrent());
+                    var shipBuilderAsControl = shipBuilder.toControl(universe, displaySize, universe.venueCurrent());
                     var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
                     universe.venueTransitionTo(shipBuilderAsVenue);
                 }

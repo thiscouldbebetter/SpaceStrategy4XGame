@@ -28,19 +28,44 @@ class Planet extends Entity {
         );
     }
     // instance methods
+    cellPositionsAvailableToBuildBuildableDefn(universe, buildableDefn) {
+        var returnValues = new Array();
+        var layout = this.layout(universe);
+        var layoutMap = layout.map;
+        var mapSizeInCells = layoutMap.sizeInCells;
+        var cellPosInCells = Coords.create();
+        for (var y = 0; y < mapSizeInCells.y; y++) {
+            cellPosInCells.y = y;
+            for (var x = 0; x < mapSizeInCells.x; x++) {
+                cellPosInCells.x = x;
+                var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
+                var canBuildableBeBuiltOnTerrain = buildableDefn.isAllowedOnTerrain(terrainAtPos);
+                if (canBuildableBeBuiltOnTerrain) {
+                    var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
+                    var isVacant = (bodyAtPos == null);
+                    if (isVacant) {
+                        var bodiesNeighboring = layoutMap.bodiesNeighboringPosInCells(cellPosInCells);
+                        if (bodiesNeighboring.length > 0) {
+                            returnValues.push(cellPosInCells.clone());
+                        }
+                    }
+                }
+            }
+        }
+        return returnValues;
+    }
     cellPositionsAvailableToBuildOnSurface(universe) {
         var returnValues = new Array();
         var layout = this.layout(universe);
         var layoutMap = layout.map;
         var mapSizeInCells = layoutMap.sizeInCells;
         var cellPosInCells = Coords.create();
-        var terrainSurface = layoutMap.terrainByName("Surface");
         for (var y = 0; y < mapSizeInCells.y; y++) {
             cellPosInCells.y = y;
             for (var x = 0; x < mapSizeInCells.x; x++) {
                 cellPosInCells.x = x;
                 var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
-                var isSurface = (terrainAtPos == terrainSurface);
+                var isSurface = terrainAtPos.isSurface();
                 if (isSurface) {
                     var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
                     var isVacant = (bodyAtPos == null);
@@ -149,8 +174,11 @@ class Planet extends Entity {
         return returnValue;
     }
     // Demographics.
+    populationAdd(universe, amountToAdd) {
+        this.demographics.populationAdd(universe, this, amountToAdd);
+    }
     populationIncrement(universe) {
-        this.demographics.populationIncrement(universe, this);
+        this.populationAdd(universe, 1);
     }
     prosperityAccumulated() {
         return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;

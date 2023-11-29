@@ -1,22 +1,22 @@
 "use strict";
 class TechnologyResearcher {
-    constructor(factionName, nameOfTechnologyBeingResearched, researchAccumulated, namesOfTechnologiesKnown) {
+    constructor(factionName, technologyBeingResearchedName, researchAccumulated, technologiesKnownNames) {
         this.factionName = factionName;
-        this.nameOfTechnologyBeingResearched = nameOfTechnologyBeingResearched;
+        this.technologyBeingResearchedName = technologyBeingResearchedName;
         this.researchAccumulated = researchAccumulated;
-        this.namesOfTechnologiesKnown = namesOfTechnologiesKnown;
+        this.technologiesKnownNames = technologiesKnownNames;
         this.name = this.factionName + " Research";
     }
     static default() {
-        return new TechnologyResearcher("[factionName]", null, // nameOfTechnologyBeingResearched
+        return new TechnologyResearcher("[factionName]", null, // technologyBeingResearchedName
         0, // researchAccumulated
         []);
     }
     buildablesAvailable(world) {
         var returnValues = [];
         var technologiesByName = world.technologyGraph.technologiesByName;
-        for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++) {
-            var technologyName = this.namesOfTechnologiesKnown[i];
+        for (var i = 0; i < this.technologiesKnownNames.length; i++) {
+            var technologyName = this.technologiesKnownNames[i];
             var technology = technologiesByName.get(technologyName);
             var technologyBuildables = technology.buildablesEnabled(world);
             returnValues.push(...technologyBuildables);
@@ -60,9 +60,7 @@ class TechnologyResearcher {
             this.researchAccumulated += amountToIncrement;
             var researchRequired = technologyBeingResearched.researchRequired;
             if (this.researchAccumulated >= researchRequired) {
-                this.namesOfTechnologiesKnown.push(this.nameOfTechnologyBeingResearched);
-                this.nameOfTechnologyBeingResearched = null;
-                this.researchAccumulated = 0;
+                this.technologyBeingResearchedLearn();
                 var technologyResearcher = this;
                 var notification = new Notification2("The " + faction.name + " have discovered the technology of " + technologyBeingResearched.name + ".", () => {
                     var session = technologyResearcher.toSession(world.technologyGraph);
@@ -95,8 +93,8 @@ class TechnologyResearcher {
     }
     technologiesKnown(world) {
         var returnValues = [];
-        for (var i = 0; i < this.namesOfTechnologiesKnown.length; i++) {
-            var techName = this.namesOfTechnologiesKnown[i];
+        for (var i = 0; i < this.technologiesKnownNames.length; i++) {
+            var techName = this.technologiesKnownNames[i];
             var technology = world.technologyGraph.technologyByName(techName);
             returnValues.push(technology);
         }
@@ -104,19 +102,37 @@ class TechnologyResearcher {
     }
     technologyBeingResearched(world) {
         var technologyGraph = world.technologyGraph;
-        var returnValue = technologyGraph.technologyByName(this.nameOfTechnologyBeingResearched);
+        var returnValue = technologyGraph.technologyByName(this.technologyBeingResearchedName);
         return returnValue;
+    }
+    technologyBeingResearchedLearn() {
+        if (this.technologyBeingResearched != null) {
+            this.technologyLearnByName(this.technologyBeingResearched.name);
+            this.technologyBeingResearchedSet(null);
+        }
+        return this;
+    }
+    technologyBeingResearchedSet(value) {
+        this.technologyBeingResearchedName =
+            (value == null ? null : value.name);
+        this.researchAccumulated = 0;
+        return this;
+    }
+    technologyBeingResearcedSetToFirstAvailable(world) {
+        var technologyToResearch = this.technologiesAvailableForResearch(world)[0];
+        this.technologyBeingResearchedSet(technologyToResearch);
+        return technologyToResearch;
     }
     technologyIsAvailableForResearch(technologyToCheck) {
         var returnValue = false;
         var technologyToCheckName = technologyToCheck.name;
-        var isAlreadyKnown = (this.namesOfTechnologiesKnown.indexOf(technologyToCheckName) >= 0);
+        var isAlreadyKnown = (this.technologiesKnownNames.indexOf(technologyToCheckName) >= 0);
         if (isAlreadyKnown == false) {
             var prerequisites = technologyToCheck.namesOfPrerequisiteTechnologies;
             var areAllPrerequisitesKnownSoFar = true;
             for (var p = 0; p < prerequisites.length; p++) {
                 var prerequisite = prerequisites[p];
-                var isPrerequisiteKnown = (this.namesOfTechnologiesKnown.indexOf(prerequisite) >= 0);
+                var isPrerequisiteKnown = (this.technologiesKnownNames.indexOf(prerequisite) >= 0);
                 if (isPrerequisiteKnown == false) {
                     areAllPrerequisitesKnownSoFar = false;
                     break;
@@ -130,13 +146,19 @@ class TechnologyResearcher {
     }
     technologyIsKnown(technologyToCheck) {
         var technologyToCheckName = technologyToCheck.name;
-        var isKnown = this.namesOfTechnologiesKnown.some(x => x == technologyToCheckName);
+        var isKnown = this.technologiesKnownNames.some(x => x == technologyToCheckName);
         return isKnown;
+    }
+    technologyLearnByName(technologyToLearnName) {
+        if (technologyToLearnName != null) {
+            this.technologiesKnownNames.push(technologyToLearnName);
+        }
+        return this;
     }
     technologyResearch(technologyToResearch) {
         var isAvailable = this.technologyIsAvailableForResearch(technologyToResearch);
         if (isAvailable) {
-            this.nameOfTechnologyBeingResearched = technologyToResearch.name;
+            this.technologyBeingResearchedSet(technologyToResearch);
         }
         else {
             throw Error("Technology not available for research!");

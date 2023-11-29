@@ -113,7 +113,6 @@ class WorldExtended extends World
 		var technologyGraph =
 			// TechnologyGraph.demo(mapCellSizeInPixels);
 			TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
-		var technologiesFree = technologyGraph.technologiesFree();
 
 		var viewDimension = viewSize.y;
 
@@ -139,8 +138,8 @@ class WorldExtended extends World
 		(
 			universe,
 			network, 
-			technologiesFree,
-			buildableDefns._All,
+			technologyGraph,
+			buildableDefns,
 			deviceDefnsByName,
 			factionCount,
 			factionDefnNameForPlayer
@@ -188,8 +187,8 @@ class WorldExtended extends World
 	(
 		universe: Universe,
 		network: Network2,
-		technologiesFree: Technology[],
-		buildableDefns: BuildableDefn[],
+		technologyGraph: TechnologyGraph,
+		buildableDefns: BuildableDefnsLegacy,
 		deviceDefnsByName: Map<string, DeviceDefn>,
 		factionCount: number,
 		factionDefnNameForPlayer: string
@@ -204,9 +203,9 @@ class WorldExtended extends World
 			"WorldDummy", // name
 			DateTime.now(), // dateCreated
 			[], // activityDefns
-			buildableDefns,
+			buildableDefns._All,
 			[], // deviceDefns
-			null, // technologyGraph
+			technologyGraph,
 			network, // network
 			factions,
 			ships, // ships
@@ -259,7 +258,8 @@ class WorldExtended extends World
 				network,
 				colorsForFactions,
 				factionDefnsToChooseFrom,
-				technologiesFree,
+				technologyGraph,
+				buildableDefns,
 				deviceDefnsByName,
 				i,
 				ships
@@ -319,7 +319,8 @@ class WorldExtended extends World
 		network: Network2,
 		colorsForFactions: Color[],
 		factionDefnsToChooseFrom: FactionDefn[],
-		technologiesFree: Technology[],
+		technologyGraph: TechnologyGraph,
+		buildableDefns: BuildableDefnsLegacy,
 		deviceDefnsByName: Map<string, DeviceDefn>,
 		i: number,
 		ships: Ship[]
@@ -342,8 +343,8 @@ class WorldExtended extends World
 
 		while (factionHomeStarsystem == null)
 		{
-			factionHomeStarsystem =
-				network.nodes[starsystemIndex].starsystem;
+			var node = network.nodes[starsystemIndex];
+			factionHomeStarsystem = node.starsystem;
 
 			if (factionHomeStarsystem.planets.length == 0)
 			{
@@ -372,15 +373,49 @@ class WorldExtended extends World
 
 		var factionDiplomacy = FactionDiplomacy.fromFactionSelfName(factionName);
 
+		var technologiesKnown = technologyGraph.technologiesFree();
+		var technologiesKnownNames = technologiesKnown.map((x: Technology) => x.name);
+				
+		var factionTechnologyResearcher = new TechnologyResearcher
+		(
+			factionName,
+			null, // nameOfTechnologyBeingResearched,
+			0, // researchAccumulated
+			technologiesKnownNames
+		);
+		
+		if (WorldExtended.isDebuggingMode)
+		{
+			var technologiesToLearnNames =
+			[
+				"Orbital Structures",
+				"Interplanetary Exploration",
+				"Tonklin Diary",
+				"Xenobiology",
+				"Environmental Encapsulation",
+				"Spectral Analysis",
+				"Superconductivity",
+				"Spacetime Surfing"
+			];
+			
+			technologiesToLearnNames.forEach
+			(
+				x => factionTechnologyResearcher.technologyLearnByName(x)
+			);
+			
+			factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
+		}
+
 		var factionDefn = factionDefnsToChooseFrom[i];
 
 		var factionHomePlanet = WorldExtended.create_FactionsAndShips_1_1_HomePlanet
 		(
 			universe,
 			worldDummy,
+			buildableDefns,
 			factionHomeStarsystem,
 			factionName,
-			factionDefn
+			factionDefn,
 		);
 
 		var factionShips = WorldExtended.create_FactionsAndShips_1_2_Ships
@@ -405,14 +440,7 @@ class WorldExtended extends World
 			factionHomePlanet.name,
 			factionColor,
 			factionDiplomacy,
-			new TechnologyResearcher
-			(
-				factionName,
-				null, // nameOfTechnologyBeingResearched,
-				0, // researchAccumulated
-				// namesOfTechnologiesKnown
-				technologiesFree.map(x => x.name)
-			),
+			factionTechnologyResearcher,
 			[ factionHomePlanet ],
 			factionShips,
 			new FactionKnowledge
@@ -441,6 +469,7 @@ class WorldExtended extends World
 	(
 		universe: Universe,
 		worldDummy: WorldExtended,
+		buildableDefns: BuildableDefnsLegacy,
 		factionHomeStarsystem: Starsystem,
 		factionName: string,
 		factionDefn: FactionDefn
@@ -460,27 +489,64 @@ class WorldExtended extends World
 			factionHomePlanet.planetType.size.surfaceSizeInCells;
 		var offsetForSurface = 3;
 
-		var hubPos = factionHomePlanetSizeInCells.clone().half().floor().addXY(0, offsetForSurface);
-
-		var buildableDefnNames = [ "Colony Hub" ];
-		var buildablePositions =
+		var buildableDefnsToBuild =
 		[
-			hubPos
+			buildableDefns.SurfaceColonyHub
 		];
-
-		for (var i = 0; i < buildableDefnNames.length; i++)
+		
+		if (WorldExtended.isDebuggingMode)
 		{
-			var buildableDefnName = buildableDefnNames[i];
-			var buildablePos = buildablePositions[i];
-			var buildable = new Buildable(buildableDefnName, buildablePos, true, true);
-			var buildableAsEntity = buildable.toEntity(worldDummy);
+			var buildableDefnsForHeadStart =
+			[
+				buildableDefns.SurfaceAgriplot,
+				buildableDefns.SurfaceFactory,
+				buildableDefns.SurfaceLaboratory,
+				buildableDefns.OrbitalShipyard
+			];
+			
+			buildableDefnsToBuild.push(...buildableDefnsForHeadStart);
+			
+			factionHomePlanet.populationAdd
+			(
+				universe,
+				buildableDefnsForHeadStart.length + 1
+			);
 		}
+		
+		var factionHomePlanetLayoutMap =
+			factionHomePlanet.layout(universe).map;
 
-		var factionHomePlanetLayout = factionHomePlanet.layout(universe);
-		factionHomePlanetLayout.map.bodyAdd
-		(
-			buildableAsEntity
-		);
+		for (var i = 0; i < buildableDefnsToBuild.length; i++)
+		{
+			var buildableDefn = buildableDefnsToBuild[i];
+			var buildablePos: Coords;
+			if (i == 0)
+			{
+				buildablePos =
+					factionHomePlanetSizeInCells.clone().half().floor().addXY
+					(
+						0, offsetForSurface
+					);
+			}
+			else
+			{				
+				buildablePos =
+					factionHomePlanet.cellPositionsAvailableToBuildBuildableDefn
+					(
+						universe, buildableDefn
+					)[0];
+			}
+			
+			var buildable = Buildable.fromDefnNameAndPosComplete
+			(
+				buildableDefn.name,
+				buildablePos
+			);
+			
+			var buildableAsEntity = buildable.toEntity(worldDummy);
+			
+			factionHomePlanetLayoutMap.bodyAdd(buildableAsEntity);
+		}
 
 		return factionHomePlanet;
 	}

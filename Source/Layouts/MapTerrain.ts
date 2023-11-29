@@ -24,10 +24,15 @@ class MapTerrain
 		}
 		return MapTerrain._instances;
 	}
-
+	
 	static planet(cellSizeInPixels: Coords): MapTerrain[]
 	{
 		return MapTerrain.Instances(cellSizeInPixels)._Planet;
+	}
+
+	isSurface(): boolean
+	{
+		return MapTerrain.Instances(null).isTerrainSurface(this);
 	}
 }
 
@@ -100,6 +105,11 @@ class MapTerrain_Instances
 			this.SurfaceResearch,
 			this.SurfaceUnusable
 		];
+	}
+	
+	isTerrainSurface(terrainToCheck: MapTerrain): boolean
+	{
+		return (this._Surface.indexOf(terrainToCheck) >= 0);
 	}
 
 }

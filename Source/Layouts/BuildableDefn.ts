@@ -3,7 +3,7 @@ class BuildableDefn
 {
 	name: string;
 	isItem: boolean;
-	terrainNamesAllowed: string[];
+	terrainsAllowedNames: string[];
 	sizeInPixels: Coords;
 	visual: VisualBase;
 	industryToBuild: number;
@@ -14,7 +14,7 @@ class BuildableDefn
 	(
 		name: string,
 		isItem: boolean,
-		terrainNamesAllowed: string[],
+		terrainsAllowedNames: string[],
 		sizeInPixels: Coords,
 		visual: VisualBase,
 		industryToBuild: number,
@@ -24,7 +24,7 @@ class BuildableDefn
 	{
 		this.name = name;
 		this.isItem = isItem;
-		this.terrainNamesAllowed = terrainNamesAllowed;
+		this.terrainsAllowedNames = terrainsAllowedNames;
 		this.sizeInPixels = sizeInPixels;
 		this.visual = this.visualWrapWithOverlay(visual);
 		this.industryToBuild = industryToBuild;
@@ -69,7 +69,7 @@ class BuildableDefn
 	{
 		var returnValue = ArrayHelper.contains
 		(
-			this.terrainNamesAllowed, terrain.name
+			this.terrainsAllowedNames, terrain.name
 		);
 
 		return returnValue;

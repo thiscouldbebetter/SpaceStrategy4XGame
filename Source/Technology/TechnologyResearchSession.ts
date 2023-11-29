@@ -22,7 +22,7 @@ class TechnologyResearchSession
 
 	isTechnologyBeingResearched(): boolean
 	{
-		return (this.researcher.nameOfTechnologyBeingResearched != null);
+		return (this.researcher.technologyBeingResearchedName != null);
 	}
 
 	researchAccumulatedIncrement
@@ -60,7 +60,7 @@ class TechnologyResearchSession
 
 	technologyBeingResearched(): Technology
 	{
-		var techName = this.researcher.nameOfTechnologyBeingResearched;
+		var techName = this.researcher.technologyBeingResearchedName;
 		var returnValue = this.technologyGraph.technologyByName(techName);
 
 		return returnValue;
@@ -136,7 +136,7 @@ class TechnologyResearchSession
 			// items
 			DataBinding.fromContext
 			(
-				this.researcher.namesOfTechnologiesKnown
+				this.researcher.technologiesKnownNames
 			),
 			DataBinding.fromContext(null), // bindingForItemText
 			FontNameAndHeight.fromHeightInPixels(labelHeight)
@@ -201,7 +201,7 @@ class TechnologyResearchSession
 			DataBinding.fromContextAndGet
 			(
 				this.researcher,
-				(c: TechnologyResearcher) => c.nameOfTechnologyBeingResearched
+				(c: TechnologyResearcher) => c.technologyBeingResearchedName
 			),
 			fontNameAndHeight
 		);

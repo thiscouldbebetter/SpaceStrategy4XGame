@@ -4,12 +4,18 @@ class ShipBuilder
 	itemHolderShip: ItemHolder;
 	itemHolderShipyard: ItemHolder;
 	statusMessage: string;
+	
+	shipHullSizesAvailable: ShipHullSize[];
+	shipHullSizeSelected: ShipHullSize;
 
 	constructor()
 	{
 		this.itemHolderShip = ItemHolder.create();
 		this.itemHolderShipyard = ItemHolder.create();
 		this.statusMessage = "todo";
+		
+		this.shipHullSizesAvailable = ShipHullSize.Instances()._All;
+		this.shipHullSizeSelected = this.shipHullSizesAvailable[0];
 	}
 
 	// Controls.
@@ -27,15 +33,15 @@ class ShipBuilder
 		}
 
 		var margin = 8;
-		var fontHeight = margin;
+		var fontHeight = margin * 2;
 		var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
 		var buttonSize = Coords.fromXY(4, 2).multiplyScalar(fontHeight);
 		var labelHeight = margin * 3;
-		var columnWidth = margin * 10;
+		var columnWidth = margin * 20;
 		var listSize = Coords.fromXY
 		(
 			(size.x - margin * 3) / 2,
-			size.y - margin * 4 - buttonSize.y - fontHeight
+			size.y - margin * 5 - buttonSize.y - labelHeight * 2
 		);
 
 		var world = universe.world;
@@ -55,18 +61,53 @@ class ShipBuilder
 			alert("todo - remove");
 		};
 
-		var labelItemsAvailable = ControlLabel.from4Uncentered
+		var labelHullSize = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY(margin, margin), // pos
 			Coords.fromXY(listSize.x, labelHeight), // size
-			DataBinding.fromContext("ItemsAvailable:"),
+			DataBinding.fromContext("Hull Size:"),
+			font
+		);
+		
+		var selectHullSize = new ControlSelect
+		(
+			"selectHullSize",
+			Coords.fromXY(margin * 8, margin), // pos
+			Coords.fromXY(labelHeight * 3, labelHeight), // size
+			new DataBinding
+			(
+				this,
+				(c: ShipBuilder) => c.shipHullSizeSelected,
+				(c: ShipBuilder, v: ShipHullSize) => c.shipHullSizeSelected = v
+			), // valueSelected
+			DataBinding.fromContextAndGet
+			(
+				this,
+				(c: ShipBuilder) => c.shipHullSizesAvailable
+			), // options
+			DataBinding.fromGet
+			(
+				(c: ShipHullSize) => c
+			), // bindingForOptionValues,
+			DataBinding.fromGet
+			(
+				(c: ShipHullSize) => c.name
+			), // bindingForOptionText
+			font
+		);
+
+		var labelItemsAvailable = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin * 2 + labelHeight), // pos
+			Coords.fromXY(listSize.x, labelHeight), // size
+			DataBinding.fromContext("Items Available:"),
 			font
 		);
 
 		var listItemsAvailable = ControlList.from10
 		(
 			"listItemsAvailable",
-			Coords.fromXY(margin, margin * 2), // pos
+			Coords.fromXY(margin, margin * 3 + labelHeight * 2), // pos
 			listSize.clone(),
 			DataBinding.fromContextAndGet
 			(
@@ -92,7 +133,11 @@ class ShipBuilder
 
 		var labelShipItems = ControlLabel.from4Uncentered
 		(
-			Coords.fromXY(size.x - margin - listSize.x, margin), // pos
+			Coords.fromXY
+			(
+				size.x - margin - listSize.x,
+				margin * 2 + labelHeight
+			), // pos
 			Coords.fromXY(columnWidth, labelHeight), // size
 			DataBinding.fromContext("Items to Build into Ship:"),
 			font
@@ -120,7 +165,7 @@ class ShipBuilder
 			Coords.fromXY
 			(
 				size.x - margin - listSize.x,
-				margin * 2
+				margin * 3 + labelHeight * 2
 			), // pos
 			listSize.clone(),
 			DataBinding.fromContextAndGet
@@ -163,8 +208,14 @@ class ShipBuilder
 
 		var infoStatus = ControlLabel.from4CenteredHorizontally
 		(
-			Coords.fromXY(size.x / 2, size.y - margin * 2 - buttonSize.y), // pos
-			Coords.fromXY(size.x, fontHeight), // size
+			Coords.fromXY
+			(
+				0, size.y - margin * 2 - buttonSize.y
+			), // pos
+			Coords.fromXY
+			(
+				size.x, fontHeight
+			), // size
 			DataBinding.fromContextAndGet(this, c => c.statusMessage),
 			font
 		);
@@ -189,6 +240,8 @@ class ShipBuilder
 			size.clone(),
 			// children
 			[
+				labelHullSize,
+				selectHullSize,
 				labelItemsAvailable,
 				listItemsAvailable,
 				buttonAdd,
@@ -207,4 +260,63 @@ class ShipBuilder
 
 		return returnValue;
 	}
+}
+
+class ShipHullSize
+{
+	name: string;
+	capacity: number;
+	
+	constructor(name: string, capacity: number)
+	{
+		this.name = name;
+		this.capacity = capacity;
+	}
+	
+	static _instances: ShipHullSize_Instances;
+	static Instances(): ShipHullSize_Instances
+	{
+		if (ShipHullSize._instances == null)
+		{
+			ShipHullSize._instances = new ShipHullSize_Instances();
+		}
+		return ShipHullSize._instances;
+	}
+
+	static byName(name: string): ShipHullSize
+	{
+		return ShipHullSize.Instances().byName(name);
+	}
+}
+
+class ShipHullSize_Instances
+{
+	Small: ShipHullSize;
+	Medium: ShipHullSize;
+	Large: ShipHullSize;
+	Enormous: ShipHullSize;
+
+	_All: ShipHullSize[];
+	
+	constructor()
+	{
+		this.Small = new ShipHullSize("Small", 10);
+		this.Medium = new ShipHullSize("Medium", 20);
+		this.Large = new ShipHullSize("Large", 30);
+		this.Enormous = new ShipHullSize("Enormous", 40);
+		
+		this._All =
+		[
+			this.Small,
+			this.Medium,
+			this.Large,
+			this.Enormous
+		];
+	}
+	
+	byName(name: string): ShipHullSize
+	{
+		return this._All.find(x => x.name == name);
+	}
+	
 }

@@ -10,7 +10,7 @@ class TechnologyResearchSession {
         return returnValue;
     }
     isTechnologyBeingResearched() {
-        return (this.researcher.nameOfTechnologyBeingResearched != null);
+        return (this.researcher.technologyBeingResearchedName != null);
     }
     researchAccumulatedIncrement(universe, world, faction, amountToIncrement) {
         this.researcher.researchAccumulatedIncrement(universe, world, faction, amountToIncrement);
@@ -30,7 +30,7 @@ class TechnologyResearchSession {
         return returnValue;
     }
     technologyBeingResearched() {
-        var techName = this.researcher.nameOfTechnologyBeingResearched;
+        var techName = this.researcher.technologyBeingResearchedName;
         var returnValue = this.technologyGraph.technologyByName(techName);
         return returnValue;
     }
@@ -68,7 +68,7 @@ class TechnologyResearchSession {
         var listTechnologiesKnown = ControlList.from6("listTechnologiesKnown", Coords.fromXY(margin, listPosY), // pos
         listSize, 
         // items
-        DataBinding.fromContext(this.researcher.namesOfTechnologiesKnown), DataBinding.fromContext(null), // bindingForItemText
+        DataBinding.fromContext(this.researcher.technologiesKnownNames), DataBinding.fromContext(null), // bindingForItemText
         FontNameAndHeight.fromHeightInPixels(labelHeight));
         var labelTechnologiesAvailable = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + listSize.x, margin * 2 + rowHeight * 3), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
@@ -89,7 +89,7 @@ class TechnologyResearchSession {
         fontNameAndHeight);
         var textTechnologyBeingResearched = ControlLabel.from4Uncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-        DataBinding.fromContextAndGet(this.researcher, (c) => c.nameOfTechnologyBeingResearched), fontNameAndHeight);
+        DataBinding.fromContextAndGet(this.researcher, (c) => c.technologyBeingResearchedName), fontNameAndHeight);
         var labelResearchAccumulated = ControlLabel.from4Uncentered(Coords.fromXY(margin, listPosY + listSize.y + margin + labelHeight), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Research Accumulated:"), // text

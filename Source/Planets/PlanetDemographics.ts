@@ -21,12 +21,18 @@ class PlanetDemographics
 		return populationIdle;
 	}
 
-	populationIncrement(universe: Universe, planet: Planet): number
+	populationAdd(universe: Universe, planet: Planet, amountToAdd: number): number
 	{
-		this.population++;
+		var populationIdleBefore = this.populationIdle(universe, planet);
 
-		var populationIdle = this.populationIdle(universe, planet);
-		if (populationIdle == 1)
+		this.population += amountToAdd;
+
+		var populationIdleAfter = this.populationIdle(universe, planet);
+		
+		var populationIdleNet =
+			populationIdleAfter - populationIdleBefore;
+		
+		if (populationIdleNet == 1)
 		{
 			var buildableInProgress = planet.buildableInProgress(universe);
 			if (buildableInProgress == null)

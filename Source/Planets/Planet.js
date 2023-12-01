@@ -250,7 +250,7 @@ class Planet extends Entity {
             buildableAndProgress = "(building nothing)";
         }
         else {
-            var buildableDefn = buildable.defn(world);
+            var buildableDefn = buildable.defn;
             var industryAccumulated = this.industryAccumulatedQuantity();
             var industryRequired = buildableDefn.industryToBuild;
             buildableAndProgress =

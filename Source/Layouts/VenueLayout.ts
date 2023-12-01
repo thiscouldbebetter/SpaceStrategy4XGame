@@ -191,8 +191,7 @@ class VenueLayout implements Venue
 		var map = layout.map;
 		var buildableAtCursorEntity = map.bodyAtCursor();
 		var buildableAtCursor = Buildable.ofEntity(buildableAtCursorEntity);
-		var world = universe.world as WorldExtended;
-		var buildableAtCursorDefn = buildableAtCursor.defn(world);
+		var buildableAtCursorDefn = buildableAtCursor.defn;
 		var terrainAtCursor = map.terrainAtCursor();
 
 		var displaySize = universe.display.sizeInPixels;
@@ -280,16 +279,8 @@ class VenueLayout implements Venue
 					}
 					else
 					{
-						/*
-						var venueBuildShip = VenueMessage.fromTextAcknowledgeAndSize
-						(
-							"todo - Build ship.",
-							cannotBuildAcknowledge,
-							dialogSize
-						);
-						*/
-
 						var shipBuilder = new ShipBuilder();
+						universe.venueCurrentRemove();
 						var shipBuilderAsControl =
 							shipBuilder.toControl(universe, displaySize, universe.venueCurrent() );
 						var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
@@ -425,10 +416,9 @@ class VenueLayout implements Venue
 			var buildableDefnSelected = venueLayout.buildableDefnSelected;
 			if (buildableDefnSelected != null)
 			{
-				var buildableDefnName = buildableDefnSelected.name;
 				var layout = venueLayout.layout;
 				var cursorPos = layout.map.cursor.pos;
-				var buildable = new Buildable(buildableDefnName, cursorPos.clone(), false, false);
+				var buildable = new Buildable(buildableDefnSelected, cursorPos.clone(), false, false);
 				var buildableEntity = buildable.toEntity(world);
 				this.modelParent.buildableEntityBuild(universe, buildableEntity);
 			}

@@ -76,7 +76,7 @@ class Shipyard implements EntityProperty<Shipyard>
 			shipName,
 			shipBodyDefn,
 			cellPosToLaunchAt,
-			faction.name,
+			faction,
 			items
 		);
 
@@ -87,6 +87,7 @@ class Shipyard implements EntityProperty<Shipyard>
 
 	// Controllable.
 
+	/*
 	toControl(uwpe: UniverseWorldPlaceEntities): ControlBase
 	{
 		var universe = uwpe.universe;
@@ -292,6 +293,7 @@ class Shipyard implements EntityProperty<Shipyard>
 
 		return returnValue;
 	}
+	*/
 
 	// EntityProperty.
 

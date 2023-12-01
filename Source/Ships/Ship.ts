@@ -14,7 +14,7 @@ class Ship extends Entity
 		name: string,
 		defn: BodyDefn,
 		pos: Coords,
-		factionName: string,
+		faction: Faction,
 		items: Item[]
 	)
 	{
@@ -32,7 +32,7 @@ class Ship extends Entity
 					)
 				),
 				new Controllable(Ship.toControl),
-				new Factionable(factionName),
+				new Factionable(faction.name),
 				ItemHolder.fromItems(items),
 				Killable.fromIntegrityMax(10),
 				Locatable.fromPos(pos),
@@ -43,9 +43,9 @@ class Ship extends Entity
 
 		this.defn = defn;
 
-		this.buildable(); // hack
+		// this.buildable(); // hack
 	}
-
+	
 	// static methods
 
 	static bodyDefnBuild(color: Color): BodyDefn
@@ -78,6 +78,7 @@ class Ship extends Entity
 
 	// instance methods
 
+	/*
 	private _buildable: Buildable;
 	buildable(): Buildable
 	{
@@ -85,12 +86,13 @@ class Ship extends Entity
 		{
 			this._buildable = new Buildable
 			(
-				this.defn.name, Coords.create(), false, false
+				"todo", Coords.create(), false, false
 			);
 			this.propertyAdd(this._buildable);
 		}
 		return this._buildable;
 	}
+	*/
 
 	collideWithEntity(uwpe: UniverseWorldPlaceEntities, target: Entity): void
 	{

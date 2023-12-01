@@ -19,21 +19,26 @@ class BuildableDefnsBasic {
         var effectTodo = effects.ThrowError;
         var facilityOrbital = (name, visual, industryToBuildAmount) => new BuildableDefn(name, false, // isItem
         terrainNamesOrbital, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, // effect
+        null, // categories
         null // entityModifyOnBuild
         );
         var facilitySurfaceUsable = (name, visual, industryToBuildAmount, effect) => new BuildableDefn(name, false, // isItem
-        terrainNamesSurfaceUsable, mapCellSizeInPixels, visual, industryToBuildAmount, effect, null // entityModifyOnBuild
+        terrainNamesSurfaceUsable, mapCellSizeInPixels, visual, industryToBuildAmount, effect, null, // categories
+        null // entityModifyOnBuild
         );
         var facilitySurfaceAnywhere = (name, visual, industryToBuildAmount) => new BuildableDefn(name, false, // isItem
-        terrainNamesSurface, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null // entityModifyOnBuild
+        terrainNamesSurface, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null, // categories
+        null // entityModifyOnBuild
         );
         var planetwideFocus = (name, visual) => new BuildableDefn(name, null, // isItem
         null, // terrainNames,
         mapCellSizeInPixels, visual, null, // industryToBuildAmount,
-        effectTodo, null // entityModifyOnBuild
+        effectTodo, null, // categories
+        null // entityModifyOnBuild
         );
         var shipComponent = (name, visual, industryToBuildAmount) => new BuildableDefn(name, true, // isItem
-        terrainNamesShip, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null // entityModifyOnBuild
+        terrainNamesShip, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null, // categories
+        null // entityModifyOnBuild
         );
         this.OrbitalCloak = facilityOrbital("Orbital Cloak", visualBuild("C", colors.Gray), 120);
         this.OrbitalDocks = facilityOrbital("Orbital Docks", visualBuild("D", colors.Gray), 120);
@@ -52,20 +57,24 @@ class BuildableDefnsBasic {
         this.ShipGeneratorIntermediate = shipComponent("Ship Generator, Intermediate", visualBuild("Generator", colors.Red), 60);
         this.ShipGeneratorAdvanced = shipComponent("Ship Generator, Advanced", visualBuild("Generator", colors.Green), 120);
         this.ShipGeneratorSupreme = shipComponent("Ship Generator, Supreme", visualBuild("Generator", colors.Blue), 240);
-        this.ShipHullEnormous = new BuildableDefn("Ship Hull, Enormous", true, // isItem // Is it, though?
+        this.ShipHullEnormous = new BuildableDefn("Ship Hull, Enormous", false, // isItem
         terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Blue), 240, null, // effect
+        null, // categories
         null // entityModifyOnBuild
         );
-        this.ShipHullLarge = new BuildableDefn("Ship Hull, Large", true, // isItem // Is it, though?
+        this.ShipHullLarge = new BuildableDefn("Ship Hull, Large", false, // isItem
         terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Green), 120, null, // effect
+        null, // categories
         null // entityModifyOnBuild
         );
-        this.ShipHullMedium = new BuildableDefn("Ship Hull, Medium", true, // isItem // Is it, though?
+        this.ShipHullMedium = new BuildableDefn("Ship Hull, Medium", false, // isItem
         terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Red), 60, null, // effect
+        null, // categories
         null // entityModifyOnBuild
         );
-        this.ShipHullSmall = new BuildableDefn("Ship Hull, Small", true, // isItem // Is it, though?
+        this.ShipHullSmall = new BuildableDefn("Ship Hull, Small", false, // isItem
         terrainNamesOrbital, mapCellSizeInPixels, visualBuild("Hull", colors.Gray), 30, null, // effect
+        null, // categories
         null // entityModifyOnBuild
         );
         this.ShipItemCloak = shipComponent("Cloak", visualBuild("Cloak", colors.Gray), 100);
@@ -86,7 +95,7 @@ class BuildableDefnsBasic {
         this.Shipyard = new BuildableDefn("Shipyard", false, // isItem
         terrainNamesOrbital, mapCellSizeInPixels, new VisualGroup([
             VisualRectangle.fromSizeAndColorFill(mapCellSizeInPixels, Color.byName("Orange"))
-        ]), 100, effectNone, 
+        ]), 100, effectNone, null, // categories
         // entityModifyOnBuild
         (entity) => entity.propertyAdd(new Shipyard()));
         this.SurfaceCloak = facilitySurfaceUsable("Surface Cloak", visualBuild("Cloak", colors.Gray), 120, effectNone);

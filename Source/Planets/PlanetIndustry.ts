@@ -55,7 +55,7 @@ class PlanetIndustry
 		{
 			var buildableInProgress =
 				Buildable.ofEntity(buildableEntityInProgress);
-			var buildableDefn = buildableInProgress.defn(world);
+			var buildableDefn = buildableInProgress.defn;
 			var industryToBuild = buildableDefn.industryToBuild;
 
 			var industryAccumulated =
@@ -93,7 +93,7 @@ class PlanetIndustry
 
 			var buildableInProgress =
 				Buildable.ofEntity(buildableEntityInProgress);
-			var buildableDefn = buildableInProgress.defn(world);
+			var buildableDefn = buildableInProgress.defn;
 			var industryToBuild = buildableDefn.industryToBuild;
 			if (industryAccumulated.quantity >= industryToBuild)
 			{

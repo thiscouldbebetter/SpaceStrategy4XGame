@@ -1,41 +1,36 @@
 "use strict";
 class Buildable {
-    constructor(defnName, pos, isComplete, isAutomated) {
-        this.defnName = defnName;
+    constructor(defn, pos, isComplete, isAutomated) {
+        this.defn = defn;
         var loc = Disposition.fromPos(pos);
         this._locatable = new Locatable(loc);
         this.isComplete = isComplete || false;
         this.isAutomated = isAutomated || false;
     }
-    static fromDefnName(defnName) {
-        return new Buildable(defnName, null, // pos
+    static fromDefn(defn) {
+        return new Buildable(defn, null, // pos
         false, // isComplete
         false // isAutomated
         );
     }
-    static fromDefnNameAndPosComplete(defnName, pos) {
-        return new Buildable(defnName, pos, true, false);
+    static fromDefnAndPosComplete(defn, pos) {
+        return new Buildable(defn, pos, true, false);
     }
-    static fromDefnNameAndPosIncomplete(defnName, pos) {
-        return new Buildable(defnName, pos, false, false);
+    static fromDefnAndPosIncomplete(defn, pos) {
+        return new Buildable(defn, pos, false, false);
     }
     static ofEntity(entity) {
         return entity.propertyByName(Buildable.name);
     }
-    defn(world) {
-        return world.buildableDefnByName(this.defnName);
-    }
     effectApply(uwpe) {
-        var defn = this.defn(uwpe.world);
-        defn.effectApply(uwpe);
+        this.defn.effectApply(uwpe);
     }
     locatable() {
         return this._locatable;
     }
     toEntity(world) {
         if (this._entity == null) {
-            var defn = this.defn(world);
-            this._entity = defn.buildableToEntity(this);
+            this._entity = this.defn.buildableToEntity(this);
         }
         return this._entity;
     }

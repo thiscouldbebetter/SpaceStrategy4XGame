@@ -107,6 +107,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effectTodo, // effect
+				null, // categories
 				null // entityModifyOnBuild
 			);
 
@@ -120,6 +121,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effect,
+				null, // categories
 				null // entityModifyOnBuild
 			);
 
@@ -133,6 +135,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effectTodo,
+				null, // categories
 				null // entityModifyOnBuild
 			);
 
@@ -146,6 +149,7 @@ class BuildableDefnsBasic
 				visual,
 				null, // industryToBuildAmount,
 				effectTodo,
+				null, // categories
 				null // entityModifyOnBuild
 			);
 
@@ -159,6 +163,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effectTodo,
+				null, // categories
 				null // entityModifyOnBuild
 			);
 
@@ -282,48 +287,52 @@ class BuildableDefnsBasic
 		this.ShipHullEnormous = new BuildableDefn
 		(
 			"Ship Hull, Enormous",
-			true, // isItem // Is it, though?
+			false, // isItem
 			terrainNamesOrbital,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Blue),
 			240,
 			null, // effect
+			null, // categories
 			null // entityModifyOnBuild
 		);
 
 		this.ShipHullLarge = new BuildableDefn
 		(
 			"Ship Hull, Large",
-			true, // isItem // Is it, though?
+			false, // isItem
 			terrainNamesOrbital,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Green),
 			120,
 			null, // effect
+			null, // categories
 			null // entityModifyOnBuild
 		);
 
 		this.ShipHullMedium = new BuildableDefn
 		(
 			"Ship Hull, Medium",
-			true, // isItem // Is it, though?
+			false, // isItem
 			terrainNamesOrbital,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Red),
 			60,
 			null, // effect
+			null, // categories
 			null // entityModifyOnBuild
 		);
 
 		this.ShipHullSmall = new BuildableDefn
 		(
 			"Ship Hull, Small",
-			true, // isItem // Is it, though?
+			false, // isItem
 			terrainNamesOrbital,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Gray),
 			30,
 			null, // effect
+			null, // categories
 			null // entityModifyOnBuild
 		);
 
@@ -447,6 +456,7 @@ class BuildableDefnsBasic
 			]),
 			100,
 			effectNone,
+			null, // categories
 			// entityModifyOnBuild
 			(entity: Entity) =>
 				entity.propertyAdd(new Shipyard() )

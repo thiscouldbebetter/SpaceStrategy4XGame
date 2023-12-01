@@ -1,12 +1,12 @@
 "use strict";
 class Ship extends Entity {
-    constructor(name, defn, pos, factionName, items) {
+    constructor(name, defn, pos, faction, items) {
         super(name, [
             Actor.default(),
             defn,
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Ship.toControl),
-            new Factionable(factionName),
+            new Factionable(faction.name),
             ItemHolder.fromItems(items),
             Killable.fromIntegrityMax(10),
             Locatable.fromPos(pos),
@@ -14,7 +14,7 @@ class Ship extends Entity {
             new TurnTaker()
         ]);
         this.defn = defn;
-        this.buildable(); // hack
+        // this.buildable(); // hack
     }
     // static methods
     static bodyDefnBuild(color) {
@@ -31,13 +31,22 @@ class Ship extends Entity {
         ]));
         return returnValue;
     }
-    buildable() {
-        if (this._buildable == null) {
-            this._buildable = new Buildable(this.defn.name, Coords.create(), false, false);
+    // instance methods
+    /*
+    private _buildable: Buildable;
+    buildable(): Buildable
+    {
+        if (this._buildable == null)
+        {
+            this._buildable = new Buildable
+            (
+                "todo", Coords.create(), false, false
+            );
             this.propertyAdd(this._buildable);
         }
         return this._buildable;
     }
+    */
     collideWithEntity(uwpe, target) {
         var ship = this;
         var universe = uwpe.universe;

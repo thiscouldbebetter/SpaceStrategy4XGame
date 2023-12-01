@@ -418,19 +418,7 @@ class WorldExtended extends World
 			factionDefn,
 		);
 
-		var factionShips = WorldExtended.create_FactionsAndShips_1_2_Ships
-		(
-			universe,
-			factionColor,
-			factionHomeStarsystem,
-			factionName,
-			deviceDefnsByName
-		);
-
-		ships.push(...factionShips);
-
-		var factionIntelligence =
-			(i == 0 ? null : factionIntelligenceAutomated);
+		var factionShips = new Array<Ship>();
 
 		var faction = new Faction
 		(
@@ -456,6 +444,22 @@ class WorldExtended extends World
 			),
 			factionIntelligence
 		);
+
+		WorldExtended.create_FactionsAndShips_1_2_Ships
+		(
+			universe,
+			factionColor,
+			factionHomeStarsystem,
+			faction,
+			deviceDefnsByName,
+			factionShips
+		);
+
+		ships.push(...factionShips);
+
+		var factionIntelligence =
+			(i == 0 ? null : factionIntelligenceAutomated);
+
 
 		worldDummy.factionAdd(faction);
 
@@ -537,9 +541,9 @@ class WorldExtended extends World
 					)[0];
 			}
 			
-			var buildable = Buildable.fromDefnNameAndPosComplete
+			var buildable = Buildable.fromDefnAndPosComplete
 			(
-				buildableDefn.name,
+				buildableDefn,
 				buildablePos
 			);
 			
@@ -556,11 +560,11 @@ class WorldExtended extends World
 		universe: Universe,
 		factionColor: Color,
 		factionHomeStarsystem: Starsystem,
-		factionName: string,
-		deviceDefnsByName: Map<string, DeviceDefn>
+		faction: Faction,
+		deviceDefnsByName: Map<string, DeviceDefn>,
+		factionShips: Ship[]
 	): Ship[]
 	{
-		var factionShips = [];
 		var shipDefn = Ship.bodyDefnBuild(factionColor);
 		var shipCount = (this.isDebuggingMode ? 2 : 0);
 		for (var s = 0; s < shipCount; s++)
@@ -582,7 +586,7 @@ class WorldExtended extends World
 				(
 					factionHomeStarsystem.size
 				),
-				factionName,
+				faction,
 				[
 					new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
 					new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
@@ -616,7 +620,9 @@ class WorldExtended extends World
 		var shipEnemy = new Ship
 		(
 			"ShipEnemy",
+			
 			factionEnemyShipDefn,
+			
 			Coords.create().randomize
 			(
 				universe.randomizer
@@ -630,7 +636,9 @@ class WorldExtended extends World
 			(
 				factionUserHomeStarsystem.size
 			),
-			factionEnemy.name,
+			
+			factionEnemy,
+			
 			[
 				new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
 				new Device(deviceDefnsByName.get("Ship Drive, Basic") ),

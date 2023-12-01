@@ -85,8 +85,7 @@ class VenueLayout {
         var map = layout.map;
         var buildableAtCursorEntity = map.bodyAtCursor();
         var buildableAtCursor = Buildable.ofEntity(buildableAtCursorEntity);
-        var world = universe.world;
-        var buildableAtCursorDefn = buildableAtCursor.defn(world);
+        var buildableAtCursorDefn = buildableAtCursor.defn;
         var terrainAtCursor = map.terrainAtCursor();
         var displaySize = universe.display.sizeInPixels;
         var containerSize = displaySize.clone().half();
@@ -122,15 +121,8 @@ class VenueLayout {
                     universe.venueJumpTo(VenueMessage.fromTextAcknowledgeAndSize("No free population yet.", cannotBuildAcknowledge, dialogSize));
                 }
                 else {
-                    /*
-                    var venueBuildShip = VenueMessage.fromTextAcknowledgeAndSize
-                    (
-                        "todo - Build ship.",
-                        cannotBuildAcknowledge,
-                        dialogSize
-                    );
-                    */
                     var shipBuilder = new ShipBuilder();
+                    universe.venueCurrentRemove();
                     var shipBuilderAsControl = shipBuilder.toControl(universe, displaySize, universe.venueCurrent());
                     var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
                     universe.venueTransitionTo(shipBuilderAsVenue);
@@ -188,10 +180,9 @@ class VenueLayout {
         var buttonBuild_Clicked = () => {
             var buildableDefnSelected = venueLayout.buildableDefnSelected;
             if (buildableDefnSelected != null) {
-                var buildableDefnName = buildableDefnSelected.name;
                 var layout = venueLayout.layout;
                 var cursorPos = layout.map.cursor.pos;
-                var buildable = new Buildable(buildableDefnName, cursorPos.clone(), false, false);
+                var buildable = new Buildable(buildableDefnSelected, cursorPos.clone(), false, false);
                 var buildableEntity = buildable.toEntity(world);
                 this.modelParent.buildableEntityBuild(universe, buildableEntity);
             }

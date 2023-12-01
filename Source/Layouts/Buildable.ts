@@ -1,7 +1,7 @@
 
 class Buildable implements EntityProperty<Buildable>
 {
-	defnName: string;
+	defn: BuildableDefn;
 	pos: Coords;
 	isComplete: boolean;
 	isAutomated: boolean;
@@ -9,34 +9,40 @@ class Buildable implements EntityProperty<Buildable>
 	_locatable: Locatable;
 	_visual: VisualBase;
 
-	constructor(defnName: string, pos: Coords, isComplete: boolean, isAutomated: boolean)
+	constructor
+	(
+		defn: BuildableDefn,
+		pos: Coords,
+		isComplete: boolean,
+		isAutomated: boolean
+	)
 	{
-		this.defnName = defnName;
+		this.defn = defn;
 		var loc = Disposition.fromPos(pos);
 		this._locatable = new Locatable(loc);
 		this.isComplete = isComplete || false;
 		this.isAutomated = isAutomated || false;
 	}
 
-	static fromDefnName(defnName: string): Buildable
-	{
+	static fromDefn(defn: BuildableDefn): Buildable
+	{		
 		return new Buildable
 		(
-			defnName,
+			defn,
 			null, // pos
 			false, // isComplete
 			false // isAutomated
 		);
 	}
 
-	static fromDefnNameAndPosComplete(defnName: string, pos: Coords): Buildable
+	static fromDefnAndPosComplete(defn: BuildableDefn, pos: Coords): Buildable
 	{
-		return new Buildable(defnName, pos, true, false);
+		return new Buildable(defn, pos, true, false);
 	}
 
-	static fromDefnNameAndPosIncomplete(defnName: string, pos: Coords): Buildable
+	static fromDefnAndPosIncomplete(defn: BuildableDefn, pos: Coords): Buildable
 	{
-		return new Buildable(defnName, pos, false, false);
+		return new Buildable(defn, pos, false, false);
 	}
 
 	static ofEntity(entity: Entity): Buildable
@@ -44,15 +50,9 @@ class Buildable implements EntityProperty<Buildable>
 		return entity.propertyByName(Buildable.name) as Buildable;
 	}
 
-	defn(world: WorldExtended): BuildableDefn
-	{
-		return world.buildableDefnByName(this.defnName);
-	}
-
 	effectApply(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var defn = this.defn(uwpe.world as WorldExtended);
-		defn.effectApply(uwpe);
+		this.defn.effectApply(uwpe);
 	}
 
 	locatable(): Locatable
@@ -65,8 +65,7 @@ class Buildable implements EntityProperty<Buildable>
 	{
 		if (this._entity == null)
 		{
-			var defn = this.defn(world);
-			this._entity = defn.buildableToEntity(this);
+			this._entity = this.defn.buildableToEntity(this);
 		}
 		return this._entity;
 	}

@@ -25,7 +25,7 @@ class PlanetIndustry {
         }
         else {
             var buildableInProgress = Buildable.ofEntity(buildableEntityInProgress);
-            var buildableDefn = buildableInProgress.defn(world);
+            var buildableDefn = buildableInProgress.defn;
             var industryToBuild = buildableDefn.industryToBuild;
             var industryAccumulated = this.planetIndustryAccumulated(planet).quantity;
             var resourcesAccumulatedOverNeeded = industryAccumulated + "/" + industryToBuild;
@@ -43,7 +43,7 @@ class PlanetIndustry {
             var industryProducedQuantity = planet.industryPerTurn(universe, world);
             industryAccumulated.addQuantity(industryProducedQuantity);
             var buildableInProgress = Buildable.ofEntity(buildableEntityInProgress);
-            var buildableDefn = buildableInProgress.defn(world);
+            var buildableDefn = buildableInProgress.defn;
             var industryToBuild = buildableDefn.industryToBuild;
             if (industryAccumulated.quantity >= industryToBuild) {
                 industryAccumulated.clear();

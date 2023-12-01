@@ -1,6 +1,6 @@
 "use strict";
 class BuildableDefn {
-    constructor(name, isItem, terrainsAllowedNames, sizeInPixels, visual, industryToBuild, effect, entityModifyOnBuild) {
+    constructor(name, isItem, terrainsAllowedNames, sizeInPixels, visual, industryToBuild, effect, categories, entityModifyOnBuild) {
         this.name = name;
         this.isItem = isItem;
         this.terrainsAllowedNames = terrainsAllowedNames;
@@ -8,6 +8,7 @@ class BuildableDefn {
         this.visual = this.visualWrapWithOverlay(visual);
         this.industryToBuild = industryToBuild;
         this.effect = effect;
+        this.categories = categories || new Array();
         this.entityModifyOnBuild = entityModifyOnBuild;
     }
     buildableToEntity(buildable) {
@@ -31,6 +32,9 @@ class BuildableDefn {
         var returnValue = ArrayHelper.contains(this.terrainsAllowedNames, terrain.name);
         return returnValue;
     }
+    nameAndCost() {
+        return this.name + " (" + this.industryToBuild + ")";
+    }
     visualWrapWithOverlay(visualToWrap) {
         var visualOverlayShadedRectangle = VisualRectangle.fromSizeAndColorFill(this.sizeInPixels, Color.byName("BlackHalfTransparent"));
         var visualOverlayText = VisualText.fromTextHeightAndColor("...", this.sizeInPixels.y / 2, Color.byName("White"));
@@ -51,6 +55,28 @@ class BuildableDefn {
     visualWrap_SelectChildNames(uwpe, d) {
         var buildable = Buildable.ofEntity(uwpe.entity2);
         return (buildable.isComplete ? ["Complete"] : ["Incomplete"]);
+    }
+}
+class BuildableCategory {
+    constructor(name) {
+        this.name = name;
+    }
+    static Instances() {
+        if (BuildableCategory._instances == null) {
+            BuildableCategory._instances = new BuildableCategory_Instances();
+        }
+        return BuildableCategory._instances;
+    }
+}
+class BuildableCategory_Instances {
+    constructor() {
+        this.ShipDrive = new BuildableCategory("Ship Drive");
+        this.ShipGenerator = new BuildableCategory("Ship Generator");
+        this.ShipItem = new BuildableCategory("Ship Item");
+        this.ShipSensor = new BuildableCategory("Ship Sensor");
+        this.ShipShield = new BuildableCategory("Ship Shield");
+        this.ShipStarlaneDrive = new BuildableCategory("Ship Starlane Drive");
+        this.ShipWeapon = new BuildableCategory("Ship Weapon");
     }
 }
 class BuildableEffect {

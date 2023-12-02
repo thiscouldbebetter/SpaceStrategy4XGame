@@ -5,8 +5,8 @@ class VenueLayout {
         this.modelParent = modelParent;
         this.layout = layout;
     }
-    buildableDefnsAllowedOnTerrain(buildableDefnsToCheck, terrain) {
-        var returnValues = buildableDefnsToCheck.filter(x => x.isAllowedOnTerrain(terrain));
+    buildableDefnsAllowedAtPosInCells(buildableDefnsToCheck, posInCells) {
+        var returnValues = buildableDefnsToCheck.filter(x => x.canBeBuiltOnMapAtPosInCells(this.layout.map, posInCells));
         return returnValues;
     }
     finalize(universe) {
@@ -160,10 +160,11 @@ class VenueLayout {
         var world = universe.world;
         var layout = this.layout;
         var map = layout.map;
+        var cursor = map.cursor;
+        var cursorPosInCells = cursor.pos;
         var faction = this.modelParent.faction(world);
         // todo - Allow ships to colonize planets with no faction.
         var buildableDefnsAvailable = (faction == null ? [] : faction.technologyResearcher.buildablesAvailable(world));
-        var terrain = map.terrainAtCursor();
         var displaySize = universe.display.sizeInPixels.clone().clearZ();
         var containerSize = displaySize.clone().half();
         var margin = Coords.fromXY(1, 1).multiplyScalar(8);
@@ -173,7 +174,7 @@ class VenueLayout {
         var buttonHeight = fontHeightInPixels * 2;
         var buttonSize = Coords.fromXY((columnWidth - margin.x) / 2, buttonHeight);
         var listSize = Coords.fromXY(columnWidth, containerSize.y - buttonHeight * 2 - margin.y * 4);
-        var listBuildables = ControlList.from8("listBuildables", Coords.fromXY(margin.x, margin.y * 2 + buttonSize.y), listSize, DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsAllowedOnTerrain(buildableDefnsAvailable, terrain)), DataBinding.fromGet((c) => c.name), //bindingForItemText,
+        var listBuildables = ControlList.from8("listBuildables", Coords.fromXY(margin.x, margin.y * 2 + buttonSize.y), listSize, DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsAllowedAtPosInCells(buildableDefnsAvailable, cursorPosInCells)), DataBinding.fromGet((c) => c.name), //bindingForItemText,
         fontNameAndHeight, new DataBinding(this, (c) => c.buildableDefnSelected, (c, v) => c.buildableDefnSelected = v), // bindingForItemSelected,
         DataBinding.fromGet((c) => c.name) // bindingForItemValue
         );

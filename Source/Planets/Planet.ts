@@ -95,9 +95,8 @@ class Planet extends Entity
 			{
 				cellPosInCells.x = x;
 
-				var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
 				var canBuildableBeBuiltOnTerrain =
-					buildableDefn.isAllowedOnTerrain(terrainAtPos);
+					buildableDefn.canBeBuiltOnMapAtPosInCells(layoutMap, cellPosInCells);
 
 				if (canBuildableBeBuiltOnTerrain)
 				{

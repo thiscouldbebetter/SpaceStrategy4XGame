@@ -3,7 +3,7 @@ class BuildableDefn
 {
 	name: string;
 	isItem: boolean;
-	terrainsAllowedNames: string[];
+	_canBeBuiltOnMapAtPosInCells: (map: MapLayout, posInCells: Coords) => boolean;
 	sizeInPixels: Coords;
 	visual: VisualBase;
 	industryToBuild: number;
@@ -15,7 +15,7 @@ class BuildableDefn
 	(
 		name: string,
 		isItem: boolean,
-		terrainsAllowedNames: string[],
+		canBeBuiltOnMapAtPosInCells: (map: MapLayout, posInCells: Coords) => boolean,
 		sizeInPixels: Coords,
 		visual: VisualBase,
 		industryToBuild: number,
@@ -26,7 +26,7 @@ class BuildableDefn
 	{
 		this.name = name;
 		this.isItem = isItem;
-		this.terrainsAllowedNames = terrainsAllowedNames;
+		this._canBeBuiltOnMapAtPosInCells = canBeBuiltOnMapAtPosInCells;
 		this.sizeInPixels = sizeInPixels;
 		this.visual = this.visualWrapWithOverlay(visual);
 		this.industryToBuild = industryToBuild;
@@ -63,19 +63,14 @@ class BuildableDefn
 		return returnValue;
 	}
 
+	canBeBuiltOnMapAtPosInCells(map: MapLayout, posInCells: Coords): boolean
+	{
+		return this._canBeBuiltOnMapAtPosInCells(map, posInCells);
+	}
+
 	effectApply(uwpe: UniverseWorldPlaceEntities): void
 	{
 		this.effect.apply(uwpe);
-	}
-
-	isAllowedOnTerrain(terrain: MapTerrain): boolean
-	{
-		var returnValue = ArrayHelper.contains
-		(
-			this.terrainsAllowedNames, terrain.name
-		);
-
-		return returnValue;
 	}
 
 	nameAndCost(): string

@@ -38,8 +38,7 @@ class Planet extends Entity {
             cellPosInCells.y = y;
             for (var x = 0; x < mapSizeInCells.x; x++) {
                 cellPosInCells.x = x;
-                var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
-                var canBuildableBeBuiltOnTerrain = buildableDefn.isAllowedOnTerrain(terrainAtPos);
+                var canBuildableBeBuiltOnTerrain = buildableDefn.canBeBuiltOnMapAtPosInCells(layoutMap, cellPosInCells);
                 if (canBuildableBeBuiltOnTerrain) {
                     var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
                     var isVacant = (bodyAtPos == null);

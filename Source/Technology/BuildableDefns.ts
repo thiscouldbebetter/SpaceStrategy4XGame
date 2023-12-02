@@ -68,13 +68,25 @@ class BuildableDefnsBasic
 	{
 		var fontHeight = mapCellSizeInPixels.y / 2;
 
+		var canBeBuiltNever = (m: MapLayout, p: Coords) => false;
+
 		var terrains = MapTerrain.Instances(mapCellSizeInPixels);
 
 		var terrainNamesOrbital = [ terrains.Orbit.name ];
-		var terrainNamesShip = [ terrains.Ship.name ];
+		var canBeBuiltInOrbit =
+			(m: MapLayout, p: Coords) =>
+				terrainNamesOrbital.indexOf(m.terrainAtPosInCells(p).name) >= 0;
+
 		var terrainNamesSurface = terrains._Surface.map(x => x.name);
+		var canBeBuiltOnSurfaceAnywhere =
+			(m: MapLayout, p: Coords) =>
+				terrainNamesSurface.indexOf(m.terrainAtPosInCells(p).name) >= 0;
+
 		var terrainNamesSurfaceUsable =
 			terrainNamesSurface.filter(x => x != terrains.SurfaceUnusable.name);
+		var canBeBuiltOnSurfaceUsable =
+			(m: MapLayout, p: Coords) =>
+				terrainNamesSurfaceUsable.indexOf(m.terrainAtPosInCells(p).name) >= 0;
 
 		var colors = Color.Instances();
 
@@ -102,7 +114,7 @@ class BuildableDefnsBasic
 			(
 				name,
 				false, // isItem
-				terrainNamesOrbital,
+				canBeBuiltInOrbit,
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
@@ -116,7 +128,7 @@ class BuildableDefnsBasic
 			(
 				name,
 				false, // isItem
-				terrainNamesSurfaceUsable,
+				canBeBuiltOnSurfaceUsable,
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
@@ -130,7 +142,7 @@ class BuildableDefnsBasic
 			(
 				name,
 				false, // isItem
-				terrainNamesSurface,
+				canBeBuiltOnSurfaceAnywhere,
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
@@ -158,7 +170,7 @@ class BuildableDefnsBasic
 			(
 				name,
 				true, // isItem
-				terrainNamesShip,
+				canBeBuiltNever,
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
@@ -288,7 +300,7 @@ class BuildableDefnsBasic
 		(
 			"Ship Hull, Enormous",
 			false, // isItem
-			terrainNamesOrbital,
+			canBeBuiltNever,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Blue),
 			240,
@@ -301,7 +313,7 @@ class BuildableDefnsBasic
 		(
 			"Ship Hull, Large",
 			false, // isItem
-			terrainNamesOrbital,
+			canBeBuiltNever,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Green),
 			120,
@@ -314,7 +326,7 @@ class BuildableDefnsBasic
 		(
 			"Ship Hull, Medium",
 			false, // isItem
-			terrainNamesOrbital,
+			canBeBuiltNever,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Red),
 			60,
@@ -327,7 +339,7 @@ class BuildableDefnsBasic
 		(
 			"Ship Hull, Small",
 			false, // isItem
-			terrainNamesOrbital,
+			canBeBuiltNever,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Gray),
 			30,
@@ -445,7 +457,7 @@ class BuildableDefnsBasic
 		(
 			"Shipyard",
 			false, // isItem
-			terrainNamesOrbital,
+			canBeBuiltInOrbit,
 			mapCellSizeInPixels,
 			new VisualGroup
 			([
@@ -470,12 +482,19 @@ class BuildableDefnsBasic
 			effectNone
 		);
 
-		this.SurfaceColonyHub = facilitySurfaceUsable
+		this.SurfaceColonyHub = new BuildableDefn
 		(
 			"Colony Hub",
+			false, // isItem
+			canBeBuiltInOrbit,
+			mapCellSizeInPixels,
 			visualBuild("Hub", colors.Gray),
 			30,
-			effectTodo // [ new Resource("Industry", 1), new Resource("Prosperity", 1) ] // resourcesPerTurn
+			effectTodo,
+			null, // categories
+			// entityModifyOnBuild
+			(entity: Entity) =>
+				entity.propertyAdd(new Shipyard() )
 		);
 
 		this.SurfaceFactory = facilitySurfaceUsable

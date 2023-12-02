@@ -73,7 +73,7 @@ class ShipBuilder {
                 var visual = new VisualNone();
                 var effect = BuildableEffect.Instances().None;
                 var buildableDefn = new BuildableDefn(shipName, false, // isItem
-                ["Orbit"], // terrainsAllowedNames
+                (m, p) => true, // hack - Should be orbit only.
                 Coords.zeroes(), // sizeInPixels
                 visual, industryToBuild, // industryToBuild
                 effect, null, // categories

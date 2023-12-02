@@ -255,9 +255,10 @@ class MapLayout
 					var bodyVisual = buildableDefn.visual;
 					bodyVisual.draw(universe, world, null, drawable, display);
 
-					var isBuildableAllowedOnTerrain =
-						ArrayHelper.contains(buildableDefn.terrainNamesAllowed, terrainName);
-					if (isBuildableAllowedOnTerrain == false)
+					var isBuildableAllowedOnCell =
+						buildableDefn.canBeBuiltOnMapAtPosInCells(map, cursorPos);
+
+					if (isBuildableAllowedOnCell == false)
 					{
 						var visualNotAllowed = VisualText.fromTextHeightAndColor
 						(

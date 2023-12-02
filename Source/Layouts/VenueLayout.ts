@@ -15,15 +15,15 @@ class VenueLayout implements Venue
 		this.layout = layout;
 	}
 
-	buildableDefnsAllowedOnTerrain
+	buildableDefnsAllowedAtPosInCells
 	(
 		buildableDefnsToCheck: BuildableDefn[],
-		terrain: MapTerrain
+		posInCells: Coords
 	): BuildableDefn[]
 	{
 		var returnValues = buildableDefnsToCheck.filter
 		(
-			x => x.isAllowedOnTerrain(terrain)
+			x => x.canBeBuiltOnMapAtPosInCells(this.layout.map, posInCells)
 		);
 
 		return returnValues;
@@ -358,6 +358,8 @@ class VenueLayout implements Venue
 		var world = universe.world as WorldExtended;
 		var layout = this.layout;
 		var map = layout.map;
+		var cursor = map.cursor;
+		var cursorPosInCells = cursor.pos;
 
 		var faction = this.modelParent.faction(world);
 		// todo - Allow ships to colonize planets with no faction.
@@ -365,8 +367,6 @@ class VenueLayout implements Venue
 		(
 			faction == null ? [] : faction.technologyResearcher.buildablesAvailable(world)
 		);
-
-		var terrain = map.terrainAtCursor();
 
 		var displaySize = universe.display.sizeInPixels.clone().clearZ();
 		var containerSize = displaySize.clone().half();
@@ -395,7 +395,7 @@ class VenueLayout implements Venue
 			(
 				this,
 				(c: VenueLayout) =>
-					c.buildableDefnsAllowedOnTerrain(buildableDefnsAvailable, terrain)
+					c.buildableDefnsAllowedAtPosInCells(buildableDefnsAvailable, cursorPosInCells)
 			),
 			DataBinding.fromGet
 			(

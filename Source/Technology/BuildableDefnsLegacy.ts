@@ -125,14 +125,25 @@ class BuildableDefnsLegacy
 	{
 		var fontHeight = mapCellSizeInPixels.y / 2;
 
+		var canBeBuiltNever = (m: MapLayout, p: Coords) => false;
+
 		var terrains = MapTerrain.Instances(mapCellSizeInPixels);
 
-		var terrainNamesNone = new Array<string>();
 		var terrainNamesOrbital = [ terrains.Orbit.name ];
-		var terrainNamesShip = [ terrains.Ship.name ];
+		var canBeBuiltInOrbit =
+			(m: MapLayout, p: Coords) =>
+				terrainNamesOrbital.indexOf(m.terrainAtPosInCells(p).name) >= 0;
+
 		var terrainNamesSurface = terrains._Surface.map(x => x.name);
+		var canBeBuiltOnSurfaceAnywhere =
+			(m: MapLayout, p: Coords) =>
+				terrainNamesSurface.indexOf(m.terrainAtPosInCells(p).name) >= 0;
+
 		var terrainNamesSurfaceUsable =
 			terrainNamesSurface.filter(x => x != terrains.SurfaceUnusable.name);
+		var canBeBuiltOnSurfaceUsable =
+			(m: MapLayout, p: Coords) =>
+				terrainNamesSurfaceUsable.indexOf(m.terrainAtPosInCells(p).name) >= 0;
 
 		var colors = Color.Instances();
 
@@ -175,7 +186,7 @@ class BuildableDefnsLegacy
 			(
 				name,
 				false, // isItem
-				terrainNamesOrbital,
+				canBeBuiltInOrbit,
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
@@ -189,7 +200,7 @@ class BuildableDefnsLegacy
 			(
 				name,
 				false, // isItem
-				terrainNamesSurfaceUsable,
+				canBeBuiltOnSurfaceUsable,
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
@@ -203,7 +214,7 @@ class BuildableDefnsLegacy
 			(
 				name,
 				false, // isItem
-				terrainNamesSurface,
+				canBeBuiltOnSurfaceAnywhere,
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
@@ -237,7 +248,7 @@ class BuildableDefnsLegacy
 			(
 				name,
 				true, // isItem
-				terrainNamesShip,
+				canBeBuiltNever,
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
@@ -428,7 +439,7 @@ class BuildableDefnsLegacy
 		(
 			"Small Ship Hull",
 			false, // isItem
-			terrainNamesNone,
+			canBeBuiltNever,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Gray),
 			30,
@@ -441,7 +452,7 @@ class BuildableDefnsLegacy
 		(
 			"Medium Ship Hull",
 			false, // isItem
-			terrainNamesNone,
+			canBeBuiltNever,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Red),
 			60,
@@ -454,7 +465,7 @@ class BuildableDefnsLegacy
 		(
 			"Large Ship Hull",
 			false, // isItem
-			terrainNamesNone,
+			canBeBuiltNever,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Green),
 			120,
@@ -467,7 +478,7 @@ class BuildableDefnsLegacy
 		(
 			"Enormous Ship Hull",
 			false, // isItem
-			terrainNamesNone,
+			canBeBuiltNever,
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Blue),
 			240,
@@ -588,7 +599,24 @@ class BuildableDefnsLegacy
 		this.SurfaceShield1SurfaceShield 		= facilitySurfaceUsable("Surface Shield", 			visualBuild("Surface Shield", colors.Gray), 			100, null);
 		this.SurfaceShield2SurfaceMegaShield 	= facilitySurfaceUsable("Surface Mega-Shield",		visualBuild("Surface Mega-Shield", colors.Gray), 		180, null);
 		this.SurfaceTerraforming 				= facilitySurfaceUsable("Terraforming", 			visualBuild("Terraforming", colors.Gray), 				50, null);
-		this.SurfaceXenoArchaeologicalDig 		= facilitySurfaceUsable("Xeno Archaeological Dig", 	visualBuild("Xeno Archaeological Dig", colors.Gray), 	50, null);
+
+		this.SurfaceXenoArchaeologicalDig = new BuildableDefn
+		(
+			"Xeno Archaeological Dig",
+			false, // isItem
+			(m: MapLayout, p: Coords) =>
+			{
+				//var cellAtPos = m.cellAtPosInCells(p);
+				return false; // todo - Build only on ruins.
+			},
+			mapCellSizeInPixels,
+			visualBuild("Xeno Archaeological Dig", colors.Gray),
+			50,
+			effectNone,
+			null, // categories
+			null // entityModifyOnBuild
+		);
+
 
 		// Default tech.
 
@@ -600,12 +628,17 @@ class BuildableDefnsLegacy
 			effectResourcesAdd( [ new Resource("Prosperity", 1) ] )
 		);
 
-		this.SurfaceColonyHub = facilitySurfaceUsable
+		this.SurfaceColonyHub = new BuildableDefn
 		(
 			"Colony Hub",
+			false, // isItem
+			canBeBuiltNever,
+			mapCellSizeInPixels,
 			visualBuild("Hub", colors.Gray),
 			30,
-			effectResourcesAdd( [ new Resource("Industry", 1), new Resource("Prosperity", 1) ] )
+			effectResourcesAdd( [ new Resource("Industry", 1), new Resource("Prosperity", 1) ] ),
+			null, // categories
+			null // entityModifyOnBuild
 		);
 
 		this.SurfaceFactory = facilitySurfaceUsable

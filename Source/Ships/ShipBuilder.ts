@@ -3,27 +3,27 @@ class ShipBuilder
 {
 	buildableDefnsAvailable: BuildableDefn[];
 	buildableDefnAvailableSelected: BuildableDefn;
-	
+
 	buildableDefnsToBuild: BuildableDefn[];
 	buildableDefnToBuildSelected: BuildableDefn;
-	
+
 	buildableDefnsForHulls: BuildableDefn[];
-	
+
 	shipHullSizesAvailable: ShipHullSize[];
 	shipHullSizeSelected: ShipHullSize;
 
 	statusMessage: string;
 
 	constructor()
-	{		
+	{
 		this.buildableDefnsAvailable = null;
 		this.buildableDefnAvailableSelected = null;
-		
+
 		this.buildableDefnsToBuild = [];
 		this.buildableDefnToBuildSelected = null;
-	
+
 		this.shipHullSizeSelected = null;
-		
+
 		this.statusMessage = "Select available components and click Add to add them to the ship plans."
 	}
 
@@ -163,7 +163,7 @@ class ShipBuilder
 				(
 					shipName,
 					false, // isItem
-					[ "Orbit" ], // terrainsAllowedNames
+					(m: MapLayout, p: Coords) => true, // hack - Should be orbit only.
 					Coords.zeroes(), // sizeInPixels
 					visual,
 					industryToBuild, // industryToBuild

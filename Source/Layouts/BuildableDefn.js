@@ -1,9 +1,9 @@
 "use strict";
 class BuildableDefn {
-    constructor(name, isItem, terrainsAllowedNames, sizeInPixels, visual, industryToBuild, effect, categories, entityModifyOnBuild) {
+    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effect, categories, entityModifyOnBuild) {
         this.name = name;
         this.isItem = isItem;
-        this.terrainsAllowedNames = terrainsAllowedNames;
+        this._canBeBuiltOnMapAtPosInCells = canBeBuiltOnMapAtPosInCells;
         this.sizeInPixels = sizeInPixels;
         this.visual = this.visualWrapWithOverlay(visual);
         this.industryToBuild = industryToBuild;
@@ -25,12 +25,11 @@ class BuildableDefn {
         }
         return returnValue;
     }
+    canBeBuiltOnMapAtPosInCells(map, posInCells) {
+        return this._canBeBuiltOnMapAtPosInCells(map, posInCells);
+    }
     effectApply(uwpe) {
         this.effect.apply(uwpe);
-    }
-    isAllowedOnTerrain(terrain) {
-        var returnValue = ArrayHelper.contains(this.terrainsAllowedNames, terrain.name);
-        return returnValue;
     }
     nameAndCost() {
         return this.name + " (" + this.industryToBuild + ")";

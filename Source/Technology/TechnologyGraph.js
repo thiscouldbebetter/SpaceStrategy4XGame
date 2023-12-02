@@ -132,7 +132,7 @@ class TechnologyGraph {
             t(InterplanetaryExploration, [OrbitalStructures], 50, [bds.ShipHull1Small, bds.ShipHull2Medium, bds.ShipGenerator1ProtonShaver]),
             t(TonklinDiary, [], 50, [bds.ShipDrive1TonklinMotor, bds.ShipSensor1TonklinFrequencyAnalyzer]),
             t(Xenobiology, [], 90, [bds.SurfaceXenoArchaeologicalDig]),
-            t(EnvironmentalEncapsulation, [Xenobiology], 50, [bds.SurfaceColonyHub, bds.ShipShield1IonWrap, bds.ShipItemColonizer]),
+            t(EnvironmentalEncapsulation, [Xenobiology], 50, [bds.ShipShield1IonWrap, bds.ShipItemColonizer]),
             t(SpectralAnalysis, [TonklinDiary], 120, [bds.ShipWeapon02FourierMissiles]),
             t(Superconductivity, [TonklinDiary], 100, [bds.SurfaceShield1SurfaceShield, bds.ShipWeapon01MassBarrageGun]),
             t(SpacetimeSurfing, [TonklinDiary, InterplanetaryExploration], 90, [bds.ShipStarlaneDrive1StarLaneDrive]),

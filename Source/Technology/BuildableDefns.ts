@@ -98,7 +98,7 @@ class BuildableDefnsBasic
 				(
 					mapCellSizeInPixels, color, null, null
 				),
-				VisualText.fromTextHeightAndColor
+				VisualText.fromTextImmediateHeightAndColor
 				(
 					labelText, fontHeight, colors.White
 				)
@@ -118,12 +118,16 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
-				effectTodo, // effect
+				effectTodo, // effectPerRound
+				null, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
 
-		var facilitySurfaceUsable = (name: string, visual: VisualBase, industryToBuildAmount: number, effect: BuildableEffect) =>
+		var facilitySurfaceUsable =
+		(
+			name: string, visual: VisualBase, industryToBuildAmount: number, effectPerRound: BuildableEffect
+		) =>
 			new BuildableDefn
 			(
 				name,
@@ -132,7 +136,8 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
-				effect,
+				effectPerRound,
+				null, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -147,6 +152,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effectTodo,
+				null, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -160,7 +166,8 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				null, // industryToBuildAmount,
-				effectTodo,
+				effectTodo, // effectPerRound
+				effectTodo, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -174,7 +181,8 @@ class BuildableDefnsBasic
 				mapCellSizeInPixels,
 				visual,
 				industryToBuildAmount,
-				effectTodo,
+				effectTodo, // effectPerRound
+				effectTodo, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -304,7 +312,8 @@ class BuildableDefnsBasic
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Blue),
 			240,
-			null, // effect
+			null, // effectPerRound
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -318,6 +327,7 @@ class BuildableDefnsBasic
 			visualBuild("Hull", colors.Green),
 			120,
 			null, // effect
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -331,6 +341,7 @@ class BuildableDefnsBasic
 			visualBuild("Hull", colors.Red),
 			60,
 			null, // effect
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -343,7 +354,8 @@ class BuildableDefnsBasic
 			mapCellSizeInPixels,
 			visualBuild("Hull", colors.Gray),
 			30,
-			null, // effect
+			null, // effectPerRound
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -468,6 +480,7 @@ class BuildableDefnsBasic
 			]),
 			100,
 			effectNone,
+			null, // effectDetails
 			null, // categories
 			// entityModifyOnBuild
 			(entity: Entity) =>
@@ -491,6 +504,7 @@ class BuildableDefnsBasic
 			visualBuild("Hub", colors.Gray),
 			30,
 			effectTodo,
+			null, // effectDetails
 			null, // categories
 			// entityModifyOnBuild
 			(entity: Entity) =>

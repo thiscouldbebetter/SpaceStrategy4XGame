@@ -100,6 +100,15 @@ function worldCreatorToControl(universe, worldCreator) {
     DataBinding.fromGet((c) => c.name), // bindingForOptionValues,
     DataBinding.fromGet((c) => c.name), // bindingForOptionText
     fontNameAndHeight);
+    var labelFactionColor = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 5 + controlHeight * 4), // pos
+    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Faction Color:"), fontNameAndHeight);
+    var selectFactionColor = new ControlSelect("selectFactionColor", Coords.fromXY(margin * 8, margin * 5 + controlHeight * 4), // pos
+    Coords.fromXY(controlHeight * 3, controlHeight), // size
+    new DataBinding(worldCreator, (c) => c.settings.factionColor, (c, v) => c.settings.factionColor = v), // valueSelected
+    DataBinding.fromContextAndGet(worldCreator, (c) => Faction.colors()), // options
+    DataBinding.fromGet((c) => c), // bindingForOptionValues,
+    DataBinding.fromGet((c) => c.name), // bindingForOptionText
+    fontNameAndHeight);
     var buttonCreate = new ControlButton("buttonCreate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Create", fontNameAndHeight, true, // hasBorder
     DataBinding.fromContextAndGet(worldCreator, (wc) => wc.settings.isValid(worldCreator)), // isEnabled
     () => universe.venueTransitionTo(worldCreator.venueWorldGenerate(universe)), false // canBeHeldDown
@@ -113,6 +122,8 @@ function worldCreatorToControl(universe, worldCreator) {
         numberFactionCount,
         labelFactionType,
         selectFactionType,
+        labelFactionColor,
+        selectFactionColor,
         buttonCreate
     ]);
     return returnControl;

@@ -7,7 +7,8 @@ class BuildableDefn
 	sizeInPixels: Coords;
 	visual: VisualBase;
 	industryToBuild: number;
-	effect: BuildableEffect;
+	effectPerRound: BuildableEffect;
+	effectDetails: BuildableEffect;
 	categories: BuildableCategory[];
 	entityModifyOnBuild: (entity: Entity) => void;
 
@@ -19,7 +20,8 @@ class BuildableDefn
 		sizeInPixels: Coords,
 		visual: VisualBase,
 		industryToBuild: number,
-		effect: BuildableEffect,
+		effectPerRound: BuildableEffect,
+		effectDetails: BuildableEffect,
 		categories: BuildableCategory[],
 		entityModifyOnBuild: (entity: Entity) => void
 	)
@@ -30,7 +32,8 @@ class BuildableDefn
 		this.sizeInPixels = sizeInPixels;
 		this.visual = this.visualWrapWithOverlay(visual);
 		this.industryToBuild = industryToBuild;
-		this.effect = effect;
+		this.effectPerRound = effectPerRound;
+		this.effectDetails = effectDetails;
 		this.categories = categories || new Array<BuildableCategory>();
 		this.entityModifyOnBuild = entityModifyOnBuild;
 	}
@@ -68,9 +71,9 @@ class BuildableDefn
 		return this._canBeBuiltOnMapAtPosInCells(map, posInCells);
 	}
 
-	effectApply(uwpe: UniverseWorldPlaceEntities): void
+	effectPerRoundApply(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.effect.apply(uwpe);
+		this.effectPerRound.apply(uwpe);
 	}
 
 	nameAndCost(): string
@@ -86,9 +89,24 @@ class BuildableDefn
 			Color.byName("BlackHalfTransparent")
 		);
 
-		var visualOverlayText = VisualText.fromTextHeightAndColor
+		var visualOverlayText = VisualText.fromTextBindingHeightAndColor
 		(
-			"...", this.sizeInPixels.y / 2, Color.byName("White")
+			DataBinding.fromGet
+			(
+				(c: UniverseWorldPlaceEntities) =>
+				{
+					var buildableProgress = "";
+					var venue = c.universe.venueCurrent() as VenueLayout;
+					var planet = venue.modelParent as Planet;
+					if (planet != null) // hack - Initially may be VenueFader.
+					{
+						buildableProgress = planet.industryBuildableProgress(c.universe);
+					}
+					return buildableProgress;
+				}
+			),
+			this.sizeInPixels.y / 2,
+			Color.byName("White")
 		);
 
 		var visualOverlayTextAndShade = new VisualGroup

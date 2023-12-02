@@ -22,8 +22,8 @@ class Buildable {
     static ofEntity(entity) {
         return entity.propertyByName(Buildable.name);
     }
-    effectApply(uwpe) {
-        this.defn.effectApply(uwpe);
+    effectPerRoundApply(uwpe) {
+        this.defn.effectPerRoundApply(uwpe);
     }
     locatable() {
         return this._locatable;

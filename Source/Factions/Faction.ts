@@ -12,6 +12,7 @@ class Faction implements EntityProperty<Faction>
 	ships: Ship[];
 	knowledge: FactionKnowledge;
 	intelligence: FactionIntelligence;
+	_visualsForShipsByHullSize: Map<ShipHullSize, VisualBase>;
 
 	notificationSession: NotificationSession;
 
@@ -32,7 +33,8 @@ class Faction implements EntityProperty<Faction>
 		planets: Planet[],
 		ships: Ship[],
 		knowledge: FactionKnowledge,
-		intelligence: FactionIntelligence
+		intelligence: FactionIntelligence,
+		visualsForShipsByHullSize: Map<ShipHullSize, VisualBase>
 	)
 	{
 		this.name = name;
@@ -46,6 +48,7 @@ class Faction implements EntityProperty<Faction>
 		this.ships = ships;
 		this.knowledge = knowledge;
 		this.intelligence = intelligence;
+		this._visualsForShipsByHullSize = visualsForShipsByHullSize; // todo
 
 		this.notificationSession = new NotificationSession(this.name, []);
 
@@ -71,8 +74,31 @@ class Faction implements EntityProperty<Faction>
 			new Array<Planet>(),
 			new Array<Ship>(),
 			FactionKnowledge.fromFactionSelfName(name),
-			null // intelligence
+			null, // intelligence
+			null // visuals
 		);
+	}
+
+	static _colors: Color[];
+	static colors(): Color[]
+	{
+		if (Faction._colors == null)
+		{
+			var colors = Color.Instances();
+
+			Faction._colors =
+			[
+				colors.Red,
+				colors.Orange,
+				colors.Yellow,
+				colors.Green,
+				colors.Blue,
+				colors.Cyan,
+				colors.Violet
+			];
+		}
+
+		return Faction._colors;
 	}
 
 	abilityCanBeUsed(world: WorldExtended): boolean
@@ -141,6 +167,11 @@ class Faction implements EntityProperty<Faction>
 	toString(): string
 	{
 		return this.name;
+	}
+
+	visualForShipWithHullSize(hullSize: ShipHullSize): VisualBase
+	{
+		return this._visualsForShipsByHullSize.get(hullSize);
 	}
 
 	// controls

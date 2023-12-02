@@ -113,7 +113,7 @@ class VisualStar {
             }
             shipFactionPrev = shipFaction;
         }
-        var visualText = VisualText.fromTextHeightAndColor(starsystem.name, radiusApparent, nodeColor);
+        var visualText = VisualText.fromTextImmediateHeightAndColor(starsystem.name, radiusApparent, nodeColor);
         drawablePosTransformed.overwriteWith(starsystemDrawPos);
         drawablePosTransformed.y += radiusApparent * 2;
         visualText.draw(uwpe.entitySet(drawableTransformed), display);

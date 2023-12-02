@@ -226,14 +226,10 @@ class VenueLayout implements Venue
 
 		// hack - Make this more dynamic.
 
-		var isShipyard = (buildableAtCursorDefn.name == "Shipyard");
-
-		if (isShipyard)
+		var effectDetails = buildableAtCursorDefn.effectDetails;
+		if (effectDetails != null)
 		{
-			var venueLayout = this;
-			var planet = venueLayout.modelParent as Planet;
-
-			var buttonBuildShip = ControlButton.from5
+			var buttonForEffect = ControlButton.from5
 			(
 				Coords.fromXY
 				(
@@ -241,57 +237,13 @@ class VenueLayout implements Venue
 					containerSize.y - (margin.y + buttonSize.y) * 3
 				), //pos,
 				buttonSize,
-				"Build Ship", // text,
+				effectDetails.name, // text,
 				fontNameAndHeight,
-				() => // click
-				{
-					var dialogSize = universe.display.sizeInPixels.clone().half();
-
-					var buildableEntityInProgress =
-						planet.buildableEntityInProgress(universe);
-
-					var cannotBuildAcknowledge =
-						() => universe.venuePrevJumpTo();
-
-					if (buildableEntityInProgress != null)
-					{
-						universe.venueJumpTo
-						(
-							VenueMessage.fromTextAcknowledgeAndSize
-							(
-								"Already building something.",
-								cannotBuildAcknowledge,
-								dialogSize
-							)
-						);
-					}
-					else if (planet.populationIdle(universe) == 0)
-					{
-						universe.venueJumpTo
-						(
-							VenueMessage.fromTextAcknowledgeAndSize
-							(
-								"No free population yet.",
-								cannotBuildAcknowledge,
-								dialogSize
-							)
-						);
-					}
-					else
-					{
-						var shipBuilder = new ShipBuilder();
-						universe.venueCurrentRemove();
-						var shipBuilderAsControl =
-							shipBuilder.toControl(universe, displaySize, universe.venueCurrent() );
-						var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
-						universe.venueTransitionTo(shipBuilderAsVenue);
-					}
-				}
+				() => effectDetails.apply(UniverseWorldPlaceEntities.fromUniverse(universe) )
 			);
 
-			childControls.push(buttonBuildShip);
-
-		} // end if shipyard
+			childControls.push(buttonForEffect);
+		}
 
 		var buttonDemolish = ControlButton.from5
 		(

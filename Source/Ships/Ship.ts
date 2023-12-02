@@ -42,8 +42,6 @@ class Ship extends Entity
 		);
 
 		this.defn = defn;
-
-		// this.buildable(); // hack
 	}
 	
 	// static methods
@@ -52,47 +50,19 @@ class Ship extends Entity
 	{
 		var scaleFactor = 10;
 
+		var visual = Ship.visualForColorAndScaleFactor(color, scaleFactor);
+
 		var returnValue = new BodyDefn
 		(
 			"Ship",
 			Coords.fromXY(1, 1).multiplyScalar(scaleFactor), // size
-			new VisualGroup
-			([
-				new VisualPolygon
-				(
-					new Path
-					([
-						Coords.fromXY(.5, 0).multiplyScalar(scaleFactor),
-						Coords.fromXY(-.5, .5).multiplyScalar(scaleFactor),
-						Coords.fromXY(-.5, -.5).multiplyScalar(scaleFactor),
-					]),
-					color,
-					null, // colorBorder?
-					false // shouldUseEntityOrientation
-				),
-			])
+			visual
 		);
 
 		return returnValue;
 	}
 
 	// instance methods
-
-	/*
-	private _buildable: Buildable;
-	buildable(): Buildable
-	{
-		if (this._buildable == null)
-		{
-			this._buildable = new Buildable
-			(
-				"todo", Coords.create(), false, false
-			);
-			this.propertyAdd(this._buildable);
-		}
-		return this._buildable;
-	}
-	*/
 
 	collideWithEntity(uwpe: UniverseWorldPlaceEntities, target: Entity): void
 	{
@@ -813,30 +783,27 @@ class Ship extends Entity
 
 	visual(world: WorldExtended): VisualBase
 	{
-		if (this._visual == null)
-		{
-			var shipColor = this.faction(world).color;
-			this._visual = Ship.visual(shipColor);
-		}
-
-		return this._visual;
+		return new VisualNone(); // todo
 	}
 
-	static visual(color: Color): VisualBase
+	static visualForColorAndScaleFactor(color: Color, scaleFactor: number): VisualBase
 	{
-		var shipSizeMultiplier = 4; // hack
+		var visual = new VisualGroup
+		([
+			new VisualPolygon
+			(
+				new Path
+				([
+					Coords.fromXY(.5, 0).multiplyScalar(scaleFactor),
+					Coords.fromXY(-.5, .5).multiplyScalar(scaleFactor),
+					Coords.fromXY(-.5, -.5).multiplyScalar(scaleFactor),
+				]),
+				color,
+				null, // colorBorder?
+				false // shouldUseEntityOrientation
+			),
+		]);
 
-		return new VisualPolygon
-		(
-			new Path
-			([
-				Coords.fromXY(0, 0).multiplyScalar(shipSizeMultiplier),
-				Coords.fromXY(.5, -1).multiplyScalar(shipSizeMultiplier),
-				Coords.fromXY(-.5, -1).multiplyScalar(shipSizeMultiplier)
-			]),
-			color,
-			null, // colorBorder
-			false // shouldUseEntityOrientation
-		);
+		return visual;
 	}
 }

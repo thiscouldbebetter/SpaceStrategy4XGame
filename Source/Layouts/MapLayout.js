@@ -125,7 +125,7 @@ class MapLayout {
                     bodyVisual.draw(universe, world, null, drawable, display);
                     var isBuildableAllowedOnCell = buildableDefn.canBeBuiltOnMapAtPosInCells(map, cursorPos);
                     if (isBuildableAllowedOnCell == false) {
-                        var visualNotAllowed = VisualText.fromTextHeightAndColor("X", this.cellSizeInPixels.y, Color.byName("Red"));
+                        var visualNotAllowed = VisualText.fromTextImmediateHeightAndColor("X", this.cellSizeInPixels.y, Color.byName("Red"));
                         visualNotAllowed.draw(uwpe, display);
                     }
                 }

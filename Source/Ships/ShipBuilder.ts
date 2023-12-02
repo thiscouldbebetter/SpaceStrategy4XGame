@@ -1,6 +1,8 @@
 
 class ShipBuilder
 {
+	shipName: string;
+
 	buildableDefnsAvailable: BuildableDefn[];
 	buildableDefnAvailableSelected: BuildableDefn;
 
@@ -16,6 +18,8 @@ class ShipBuilder
 
 	constructor()
 	{
+		this.shipName = "ShipTodo";
+
 		this.buildableDefnsAvailable = null;
 		this.buildableDefnAvailableSelected = null;
 
@@ -29,7 +33,7 @@ class ShipBuilder
 
 	industryToBuildTotal(): number
 	{
-		var sumSoFar = 0;
+		var sumSoFar = this.shipHullSizeSelected.industryToBuild;
 		this.buildableDefnsToBuild.forEach(x => sumSoFar += x.industryToBuild);
 		return sumSoFar;
 	}
@@ -92,7 +96,7 @@ class ShipBuilder
 		var listSize = Coords.fromXY
 		(
 			(size.x - margin * 3) / 2,
-			size.y - margin * 6 - buttonSize.y - labelHeight * 3
+			size.y - margin * 7 - buttonSize.y - labelHeight * 4
 		);
 
 		var back = () =>
@@ -103,7 +107,7 @@ class ShipBuilder
 		var build = () =>
 		{
 			var categories = BuildableCategory.Instances();
-			
+
 			var doesShipHaveAGenerator =
 				this.buildableDefnsToBuild.some
 				(
@@ -136,47 +140,70 @@ class ShipBuilder
 					"Also, a starlane drive is needed",
 					"to leave the home starsystem."
 				];
-				
+
 				var message = messageLines.join("\n");
-				
+
 				var venueToReturnTo = universe.venueCurrent();
 
 				var venue = VenueMessage.fromTextAndAcknowledge
 				(
 					message,
-					() => universe.venueTransitionTo(venueToReturnTo)
+					() => universe.venueJumpTo(venueToReturnTo)
 				);
-					
-				universe.venueTransitionTo(venue);
+
+				universe.venueJumpTo(venue);
 			}
 			else
 			{
-				var shipName = "ShipNameTodo"; // todo
-				
-				var industryToBuild = shipBuilder.industryToBuildTotal();
-				
-				var visual = new VisualNone();
-				
-				var effect = BuildableEffect.Instances().None;
+				var planet = (venuePrev as VenueLayout).modelParent as Planet;
+				var shipPosInCells =
+					planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
 
-				var buildableDefn = new BuildableDefn
+				var industryToBuild = shipBuilder.industryToBuildTotal();
+
+				var shipHullSize = shipBuilder.shipHullSizeSelected;
+				var visual = faction.visualForShipWithHullSize(shipHullSize);
+
+				var effects = BuildableEffect.Instances();
+				var effectNone = effects.None;
+				var effectDetails = new BuildableEffect
 				(
-					shipName,
+					"Leave Orbit",
+					0, // order
+					(uwpe: UniverseWorldPlaceEntities) =>
+					{
+						alert("todo - leave orbit")
+					}
+				);
+
+				var shipAsBuildableDefn = new BuildableDefn
+				(
+					this.shipName,
 					false, // isItem
 					(m: MapLayout, p: Coords) => true, // hack - Should be orbit only.
 					Coords.zeroes(), // sizeInPixels
 					visual,
 					industryToBuild, // industryToBuild
-					effect,
+					effectNone, // effectPerRound
+					effectDetails,
 					null, // categories
 					null // modifyOnBuild
 				);
+
+				var shipAsBuildable = new Buildable
+				(
+					shipAsBuildableDefn,
+					shipPosInCells,
+					false, // isComplete,
+					false // isAutomated
+				);
+
+				var shipEntity = shipAsBuildable.toEntity(world);
+
 				var venuePrevAsVenueLayout = venuePrev as VenueLayout;
 				var layout = venuePrevAsVenueLayout.layout;
 
-				var shipAsBuildable = Buildable.fromDefn(buildableDefn);
-				var shipAsEntity = shipAsBuildable.toEntity(world);
-				layout.buildableEntityBuild(shipAsEntity);
+				layout.buildableEntityBuild(shipEntity);
 
 				universe.venueTransitionTo(venuePrevAsVenueLayout);
 			}
@@ -217,9 +244,33 @@ class ShipBuilder
 			}
 		};
 
-		var labelHullSize = ControlLabel.from4Uncentered
+		var labelName = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY(margin, margin), // pos
+			Coords.fromXY(listSize.x, labelHeight), // size
+			DataBinding.fromContext("Name:"),
+			font
+		);
+
+		var textName = new ControlTextBox
+		(
+			"textName",
+			Coords.fromXY(margin * 12, margin), // pos
+			Coords.fromXY(listSize.x / 2, labelHeight), // size
+			new DataBinding
+			(
+				this,
+				(c: ShipBuilder) => c.shipName,
+				(c: ShipBuilder, v: string) => c.shipName = v
+			), // text
+			font,
+			32, // charCountMax
+			DataBinding.fromTrue() // isEnabled
+		);
+
+		var labelHullSize = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin * 2 + labelHeight), // pos
 			Coords.fromXY(listSize.x, labelHeight), // size
 			DataBinding.fromContext("Hull Size:"),
 			font
@@ -228,7 +279,7 @@ class ShipBuilder
 		var selectHullSize = new ControlSelect
 		(
 			"selectHullSize",
-			Coords.fromXY(margin * 12, margin), // pos
+			Coords.fromXY(margin * 12, margin * 2 + labelHeight), // pos
 			Coords.fromXY(labelHeight * 3, labelHeight), // size
 			new DataBinding
 			(
@@ -254,7 +305,7 @@ class ShipBuilder
 
 		var labelComponentsAvailable = ControlLabel.from4Uncentered
 		(
-			Coords.fromXY(margin, margin * 2 + labelHeight), // pos
+			Coords.fromXY(margin, margin * 3 + labelHeight * 2), // pos
 			Coords.fromXY(listSize.x, labelHeight), // size
 			DataBinding.fromContext("Components Available:"),
 			font
@@ -263,7 +314,11 @@ class ShipBuilder
 		var listComponentsAvailable = ControlList.from10
 		(
 			"listComponentsAvailable",
-			Coords.fromXY(margin, margin * 3 + labelHeight * 2), // pos
+			Coords.fromXY
+			(
+				margin,
+				margin * 4 + labelHeight * 3
+			), // pos
 			listSize.clone(),
 			DataBinding.fromContextAndGet
 			(
@@ -291,7 +346,7 @@ class ShipBuilder
 			Coords.fromXY
 			(
 				size.x - margin - listSize.x,
-				margin * 2 + labelHeight
+				margin * 3 + labelHeight * 2
 			), // pos
 			Coords.fromXY(listSize.x, labelHeight), // size
 			DataBinding.fromContext("Components to Build into Ship:"),
@@ -303,7 +358,7 @@ class ShipBuilder
 			Coords.fromXY
 			(
 				size.x - margin - listSize.x + listSize.x * 0.57,
-				margin * 2 + labelHeight
+				margin * 3 + labelHeight * 2
 			), // pos
 			Coords.fromXY(labelHeight * 8, labelHeight), // size
 			DataBinding.fromContextAndGet
@@ -318,8 +373,8 @@ class ShipBuilder
 		(
 			Coords.fromXY
 			(
-				size.x - margin - listSize.x + listSize.x * 0.8,
-				margin * 2 + labelHeight
+				size.x - margin - listSize.x + listSize.x * 0.82,
+				margin * 3 + labelHeight * 2
 			), // pos
 			Coords.fromXY(listSize.x, labelHeight), // size
 			DataBinding.fromContext("Cost:"),
@@ -330,8 +385,8 @@ class ShipBuilder
 		(
 			Coords.fromXY
 			(
-				size.x - margin - listSize.x + listSize.x * 0.9,
-				margin * 2 + labelHeight
+				size.x - margin - listSize.x + listSize.x * 0.92,
+				margin * 3 + labelHeight * 2
 			), // pos
 			Coords.fromXY(labelHeight * 8, labelHeight), // size
 			DataBinding.fromContextAndGet
@@ -364,7 +419,7 @@ class ShipBuilder
 			Coords.fromXY
 			(
 				size.x - margin - listSize.x,
-				margin * 3 + labelHeight * 2
+				margin * 4 + labelHeight * 3
 			), // pos
 			listSize.clone(),
 			DataBinding.fromContextAndGet
@@ -404,11 +459,11 @@ class ShipBuilder
 			remove // click
 		);
 
-		var infoStatus = ControlLabel.from4CenteredHorizontally
+		var infoStatus = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY
 			(
-				0,
+				margin,
 				size.y - margin - labelHeight
 			), // pos
 			Coords.fromXY
@@ -452,6 +507,8 @@ class ShipBuilder
 			size.clone(),
 			// children
 			[
+				labelName,
+				textName,
 				labelHullSize,
 				selectHullSize,
 				labelComponentsAvailable,
@@ -481,11 +538,18 @@ class ShipBuilder
 class ShipHullSize
 {
 	name: string;
+	industryToBuild: number;
 	componentCountMax: number;
-	
-	constructor(name: string, componentCountMax: number)
+
+	constructor
+	(
+		name: string,
+		industryToBuild: number,
+		componentCountMax: number
+	)
 	{
 		this.name = name;
+		this.industryToBuild = industryToBuild;
 		this.componentCountMax = componentCountMax;
 	}
 	
@@ -513,14 +577,14 @@ class ShipHullSize_Instances
 	Enormous: ShipHullSize;
 
 	_All: ShipHullSize[];
-	
+
 	constructor()
 	{
-		this.Small = new ShipHullSize("Small", 5);
-		this.Medium = new ShipHullSize("Medium", 10);
-		this.Large = new ShipHullSize("Large", 15);
-		this.Enormous = new ShipHullSize("Enormous", 25);
-		
+		this.Small 			= new ShipHullSize("Small", 0, 5);
+		this.Medium 		= new ShipHullSize("Medium", 0, 10);
+		this.Large 			= new ShipHullSize("Large", 0, 15);
+		this.Enormous 		= new ShipHullSize("Enormous", 0, 25);
+
 		this._All =
 		[
 			this.Small,
@@ -529,7 +593,7 @@ class ShipHullSize_Instances
 			this.Enormous
 		];
 	}
-	
+
 	byName(name: string): ShipHullSize
 	{
 		return this._All.find(x => x.name == name);

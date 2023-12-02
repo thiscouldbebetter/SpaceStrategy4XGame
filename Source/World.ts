@@ -94,6 +94,7 @@ class WorldExtended extends World
 		var starsystemCount = parseInt(settings.starsystemCount);
 		var factionCount = parseInt(settings.factionCount);
 		var factionDefnNameForPlayer = settings.factionDefnName;
+		var factionColorForPlayer = settings.factionColor || Faction.colors()[0];
 
 		var worldName = NameGenerator.generateName() + " Cluster";
 
@@ -142,7 +143,8 @@ class WorldExtended extends World
 			buildableDefns,
 			deviceDefnsByName,
 			factionCount,
-			factionDefnNameForPlayer
+			factionDefnNameForPlayer,
+			factionColorForPlayer
 		);
 
 		var factions = factionsAndShips[0];
@@ -191,7 +193,8 @@ class WorldExtended extends World
 		buildableDefns: BuildableDefnsLegacy,
 		deviceDefnsByName: Map<string, DeviceDefn>,
 		factionCount: number,
-		factionDefnNameForPlayer: string
+		factionDefnNameForPlayer: string,
+		factionColorForPlayer: Color
 	): [ Faction[], Ship[] ]
 	{
 		var factions = new Array<Faction>();
@@ -213,17 +216,13 @@ class WorldExtended extends World
 		);
 		universe.world = worldDummy;
 
-		var colors = Color.Instances();
-		var colorsForFactions =
-		[
-			colors.Red,
-			colors.Orange,
-			colors.YellowDark,
-			colors.Green,
-			colors.Cyan,
-			colors.Violet,
-			colors.Gray
-		];
+		var colorsForFactions = Faction.colors();
+		colorsForFactions.splice
+		(
+			colorsForFactions.indexOf(factionColorForPlayer),
+			1
+		);
+		colorsForFactions.splice(0, 0, factionColorForPlayer);
 
 		var factionDefnsAll = FactionDefn.Instances()._All;
 
@@ -375,7 +374,7 @@ class WorldExtended extends World
 
 		var technologiesKnown = technologyGraph.technologiesFree();
 		var technologiesKnownNames = technologiesKnown.map((x: Technology) => x.name);
-				
+
 		var factionTechnologyResearcher = new TechnologyResearcher
 		(
 			factionName,
@@ -415,10 +414,59 @@ class WorldExtended extends World
 			buildableDefns,
 			factionHomeStarsystem,
 			factionName,
-			factionDefn,
+			factionDefn
 		);
 
 		var factionShips = new Array<Ship>();
+
+		var factionKnowledge = new FactionKnowledge
+		(
+			factionName, // factionSelfName
+			[ factionName ], // factionNames
+			ships.map(x => x.id), // shipIds
+			[ factionHomeStarsystem.name ],
+			factionHomeStarsystem.links(network).map
+			(
+				(x: NetworkLink2) => x.name
+			)
+		);
+
+		var factionIntelligence =
+			(i == 0 ? null : factionIntelligenceAutomated);
+
+		var shipHullSizes = ShipHullSize.Instances();
+
+		var factionVisualsForHullSizesByName = new Map<ShipHullSize, VisualBase>
+		([
+			[
+				shipHullSizes.Small,
+				Ship.visualForColorAndScaleFactor
+				(
+					factionColor, 5 // scaleFactor
+				)
+			],
+			[
+				shipHullSizes.Medium,
+				Ship.visualForColorAndScaleFactor
+				(
+					factionColor, 10 // scaleFactor
+				)
+			],
+			[
+				shipHullSizes.Large,
+				Ship.visualForColorAndScaleFactor
+				(
+					factionColor, 15 // scaleFactor
+				)
+			],
+			[
+				shipHullSizes.Enormous,
+				Ship.visualForColorAndScaleFactor
+				(
+					factionColor, 25 // scaleFactor
+				)
+			]
+		]);
 
 		var faction = new Faction
 		(
@@ -431,18 +479,9 @@ class WorldExtended extends World
 			factionTechnologyResearcher,
 			[ factionHomePlanet ],
 			factionShips,
-			new FactionKnowledge
-			(
-				factionName, // factionSelfName
-				[ factionName ], // factionNames
-				ships.map(x => x.id), // shipIds
-				[ factionHomeStarsystem.name ],
-				factionHomeStarsystem.links(network).map
-				(
-					(x: NetworkLink2) => x.name
-				)
-			),
-			factionIntelligence
+			factionKnowledge,
+			factionIntelligence,
+			factionVisualsForHullSizesByName
 		);
 
 		WorldExtended.create_FactionsAndShips_1_2_Ships
@@ -456,10 +495,6 @@ class WorldExtended extends World
 		);
 
 		ships.push(...factionShips);
-
-		var factionIntelligence =
-			(i == 0 ? null : factionIntelligenceAutomated);
-
 
 		worldDummy.factionAdd(faction);
 

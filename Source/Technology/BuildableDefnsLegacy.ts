@@ -155,7 +155,7 @@ class BuildableDefnsLegacy
 				(
 					mapCellSizeInPixels, color, null, null
 				),
-				VisualText.fromTextHeightAndColor
+				VisualText.fromTextImmediateHeightAndColor
 				(
 					labelText, fontHeight, colors.White
 				)
@@ -191,6 +191,7 @@ class BuildableDefnsLegacy
 				visual,
 				industryToBuildAmount,
 				effectNone,
+				null, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -205,6 +206,7 @@ class BuildableDefnsLegacy
 				visual,
 				industryToBuildAmount,
 				effect,
+				null, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -219,6 +221,7 @@ class BuildableDefnsLegacy
 				visual,
 				industryToBuildAmount,
 				effect,
+				null, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -233,6 +236,7 @@ class BuildableDefnsLegacy
 				visual,
 				null, // industryToBuildAmount,
 				effectTodo,
+				null, // effectDetails
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -253,6 +257,7 @@ class BuildableDefnsLegacy
 				visual,
 				industryToBuildAmount,
 				effectTodo,
+				null, // effectDetails
 				[ category ],
 				null // entityModifyOnBuild
 			);
@@ -287,11 +292,88 @@ class BuildableDefnsLegacy
 			120
 		);
 
-		this.OrbitalShipyard = facilityOrbital
+		var buildShip = (uwpe: UniverseWorldPlaceEntities) =>
+		{
+			var universe = uwpe.universe;
+			var displaySize = universe.display.sizeInPixels;
+
+			var venueLayout = universe.venuePrev() as VenueLayout;
+			var planet = venueLayout.modelParent as Planet;
+
+			var dialogSize = universe.display.sizeInPixels.clone().half();
+
+			var buildableEntityInProgress =
+				planet.buildableEntityInProgress(universe);
+
+			var cannotBuildAcknowledge =
+				() => universe.venuePrevJumpTo();
+
+			if (buildableEntityInProgress != null)
+			{
+				universe.venueJumpTo
+				(
+					VenueMessage.fromTextAcknowledgeAndSize
+					(
+						"Already building something.",
+						cannotBuildAcknowledge,
+						dialogSize
+					)
+				);
+			}
+			else if (planet.populationIdle(universe) == 0)
+			{
+				universe.venueJumpTo
+				(
+					VenueMessage.fromTextAcknowledgeAndSize
+					(
+						"No free population yet.",
+						cannotBuildAcknowledge,
+						dialogSize
+					)
+				);
+			}
+			else if (planet.cellPositionsAvailableToOccupyInOrbit(universe).length == 0)
+			{
+				universe.venueJumpTo
+				(
+					VenueMessage.fromTextAcknowledgeAndSize
+					(
+						"No free cells in orbit.",
+						cannotBuildAcknowledge,
+						dialogSize
+					)
+				);
+			}
+			else
+			{
+				var shipBuilder = new ShipBuilder();
+				universe.venueCurrentRemove();
+				var shipBuilderAsControl =
+					shipBuilder.toControl(universe, displaySize, universe.venueCurrent() );
+				var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
+				universe.venueTransitionTo(shipBuilderAsVenue);
+			}
+		};
+
+		var effectBuildShip = new BuildableEffect
+		(
+			"Build Ship",
+			0, // orderToApplyIn
+			(uwpe: UniverseWorldPlaceEntities) => buildShip(uwpe)
+		);
+
+		this.OrbitalShipyard = new BuildableDefn
 		(
 			"Shipyard",
+			false, // isItem
+			canBeBuiltInOrbit,
+			mapCellSizeInPixels,
 			visualBuild("Shipyard", colors.Blue),
-			120
+			120, // industryToBuild
+			effectNone, // effectPerRound
+			effectBuildShip, // effectDetails
+			null, // categories
+			null // entityModifyOnBuild
 		);
 
 		this.OrbitalWeapon1OrbitalMissileBase = facilityOrbital
@@ -444,6 +526,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hull", colors.Gray),
 			30,
 			effectNone,
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -457,6 +540,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hull", colors.Red),
 			60,
 			effectNone,
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -470,6 +554,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hull", colors.Green),
 			120,
 			effectNone,
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -483,6 +568,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hull", colors.Blue),
 			240,
 			effectNone,
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -613,6 +699,7 @@ class BuildableDefnsLegacy
 			visualBuild("Xeno Archaeological Dig", colors.Gray),
 			50,
 			effectNone,
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -637,6 +724,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hub", colors.Gray),
 			30,
 			effectResourcesAdd( [ new Resource("Industry", 1), new Resource("Prosperity", 1) ] ),
+			null, // effectDetails
 			null, // categories
 			null // entityModifyOnBuild
 		);

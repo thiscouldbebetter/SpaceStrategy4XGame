@@ -210,6 +210,41 @@ function worldCreatorToControl
 		fontNameAndHeight
 	);
 
+	var labelFactionColor = ControlLabel.from4Uncentered
+	(
+		Coords.fromXY(margin, margin * 5 + controlHeight * 4), // pos
+		Coords.fromXY(size.x - margin * 2, controlHeight),
+		DataBinding.fromContext("Faction Color:"),
+		fontNameAndHeight
+	);
+
+	var selectFactionColor = new ControlSelect
+	(
+		"selectFactionColor",
+		Coords.fromXY(margin * 8, margin * 5 + controlHeight * 4), // pos
+		Coords.fromXY(controlHeight * 3, controlHeight), // size
+		new DataBinding
+		(
+			worldCreator,
+			(c: WorldCreator) => c.settings.factionColor,
+			(c: WorldCreator, v: Color) => c.settings.factionColor = v
+		), // valueSelected
+		DataBinding.fromContextAndGet
+		(
+			worldCreator,
+			(c: WorldCreator) => Faction.colors()
+		), // options
+		DataBinding.fromGet
+		(
+			(c: Color) => c
+		), // bindingForOptionValues,
+		DataBinding.fromGet
+		(
+			(c: Color) => c.name
+		), // bindingForOptionText
+		fontNameAndHeight
+	);
+
 	var buttonCreate = new ControlButton
 	(
 		"buttonCreate",
@@ -248,6 +283,8 @@ function worldCreatorToControl
 			numberFactionCount,
 			labelFactionType,
 			selectFactionType,
+			labelFactionColor,
+			selectFactionColor,
 			buttonCreate
 		]
 	);

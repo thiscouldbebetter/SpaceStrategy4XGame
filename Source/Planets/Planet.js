@@ -92,7 +92,7 @@ class Planet extends Entity {
                 cellPosInCells.x = x;
                 var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
                 var isOrbit = (terrainAtPos == terrainOrbit);
-                if (isOrbit == false) {
+                if (isOrbit) {
                     var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
                     var isVacant = (bodyAtPos == null);
                     if (isVacant) {
@@ -243,6 +243,12 @@ class Planet extends Entity {
     }
     industryAndBuildableInProgress(universe, world) {
         var industryPerTurn = this.industryPerTurn(universe, world);
+        var buildableAndProgress = this.industryBuildableAndProgress(universe);
+        var returnValue = industryPerTurn
+            + " " + buildableAndProgress;
+        return returnValue;
+    }
+    industryBuildableAndProgress(universe) {
         var buildable = this.buildableInProgress(universe);
         var buildableAndProgress;
         if (buildable == null) {
@@ -257,9 +263,22 @@ class Planet extends Entity {
                     + "/" + industryRequired
                     + " for " + buildableDefn.name + ")";
         }
-        var returnValue = industryPerTurn
-            + " " + buildableAndProgress;
-        return returnValue;
+        return buildableAndProgress;
+    }
+    industryBuildableProgress(universe) {
+        var buildable = this.buildableInProgress(universe);
+        var buildableProgress;
+        if (buildable == null) {
+            buildableProgress = "(-/-)";
+        }
+        else {
+            var buildableDefn = buildable.defn;
+            var industryAccumulated = this.industryAccumulatedQuantity();
+            var industryRequired = buildableDefn.industryToBuild;
+            buildableProgress =
+                "(" + industryAccumulated + "/" + industryRequired + ")";
+        }
+        return buildableProgress;
     }
     industryPerTurn(universe, world) {
         var resource = this.resourcesPerTurnByName(universe, world).get("Industry");
@@ -289,7 +308,7 @@ class Planet extends Entity {
                 var facility = Buildable.ofEntity(facilityAsEntity);
                 if (facility.isComplete) {
                     uwpe.entity2Set(facilityAsEntity);
-                    facility.effectApply(uwpe);
+                    facility.effectPerRoundApply(uwpe);
                 }
             }
             this._resourcesPerTurnByName = null;

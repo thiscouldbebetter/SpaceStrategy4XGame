@@ -14,33 +14,40 @@ class BuildableDefnsBasic {
         var visualBuild = (labelText, color) => {
             return new VisualGroup([
                 new VisualRectangle(mapCellSizeInPixels, color, null, null),
-                VisualText.fromTextHeightAndColor(labelText, fontHeight, colors.White)
+                VisualText.fromTextImmediateHeightAndColor(labelText, fontHeight, colors.White)
             ]);
         };
         var effects = BuildableEffect.Instances();
         var effectNone = effects.None;
         var effectTodo = effects.ThrowError;
         var facilityOrbital = (name, visual, industryToBuildAmount) => new BuildableDefn(name, false, // isItem
-        canBeBuiltInOrbit, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, // effect
+        canBeBuiltInOrbit, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, // effectPerRound
+        null, // effectDetails
         null, // categories
         null // entityModifyOnBuild
         );
-        var facilitySurfaceUsable = (name, visual, industryToBuildAmount, effect) => new BuildableDefn(name, false, // isItem
-        canBeBuiltOnSurfaceUsable, mapCellSizeInPixels, visual, industryToBuildAmount, effect, null, // categories
+        var facilitySurfaceUsable = (name, visual, industryToBuildAmount, effectPerRound) => new BuildableDefn(name, false, // isItem
+        canBeBuiltOnSurfaceUsable, mapCellSizeInPixels, visual, industryToBuildAmount, effectPerRound, null, // effectDetails
+        null, // categories
         null // entityModifyOnBuild
         );
         var facilitySurfaceAnywhere = (name, visual, industryToBuildAmount) => new BuildableDefn(name, false, // isItem
-        canBeBuiltOnSurfaceAnywhere, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null, // categories
+        canBeBuiltOnSurfaceAnywhere, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null, // effectDetails
+        null, // categories
         null // entityModifyOnBuild
         );
         var planetwideFocus = (name, visual) => new BuildableDefn(name, null, // isItem
         null, // terrainNames,
         mapCellSizeInPixels, visual, null, // industryToBuildAmount,
-        effectTodo, null, // categories
+        effectTodo, // effectPerRound
+        effectTodo, // effectDetails
+        null, // categories
         null // entityModifyOnBuild
         );
         var shipComponent = (name, visual, industryToBuildAmount) => new BuildableDefn(name, true, // isItem
-        canBeBuiltNever, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null, // categories
+        canBeBuiltNever, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, // effectPerRound
+        effectTodo, // effectDetails
+        null, // categories
         null // entityModifyOnBuild
         );
         this.OrbitalCloak = facilityOrbital("Orbital Cloak", visualBuild("C", colors.Gray), 120);
@@ -61,22 +68,26 @@ class BuildableDefnsBasic {
         this.ShipGeneratorAdvanced = shipComponent("Ship Generator, Advanced", visualBuild("Generator", colors.Green), 120);
         this.ShipGeneratorSupreme = shipComponent("Ship Generator, Supreme", visualBuild("Generator", colors.Blue), 240);
         this.ShipHullEnormous = new BuildableDefn("Ship Hull, Enormous", false, // isItem
-        canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Blue), 240, null, // effect
+        canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Blue), 240, null, // effectPerRound
+        null, // effectDetails
         null, // categories
         null // entityModifyOnBuild
         );
         this.ShipHullLarge = new BuildableDefn("Ship Hull, Large", false, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Green), 120, null, // effect
+        null, // effectDetails
         null, // categories
         null // entityModifyOnBuild
         );
         this.ShipHullMedium = new BuildableDefn("Ship Hull, Medium", false, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Red), 60, null, // effect
+        null, // effectDetails
         null, // categories
         null // entityModifyOnBuild
         );
         this.ShipHullSmall = new BuildableDefn("Ship Hull, Small", false, // isItem
-        canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Gray), 30, null, // effect
+        canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Gray), 30, null, // effectPerRound
+        null, // effectDetails
         null, // categories
         null // entityModifyOnBuild
         );
@@ -98,12 +109,14 @@ class BuildableDefnsBasic {
         this.Shipyard = new BuildableDefn("Shipyard", false, // isItem
         canBeBuiltInOrbit, mapCellSizeInPixels, new VisualGroup([
             VisualRectangle.fromSizeAndColorFill(mapCellSizeInPixels, Color.byName("Orange"))
-        ]), 100, effectNone, null, // categories
+        ]), 100, effectNone, null, // effectDetails
+        null, // categories
         // entityModifyOnBuild
         (entity) => entity.propertyAdd(new Shipyard()));
         this.SurfaceCloak = facilitySurfaceUsable("Surface Cloak", visualBuild("Cloak", colors.Gray), 120, effectNone);
         this.SurfaceColonyHub = new BuildableDefn("Colony Hub", false, // isItem
-        canBeBuiltInOrbit, mapCellSizeInPixels, visualBuild("Hub", colors.Gray), 30, effectTodo, null, // categories
+        canBeBuiltInOrbit, mapCellSizeInPixels, visualBuild("Hub", colors.Gray), 30, effectTodo, null, // effectDetails
+        null, // categories
         // entityModifyOnBuild
         (entity) => entity.propertyAdd(new Shipyard()));
         this.SurfaceFactory = facilitySurfaceUsable("Factory", visualBuild("Factory", colors.Red), 30, effectTodo // [ new Resource("Industry", 1) ] // resourcesPerTurn

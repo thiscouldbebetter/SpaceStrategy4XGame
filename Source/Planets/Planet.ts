@@ -184,7 +184,7 @@ class Planet extends Entity
 				var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
 				var isOrbit = (terrainAtPos == terrainOrbit);
 
-				if (isOrbit == false)
+				if (isOrbit)
 				{
 					var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
 
@@ -461,7 +461,19 @@ class Planet extends Entity
 	industryAndBuildableInProgress(universe: Universe, world: WorldExtended): string
 	{
 		var industryPerTurn = this.industryPerTurn(universe, world);
-		
+
+		var buildableAndProgress =
+			this.industryBuildableAndProgress(universe);
+
+		var returnValue =
+			industryPerTurn
+			+ " " + buildableAndProgress;
+
+		return returnValue;
+	}
+
+	industryBuildableAndProgress(universe: Universe): string
+	{
 		var buildable = this.buildableInProgress(universe);
 
 		var buildableAndProgress: string;
@@ -481,13 +493,31 @@ class Planet extends Entity
 				+ " for " + buildableDefn.name + ")";
 		}
 
-		var returnValue =
-			industryPerTurn
-			+ " " + buildableAndProgress
-
-		return returnValue;
+		return buildableAndProgress;
 	}
-	
+
+	industryBuildableProgress(universe: Universe): string
+	{
+		var buildable = this.buildableInProgress(universe);
+
+		var buildableProgress: string;
+
+		if (buildable == null)
+		{
+			buildableProgress = "(-/-)"
+		}
+		else
+		{
+			var buildableDefn = buildable.defn;
+			var industryAccumulated = this.industryAccumulatedQuantity();
+			var industryRequired = buildableDefn.industryToBuild;
+			buildableProgress =
+				"(" + industryAccumulated + "/" + industryRequired+ ")";
+		}
+
+		return buildableProgress;
+	}
+
 	industryPerTurn
 	(
 		universe: Universe, world: WorldExtended
@@ -551,7 +581,7 @@ class Planet extends Entity
 				if (facility.isComplete)
 				{
 					uwpe.entity2Set(facilityAsEntity);
-					facility.effectApply(uwpe);
+					facility.effectPerRoundApply(uwpe);
 				}
 			}
 

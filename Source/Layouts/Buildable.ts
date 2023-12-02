@@ -25,7 +25,7 @@ class Buildable implements EntityProperty<Buildable>
 	}
 
 	static fromDefn(defn: BuildableDefn): Buildable
-	{		
+	{
 		return new Buildable
 		(
 			defn,
@@ -50,9 +50,9 @@ class Buildable implements EntityProperty<Buildable>
 		return entity.propertyByName(Buildable.name) as Buildable;
 	}
 
-	effectApply(uwpe: UniverseWorldPlaceEntities): void
+	effectPerRoundApply(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.defn.effectApply(uwpe);
+		this.defn.effectPerRoundApply(uwpe);
 	}
 
 	locatable(): Locatable

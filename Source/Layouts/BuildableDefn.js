@@ -1,13 +1,14 @@
 "use strict";
 class BuildableDefn {
-    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effect, categories, entityModifyOnBuild) {
+    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effectPerRound, effectDetails, categories, entityModifyOnBuild) {
         this.name = name;
         this.isItem = isItem;
         this._canBeBuiltOnMapAtPosInCells = canBeBuiltOnMapAtPosInCells;
         this.sizeInPixels = sizeInPixels;
         this.visual = this.visualWrapWithOverlay(visual);
         this.industryToBuild = industryToBuild;
-        this.effect = effect;
+        this.effectPerRound = effectPerRound;
+        this.effectDetails = effectDetails;
         this.categories = categories || new Array();
         this.entityModifyOnBuild = entityModifyOnBuild;
     }
@@ -28,15 +29,24 @@ class BuildableDefn {
     canBeBuiltOnMapAtPosInCells(map, posInCells) {
         return this._canBeBuiltOnMapAtPosInCells(map, posInCells);
     }
-    effectApply(uwpe) {
-        this.effect.apply(uwpe);
+    effectPerRoundApply(uwpe) {
+        this.effectPerRound.apply(uwpe);
     }
     nameAndCost() {
         return this.name + " (" + this.industryToBuild + ")";
     }
     visualWrapWithOverlay(visualToWrap) {
         var visualOverlayShadedRectangle = VisualRectangle.fromSizeAndColorFill(this.sizeInPixels, Color.byName("BlackHalfTransparent"));
-        var visualOverlayText = VisualText.fromTextHeightAndColor("...", this.sizeInPixels.y / 2, Color.byName("White"));
+        var visualOverlayText = VisualText.fromTextBindingHeightAndColor(DataBinding.fromGet((c) => {
+            var buildableProgress = "";
+            var venue = c.universe.venueCurrent();
+            var planet = venue.modelParent;
+            if (planet != null) // hack - Initially may be VenueFader.
+             {
+                buildableProgress = planet.industryBuildableProgress(c.universe);
+            }
+            return buildableProgress;
+        }), this.sizeInPixels.y / 2, Color.byName("White"));
         var visualOverlayTextAndShade = new VisualGroup([
             visualOverlayShadedRectangle,
             visualOverlayText

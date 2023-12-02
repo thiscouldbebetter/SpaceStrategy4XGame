@@ -103,33 +103,13 @@ class VenueLayout {
         fontNameAndHeight);
         childControls.push(labelBuildableName);
         // hack - Make this more dynamic.
-        var isShipyard = (buildableAtCursorDefn.name == "Shipyard");
-        if (isShipyard) {
-            var venueLayout = this;
-            var planet = venueLayout.modelParent;
-            var buttonBuildShip = ControlButton.from5(Coords.fromXY(margin.x, containerSize.y - (margin.y + buttonSize.y) * 3), //pos,
-            buttonSize, "Build Ship", // text,
-            fontNameAndHeight, () => // click
-             {
-                var dialogSize = universe.display.sizeInPixels.clone().half();
-                var buildableEntityInProgress = planet.buildableEntityInProgress(universe);
-                var cannotBuildAcknowledge = () => universe.venuePrevJumpTo();
-                if (buildableEntityInProgress != null) {
-                    universe.venueJumpTo(VenueMessage.fromTextAcknowledgeAndSize("Already building something.", cannotBuildAcknowledge, dialogSize));
-                }
-                else if (planet.populationIdle(universe) == 0) {
-                    universe.venueJumpTo(VenueMessage.fromTextAcknowledgeAndSize("No free population yet.", cannotBuildAcknowledge, dialogSize));
-                }
-                else {
-                    var shipBuilder = new ShipBuilder();
-                    universe.venueCurrentRemove();
-                    var shipBuilderAsControl = shipBuilder.toControl(universe, displaySize, universe.venueCurrent());
-                    var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
-                    universe.venueTransitionTo(shipBuilderAsVenue);
-                }
-            });
-            childControls.push(buttonBuildShip);
-        } // end if shipyard
+        var effectDetails = buildableAtCursorDefn.effectDetails;
+        if (effectDetails != null) {
+            var buttonForEffect = ControlButton.from5(Coords.fromXY(margin.x, containerSize.y - (margin.y + buttonSize.y) * 3), //pos,
+            buttonSize, effectDetails.name, // text,
+            fontNameAndHeight, () => effectDetails.apply(UniverseWorldPlaceEntities.fromUniverse(universe)));
+            childControls.push(buttonForEffect);
+        }
         var buttonDemolish = ControlButton.from5(Coords.fromXY(margin.x, containerSize.y - (margin.y + buttonSize.y) * 2), //pos,
         buttonSize, "Demolish", // text,
         fontNameAndHeight, () => // click

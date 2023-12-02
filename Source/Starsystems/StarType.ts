@@ -49,7 +49,7 @@ class StarType
 			var visual = new VisualGroup
 			([
 				new VisualCircle(starRadius, starColor, starColor, null),
-				VisualText.fromTextHeightAndColor
+				VisualText.fromTextImmediateHeightAndColor
 				(
 					starName, 10, Color.byName("Gray")
 				)

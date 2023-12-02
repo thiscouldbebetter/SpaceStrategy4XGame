@@ -1,6 +1,7 @@
 "use strict";
 class ShipBuilder {
     constructor() {
+        this.shipName = "ShipTodo";
         this.buildableDefnsAvailable = null;
         this.buildableDefnAvailableSelected = null;
         this.buildableDefnsToBuild = [];
@@ -9,7 +10,7 @@ class ShipBuilder {
         this.statusMessage = "Select available components and click Add to add them to the ship plans.";
     }
     industryToBuildTotal() {
-        var sumSoFar = 0;
+        var sumSoFar = this.shipHullSizeSelected.industryToBuild;
         this.buildableDefnsToBuild.forEach(x => sumSoFar += x.industryToBuild);
         return sumSoFar;
     }
@@ -45,7 +46,7 @@ class ShipBuilder {
         var font = FontNameAndHeight.fromHeightInPixels(fontHeight);
         var buttonSize = Coords.fromXY(4, 2).multiplyScalar(fontHeight);
         var labelHeight = margin * 3;
-        var listSize = Coords.fromXY((size.x - margin * 3) / 2, size.y - margin * 6 - buttonSize.y - labelHeight * 3);
+        var listSize = Coords.fromXY((size.x - margin * 3) / 2, size.y - margin * 7 - buttonSize.y - labelHeight * 4);
         var back = () => {
             universe.venueTransitionTo(venuePrev);
         };
@@ -64,26 +65,36 @@ class ShipBuilder {
                 ];
                 var message = messageLines.join("\n");
                 var venueToReturnTo = universe.venueCurrent();
-                var venue = VenueMessage.fromTextAndAcknowledge(message, () => universe.venueTransitionTo(venueToReturnTo));
-                universe.venueTransitionTo(venue);
+                var venue = VenueMessage.fromTextAndAcknowledge(message, () => universe.venueJumpTo(venueToReturnTo));
+                universe.venueJumpTo(venue);
             }
             else {
-                var shipName = "ShipNameTodo"; // todo
+                var planet = venuePrev.modelParent;
+                var shipPosInCells = planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
                 var industryToBuild = shipBuilder.industryToBuildTotal();
-                var visual = new VisualNone();
-                var effect = BuildableEffect.Instances().None;
-                var buildableDefn = new BuildableDefn(shipName, false, // isItem
+                var shipHullSize = shipBuilder.shipHullSizeSelected;
+                var visual = faction.visualForShipWithHullSize(shipHullSize);
+                var effects = BuildableEffect.Instances();
+                var effectNone = effects.None;
+                var effectDetails = new BuildableEffect("Leave Orbit", 0, // order
+                (uwpe) => {
+                    alert("todo - leave orbit");
+                });
+                var shipAsBuildableDefn = new BuildableDefn(this.shipName, false, // isItem
                 (m, p) => true, // hack - Should be orbit only.
                 Coords.zeroes(), // sizeInPixels
                 visual, industryToBuild, // industryToBuild
-                effect, null, // categories
+                effectNone, // effectPerRound
+                effectDetails, null, // categories
                 null // modifyOnBuild
                 );
+                var shipAsBuildable = new Buildable(shipAsBuildableDefn, shipPosInCells, false, // isComplete,
+                false // isAutomated
+                );
+                var shipEntity = shipAsBuildable.toEntity(world);
                 var venuePrevAsVenueLayout = venuePrev;
                 var layout = venuePrevAsVenueLayout.layout;
-                var shipAsBuildable = Buildable.fromDefn(buildableDefn);
-                var shipAsEntity = shipAsBuildable.toEntity(world);
-                layout.buildableEntityBuild(shipAsEntity);
+                layout.buildableEntityBuild(shipEntity);
                 universe.venueTransitionTo(venuePrevAsVenueLayout);
             }
         };
@@ -105,20 +116,29 @@ class ShipBuilder {
                 buildableDefnsToBuild.splice(buildableDefnsToBuild.indexOf(buildableDefnToRemove), 1);
             }
         };
-        var labelHullSize = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var labelName = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        Coords.fromXY(listSize.x, labelHeight), // size
+        DataBinding.fromContext("Name:"), font);
+        var textName = new ControlTextBox("textName", Coords.fromXY(margin * 12, margin), // pos
+        Coords.fromXY(listSize.x / 2, labelHeight), // size
+        new DataBinding(this, (c) => c.shipName, (c, v) => c.shipName = v), // text
+        font, 32, // charCountMax
+        DataBinding.fromTrue() // isEnabled
+        );
+        var labelHullSize = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + labelHeight), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Hull Size:"), font);
-        var selectHullSize = new ControlSelect("selectHullSize", Coords.fromXY(margin * 12, margin), // pos
+        var selectHullSize = new ControlSelect("selectHullSize", Coords.fromXY(margin * 12, margin * 2 + labelHeight), // pos
         Coords.fromXY(labelHeight * 3, labelHeight), // size
         new DataBinding(this, (c) => c.shipHullSizeSelected, (c, v) => c.shipHullSizeSelected = v), // valueSelected
         DataBinding.fromContextAndGet(this, (c) => c.shipHullSizesAvailable), // options
         DataBinding.fromGet((c) => c), // bindingForOptionValues,
         DataBinding.fromGet((c) => c.name), // bindingForOptionText
         font);
-        var labelComponentsAvailable = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + labelHeight), // pos
+        var labelComponentsAvailable = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Components Available:"), font);
-        var listComponentsAvailable = ControlList.from10("listComponentsAvailable", Coords.fromXY(margin, margin * 3 + labelHeight * 2), // pos
+        var listComponentsAvailable = ControlList.from10("listComponentsAvailable", Coords.fromXY(margin, margin * 4 + labelHeight * 3), // pos
         listSize.clone(), DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsAvailable), // items
         DataBinding.fromGet((c) => c.nameAndCost()), // bindingForItemText
         font, new DataBinding(this, (c) => c.buildableDefnAvailableSelected, (c, v) => c.buildableDefnAvailableSelected = v), // bindingForItemSelected
@@ -126,16 +146,16 @@ class ShipBuilder {
         DataBinding.fromTrue(), // isEnabled
         add // confirm
         );
-        var labelShipItems = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x, margin * 2 + labelHeight), // pos
+        var labelShipItems = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Components to Build into Ship:"), font);
-        var textComponentCountOverMax = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.57, margin * 2 + labelHeight), // pos
+        var textComponentCountOverMax = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.57, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(labelHeight * 8, labelHeight), // size
         DataBinding.fromContextAndGet(this, (c) => c.componentCountOverMax()), font);
-        var labelCost = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.8, margin * 2 + labelHeight), // pos
+        var labelCost = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.82, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Cost:"), font);
-        var textCost = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.9, margin * 2 + labelHeight), // pos
+        var textCost = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.92, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(labelHeight * 8, labelHeight), // size
         DataBinding.fromContextAndGet(this, (c) => "" + c.industryToBuildTotal()), font);
         var buttonAdd = ControlButton.from8("buttonAdd", Coords.fromXY(size.x / 2 - buttonSize.x - margin / 2, size.y - margin * 2 - labelHeight - buttonSize.y), // pos
@@ -143,7 +163,7 @@ class ShipBuilder {
         DataBinding.fromTrue(), // isEnabled
         add // click
         );
-        var listShipComponents = ControlList.from10("listShipComponents", Coords.fromXY(size.x - margin - listSize.x, margin * 3 + labelHeight * 2), // pos
+        var listShipComponents = ControlList.from10("listShipComponents", Coords.fromXY(size.x - margin - listSize.x, margin * 4 + labelHeight * 3), // pos
         listSize.clone(), DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsToBuild), // items
         DataBinding.fromGet((c) => c.name), // bindingForItemText
         font, new DataBinding(this, (c) => c.buildableDefnToBuildSelected, (c, v) => c.buildableDefnToBuildSelected = v), // bindingForItemSelected
@@ -156,7 +176,7 @@ class ShipBuilder {
         DataBinding.fromTrue(), // isEnabled
         remove // click
         );
-        var infoStatus = ControlLabel.from4CenteredHorizontally(Coords.fromXY(0, size.y - margin - labelHeight), // pos
+        var infoStatus = ControlLabel.from4Uncentered(Coords.fromXY(margin, size.y - margin - labelHeight), // pos
         Coords.fromXY(size.x, fontHeight), // size
         DataBinding.fromContextAndGet(this, c => c.statusMessage), font);
         var buttonCancel = ControlButton.from5(Coords.fromXY(size.x - margin * 2 - buttonSize.x * 2, size.y - margin - buttonSize.y), // pos
@@ -169,6 +189,8 @@ class ShipBuilder {
         size.clone(), 
         // children
         [
+            labelName,
+            textName,
             labelHullSize,
             selectHullSize,
             labelComponentsAvailable,
@@ -188,8 +210,9 @@ class ShipBuilder {
     }
 }
 class ShipHullSize {
-    constructor(name, componentCountMax) {
+    constructor(name, industryToBuild, componentCountMax) {
         this.name = name;
+        this.industryToBuild = industryToBuild;
         this.componentCountMax = componentCountMax;
     }
     static Instances() {
@@ -204,10 +227,10 @@ class ShipHullSize {
 }
 class ShipHullSize_Instances {
     constructor() {
-        this.Small = new ShipHullSize("Small", 5);
-        this.Medium = new ShipHullSize("Medium", 10);
-        this.Large = new ShipHullSize("Large", 15);
-        this.Enormous = new ShipHullSize("Enormous", 25);
+        this.Small = new ShipHullSize("Small", 0, 5);
+        this.Medium = new ShipHullSize("Medium", 0, 10);
+        this.Large = new ShipHullSize("Large", 0, 15);
+        this.Enormous = new ShipHullSize("Enormous", 0, 25);
         this._All =
             [
                 this.Small,

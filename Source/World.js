@@ -39,6 +39,7 @@ class WorldExtended extends World {
         var starsystemCount = parseInt(settings.starsystemCount);
         var factionCount = parseInt(settings.factionCount);
         var factionDefnNameForPlayer = settings.factionDefnName;
+        var factionColorForPlayer = settings.factionColor || Faction.colors()[0];
         var worldName = NameGenerator.generateName() + " Cluster";
         var activityDefns = ArrayHelper.flattenArrayOfArrays([
             new ActivityDefn_Instances2()._All,
@@ -59,7 +60,7 @@ class WorldExtended extends World {
         viewSize.z = focalLength;
         var deviceDefns = WorldExtended.create_DeviceDefns();
         var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
-        var factionsAndShips = WorldExtended.create_FactionsAndShips(universe, network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer);
+        var factionsAndShips = WorldExtended.create_FactionsAndShips(universe, network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
         var factions = factionsAndShips[0];
         var ships = factionsAndShips[1];
         factions.forEach(x => x.diplomacy.initializeForFactions(factions));
@@ -71,7 +72,7 @@ class WorldExtended extends World {
     static create_DeviceDefns() {
         return DeviceDefns.Instance()._All;
     }
-    static create_FactionsAndShips(universe, network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer) {
+    static create_FactionsAndShips(universe, network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {
         var factions = new Array();
         var ships = new Array();
         // hack
@@ -84,16 +85,9 @@ class WorldExtended extends World {
         null // camera
         );
         universe.world = worldDummy;
-        var colors = Color.Instances();
-        var colorsForFactions = [
-            colors.Red,
-            colors.Orange,
-            colors.YellowDark,
-            colors.Green,
-            colors.Cyan,
-            colors.Violet,
-            colors.Gray
-        ];
+        var colorsForFactions = Faction.colors();
+        colorsForFactions.splice(colorsForFactions.indexOf(factionColorForPlayer), 1);
+        colorsForFactions.splice(0, 0, factionColorForPlayer);
         var factionDefnsAll = FactionDefn.Instances()._All;
         var factionDefnsAllMinusPlayerSelection = factionDefnsAll.map(x => x);
         if (factionDefnNameForPlayer != null) {
@@ -181,13 +175,37 @@ class WorldExtended extends World {
         var factionDefn = factionDefnsToChooseFrom[i];
         var factionHomePlanet = WorldExtended.create_FactionsAndShips_1_1_HomePlanet(universe, worldDummy, buildableDefns, factionHomeStarsystem, factionName, factionDefn);
         var factionShips = new Array();
-        var faction = new Faction(factionName, factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, factionDiplomacy, factionTechnologyResearcher, [factionHomePlanet], factionShips, new FactionKnowledge(factionName, // factionSelfName
+        var factionKnowledge = new FactionKnowledge(factionName, // factionSelfName
         [factionName], // factionNames
         ships.map(x => x.id), // shipIds
-        [factionHomeStarsystem.name], factionHomeStarsystem.links(network).map((x) => x.name)), factionIntelligence);
+        [factionHomeStarsystem.name], factionHomeStarsystem.links(network).map((x) => x.name));
+        var factionIntelligence = (i == 0 ? null : factionIntelligenceAutomated);
+        var shipHullSizes = ShipHullSize.Instances();
+        var factionVisualsForHullSizesByName = new Map([
+            [
+                shipHullSizes.Small,
+                Ship.visualForColorAndScaleFactor(factionColor, 5 // scaleFactor
+                )
+            ],
+            [
+                shipHullSizes.Medium,
+                Ship.visualForColorAndScaleFactor(factionColor, 10 // scaleFactor
+                )
+            ],
+            [
+                shipHullSizes.Large,
+                Ship.visualForColorAndScaleFactor(factionColor, 15 // scaleFactor
+                )
+            ],
+            [
+                shipHullSizes.Enormous,
+                Ship.visualForColorAndScaleFactor(factionColor, 25 // scaleFactor
+                )
+            ]
+        ]);
+        var faction = new Faction(factionName, factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, factionDiplomacy, factionTechnologyResearcher, [factionHomePlanet], factionShips, factionKnowledge, factionIntelligence, factionVisualsForHullSizesByName);
         WorldExtended.create_FactionsAndShips_1_2_Ships(universe, factionColor, factionHomeStarsystem, faction, deviceDefnsByName, factionShips);
         ships.push(...factionShips);
-        var factionIntelligence = (i == 0 ? null : factionIntelligenceAutomated);
         worldDummy.factionAdd(faction);
         factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, worldDummy));
     }

@@ -24,7 +24,7 @@ class StarType {
         if (this._bodyDefn == null) {
             var visual = new VisualGroup([
                 new VisualCircle(starRadius, starColor, starColor, null),
-                VisualText.fromTextHeightAndColor(starName, 10, Color.byName("Gray"))
+                VisualText.fromTextImmediateHeightAndColor(starName, 10, Color.byName("Gray"))
             ]);
             this._bodyDefn = new BodyDefn("Star", Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
             visual);

@@ -77,7 +77,7 @@ class PlanetType
 						returnValue = new VisualOffset
 						(
 							Coords.fromXY(0, 16),
-							VisualText.fromTextHeightAndColor
+							VisualText.fromTextImmediateHeightAndColor
 							(
 								factionName, planetDimension, Color.byName("White"),
 							)

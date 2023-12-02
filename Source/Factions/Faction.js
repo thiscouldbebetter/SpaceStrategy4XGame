@@ -1,6 +1,6 @@
 "use strict";
 class Faction {
-    constructor(name, defnName, homeStarsystemName, homePlanetName, color, diplomacy, technologyResearcher, planets, ships, knowledge, intelligence) {
+    constructor(name, defnName, homeStarsystemName, homePlanetName, color, diplomacy, technologyResearcher, planets, ships, knowledge, intelligence, visualsForShipsByHullSize) {
         this.name = name;
         this.defnName = defnName;
         this.homeStarsystemName = homeStarsystemName;
@@ -12,6 +12,7 @@ class Faction {
         this.ships = ships;
         this.knowledge = knowledge;
         this.intelligence = intelligence;
+        this._visualsForShipsByHullSize = visualsForShipsByHullSize; // todo
         this.notificationSession = new NotificationSession(this.name, []);
         this.shipsBuiltSoFarCount = ships.length;
     }
@@ -21,8 +22,25 @@ class Faction {
     static fromName(name) {
         return new Faction(name, null, null, // homeStarsystemName,
         null, // homePlanetName,
-        Color.Instances().Red, FactionDiplomacy.fromFactionSelfName(name), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.fromFactionSelfName(name), null // intelligence
+        Color.Instances().Red, FactionDiplomacy.fromFactionSelfName(name), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.fromFactionSelfName(name), null, // intelligence
+        null // visuals
         );
+    }
+    static colors() {
+        if (Faction._colors == null) {
+            var colors = Color.Instances();
+            Faction._colors =
+                [
+                    colors.Red,
+                    colors.Orange,
+                    colors.Yellow,
+                    colors.Green,
+                    colors.Blue,
+                    colors.Cyan,
+                    colors.Violet
+                ];
+        }
+        return Faction._colors;
     }
     abilityCanBeUsed(world) {
         var defn = this.defn();
@@ -65,6 +83,9 @@ class Faction {
     }
     toString() {
         return this.name;
+    }
+    visualForShipWithHullSize(hullSize) {
+        return this._visualsForShipsByHullSize.get(hullSize);
     }
     // controls
     toControl_ClusterOverlay(universe, containerOuterSize, containerInnerSize, margin, controlHeight, buttonWidth, includeDetailsButton) {

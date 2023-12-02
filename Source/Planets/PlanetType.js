@@ -43,7 +43,7 @@ class PlanetType {
                     returnValue = new VisualNone();
                 }
                 else {
-                    returnValue = new VisualOffset(Coords.fromXY(0, 16), VisualText.fromTextHeightAndColor(factionName, planetDimension, Color.byName("White")));
+                    returnValue = new VisualOffset(Coords.fromXY(0, 16), VisualText.fromTextImmediateHeightAndColor(factionName, planetDimension, Color.byName("White")));
                 }
                 return returnValue;
             });

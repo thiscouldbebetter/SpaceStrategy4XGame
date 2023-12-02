@@ -119,7 +119,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effectTodo, // effectPerRound
-				null, // effectDetails
+				null, // // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -137,7 +137,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effectPerRound,
-				null, // effectDetails
+				null, // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -152,7 +152,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effectTodo,
-				null, // effectDetails
+				null, // // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -167,7 +167,7 @@ class BuildableDefnsBasic
 				visual,
 				null, // industryToBuildAmount,
 				effectTodo, // effectPerRound
-				effectTodo, // effectDetails
+				null, // // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -182,7 +182,7 @@ class BuildableDefnsBasic
 				visual,
 				industryToBuildAmount,
 				effectTodo, // effectPerRound
-				effectTodo, // effectDetails
+				null, // // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -313,7 +313,7 @@ class BuildableDefnsBasic
 			visualBuild("Hull", colors.Blue),
 			240,
 			null, // effectPerRound
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -327,7 +327,7 @@ class BuildableDefnsBasic
 			visualBuild("Hull", colors.Green),
 			120,
 			null, // effect
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -341,7 +341,7 @@ class BuildableDefnsBasic
 			visualBuild("Hull", colors.Red),
 			60,
 			null, // effect
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -355,7 +355,7 @@ class BuildableDefnsBasic
 			visualBuild("Hull", colors.Gray),
 			30,
 			null, // effectPerRound
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -480,11 +480,11 @@ class BuildableDefnsBasic
 			]),
 			100,
 			effectNone,
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			// entityModifyOnBuild
-			(entity: Entity) =>
-				entity.propertyAdd(new Shipyard() )
+			(uwpe: UniverseWorldPlaceEntities) =>
+				uwpe.entity.propertyAdd(new Shipyard() )
 		);
 
 		this.SurfaceCloak = facilitySurfaceUsable
@@ -504,11 +504,9 @@ class BuildableDefnsBasic
 			visualBuild("Hub", colors.Gray),
 			30,
 			effectTodo,
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
-			// entityModifyOnBuild
-			(entity: Entity) =>
-				entity.propertyAdd(new Shipyard() )
+			null // entityModifyOnBuild
 		);
 
 		this.SurfaceFactory = facilitySurfaceUsable

@@ -207,45 +207,54 @@ class VenueLayout implements Venue
 
 		var childControls = new Array<ControlBase>();
 
-		var labelBuildableName = new ControlLabel
+		var labelBuildableName = ControlLabel.from4Uncentered
 		(
-			"labelBuildableName",
 			Coords.fromXY(1, 1).multiply(margin),
 			listSize,
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext
 			(
 				buildableAtCursorDefn.name
 				+ " on " + terrainAtCursor.name + " cell"
-			), // text
+			),
 			fontNameAndHeight
 		);
 
 		childControls.push(labelBuildableName);
 
-		// hack - Make this more dynamic.
+		var buildableIsComplete = buildableAtCursor.isComplete;
 
-		var effectDetails = buildableAtCursorDefn.effectDetails;
-		if (effectDetails != null)
+		if (buildableIsComplete)
 		{
-			var buttonForEffect = ControlButton.from5
-			(
-				Coords.fromXY
-				(
-					margin.x,
-					containerSize.y - (margin.y + buttonSize.y) * 3
-				), //pos,
-				buttonSize,
-				effectDetails.name, // text,
-				fontNameAndHeight,
-				() => effectDetails.apply(UniverseWorldPlaceEntities.fromUniverse(universe) )
-			);
+			var effectsAvailableToUse = buildableAtCursorDefn.effectsAvailableToUse;
+			for (var e = 0; e < effectsAvailableToUse.length; e++)
+			{
+				const effect = effectsAvailableToUse[e]; // Must be const, or otherwise all buttons perform the final effect.
 
-			childControls.push(buttonForEffect);
+				var eReversed = effectsAvailableToUse.length - e - 1;
+				var buttonForEffect = ControlButton.from5
+				(
+					Coords.fromXY
+					(
+						margin.x,
+						containerSize.y - (margin.y + buttonSize.y) * (3 + eReversed)
+					), //pos,
+					buttonSize,
+					effect.name, // text,
+					fontNameAndHeight,
+					() =>
+						effect.apply
+						(
+							new UniverseWorldPlaceEntities(universe, null, null, buildableAtCursorEntity, null)
+						)
+				);
+
+				childControls.push(buttonForEffect);
+			}
 		}
 
-		var buttonDemolish = ControlButton.from5
+		var textDemolishOrAbandon = (buildableIsComplete ? "Demolish" : "Abandon");
+
+		var buttonDemolishOrAbandon = ControlButton.from5
 		(
 			Coords.fromXY
 			(
@@ -253,30 +262,59 @@ class VenueLayout implements Venue
 				containerSize.y - (margin.y + buttonSize.y) * 2
 			), //pos,
 			buttonSize,
-			"Demolish", // text,
+			textDemolishOrAbandon,
 			fontNameAndHeight,
 			() => // click
 			{
+				var world = universe.world as WorldExtended;
+
+				var entityToDemolish = buildableAtCursorEntity;
+				var entityToDemolishFactionable = Factionable.ofEntity(entityToDemolish);
+				var entityToDemolishFaction =
+					entityToDemolishFactionable == null
+					? null
+					: entityToDemolishFactionable.faction(world);
+				var factionCurrent = world.factionCurrent();
+				var entityToDemolishBelongsToAnotherFaction =
+					entityToDemolishFaction != null
+					&& entityToDemolishFaction != factionCurrent;
+
 				var controlBuilder = universe.controlBuilder;
-				var controlConfirm = controlBuilder.confirmForUniverseSizeMessageConfirmCancel
-				(
-					universe,
-					containerSize,
-					"Really demolish?",
-					() => // confirm
-					{
-						var mapBodies = layout.map.bodies();
-						ArrayHelper.remove(mapBodies, buildableAtCursorEntity);
-						universe.venueNextSet(venueThis);
-					},
-					null // cancel
-				);
-				var controlConfirmAsVenue = controlConfirm.toVenue();
-				universe.venueNextSet(controlConfirmAsVenue);
+				var controlDialog: ControlBase;
+
+				if (entityToDemolishBelongsToAnotherFaction)
+				{
+					controlDialog = controlBuilder.message4
+					(
+						universe,
+						containerSize,
+						DataBinding.fromContext("Can't demolish things you don't own!"),
+						() => {}
+					);
+				}
+				else
+				{
+					controlDialog = controlBuilder.confirmForUniverseSizeMessageConfirmCancel
+					(
+						universe,
+						containerSize,
+						"Really " + textDemolishOrAbandon.toLowerCase() + "?",
+						() => // confirm
+						{
+							var mapBodies = layout.map.bodies();
+							ArrayHelper.remove(mapBodies, entityToDemolish);
+							universe.venueNextSet(venueThis);
+						},
+						null // cancel
+					);
+				}
+
+				var controlDialogAsVenue = controlDialog.toVenue();
+				universe.venueNextSet(controlDialogAsVenue); // hack - Must be .venueNextSet, otherwise it messes up the expected venue stack.
 			}
 		);
 
-		childControls.push(buttonDemolish);
+		childControls.push(buttonDemolishOrAbandon);
 
 		var buttonDone = ControlButton.from5
 		(

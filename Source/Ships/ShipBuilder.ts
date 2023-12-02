@@ -166,15 +166,45 @@ class ShipBuilder
 
 				var effects = BuildableEffect.Instances();
 				var effectNone = effects.None;
-				var effectDetails = new BuildableEffect
+
+				var effectLeaveOrbit = new BuildableEffect
 				(
 					"Leave Orbit",
 					0, // order
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
-						alert("todo - leave orbit")
+						var ship = uwpe.entity as Ship;
+						ship.planetOrbitExit(world, planet);
+						back();
 					}
 				);
+
+				var effectCreateColony = new BuildableEffect
+				(
+					"Colonize Planet",
+					0, // order
+					(uwpe: UniverseWorldPlaceEntities) =>
+					{
+						alert("todo - create colony");
+					}
+				);
+
+				var effectConquerPlanet = new BuildableEffect
+				(
+					"Conquer Planet",
+					0, // order
+					(uwpe: UniverseWorldPlaceEntities) =>
+					{
+						alert("todo - conquer planet");
+					}
+				);
+
+				var effectsAvailableForUse =
+				[
+					effectLeaveOrbit,
+					effectCreateColony,
+					effectConquerPlanet
+				];
 
 				var shipAsBuildableDefn = new BuildableDefn
 				(
@@ -185,7 +215,7 @@ class ShipBuilder
 					visual,
 					industryToBuild, // industryToBuild
 					effectNone, // effectPerRound
-					effectDetails,
+					effectsAvailableForUse,
 					null, // categories
 					null // modifyOnBuild
 				);
@@ -198,7 +228,24 @@ class ShipBuilder
 					false // isAutomated
 				);
 
-				var shipEntity = shipAsBuildable.toEntity(world);
+				var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
+
+				var shipEntity =
+					// shipAsBuildable.toEntity(world);
+					new Ship
+					(
+						this.shipName,
+						shipBodyDefn,
+						shipPosInCells,
+						faction,
+						new Array<Item>() // todo
+					);
+
+				shipEntity.propertyAdd(shipAsBuildable);
+
+				// hack
+				var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual)
+				shipEntity.propertyAdd(shipDrawable);
 
 				var venuePrevAsVenueLayout = venuePrev as VenueLayout;
 				var layout = venuePrevAsVenueLayout.layout;

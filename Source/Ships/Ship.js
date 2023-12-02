@@ -237,15 +237,12 @@ class Ship extends Entity {
     }
     planetOrbitEnter(universe, starsystem, planet) {
         starsystem.shipRemove(this);
-        planet.shipAdd(this);
+        planet.shipAddToOrbit(this);
         this.locatable().loc.placeName =
             Planet.name + ":" + planet.name;
     }
-    planetOrbitExit(universe, starsystem, planet) {
-        planet.shipRemove(this);
-        starsystem.shipAdd(this, universe.world);
-        this.locatable().loc.placeName =
-            Starsystem.name + ":" + starsystem.name;
+    planetOrbitExit(world, planet) {
+        planet.shipLeaveOrbit(this, world);
     }
     // controls
     static toControl(uwpe, size, controlTypeName) {

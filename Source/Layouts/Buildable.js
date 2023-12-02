@@ -30,7 +30,7 @@ class Buildable {
     }
     toEntity(world) {
         if (this._entity == null) {
-            this._entity = this.defn.buildableToEntity(this);
+            this._entity = this.defn.buildableToEntity(this, world);
         }
         return this._entity;
     }

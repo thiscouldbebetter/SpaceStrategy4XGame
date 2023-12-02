@@ -130,12 +130,18 @@ class Planet extends Entity {
         this.demographics.notificationsForRoundAddToArray(notificationsSoFar);
         return notificationsSoFar;
     }
-    shipAdd(shipToAdd) {
+    shipAddToOrbit(shipToAdd) {
         this.ships.push(shipToAdd);
         shipToAdd.locatable().loc.placeName = Planet.name + ":" + this.name;
     }
-    shipRemove(shipToRemove) {
-        ArrayHelper.remove(this.ships, shipToRemove);
+    shipLeaveOrbit(shipToLeaveOrbit, world) {
+        ArrayHelper.remove(this.ships, shipToLeaveOrbit);
+        var shipLoc = shipToLeaveOrbit.locatable().loc;
+        var planetPos = this.locatable().loc.pos;
+        var starsystem = this.starsystem(world);
+        shipLoc.placeName = Starsystem.name + starsystem.name;
+        shipLoc.pos.overwriteWith(planetPos); // todo - offset.
+        starsystem.shipAdd(shipToLeaveOrbit, world);
     }
     starsystem(world) {
         var networkNodeFound = world.network.nodes.find(x => (x.starsystem.planets.indexOf(this) >= 0));

@@ -1,6 +1,6 @@
 "use strict";
 class BuildableDefn {
-    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effectPerRound, effectDetails, categories, entityModifyOnBuild) {
+    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effectPerRound, effectsAvailableToUse, categories, entityModifyOnBuild) {
         this.name = name;
         this.isItem = isItem;
         this._canBeBuiltOnMapAtPosInCells = canBeBuiltOnMapAtPosInCells;
@@ -8,11 +8,11 @@ class BuildableDefn {
         this.visual = this.visualWrapWithOverlay(visual);
         this.industryToBuild = industryToBuild;
         this.effectPerRound = effectPerRound;
-        this.effectDetails = effectDetails;
+        this.effectsAvailableToUse = effectsAvailableToUse || new Array();
         this.categories = categories || new Array();
         this.entityModifyOnBuild = entityModifyOnBuild;
     }
-    buildableToEntity(buildable) {
+    buildableToEntity(buildable, world) {
         var returnValue = new Entity(this.name, [
             buildable,
             buildable.locatable(),
@@ -22,7 +22,8 @@ class BuildableDefn {
             returnValue.propertyAdd(new Item(this.name, 1));
         }
         if (this.entityModifyOnBuild != null) {
-            this.entityModifyOnBuild(returnValue);
+            var uwpe = new UniverseWorldPlaceEntities(null, world, null, returnValue, null);
+            this.entityModifyOnBuild(uwpe);
         }
         return returnValue;
     }

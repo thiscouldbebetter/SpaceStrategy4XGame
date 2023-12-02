@@ -252,15 +252,21 @@ class Planet extends Entity
 		return notificationsSoFar;
 	}
 
-	shipAdd(shipToAdd: Ship): void
+	shipAddToOrbit(shipToAdd: Ship): void
 	{
 		this.ships.push(shipToAdd);
 		shipToAdd.locatable().loc.placeName = Planet.name + ":" + this.name;
 	}
 
-	shipRemove(shipToRemove: Ship): void
+	shipLeaveOrbit(shipToLeaveOrbit: Ship, world: WorldExtended): void
 	{
-		ArrayHelper.remove(this.ships, shipToRemove);
+		ArrayHelper.remove(this.ships, shipToLeaveOrbit);
+		var shipLoc = shipToLeaveOrbit.locatable().loc;
+		var planetPos = this.locatable().loc.pos;
+		var starsystem = this.starsystem(world);
+		shipLoc.placeName = Starsystem.name + starsystem.name;
+		shipLoc.pos.overwriteWith(planetPos); // todo - offset.
+		starsystem.shipAdd(shipToLeaveOrbit, world);
 	}
 
 	starsystem(world: WorldExtended): Starsystem
@@ -580,7 +586,7 @@ class Planet extends Entity
 				var facility = Buildable.ofEntity(facilityAsEntity);
 				if (facility.isComplete)
 				{
-					uwpe.entity2Set(facilityAsEntity);
+					uwpe.entity2Set(facilityAsEntity); // hack - Because the planet has to be .entity1?
 					facility.effectPerRoundApply(uwpe);
 				}
 			}

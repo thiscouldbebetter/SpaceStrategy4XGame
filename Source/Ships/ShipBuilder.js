@@ -76,22 +76,45 @@ class ShipBuilder {
                 var visual = faction.visualForShipWithHullSize(shipHullSize);
                 var effects = BuildableEffect.Instances();
                 var effectNone = effects.None;
-                var effectDetails = new BuildableEffect("Leave Orbit", 0, // order
+                var effectLeaveOrbit = new BuildableEffect("Leave Orbit", 0, // order
                 (uwpe) => {
-                    alert("todo - leave orbit");
+                    var ship = uwpe.entity;
+                    ship.planetOrbitExit(world, planet);
+                    back();
                 });
+                var effectCreateColony = new BuildableEffect("Colonize Planet", 0, // order
+                (uwpe) => {
+                    alert("todo - create colony");
+                });
+                var effectConquerPlanet = new BuildableEffect("Conquer Planet", 0, // order
+                (uwpe) => {
+                    alert("todo - conquer planet");
+                });
+                var effectsAvailableForUse = [
+                    effectLeaveOrbit,
+                    effectCreateColony,
+                    effectConquerPlanet
+                ];
                 var shipAsBuildableDefn = new BuildableDefn(this.shipName, false, // isItem
                 (m, p) => true, // hack - Should be orbit only.
                 Coords.zeroes(), // sizeInPixels
                 visual, industryToBuild, // industryToBuild
                 effectNone, // effectPerRound
-                effectDetails, null, // categories
+                effectsAvailableForUse, null, // categories
                 null // modifyOnBuild
                 );
                 var shipAsBuildable = new Buildable(shipAsBuildableDefn, shipPosInCells, false, // isComplete,
                 false // isAutomated
                 );
-                var shipEntity = shipAsBuildable.toEntity(world);
+                var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
+                var shipEntity = 
+                // shipAsBuildable.toEntity(world);
+                new Ship(this.shipName, shipBodyDefn, shipPosInCells, faction, new Array() // todo
+                );
+                shipEntity.propertyAdd(shipAsBuildable);
+                // hack
+                var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual);
+                shipEntity.propertyAdd(shipDrawable);
                 var venuePrevAsVenueLayout = venuePrev;
                 var layout = venuePrevAsVenueLayout.layout;
                 layout.buildableEntityBuild(shipEntity);

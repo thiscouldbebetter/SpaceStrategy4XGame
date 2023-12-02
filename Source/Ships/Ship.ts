@@ -423,7 +423,7 @@ class Ship extends Entity
 	): void
 	{
 		starsystem.shipRemove(this);
-		planet.shipAdd(this);
+		planet.shipAddToOrbit(this);
 
 		this.locatable().loc.placeName =
 			Planet.name + ":" + planet.name;
@@ -431,15 +431,11 @@ class Ship extends Entity
 
 	planetOrbitExit
 	(
-		universe: Universe, starsystem: Starsystem,
+		world:  WorldExtended,
 		planet: Planet
 	): void
 	{
-		planet.shipRemove(this);
-		starsystem.shipAdd(this, universe.world as WorldExtended);
-
-		this.locatable().loc.placeName =
-			Starsystem.name + ":" + starsystem.name;
+		planet.shipLeaveOrbit(this, world);
 	}
 
 	// controls

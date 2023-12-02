@@ -191,7 +191,7 @@ class BuildableDefnsLegacy
 				visual,
 				industryToBuildAmount,
 				effectNone,
-				null, // effectDetails
+				null, // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -206,7 +206,7 @@ class BuildableDefnsLegacy
 				visual,
 				industryToBuildAmount,
 				effect,
-				null, // effectDetails
+				null, // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -221,7 +221,7 @@ class BuildableDefnsLegacy
 				visual,
 				industryToBuildAmount,
 				effect,
-				null, // effectDetails
+				null, // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -236,7 +236,7 @@ class BuildableDefnsLegacy
 				visual,
 				null, // industryToBuildAmount,
 				effectTodo,
-				null, // effectDetails
+				null, // effectsAvailableToUse
 				null, // categories
 				null // entityModifyOnBuild
 			);
@@ -257,7 +257,7 @@ class BuildableDefnsLegacy
 				visual,
 				industryToBuildAmount,
 				effectTodo,
-				null, // effectDetails
+				null, // effectsAvailableToUse
 				[ category ],
 				null // entityModifyOnBuild
 			);
@@ -371,7 +371,7 @@ class BuildableDefnsLegacy
 			visualBuild("Shipyard", colors.Blue),
 			120, // industryToBuild
 			effectNone, // effectPerRound
-			effectBuildShip, // effectDetails
+			[ effectBuildShip ], // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -526,7 +526,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hull", colors.Gray),
 			30,
 			effectNone,
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -540,7 +540,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hull", colors.Red),
 			60,
 			effectNone,
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -554,7 +554,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hull", colors.Green),
 			120,
 			effectNone,
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -568,7 +568,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hull", colors.Blue),
 			240,
 			effectNone,
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -699,7 +699,7 @@ class BuildableDefnsLegacy
 			visualBuild("Xeno Archaeological Dig", colors.Gray),
 			50,
 			effectNone,
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);
@@ -724,7 +724,7 @@ class BuildableDefnsLegacy
 			visualBuild("Hub", colors.Gray),
 			30,
 			effectResourcesAdd( [ new Resource("Industry", 1), new Resource("Prosperity", 1) ] ),
-			null, // effectDetails
+			null, // effectsAvailableToUse
 			null, // categories
 			null // entityModifyOnBuild
 		);

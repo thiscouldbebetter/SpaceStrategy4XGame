@@ -8,9 +8,9 @@ class BuildableDefn
 	visual: VisualBase;
 	industryToBuild: number;
 	effectPerRound: BuildableEffect;
-	effectDetails: BuildableEffect;
+	effectsAvailableToUse: BuildableEffect[];
 	categories: BuildableCategory[];
-	entityModifyOnBuild: (entity: Entity) => void;
+	entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void;
 
 	constructor
 	(
@@ -21,9 +21,9 @@ class BuildableDefn
 		visual: VisualBase,
 		industryToBuild: number,
 		effectPerRound: BuildableEffect,
-		effectDetails: BuildableEffect,
+		effectsAvailableToUse: BuildableEffect[],
 		categories: BuildableCategory[],
-		entityModifyOnBuild: (entity: Entity) => void
+		entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void
 	)
 	{
 		this.name = name;
@@ -33,12 +33,12 @@ class BuildableDefn
 		this.visual = this.visualWrapWithOverlay(visual);
 		this.industryToBuild = industryToBuild;
 		this.effectPerRound = effectPerRound;
-		this.effectDetails = effectDetails;
+		this.effectsAvailableToUse = effectsAvailableToUse || new Array<BuildableEffect>();
 		this.categories = categories || new Array<BuildableCategory>();
 		this.entityModifyOnBuild = entityModifyOnBuild;
 	}
 
-	buildableToEntity(buildable: Buildable): Entity
+	buildableToEntity(buildable: Buildable, world: WorldExtended): Entity
 	{
 		var returnValue = new Entity
 		(
@@ -60,7 +60,11 @@ class BuildableDefn
 
 		if (this.entityModifyOnBuild != null)
 		{
-			this.entityModifyOnBuild(returnValue);
+			var uwpe = new UniverseWorldPlaceEntities
+			(
+				null, world, null, returnValue, null
+			);
+			this.entityModifyOnBuild(uwpe);
 		}
 
 		return returnValue;

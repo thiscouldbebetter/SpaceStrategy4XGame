@@ -1,5 +1,5 @@
 
-class VenueLayout implements Venue
+class VenueLayout implements VenueDrawnOnlyWhenUpdated
 {
 	venueParent: Venue;
 	modelParent: any;
@@ -8,11 +8,15 @@ class VenueLayout implements Venue
 	buildableDefnSelected: BuildableDefn;
 	venueControls: VenueControls;
 
+	hasBeenUpdatedSinceDrawn: boolean;
+
 	constructor(venueParent: Venue, modelParent: any, layout: Layout)
 	{
 		this.venueParent = venueParent;
 		this.modelParent = modelParent;
 		this.layout = layout;
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	buildableDefnsAllowedAtPosInCells
@@ -40,6 +44,8 @@ class VenueLayout implements Venue
 		this.venueControls = new VenueControls(controlRoot, null);
 
 		this.layout.initialize(universe);
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	model(): any
@@ -52,6 +58,12 @@ class VenueLayout implements Venue
 		this.venueControls.updateForTimerTick(universe);
 
 		var inputHelper = universe.inputHelper;
+
+		if (inputHelper.inputsActive().length > 0)
+		{
+			this.hasBeenUpdatedSinceDrawn = true;
+		}
+
 		var planet = this.modelParent;
 		var layout = this.layout;
 		var map = layout.map;
@@ -805,10 +817,21 @@ class VenueLayout implements Venue
 
 	draw(universe: Universe)
 	{
-		this.layout.draw(universe, universe.display);
-		if (this.venueControls != null)
+		var world = universe.world as WorldExtended;
+
+		var shouldDraw =
+			world.shouldDrawOnlyWhenUpdated == false
+			|| this.hasBeenUpdatedSinceDrawn;
+
+		if (shouldDraw)
 		{
-			this.venueControls.draw(universe);
+			this.hasBeenUpdatedSinceDrawn = false;
+
+			this.layout.draw(universe, universe.display);
+			if (this.venueControls != null)
+			{
+				this.venueControls.draw(universe);
+			}
 		}
 	}
 }

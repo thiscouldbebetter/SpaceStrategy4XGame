@@ -4,6 +4,7 @@ class VenueLayout {
         this.venueParent = venueParent;
         this.modelParent = modelParent;
         this.layout = layout;
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     buildableDefnsAllowedAtPosInCells(buildableDefnsToCheck, posInCells) {
         var returnValues = buildableDefnsToCheck.filter(x => x.canBeBuiltOnMapAtPosInCells(this.layout.map, posInCells));
@@ -16,6 +17,7 @@ class VenueLayout {
         var controlRoot = this.toControl(universe);
         this.venueControls = new VenueControls(controlRoot, null);
         this.layout.initialize(universe);
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     model() {
         return this.layout;
@@ -23,6 +25,9 @@ class VenueLayout {
     updateForTimerTick(universe) {
         this.venueControls.updateForTimerTick(universe);
         var inputHelper = universe.inputHelper;
+        if (inputHelper.inputsActive().length > 0) {
+            this.hasBeenUpdatedSinceDrawn = true;
+        }
         var planet = this.modelParent;
         var layout = this.layout;
         var map = layout.map;
@@ -344,9 +349,15 @@ class VenueLayout {
     }
     // drawable
     draw(universe) {
-        this.layout.draw(universe, universe.display);
-        if (this.venueControls != null) {
-            this.venueControls.draw(universe);
+        var world = universe.world;
+        var shouldDraw = world.shouldDrawOnlyWhenUpdated == false
+            || this.hasBeenUpdatedSinceDrawn;
+        if (shouldDraw) {
+            this.hasBeenUpdatedSinceDrawn = false;
+            this.layout.draw(universe, universe.display);
+            if (this.venueControls != null) {
+                this.venueControls.draw(universe);
+            }
         }
     }
 }

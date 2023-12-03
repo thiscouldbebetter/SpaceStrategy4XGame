@@ -10,7 +10,7 @@ class BuildableDefn {
         this.effectPerRound = effectPerRound;
         this.effectsAvailableToUse = effectsAvailableToUse || new Array();
         this.categories = categories || new Array();
-        this.entityModifyOnBuild = entityModifyOnBuild;
+        this._entityModifyOnBuild = entityModifyOnBuild;
     }
     buildableToEntity(buildable, world) {
         var returnValue = new Entity(this.name, [
@@ -21,10 +21,8 @@ class BuildableDefn {
         if (this.isItem) {
             returnValue.propertyAdd(new Item(this.name, 1));
         }
-        if (this.entityModifyOnBuild != null) {
-            var uwpe = new UniverseWorldPlaceEntities(null, world, null, returnValue, null);
-            this.entityModifyOnBuild(uwpe);
-        }
+        var uwpe = new UniverseWorldPlaceEntities(null, world, null, returnValue, null);
+        this.entityModifyOnBuild(uwpe);
         return returnValue;
     }
     canBeBuiltOnMapAtPosInCells(map, posInCells) {
@@ -32,6 +30,11 @@ class BuildableDefn {
     }
     effectPerRoundApply(uwpe) {
         this.effectPerRound.apply(uwpe);
+    }
+    entityModifyOnBuild(uwpe) {
+        if (this._entityModifyOnBuild != null) {
+            this._entityModifyOnBuild(uwpe);
+        }
     }
     nameAndCost() {
         return this.name + " (" + this.industryToBuild + ")";

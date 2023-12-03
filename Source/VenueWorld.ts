@@ -1,10 +1,12 @@
 
-class VenueWorldExtended extends VenueWorld
+class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 {
 	world: WorldExtended;
 	cameraEntity: Entity;
 
 	selectedEntity: Entity;
+
+	hasBeenUpdatedSinceDrawn: boolean;
 
 	constructor(world: WorldExtended)
 	{
@@ -13,6 +15,8 @@ class VenueWorldExtended extends VenueWorld
 		this.world = world;
 
 		this.cameraEntity = new Entity("camera", [ this.world.camera ] );
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	model(): Network2
@@ -44,12 +48,13 @@ class VenueWorldExtended extends VenueWorld
 			var constraintLookAt = constraint as Constraint_LookAt;
 			constraintLookAt.targetPos = targetPosNew;
 		}
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	cameraDown(cameraSpeed: number): void
 	{
-		var cameraAction = new Action_CameraMove([0, cameraSpeed]);
-		cameraAction.perform(this.cameraEntity.camera());
+		this.cameraMove(0, cameraSpeed);
 	}
 
 	cameraIn(cameraSpeed: number): void
@@ -63,12 +68,13 @@ class VenueWorldExtended extends VenueWorld
 		{
 			constraintDistance.distanceToHold = 1;
 		}
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	cameraLeft(cameraSpeed: number): void
 	{
-		var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
-		cameraAction.perform(this.cameraEntity.camera());
+		this.cameraMove(0 - cameraSpeed, 0);
 	}
 
 	cameraOut(cameraSpeed: number): void
@@ -82,6 +88,8 @@ class VenueWorldExtended extends VenueWorld
 		{
 			constraintDistance.distanceToHold = 0;
 		}
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	cameraReset(): void
@@ -102,18 +110,27 @@ class VenueWorldExtended extends VenueWorld
 		constraintLookAt.targetPos = origin;
 
 		camera.loc.pos.clear().x = 0 - camera.focalLength;
+
+		this.hasBeenUpdatedSinceDrawn = true;
+	}
+
+	cameraMove(horizontal: number, vertical: number): void
+	{
+		var camera = this.cameraEntity.camera();
+		var cameraAction = new Action_CameraMove([horizontal, vertical]);
+		cameraAction.perform(camera);
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	cameraRight(cameraSpeed: number): void
 	{
-		var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
-		cameraAction.perform(this.cameraEntity.camera());
+		this.cameraMove(cameraSpeed, 0);
 	}
 
 	cameraUp(cameraSpeed: number): void
 	{
-		var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
-		cameraAction.perform(this.cameraEntity.camera());
+		this.cameraMove(0, 0 - cameraSpeed);
 	}
 
 	// controls
@@ -222,13 +239,22 @@ class VenueWorldExtended extends VenueWorld
 
 	draw(universe: Universe): void
 	{
-		universe.display.drawBackground(null, null);
-		//this.world.network.draw(universe, this.world.camera);
-		var playerFaction = this.world.factions[0];
-		var playerKnowledge = playerFaction.knowledge;
-		var worldKnown = playerKnowledge.world(universe, this.world);
-		worldKnown.network.draw2(universe, worldKnown.camera);
-		this.venueControls.draw(universe);
+		var shouldDraw =
+			this.world.shouldDrawOnlyWhenUpdated == false
+			|| this.hasBeenUpdatedSinceDrawn;
+
+		if (shouldDraw)
+		{
+			this.hasBeenUpdatedSinceDrawn = false;
+
+			universe.display.drawBackground(null, null);
+			//this.world.network.draw(universe, this.world.camera);
+			var playerFaction = this.world.factions[0];
+			var playerKnowledge = playerFaction.knowledge;
+			var worldKnown = playerKnowledge.world(universe, this.world);
+			worldKnown.network.draw2(universe, worldKnown.camera);
+			this.venueControls.draw(universe);
+		}
 	}
 
 	finalize(universe: Universe): void
@@ -264,6 +290,8 @@ class VenueWorldExtended extends VenueWorld
 		]
 		var cameraConstrainable = new Constrainable(constraints);
 		this.cameraEntity.propertyAdd(cameraConstrainable);
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	selectionName(): string
@@ -295,9 +323,21 @@ class VenueWorldExtended extends VenueWorld
 
 		this.venueControls.updateForTimerTick(universe);
 
+		this.updateForTimerTick_Input(universe, world);
+	}
+
+	updateForTimerTick_Input(universe: Universe, world: WorldExtended)
+	{
+		this.updateForTimerTick_Input_MouseClicked(universe, world);
+		this.updateForTimerTick_Input_InputsActive(universe, world);
+	}
+
+	updateForTimerTick_Input_MouseClicked(universe: Universe, world: WorldExtended): void
+	{
 		var inputHelper = universe.inputHelper;
+
 		if (inputHelper.isMouseClicked())
-		{	
+		{
 			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
 
 			var mouseClickPos = inputHelper.mouseClickPos.clone();
@@ -365,6 +405,11 @@ class VenueWorldExtended extends VenueWorld
 				this.selectedEntity = bodyClicked;
 			}
 		}
+	}
+
+	updateForTimerTick_Input_InputsActive(universe: Universe, world: WorldExtended): void
+	{
+		var inputHelper = universe.inputHelper;
 
 		var inputsActive = inputHelper.inputsPressed;
 		for (var i = 0; i < inputsActive.length; i++)

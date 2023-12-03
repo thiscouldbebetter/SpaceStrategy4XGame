@@ -1,5 +1,5 @@
 
-class VenueStarsystem implements Venue
+class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 {
 	venueParent: Venue;
 	starsystem: Starsystem;
@@ -13,6 +13,8 @@ class VenueStarsystem implements Venue
 	cameraEntity: Entity;
 	venueControls: VenueControls;
 
+	hasBeenUpdatedSinceDrawn: boolean;
+
 	constructor(venueParent: Venue, starsystem: Starsystem)
 	{
 		this.venueParent = venueParent;
@@ -21,26 +23,38 @@ class VenueStarsystem implements Venue
 		this.cursor = new Cursor();
 
 		this._mouseClickPos = Coords.create();
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	draw(universe: Universe): void
 	{
 		var world = universe.world as WorldExtended;
-		var display = universe.display;
 
-		display.drawBackground(null, null);
+		var shouldDraw =
+			world.shouldDrawOnlyWhenUpdated == false
+			|| this.hasBeenUpdatedSinceDrawn
 
-		this.starsystem.draw(universe, world, display);
+		if (shouldDraw)
+		{
+			this.hasBeenUpdatedSinceDrawn = false;
 
-		var uwpe = new UniverseWorldPlaceEntities
-		(
-			universe, world, null, null, null
-		);
+			var display = universe.display;
 
-		uwpe.entitySet(this.cursor);
-		this.cursor.draw(uwpe, display);
+			display.drawBackground(null, null);
 
-		this.venueControls.draw(universe);
+			this.starsystem.draw(universe, world, display);
+
+			var uwpe = new UniverseWorldPlaceEntities
+			(
+				universe, world, null, null, null
+			);
+
+			uwpe.entitySet(this.cursor);
+			this.cursor.draw(uwpe, display);
+
+			this.venueControls.draw(universe);
+		}
 	}
 
 	entitySelectedDetailsAreViewable(universe: Universe): boolean
@@ -178,6 +192,8 @@ class VenueStarsystem implements Venue
 		this.entities.push(...starsystem.linkPortals);
 		this.entities.push(...starsystem.planets);
 		this.entities.push(...starsystem.ships);
+
+		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
 	model(): Starsystem
@@ -212,19 +228,6 @@ class VenueStarsystem implements Venue
 			);
 		}
 
-		/*
-		var ships = this.starsystem.ships;
-		for (var i = 0; i < ships.length; i++)
-		{
-			var ship = ships[i];
-
-			var activity = ship.actor().activity;
-			if (activity != null)
-			{
-				activity.perform(uwpe.entitySet(ship));
-			}
-		}
-		*/
 		this.starsystem.updateForTimerTick(uwpe);
 
 		this.draw(universe);
@@ -241,6 +244,12 @@ class VenueStarsystem implements Venue
 		var inputHelper = universe.inputHelper;
 
 		var inputsActive = inputHelper.inputsPressed;
+
+		if (inputsActive.length > 0)
+		{
+			this.hasBeenUpdatedSinceDrawn = true;
+		}
+
 		for (var i = 0; i < inputsActive.length; i++)
 		{
 			var inputActive = inputsActive[i].name;

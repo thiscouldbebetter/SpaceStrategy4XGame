@@ -246,7 +246,8 @@ class BuildableDefnsLegacy
 			name: string,
 			visual: VisualBase,
 			industryToBuildAmount: number,
-			category: BuildableCategory
+			category: BuildableCategory,
+			deviceDefn: DeviceDefn
 		) =>
 			new BuildableDefn
 			(
@@ -259,7 +260,15 @@ class BuildableDefnsLegacy
 				effectTodo,
 				null, // effectsAvailableToUse
 				[ category ],
-				null // entityModifyOnBuild
+				// entityModifyOnBuild
+				(uwpe: UniverseWorldPlaceEntities) =>
+				{
+					if (deviceDefn != null)
+					{
+						var device = new Device(deviceDefn);
+						uwpe.entity.propertyAdd(device);
+					}
+				}
 			);
 
 		// Planet - Orbit.
@@ -436,7 +445,8 @@ class BuildableDefnsLegacy
 			"Tonklin Motor",
 			visualBuild("Drive", colors.Gray),
 			10,
-			categoryShipDrive
+			categoryShipDrive,
+			null // deviceDefn
 		);
 
 		this.ShipDrive2IonBanger = shipComponent
@@ -444,7 +454,8 @@ class BuildableDefnsLegacy
 			"Ion Banger",
 			visualBuild("Drive", colors.Red),
 			30,
-			categoryShipDrive
+			categoryShipDrive,
+			null // deviceDefn
 		);
 
 		this.ShipDrive3GravitonProjector = shipComponent
@@ -452,7 +463,8 @@ class BuildableDefnsLegacy
 			"Graviton Projector",
 			visualBuild("Drive", colors.Green),
 			40,
-			categoryShipDrive
+			categoryShipDrive,
+			null // deviceDefn
 		);
 
 		this.ShipDrive4InertiaNegator = shipComponent
@@ -460,7 +472,8 @@ class BuildableDefnsLegacy
 			"Inertia Negator",
 			visualBuild("Drive", colors.Red),
 			20,
-			categoryShipDrive
+			categoryShipDrive,
+			null // deviceDefn
 		);
 
 		this.ShipDrive5NanowaveSpaceBender = shipComponent
@@ -468,7 +481,8 @@ class BuildableDefnsLegacy
 			"Inertia Negator",
 			visualBuild("Drive", colors.Red),
 			80,
-			categoryShipDrive
+			categoryShipDrive,
+			null // deviceDefn
 		);
 
 		// Generators.
@@ -480,7 +494,8 @@ class BuildableDefnsLegacy
 			"Proton Shaver",
 			visualBuild("Generator", colors.Gray),
 			20,
-			categoryShipGenerator
+			categoryShipGenerator,
+			null // deviceDefn
 		);
 
 		this.ShipGenerator2SubatomicScoop = shipComponent
@@ -488,7 +503,8 @@ class BuildableDefnsLegacy
 			"Subatomic Scoop",
 			visualBuild("Generator", colors.Red),
 			35,
-			categoryShipGenerator
+			categoryShipGenerator,
+			null // deviceDefn
 		);
 
 		this.ShipGenerator3QuarkExpress = shipComponent
@@ -496,7 +512,8 @@ class BuildableDefnsLegacy
 			"Quark Express",
 			visualBuild("Generator", colors.Green),
 			60,
-			categoryShipGenerator
+			categoryShipGenerator,
+			null // deviceDefn
 		);
 
 		this.ShipGenerator4VanKreegHypersplicer = shipComponent
@@ -504,7 +521,8 @@ class BuildableDefnsLegacy
 			"Van Kreeg Hypersplicer",
 			visualBuild("Generator", colors.Blue),
 			80,
-			categoryShipGenerator
+			categoryShipGenerator,
+			null // deviceDefn
 		);
 
 		this.ShipGenerator5Nanotwirler = shipComponent
@@ -512,7 +530,8 @@ class BuildableDefnsLegacy
 			"Nanotwirler",
 			visualBuild("Generator", colors.Violet),
 			100,
-			categoryShipGenerator
+			categoryShipGenerator,
+			null // deviceDefn
 		);
 
 		// Hulls.
@@ -576,7 +595,7 @@ class BuildableDefnsLegacy
 		// Items.
 
 		var sc = (name: string, industry: number) =>
-			shipComponent(name, visualBuild(name, colors.Gray), industry, categories.ShipItem);
+			shipComponent(name, visualBuild(name, colors.Gray), industry, categories.ShipItem, null);
 
 		this.ShipItemAccutron 				= sc("Accutron", 				60);
 		this.ShipItemBackfirer 				= sc("Backfirer", 				60);
@@ -625,45 +644,45 @@ class BuildableDefnsLegacy
 
 		var categoryShipSensor = categories.ShipSensor;
 
-		this.ShipSensor1TonklinFrequencyAnalyzer 		= shipComponent("Tonklin Frequency Analyzer", 	visualBuild("Sensors1", colors.Gray), 20, categoryShipSensor);
-		this.ShipSensor2SubspacePhaseArray 				= shipComponent("Subspace Phase Array", 		visualBuild("Sensors2", colors.Gray), 40, categoryShipSensor);
-		this.ShipSensor3AuralCloudConstrictor 			= shipComponent("Aural Cloud Constrictor", 		visualBuild("Sensors3", colors.Gray), 60, categoryShipSensor);
-		this.ShipSensor4HyperwaveTympanum 				= shipComponent("Hyperwave Tympanum", 			visualBuild("Sensors4", colors.Gray), 80, categoryShipSensor);
-		this.ShipSensor5MurgatroydsKnower 				= shipComponent("Murgatroyd's Knower", 			visualBuild("Sensors5", colors.Gray), 100, categoryShipSensor);
-		this.ShipSensor6NanowaveDecouplingNet 			= shipComponent("Nanowave Decoupling Net", 		visualBuild("Sensors6", colors.Gray), 200, categoryShipSensor);
+		this.ShipSensor1TonklinFrequencyAnalyzer 		= shipComponent("Tonklin Frequency Analyzer", 	visualBuild("Sensors1", colors.Gray), 20, categoryShipSensor, null);
+		this.ShipSensor2SubspacePhaseArray 				= shipComponent("Subspace Phase Array", 		visualBuild("Sensors2", colors.Gray), 40, categoryShipSensor, null);
+		this.ShipSensor3AuralCloudConstrictor 			= shipComponent("Aural Cloud Constrictor", 		visualBuild("Sensors3", colors.Gray), 60, categoryShipSensor, null);
+		this.ShipSensor4HyperwaveTympanum 				= shipComponent("Hyperwave Tympanum", 			visualBuild("Sensors4", colors.Gray), 80, categoryShipSensor, null);
+		this.ShipSensor5MurgatroydsKnower 				= shipComponent("Murgatroyd's Knower", 			visualBuild("Sensors5", colors.Gray), 100, categoryShipSensor, null);
+		this.ShipSensor6NanowaveDecouplingNet 			= shipComponent("Nanowave Decoupling Net", 		visualBuild("Sensors6", colors.Gray), 200, categoryShipSensor, null);
 
 		// Shields.
 
 		var categoryShipShield = categories.ShipShield;
 
-		this.ShipShield1IonWrap 						= shipComponent("Ion Wrap", 					visualBuild("Shield1", colors.Gray), 10, categoryShipShield);
-		this.ShipShield2ConcussionShield 				= shipComponent("Concussion Shield", 			visualBuild("Shield2", colors.Gray), 30, categoryShipShield);
-		this.ShipShield3WaveScatterer 					= shipComponent("Wave Scatterer", 				visualBuild("Shield3", colors.Gray), 50, categoryShipShield);
-		this.ShipShield4Deactotron 						= shipComponent("Deactotron", 					visualBuild("Shield4", colors.Gray), 50, categoryShipShield);
-		this.ShipShield5HyperwaveNullifier 				= shipComponent("Hyperwave Nullifier", 			visualBuild("Shield5", colors.Gray), 100, categoryShipShield);
-		this.ShipShield6Nanoshell 						= shipComponent("Nanoshell", 					visualBuild("Shield6", colors.Gray), 200, categoryShipShield);
+		this.ShipShield1IonWrap 						= shipComponent("Ion Wrap", 					visualBuild("Shield1", colors.Gray), 10, categoryShipShield, null);
+		this.ShipShield2ConcussionShield 				= shipComponent("Concussion Shield", 			visualBuild("Shield2", colors.Gray), 30, categoryShipShield, null);
+		this.ShipShield3WaveScatterer 					= shipComponent("Wave Scatterer", 				visualBuild("Shield3", colors.Gray), 50, categoryShipShield, null);
+		this.ShipShield4Deactotron 						= shipComponent("Deactotron", 					visualBuild("Shield4", colors.Gray), 50, categoryShipShield, null);
+		this.ShipShield5HyperwaveNullifier 				= shipComponent("Hyperwave Nullifier", 			visualBuild("Shield5", colors.Gray), 100, categoryShipShield, null);
+		this.ShipShield6Nanoshell 						= shipComponent("Nanoshell", 					visualBuild("Shield6", colors.Gray), 200, categoryShipShield, null);
 
 		// Starlane Drives.
 		
 		var categoryShipStarlaneDrive = categories.ShipStarlaneDrive;
 
-		this.ShipStarlaneDrive1StarLaneDrive 			= shipComponent("Star Lane Drive", 				visualBuild("StarDrive", colors.Gray), 30, categoryShipStarlaneDrive);
-		this.ShipStarlaneDrive2StarLaneHyperdrive 		= shipComponent("Star Lane Hyperdrive", 		visualBuild("StarDrive2", colors.Gray), 30, categoryShipStarlaneDrive);
+		this.ShipStarlaneDrive1StarLaneDrive 			= shipComponent("Star Lane Drive", 				visualBuild("StarDrive", colors.Gray), 30, categoryShipStarlaneDrive, null);
+		this.ShipStarlaneDrive2StarLaneHyperdrive 		= shipComponent("Star Lane Hyperdrive", 		visualBuild("StarDrive2", colors.Gray), 30, categoryShipStarlaneDrive, null);
 
 		// Weapons.
 
 		var categoryShipWeapon = categories.ShipWeapon;
 
-		this.ShipWeapon01MassBarrageGun 				= shipComponent("Mass Barrage Gun", 				visualBuild("Weapon", colors.Gray), 10, categoryShipWeapon);
-		this.ShipWeapon02FourierMissiles 				= shipComponent("Fourier Missiles", 				visualBuild("Weapon", colors.Gray), 20, categoryShipWeapon);
-		this.ShipWeapon03QuantumSingularityLauncher 	= shipComponent("Quantum Singularity Launcher", 	visualBuild("Weapon", colors.Gray), 30, categoryShipWeapon);
-		this.ShipWeapon04MolecularDisassociator 		= shipComponent("Molecular Disassociator", 			visualBuild("Weapon", colors.Gray), 40, categoryShipWeapon);
-		this.ShipWeapon05ElectromagneticPulser 			= shipComponent("Electromagnetic Pulser", 			visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon);
-		this.ShipWeapon06Plasmatron 					= shipComponent("Plasmatron", 						visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon);
-		this.ShipWeapon07Ueberlaser 					= shipComponent("Ueberlaser", 						visualBuild("Weapon", colors.Gray), 70, categoryShipWeapon);
-		this.ShipWeapon08FergnatzLens 					= shipComponent("Fergnatz Lens", 					visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon);
-		this.ShipWeapon09HypersphereDriver 				= shipComponent("Hypersphere Driver", 				visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon);
-		this.ShipWeapon10Nanomanipulator 				= shipComponent("Nanomanipulator", 					visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon);
+		this.ShipWeapon01MassBarrageGun 				= shipComponent("Mass Barrage Gun", 				visualBuild("Weapon", colors.Gray), 10, categoryShipWeapon, null);
+		this.ShipWeapon02FourierMissiles 				= shipComponent("Fourier Missiles", 				visualBuild("Weapon", colors.Gray), 20, categoryShipWeapon, null);
+		this.ShipWeapon03QuantumSingularityLauncher 	= shipComponent("Quantum Singularity Launcher", 	visualBuild("Weapon", colors.Gray), 30, categoryShipWeapon, null);
+		this.ShipWeapon04MolecularDisassociator 		= shipComponent("Molecular Disassociator", 			visualBuild("Weapon", colors.Gray), 40, categoryShipWeapon, null);
+		this.ShipWeapon05ElectromagneticPulser 			= shipComponent("Electromagnetic Pulser", 			visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
+		this.ShipWeapon06Plasmatron 					= shipComponent("Plasmatron", 						visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
+		this.ShipWeapon07Ueberlaser 					= shipComponent("Ueberlaser", 						visualBuild("Weapon", colors.Gray), 70, categoryShipWeapon, null);
+		this.ShipWeapon08FergnatzLens 					= shipComponent("Fergnatz Lens", 					visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
+		this.ShipWeapon09HypersphereDriver 				= shipComponent("Hypersphere Driver", 				visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, null);
+		this.ShipWeapon10Nanomanipulator 				= shipComponent("Nanomanipulator", 					visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, null);
 
 		// Surface.
 

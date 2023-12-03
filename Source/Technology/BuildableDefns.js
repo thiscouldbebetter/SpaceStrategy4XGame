@@ -44,12 +44,17 @@ class BuildableDefnsBasic {
         null, // categories
         null // entityModifyOnBuild
         );
-        var shipComponent = (name, visual, industryToBuildAmount) => new BuildableDefn(name, true, // isItem
+        var shipComponent = (name, visual, industryToBuildAmount, deviceDefn) => new BuildableDefn(name, true, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, // effectPerRound
         null, // // effectsAvailableToUse
         null, // categories
-        null // entityModifyOnBuild
-        );
+        // entityModifyOnBuild
+        (uwpe) => {
+            if (deviceDefn != null) {
+                var device = new Device(deviceDefn);
+                uwpe.entity.propertyAdd(device);
+            }
+        });
         this.OrbitalCloak = facilityOrbital("Orbital Cloak", visualBuild("C", colors.Gray), 120);
         this.OrbitalDocks = facilityOrbital("Orbital Docks", visualBuild("D", colors.Gray), 120);
         this.OrbitalShield = facilityOrbital("Orbital Shield", visualBuild("S", colors.Red), 60);
@@ -59,14 +64,22 @@ class BuildableDefnsBasic {
         this.OrbitalWeaponAdvanced = facilityOrbital("Orbital Weapon, Advanced", visualBuild("W", colors.Green), 240);
         this.PlanetwideFocusDiplomacy = planetwideFocus("Planetwide Diplomacy Focus", visualBuild("Focus", colors.Orange));
         this.PlanetwideFocusResearch = planetwideFocus("Planetwide Research Focus", visualBuild("Focus", colors.Blue));
-        this.ShipDriveBasic = shipComponent("Ship Drive, Basic", visualBuild("Drive", colors.Gray), 30);
-        this.ShipDriveIntermediate = shipComponent("Ship Drive, Intermediate", visualBuild("Drive", colors.Red), 60);
-        this.ShipDriveAdvanced = shipComponent("Ship Drive, Advanced", visualBuild("Drive", colors.Green), 120);
-        this.ShipDriveSupreme = shipComponent("Ship Drive, Supreme", visualBuild("Drive", colors.Red), 240);
-        this.ShipGeneratorBasic = shipComponent("Ship Generator, Basic", visualBuild("Generator", colors.Gray), 30);
-        this.ShipGeneratorIntermediate = shipComponent("Ship Generator, Intermediate", visualBuild("Generator", colors.Red), 60);
-        this.ShipGeneratorAdvanced = shipComponent("Ship Generator, Advanced", visualBuild("Generator", colors.Green), 120);
-        this.ShipGeneratorSupreme = shipComponent("Ship Generator, Supreme", visualBuild("Generator", colors.Blue), 240);
+        this.ShipDriveBasic = shipComponent("Ship Drive, Basic", visualBuild("Drive", colors.Gray), 30, null // deviceDefn
+        );
+        this.ShipDriveIntermediate = shipComponent("Ship Drive, Intermediate", visualBuild("Drive", colors.Red), 60, null // deviceDefn
+        );
+        this.ShipDriveAdvanced = shipComponent("Ship Drive, Advanced", visualBuild("Drive", colors.Green), 120, null // deviceDefn
+        );
+        this.ShipDriveSupreme = shipComponent("Ship Drive, Supreme", visualBuild("Drive", colors.Red), 240, null // deviceDefn
+        );
+        this.ShipGeneratorBasic = shipComponent("Ship Generator, Basic", visualBuild("Generator", colors.Gray), 30, null // deviceDefn
+        );
+        this.ShipGeneratorIntermediate = shipComponent("Ship Generator, Intermediate", visualBuild("Generator", colors.Red), 60, null // deviceDefn
+        );
+        this.ShipGeneratorAdvanced = shipComponent("Ship Generator, Advanced", visualBuild("Generator", colors.Green), 120, null // deviceDefn
+        );
+        this.ShipGeneratorSupreme = shipComponent("Ship Generator, Supreme", visualBuild("Generator", colors.Blue), 240, null // deviceDefn
+        );
         this.ShipHullEnormous = new BuildableDefn("Ship Hull, Enormous", false, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Blue), 240, null, // effectPerRound
         null, // effectsAvailableToUse
@@ -91,21 +104,36 @@ class BuildableDefnsBasic {
         null, // categories
         null // entityModifyOnBuild
         );
-        this.ShipItemCloak = shipComponent("Cloak", visualBuild("Cloak", colors.Gray), 100);
-        this.ShipItemColonyBuilder = shipComponent("Colony Builder", visualBuild("Col", colors.Gray), 100);
-        this.ShipItemDropShip = shipComponent("Drop Ship", visualBuild("Drop Ship", colors.Gray), 100);
-        this.ShipSensorsBasic = shipComponent("Ship Sensors, Basic", visualBuild("Sensors", colors.Gray), 30);
-        this.ShipSensorsIntermediate = shipComponent("Ship Sensors, Intermediate", visualBuild("Sensors", colors.Red), 60);
-        this.ShipSensorsAdvanced = shipComponent("Ship Sensors, Advanced", visualBuild("Sensors", colors.Green), 120);
-        this.ShipSensorsSupreme = shipComponent("Ship Sensors, Supreme", visualBuild("Sensors", colors.Blue), 240);
-        this.ShipShieldBasic = shipComponent("Ship Shield, Basic", visualBuild("Shield", colors.Gray), 30);
-        this.ShipShieldIntermediate = shipComponent("Ship Shield, Intermediate", visualBuild("Shield", colors.Red), 60);
-        this.ShipShieldAdvanced = shipComponent("Ship Shield, Advanced", visualBuild("Shield", colors.Green), 120);
-        this.ShipShieldSupreme = shipComponent("Ship Shield, Supreme", visualBuild("Shield", colors.Blue), 240);
-        this.ShipWeaponBasic = shipComponent("Ship Weapon, Basic", visualBuild("Weapon", colors.Gray), 30);
-        this.ShipWeaponIntermediate = shipComponent("Ship Weapon, Intermediate", visualBuild("Weapon", colors.Red), 60);
-        this.ShipWeaponAdvanced = shipComponent("Ship Weapon, Advanced", visualBuild("Weapon", colors.Green), 120);
-        this.ShipWeaponSupreme = shipComponent("Ship Weapon, Supreme", visualBuild("Weapon", colors.Blue), 240);
+        this.ShipItemCloak = shipComponent("Cloak", visualBuild("Cloak", colors.Gray), 100, null // deviceDefn
+        );
+        this.ShipItemColonyBuilder = shipComponent("Colony Builder", visualBuild("Col", colors.Gray), 100, null // deviceDefn
+        );
+        this.ShipItemDropShip = shipComponent("Drop Ship", visualBuild("Drop Ship", colors.Gray), 100, null // deviceDefn
+        );
+        this.ShipSensorsBasic = shipComponent("Ship Sensors, Basic", visualBuild("Sensors", colors.Gray), 30, null // deviceDefn
+        );
+        this.ShipSensorsIntermediate = shipComponent("Ship Sensors, Intermediate", visualBuild("Sensors", colors.Red), 60, null // deviceDefn
+        );
+        this.ShipSensorsAdvanced = shipComponent("Ship Sensors, Advanced", visualBuild("Sensors", colors.Green), 120, null // deviceDefn
+        );
+        this.ShipSensorsSupreme = shipComponent("Ship Sensors, Supreme", visualBuild("Sensors", colors.Blue), 240, null // deviceDefn
+        );
+        this.ShipShieldBasic = shipComponent("Ship Shield, Basic", visualBuild("Shield", colors.Gray), 30, null // deviceDefn
+        );
+        this.ShipShieldIntermediate = shipComponent("Ship Shield, Intermediate", visualBuild("Shield", colors.Red), 60, null // deviceDefn
+        );
+        this.ShipShieldAdvanced = shipComponent("Ship Shield, Advanced", visualBuild("Shield", colors.Green), 120, null // deviceDefn
+        );
+        this.ShipShieldSupreme = shipComponent("Ship Shield, Supreme", visualBuild("Shield", colors.Blue), 240, null // deviceDefn
+        );
+        this.ShipWeaponBasic = shipComponent("Ship Weapon, Basic", visualBuild("Weapon", colors.Gray), 30, null // deviceDefn
+        );
+        this.ShipWeaponIntermediate = shipComponent("Ship Weapon, Intermediate", visualBuild("Weapon", colors.Red), 60, null // deviceDefn
+        );
+        this.ShipWeaponAdvanced = shipComponent("Ship Weapon, Advanced", visualBuild("Weapon", colors.Green), 120, null // deviceDefn
+        );
+        this.ShipWeaponSupreme = shipComponent("Ship Weapon, Supreme", visualBuild("Weapon", colors.Blue), 240, null // deviceDefn
+        );
         this.Shipyard = new BuildableDefn("Shipyard", false, // isItem
         canBeBuiltInOrbit, mapCellSizeInPixels, new VisualGroup([
             VisualRectangle.fromSizeAndColorFill(mapCellSizeInPixels, Color.byName("Orange"))

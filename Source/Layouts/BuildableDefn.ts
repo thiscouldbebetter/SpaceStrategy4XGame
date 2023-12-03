@@ -10,7 +10,7 @@ class BuildableDefn
 	effectPerRound: BuildableEffect;
 	effectsAvailableToUse: BuildableEffect[];
 	categories: BuildableCategory[];
-	entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void;
+	_entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void;
 
 	constructor
 	(
@@ -35,7 +35,7 @@ class BuildableDefn
 		this.effectPerRound = effectPerRound;
 		this.effectsAvailableToUse = effectsAvailableToUse || new Array<BuildableEffect>();
 		this.categories = categories || new Array<BuildableCategory>();
-		this.entityModifyOnBuild = entityModifyOnBuild;
+		this._entityModifyOnBuild = entityModifyOnBuild;
 	}
 
 	buildableToEntity(buildable: Buildable, world: WorldExtended): Entity
@@ -58,14 +58,11 @@ class BuildableDefn
 			);
 		}
 
-		if (this.entityModifyOnBuild != null)
-		{
-			var uwpe = new UniverseWorldPlaceEntities
-			(
-				null, world, null, returnValue, null
-			);
-			this.entityModifyOnBuild(uwpe);
-		}
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			null, world, null, returnValue, null
+		);
+		this.entityModifyOnBuild(uwpe);
 
 		return returnValue;
 	}
@@ -78,6 +75,14 @@ class BuildableDefn
 	effectPerRoundApply(uwpe: UniverseWorldPlaceEntities): void
 	{
 		this.effectPerRound.apply(uwpe);
+	}
+
+	entityModifyOnBuild(uwpe: UniverseWorldPlaceEntities): void
+	{
+		if (this._entityModifyOnBuild != null)
+		{
+			this._entityModifyOnBuild(uwpe);
+		}
 	}
 
 	nameAndCost(): string

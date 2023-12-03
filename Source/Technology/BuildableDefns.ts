@@ -172,7 +172,13 @@ class BuildableDefnsBasic
 				null // entityModifyOnBuild
 			);
 
-		var shipComponent = (name: string, visual: VisualBase, industryToBuildAmount: number) =>
+		var shipComponent =
+		(
+			name: string,
+			visual: VisualBase,
+			industryToBuildAmount: number,
+			deviceDefn: DeviceDefn
+		) =>
 			new BuildableDefn
 			(
 				name,
@@ -184,7 +190,15 @@ class BuildableDefnsBasic
 				effectTodo, // effectPerRound
 				null, // // effectsAvailableToUse
 				null, // categories
-				null // entityModifyOnBuild
+				// entityModifyOnBuild
+				(uwpe: UniverseWorldPlaceEntities) =>
+				{
+					if (deviceDefn != null)
+					{
+						var device = new Device(deviceDefn);
+						uwpe.entity.propertyAdd(device);
+					}
+				}
 			);
 
 		this.OrbitalCloak = facilityOrbital
@@ -252,56 +266,64 @@ class BuildableDefnsBasic
 		(
 			"Ship Drive, Basic",
 			visualBuild("Drive", colors.Gray),
-			30
+			30,
+			null // deviceDefn
 		);
 
 		this.ShipDriveIntermediate = shipComponent
 		(
 			"Ship Drive, Intermediate",
 			visualBuild("Drive", colors.Red),
-			60
+			60,
+			null // deviceDefn
 		);
 
 		this.ShipDriveAdvanced = shipComponent
 		(
 			"Ship Drive, Advanced",
 			visualBuild("Drive", colors.Green),
-			120
+			120,
+			null // deviceDefn
 		);
 
 		this.ShipDriveSupreme = shipComponent
 		(
 			"Ship Drive, Supreme",
 			visualBuild("Drive", colors.Red),
-			240
+			240,
+			null // deviceDefn
 		);
 
 		this.ShipGeneratorBasic = shipComponent
 		(
 			"Ship Generator, Basic",
 			visualBuild("Generator", colors.Gray),
-			30
+			30,
+			null // deviceDefn
 		);
 
 		this.ShipGeneratorIntermediate = shipComponent
 		(
 			"Ship Generator, Intermediate",
 			visualBuild("Generator", colors.Red),
-			60
+			60,
+			null // deviceDefn
 		);
 
 		this.ShipGeneratorAdvanced = shipComponent
 		(
 			"Ship Generator, Advanced",
 			visualBuild("Generator", colors.Green),
-			120
+			120,
+			null // deviceDefn
 		);
 
 		this.ShipGeneratorSupreme = shipComponent
 		(
 			"Ship Generator, Supreme",
 			visualBuild("Generator", colors.Blue),
-			240
+			240,
+			null // deviceDefn
 		);
 
 		this.ShipHullEnormous = new BuildableDefn
@@ -364,105 +386,120 @@ class BuildableDefnsBasic
 		(
 			"Cloak",
 			visualBuild("Cloak", colors.Gray),
-			100
+			100,
+			null // deviceDefn
 		);
 
 		this.ShipItemColonyBuilder = shipComponent
 		(
 			"Colony Builder",
 			visualBuild("Col", colors.Gray),
-			100
+			100,
+			null // deviceDefn
 		);
 
 		this.ShipItemDropShip = shipComponent
 		(
 			"Drop Ship",
 			visualBuild("Drop Ship", colors.Gray),
-			100
+			100,
+			null // deviceDefn
 		);
 
 		this.ShipSensorsBasic = shipComponent
 		(
 			"Ship Sensors, Basic",
 			visualBuild("Sensors", colors.Gray),
-			30
+			30,
+			null // deviceDefn
 		);
 
 		this.ShipSensorsIntermediate = shipComponent
 		(
 			"Ship Sensors, Intermediate",
 			visualBuild("Sensors", colors.Red),
-			60
+			60,
+			null // deviceDefn
 		);
 
 		this.ShipSensorsAdvanced = shipComponent
 		(
 			"Ship Sensors, Advanced",
 			visualBuild("Sensors", colors.Green),
-			120
+			120,
+			null // deviceDefn
 		);
 
 		this.ShipSensorsSupreme = shipComponent
 		(
 			"Ship Sensors, Supreme",
 			visualBuild("Sensors", colors.Blue),
-			240
+			240,
+			null // deviceDefn
 		);
 
 		this.ShipShieldBasic = shipComponent
 		(
 			"Ship Shield, Basic",
 			visualBuild("Shield", colors.Gray),
-			30
+			30,
+			null // deviceDefn
 		);
 
 		this.ShipShieldIntermediate = shipComponent
 		(
 			"Ship Shield, Intermediate",
 			visualBuild("Shield", colors.Red),
-			60
+			60,
+			null // deviceDefn
 		);
 
 		this.ShipShieldAdvanced = shipComponent
 		(
 			"Ship Shield, Advanced",
 			visualBuild("Shield", colors.Green),
-			120
+			120,
+			null // deviceDefn
 		);
 
 		this.ShipShieldSupreme = shipComponent
 		(
 			"Ship Shield, Supreme",
 			visualBuild("Shield", colors.Blue),
-			240
+			240,
+			null // deviceDefn
 		);
 
 		this.ShipWeaponBasic = shipComponent
 		(
 			"Ship Weapon, Basic",
 			visualBuild("Weapon", colors.Gray),
-			30
+			30,
+			null // deviceDefn
 		);
 
 		this.ShipWeaponIntermediate = shipComponent
 		(
 			"Ship Weapon, Intermediate",
 			visualBuild("Weapon", colors.Red),
-			60
+			60,
+			null // deviceDefn
 		);
 
 		this.ShipWeaponAdvanced = shipComponent
 		(
 			"Ship Weapon, Advanced",
 			visualBuild("Weapon", colors.Green),
-			120
+			120,
+			null // deviceDefn
 		);
 
 		this.ShipWeaponSupreme = shipComponent
 		(
 			"Ship Weapon, Supreme",
 			visualBuild("Weapon", colors.Blue),
-			240
+			240,
+			null // deviceDefn
 		);
 
 		this.Shipyard = new BuildableDefn

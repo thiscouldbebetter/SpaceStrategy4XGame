@@ -5,16 +5,22 @@ class VenueStarsystem {
         this.starsystem = starsystem;
         this.cursor = new Cursor();
         this._mouseClickPos = Coords.create();
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     draw(universe) {
         var world = universe.world;
-        var display = universe.display;
-        display.drawBackground(null, null);
-        this.starsystem.draw(universe, world, display);
-        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
-        uwpe.entitySet(this.cursor);
-        this.cursor.draw(uwpe, display);
-        this.venueControls.draw(universe);
+        var shouldDraw = world.shouldDrawOnlyWhenUpdated == false
+            || this.hasBeenUpdatedSinceDrawn;
+        if (shouldDraw) {
+            this.hasBeenUpdatedSinceDrawn = false;
+            var display = universe.display;
+            display.drawBackground(null, null);
+            this.starsystem.draw(universe, world, display);
+            var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+            uwpe.entitySet(this.cursor);
+            this.cursor.draw(uwpe, display);
+            this.venueControls.draw(universe);
+        }
     }
     entitySelectedDetailsAreViewable(universe) {
         var entitySelectedDetailsAreViewable = false;
@@ -95,6 +101,7 @@ class VenueStarsystem {
         this.entities.push(...starsystem.linkPortals);
         this.entities.push(...starsystem.planets);
         this.entities.push(...starsystem.ships);
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     model() {
         return this.starsystem;
@@ -109,19 +116,6 @@ class VenueStarsystem {
         if (this.cursor != null) {
             this.cursor.constrainable().constrain(uwpe.entitySet(this.cursor));
         }
-        /*
-        var ships = this.starsystem.ships;
-        for (var i = 0; i < ships.length; i++)
-        {
-            var ship = ships[i];
-
-            var activity = ship.actor().activity;
-            if (activity != null)
-            {
-                activity.perform(uwpe.entitySet(ship));
-            }
-        }
-        */
         this.starsystem.updateForTimerTick(uwpe);
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
@@ -131,6 +125,9 @@ class VenueStarsystem {
         var cameraSpeed = 10;
         var inputHelper = universe.inputHelper;
         var inputsActive = inputHelper.inputsPressed;
+        if (inputsActive.length > 0) {
+            this.hasBeenUpdatedSinceDrawn = true;
+        }
         for (var i = 0; i < inputsActive.length; i++) {
             var inputActive = inputsActive[i].name;
             if (inputActive == "MouseMove") {

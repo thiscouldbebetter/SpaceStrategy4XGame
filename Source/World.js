@@ -32,6 +32,7 @@ class WorldExtended extends World {
         this.places = [];
         this.places.push(this.network);
         this.places.push(...this.network.nodes.map(x => x.starsystem));
+        this.shouldDrawOnlyWhenUpdated = true;
     }
     // static methods
     static create(universe, worldCreator) {
@@ -375,7 +376,6 @@ class WorldExtended extends World {
         }
     }
     updateForTimerTick(uwpe) {
-        //super.updateForTimerTick(uwpe);
         var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
         if (isFastForwarding) {
             var world = this;

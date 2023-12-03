@@ -4,6 +4,7 @@ class VenueWorldExtended extends VenueWorld {
         super(world);
         this.world = world;
         this.cameraEntity = new Entity("camera", [this.world.camera]);
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     model() {
         return this.world.network;
@@ -22,10 +23,10 @@ class VenueWorldExtended extends VenueWorld {
             var constraintLookAt = constraint;
             constraintLookAt.targetPos = targetPosNew;
         }
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     cameraDown(cameraSpeed) {
-        var cameraAction = new Action_CameraMove([0, cameraSpeed]);
-        cameraAction.perform(this.cameraEntity.camera());
+        this.cameraMove(0, cameraSpeed);
     }
     cameraIn(cameraSpeed) {
         var cameraConstrainable = this.cameraEntity.constrainable();
@@ -35,10 +36,10 @@ class VenueWorldExtended extends VenueWorld {
         if (constraintDistance.distanceToHold < 1) {
             constraintDistance.distanceToHold = 1;
         }
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     cameraLeft(cameraSpeed) {
-        var cameraAction = new Action_CameraMove([0 - cameraSpeed, 0]);
-        cameraAction.perform(this.cameraEntity.camera());
+        this.cameraMove(0 - cameraSpeed, 0);
     }
     cameraOut(cameraSpeed) {
         var cameraConstrainable = this.cameraEntity.constrainable();
@@ -48,6 +49,7 @@ class VenueWorldExtended extends VenueWorld {
         if (constraintDistance.distanceToHold < 0) {
             constraintDistance.distanceToHold = 0;
         }
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     cameraReset() {
         var cameraConstrainable = this.cameraEntity.constrainable();
@@ -61,14 +63,19 @@ class VenueWorldExtended extends VenueWorld {
         var constraintLookAt = constraint;
         constraintLookAt.targetPos = origin;
         camera.loc.pos.clear().x = 0 - camera.focalLength;
+        this.hasBeenUpdatedSinceDrawn = true;
+    }
+    cameraMove(horizontal, vertical) {
+        var camera = this.cameraEntity.camera();
+        var cameraAction = new Action_CameraMove([horizontal, vertical]);
+        cameraAction.perform(camera);
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     cameraRight(cameraSpeed) {
-        var cameraAction = new Action_CameraMove([cameraSpeed, 0]);
-        cameraAction.perform(this.cameraEntity.camera());
+        this.cameraMove(cameraSpeed, 0);
     }
     cameraUp(cameraSpeed) {
-        var cameraAction = new Action_CameraMove([0, 0 - cameraSpeed]);
-        cameraAction.perform(this.cameraEntity.camera());
+        this.cameraMove(0, 0 - cameraSpeed);
     }
     // controls
     toControl(universe) {
@@ -111,13 +118,18 @@ class VenueWorldExtended extends VenueWorld {
     }
     // venue
     draw(universe) {
-        universe.display.drawBackground(null, null);
-        //this.world.network.draw(universe, this.world.camera);
-        var playerFaction = this.world.factions[0];
-        var playerKnowledge = playerFaction.knowledge;
-        var worldKnown = playerKnowledge.world(universe, this.world);
-        worldKnown.network.draw2(universe, worldKnown.camera);
-        this.venueControls.draw(universe);
+        var shouldDraw = this.world.shouldDrawOnlyWhenUpdated == false
+            || this.hasBeenUpdatedSinceDrawn;
+        if (shouldDraw) {
+            this.hasBeenUpdatedSinceDrawn = false;
+            universe.display.drawBackground(null, null);
+            //this.world.network.draw(universe, this.world.camera);
+            var playerFaction = this.world.factions[0];
+            var playerKnowledge = playerFaction.knowledge;
+            var worldKnown = playerKnowledge.world(universe, this.world);
+            worldKnown.network.draw2(universe, worldKnown.camera);
+            this.venueControls.draw(universe);
+        }
     }
     finalize(universe) {
         universe.soundHelper.soundForMusic.pause(universe);
@@ -140,6 +152,7 @@ class VenueWorldExtended extends VenueWorld {
         ];
         var cameraConstrainable = new Constrainable(constraints);
         this.cameraEntity.propertyAdd(cameraConstrainable);
+        this.hasBeenUpdatedSinceDrawn = true;
     }
     selectionName() {
         var returnValue = (this.selectedEntity == null ? "[none]" : this.selectedEntity.name);
@@ -152,6 +165,13 @@ class VenueWorldExtended extends VenueWorld {
         this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
+        this.updateForTimerTick_Input(universe, world);
+    }
+    updateForTimerTick_Input(universe, world) {
+        this.updateForTimerTick_Input_MouseClicked(universe, world);
+        this.updateForTimerTick_Input_InputsActive(universe, world);
+    }
+    updateForTimerTick_Input_MouseClicked(universe, world) {
         var inputHelper = universe.inputHelper;
         if (inputHelper.isMouseClicked()) {
             universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
@@ -188,6 +208,9 @@ class VenueWorldExtended extends VenueWorld {
                 this.selectedEntity = bodyClicked;
             }
         }
+    }
+    updateForTimerTick_Input_InputsActive(universe, world) {
+        var inputHelper = universe.inputHelper;
         var inputsActive = inputHelper.inputsPressed;
         for (var i = 0; i < inputsActive.length; i++) {
             var inputActive = inputsActive[i].name;

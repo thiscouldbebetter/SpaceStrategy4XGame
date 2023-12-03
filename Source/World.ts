@@ -20,6 +20,8 @@ class WorldExtended extends World
 
 	places: Place[];
 
+	shouldDrawOnlyWhenUpdated: boolean;
+
 	constructor
 	(
 		name: string,
@@ -80,6 +82,8 @@ class WorldExtended extends World
 		this.places = [];
 		this.places.push(this.network);
 		this.places.push(...this.network.nodes.map(x => x.starsystem) );
+
+		this.shouldDrawOnlyWhenUpdated = true;
 	}
 
 	// static methods
@@ -832,10 +836,8 @@ class WorldExtended extends World
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		//super.updateForTimerTick(uwpe);
-		
 		var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
-		
+
 		if (isFastForwarding)
 		{
 			var world = this;

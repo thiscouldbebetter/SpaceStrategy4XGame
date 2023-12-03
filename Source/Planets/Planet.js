@@ -151,6 +151,9 @@ class Planet extends Entity {
     toEntity() {
         return this;
     }
+    toPlace() {
+        return new PlanetAsPlace(this);
+    }
     toStringDescription(universe, world) {
         var resourcesPerTurnAsString = this.resourcesPerTurn(universe, world).join(", ");
         var returnValue = this.name
@@ -170,10 +173,8 @@ class Planet extends Entity {
     toControl_Starsystem(universe, size) {
         var returnValue = ControlContainer.from4("containerPlanet", Coords.fromXY(0, 0), // pos
         size, [
-            new ControlLabel("labelName", Coords.fromXY(0, 0), // pos
+            ControlLabel.from4Uncentered(Coords.fromXY(0, 0), // pos
             Coords.fromXY(size.x, 0), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
             DataBinding.fromContext(this.name), FontNameAndHeight.fromHeightInPixels(10))
         ]);
         return returnValue;
@@ -306,14 +307,15 @@ class Planet extends Entity {
     resourcesPerTurn(universe, world) {
         if (this._resourcesPerTurn == null) {
             this._resourcesPerTurn = new Array();
-            var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
+            var thisAsPlace = this.toPlace();
+            var uwpe = new UniverseWorldPlaceEntities(universe, world, thisAsPlace, null, null);
             var layout = this.layout(universe);
             var facilities = layout.facilities();
             for (var f = 0; f < facilities.length; f++) {
                 var facilityAsEntity = facilities[f];
                 var facility = Buildable.ofEntity(facilityAsEntity);
                 if (facility.isComplete) {
-                    uwpe.entity2Set(facilityAsEntity);
+                    uwpe.entitySet(facilityAsEntity);
                     facility.effectPerRoundApply(uwpe);
                 }
             }

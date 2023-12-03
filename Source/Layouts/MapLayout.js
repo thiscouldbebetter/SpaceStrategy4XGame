@@ -86,14 +86,17 @@ class MapLayout {
     draw(universe, display) {
         var world = universe.world;
         var map = this;
+        var venue = universe.venueCurrent();
+        var planet = venue.modelParent;
+        var planetAsPlace = (planet == null ? null : planet.toPlace());
         var mapPos = map.pos;
         var mapSizeInCells = map.sizeInCells;
         var cellPos = this._cellPos;
         var drawable = this._drawable;
         var drawPos = drawable.locatable().loc.pos;
         var cellSizeInPixels = map.cellSizeInPixels;
-        //var posSaved = Coords.create();
-        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, drawable, null);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, planetAsPlace, drawable, null);
+        var posToRestoreAfterDraw = Coords.create();
         for (var y = 0; y < mapSizeInCells.y; y++) {
             cellPos.y = y;
             for (var x = 0; x < mapSizeInCells.x; x++) {
@@ -101,12 +104,17 @@ class MapLayout {
                 drawPos.overwriteWith(cellPos).multiply(cellSizeInPixels).add(mapPos);
                 var cellTerrain = map.terrainAtPosInCells(cellPos);
                 var terrainVisual = cellTerrain.visual;
+                uwpe.entitySet(drawable);
                 terrainVisual.draw(uwpe, display);
                 var cellEntity = map.bodyAtPosInCells(cellPos);
                 if (cellEntity != null) {
-                    uwpe.entity2Set(cellEntity);
+                    var entityPos = cellEntity.locatable().loc.pos;
+                    posToRestoreAfterDraw.overwriteWith(entityPos);
+                    entityPos.overwriteWith(drawPos);
                     var cellBodyVisual = cellEntity.drawable().visual;
+                    uwpe.entitySet(cellEntity);
                     cellBodyVisual.draw(uwpe, display);
+                    entityPos.overwriteWith(posToRestoreAfterDraw);
                 }
             }
         }

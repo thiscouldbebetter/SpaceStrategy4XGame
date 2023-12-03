@@ -6,6 +6,7 @@ class Shipyard implements EntityProperty<Shipyard>
 		return entity.propertyByName(Shipyard.name) as Shipyard;
 	}
 
+	/*
 	shipAssembleFromComponentsAndLaunch
 	(
 		universe: Universe,
@@ -84,6 +85,7 @@ class Shipyard implements EntityProperty<Shipyard>
 
 		return returnValue;
 	}
+	*/
 
 	// Controllable.
 

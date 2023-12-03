@@ -170,6 +170,10 @@ class MapLayout
 		var world = universe.world;
 		var map = this;
 
+		var venue = universe.venueCurrent() as VenueLayout;		
+		var planet = venue.modelParent as Planet;
+		var planetAsPlace = (planet == null ? null : planet.toPlace() );
+
 		var mapPos = map.pos;
 		var mapSizeInCells = map.sizeInCells;
 
@@ -178,12 +182,12 @@ class MapLayout
 		var drawPos = drawable.locatable().loc.pos;
 		var cellSizeInPixels = map.cellSizeInPixels;
 
-		//var posSaved = Coords.create();
-
 		var uwpe = new UniverseWorldPlaceEntities
 		(
-			universe, world, null, drawable, null
+			universe, world, planetAsPlace, drawable, null
 		);
+		
+		var posToRestoreAfterDraw = Coords.create();
 
 		for (var y = 0; y < mapSizeInCells.y; y++)
 		{
@@ -207,14 +211,19 @@ class MapLayout
 				var cellTerrain = map.terrainAtPosInCells(cellPos);
 
 				var terrainVisual = cellTerrain.visual;
+				uwpe.entitySet(drawable);
 				terrainVisual.draw(uwpe, display);
 
 				var cellEntity = map.bodyAtPosInCells(cellPos);
 				if (cellEntity != null)
 				{
-					uwpe.entity2Set(cellEntity);
+					var entityPos = cellEntity.locatable().loc.pos;
+					posToRestoreAfterDraw.overwriteWith(entityPos);
+					entityPos.overwriteWith(drawPos);
 					var cellBodyVisual = cellEntity.drawable().visual;
+					uwpe.entitySet(cellEntity);
 					cellBodyVisual.draw(uwpe, display);
+					entityPos.overwriteWith(posToRestoreAfterDraw);
 				}
 			}
 		}

@@ -40,12 +40,17 @@ class BuildableDefn {
         var visualOverlayShadedRectangle = VisualRectangle.fromSizeAndColorFill(this.sizeInPixels, Color.byName("BlackHalfTransparent"));
         var visualOverlayText = VisualText.fromTextBindingHeightAndColor(DataBinding.fromGet((c) => {
             var buildableProgress = "";
-            var venue = c.universe.venueCurrent();
-            var planet = venue.modelParent;
-            if (planet != null) // hack - Initially may be VenueFader.
-             {
-                buildableProgress = planet.industryBuildableProgress(c.universe);
-            }
+            var venueCurrent = c.universe.venueCurrent();
+            var venueCurrentTypeName = venueCurrent.constructor.name;
+            // hack
+            var venueLayout = (venueCurrentTypeName == VenueFader.name
+                ?
+                    venueCurrent.venueToFadeTo().constructor.name == VenueLayout.name
+                        ? venueCurrent.venueToFadeTo()
+                        : venueCurrent.venueToFadeFrom()
+                : venueCurrent);
+            var planet = venueLayout.modelParent;
+            buildableProgress = planet.industryBuildableProgress(c.universe);
             return buildableProgress;
         }), this.sizeInPixels.y / 2, Color.byName("White"));
         var visualOverlayTextAndShade = new VisualGroup([
@@ -63,7 +68,8 @@ class BuildableDefn {
         return visualWrapped;
     }
     visualWrap_SelectChildNames(uwpe, d) {
-        var buildable = Buildable.ofEntity(uwpe.entity2);
+        var buildableAsEntity = uwpe.entity;
+        var buildable = Buildable.ofEntity(buildableAsEntity);
         return (buildable.isComplete ? ["Complete"] : ["Incomplete"]);
     }
 }

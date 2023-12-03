@@ -1,8 +1,7 @@
 
-class Starsystem extends Place
+class Starsystem extends PlaceBase
 {
 	name: string;
-	size: Coords;
 	star: Star;
 	linkPortals: LinkPortal[];
 	_linkPortalsByStarsystemName: Map<string,LinkPortal>;
@@ -243,7 +242,10 @@ class Starsystem extends Place
 
 	projectiles(): Projectile[]
 	{
-		return this.entities.filter(x => x.constructor.name == Projectile.name) as Projectile[];
+		return this.entitiesAll().filter
+		(
+			(x: Entity) => x.constructor.name == Projectile.name
+		) as Projectile[];	
 	}
 
 	shipAdd(shipToAdd: Ship, world: WorldExtended): void

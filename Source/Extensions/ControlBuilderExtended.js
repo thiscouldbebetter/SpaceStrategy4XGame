@@ -28,7 +28,12 @@ class ControlBuilderExtended extends ControlBuilder {
         var dynamicSelection = new ControlDynamic("dynamicSelection", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
         controlSelectionSize, // size
         DataBinding.fromContextAndGet(universe, (c) => c.venueCurrent().selectedEntity), (v) => {
-            return v.controllable().toControl(new UniverseWorldPlaceEntities(universe, null, null, v, null), controlSelectionSize, Starsystem.name);
+            var venueStarsystem = universe.venueCurrent();
+            var place = venueStarsystem.starsystem;
+            var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, place, v, null);
+            var controllable = v.controllable();
+            var control = controllable.toControl(uwpe, controlSelectionSize, Starsystem.name);
+            return control;
         });
         var buttonCenter = ControlButton.from8("buttonCenter", // name,
         Coords.fromXY(margin, size.y - margin - controlHeight), // pos

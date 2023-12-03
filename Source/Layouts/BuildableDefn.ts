@@ -100,12 +100,20 @@ class BuildableDefn
 				(c: UniverseWorldPlaceEntities) =>
 				{
 					var buildableProgress = "";
-					var venue = c.universe.venueCurrent() as VenueLayout;
-					var planet = venue.modelParent as Planet;
-					if (planet != null) // hack - Initially may be VenueFader.
-					{
-						buildableProgress = planet.industryBuildableProgress(c.universe);
-					}
+					var venueCurrent = c.universe.venueCurrent();
+					var venueCurrentTypeName = venueCurrent.constructor.name;
+					 // hack
+					var venueLayout =
+					(
+						venueCurrentTypeName == VenueFader.name
+						?
+							(venueCurrent as VenueFader).venueToFadeTo().constructor.name == VenueLayout.name
+							? (venueCurrent as VenueFader).venueToFadeTo()
+							: (venueCurrent as VenueFader).venueToFadeFrom()
+						: venueCurrent
+					) as VenueLayout;
+					var planet = venueLayout.modelParent as Planet;
+					buildableProgress = planet.industryBuildableProgress(c.universe);
 					return buildableProgress;
 				}
 			),
@@ -140,7 +148,8 @@ class BuildableDefn
 
 	visualWrap_SelectChildNames(uwpe: UniverseWorldPlaceEntities, d: Display): string[]
 	{
-		var buildable = Buildable.ofEntity(uwpe.entity2);
+		var buildableAsEntity = uwpe.entity;
+		var buildable = Buildable.ofEntity(buildableAsEntity);
 		return (buildable.isComplete ? ["Complete"] : ["Incomplete"] );
 	}
 

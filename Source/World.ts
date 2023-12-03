@@ -600,6 +600,7 @@ class WorldExtended extends World
 		factionShips: Ship[]
 	): Ship[]
 	{
+		var factionHomeStarsystemSize = factionHomeStarsystem.size();
 		var shipDefn = Ship.bodyDefnBuild(factionColor);
 		var shipCount = (this.isDebuggingMode ? 2 : 0);
 		for (var s = 0; s < shipCount; s++)
@@ -613,20 +614,22 @@ class WorldExtended extends World
 					universe.randomizer
 				).multiply
 				(
-					factionHomeStarsystem.size
+					factionHomeStarsystemSize
 				).multiplyScalar
 				(
 					2
 				).subtract
 				(
-					factionHomeStarsystem.size
+					factionHomeStarsystemSize
 				),
 				faction,
 				[
+					/*
 					new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
 					new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
 					new Device(deviceDefnsByName.get("Ship Shield, Basic") ),
 					new Device(deviceDefnsByName.get("Ship Weapon, Basic") ),
+					*/
 				]
 			);
 
@@ -647,6 +650,8 @@ class WorldExtended extends World
 		var factionUser = factions[0];
 		var factionUserHomeStarsystem =
 			factionUser.starsystemHome(worldDummy);
+		var factionUserHomeStarsystemSize =
+			factionUserHomeStarsystem.size();
 
 		var factionEnemy = factions[1];
 		var factionEnemyColor = factionEnemy.color;
@@ -663,22 +668,24 @@ class WorldExtended extends World
 				universe.randomizer
 			).multiply
 			(
-				factionUserHomeStarsystem.size
+				factionUserHomeStarsystemSize
 			).multiplyScalar
 			(
 				2
 			).subtract
 			(
-				factionUserHomeStarsystem.size
+				factionUserHomeStarsystemSize
 			),
 			
 			factionEnemy,
 			
 			[
+				/*
 				new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
 				new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
 				new Device(deviceDefnsByName.get("Ship Shield, Basic") ),
 				new Device(deviceDefnsByName.get("Ship Weapon, Basic") ),
+				*/
 			]
 		);
 

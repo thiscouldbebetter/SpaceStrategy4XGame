@@ -242,10 +242,16 @@ class VenueLayout implements Venue
 					effect.name, // text,
 					fontNameAndHeight,
 					() =>
-						effect.apply
+					{
+						var planet = venueThis.modelParent as Planet;
+						var planetAsPlace = planet.toPlace();
+						var uwpe = new UniverseWorldPlaceEntities
 						(
-							new UniverseWorldPlaceEntities(universe, null, null, buildableAtCursorEntity, null)
-						)
+							universe, universe.world, planetAsPlace,
+							buildableAtCursorEntity, null
+						);
+						effect.apply(uwpe);
+					}
 				);
 
 				childControls.push(buttonForEffect);

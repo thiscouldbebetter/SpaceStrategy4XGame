@@ -23,7 +23,7 @@ class BuildableDefnsLegacy {
         var effectResourcesAdd = (resourcesToAdd) => {
             var effect = new BuildableEffect("ResourcesAdd", 0, // order
             (uwpe) => {
-                var planet = uwpe.entity;
+                var planet = uwpe.place.planet;
                 planet.resourcesPerTurnAdd(resourcesToAdd);
             });
             return effect;

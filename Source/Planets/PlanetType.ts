@@ -66,23 +66,26 @@ class PlanetType
 				(uwpe: UniverseWorldPlaceEntities) =>
 				{
 					var planet = uwpe.entity as Planet;
-					var factionName = planet.factionable().factionName; // todo
-					var returnValue: VisualBase = null;
-					if (factionName == null)
-					{
-						returnValue = new VisualNone();
-					}
-					else
-					{
-						returnValue = new VisualOffset
+					var factionName = planet.factionable().factionName;
+					var returnValue: VisualBase = 
+					(
+						factionName == null
+						? new VisualNone()
+						: new VisualOffset
 						(
-							Coords.fromXY(0, 16),
+							Coords.fromXY
+							(
+								0,
+								planet.planetType.size.radiusInPixels * 2
+							),
 							VisualText.fromTextImmediateHeightAndColor
 							(
-								factionName, planetDimension, Color.byName("White"),
+								"Owned by " + factionName,
+								planetDimension,
+								Color.byName("White"),
 							)
 						)
-					}
+					);
 					return returnValue;
 				}
 			);

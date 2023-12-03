@@ -251,14 +251,17 @@ class WorldExtended extends World {
         return factionHomePlanet;
     }
     static create_FactionsAndShips_1_2_Ships(universe, factionColor, factionHomeStarsystem, faction, deviceDefnsByName, factionShips) {
+        var factionHomeStarsystemSize = factionHomeStarsystem.size();
         var shipDefn = Ship.bodyDefnBuild(factionColor);
         var shipCount = (this.isDebuggingMode ? 2 : 0);
         for (var s = 0; s < shipCount; s++) {
-            var ship = new Ship("Ship" + s, shipDefn, Coords.create().randomize(universe.randomizer).multiply(factionHomeStarsystem.size).multiplyScalar(2).subtract(factionHomeStarsystem.size), faction, [
-                new Device(deviceDefnsByName.get("Ship Generator, Basic")),
-                new Device(deviceDefnsByName.get("Ship Drive, Basic")),
-                new Device(deviceDefnsByName.get("Ship Shield, Basic")),
-                new Device(deviceDefnsByName.get("Ship Weapon, Basic")),
+            var ship = new Ship("Ship" + s, shipDefn, Coords.create().randomize(universe.randomizer).multiply(factionHomeStarsystemSize).multiplyScalar(2).subtract(factionHomeStarsystemSize), faction, [
+            /*
+            new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
+            new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
+            new Device(deviceDefnsByName.get("Ship Shield, Basic") ),
+            new Device(deviceDefnsByName.get("Ship Weapon, Basic") ),
+            */
             ]);
             factionShips.push(ship);
         }
@@ -267,14 +270,17 @@ class WorldExtended extends World {
     static create_FactionsAndShips_2_ShipEnemy(universe, worldDummy, factions, deviceDefnsByName) {
         var factionUser = factions[0];
         var factionUserHomeStarsystem = factionUser.starsystemHome(worldDummy);
+        var factionUserHomeStarsystemSize = factionUserHomeStarsystem.size();
         var factionEnemy = factions[1];
         var factionEnemyColor = factionEnemy.color;
         var factionEnemyShipDefn = Ship.bodyDefnBuild(factionEnemyColor);
-        var shipEnemy = new Ship("ShipEnemy", factionEnemyShipDefn, Coords.create().randomize(universe.randomizer).multiply(factionUserHomeStarsystem.size).multiplyScalar(2).subtract(factionUserHomeStarsystem.size), factionEnemy, [
-            new Device(deviceDefnsByName.get("Ship Generator, Basic")),
-            new Device(deviceDefnsByName.get("Ship Drive, Basic")),
-            new Device(deviceDefnsByName.get("Ship Shield, Basic")),
-            new Device(deviceDefnsByName.get("Ship Weapon, Basic")),
+        var shipEnemy = new Ship("ShipEnemy", factionEnemyShipDefn, Coords.create().randomize(universe.randomizer).multiply(factionUserHomeStarsystemSize).multiplyScalar(2).subtract(factionUserHomeStarsystemSize), factionEnemy, [
+        /*
+        new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
+        new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
+        new Device(deviceDefnsByName.get("Ship Shield, Basic") ),
+        new Device(deviceDefnsByName.get("Ship Weapon, Basic") ),
+        */
         ]);
         factionEnemy.shipAdd(shipEnemy);
         factionUserHomeStarsystem.shipAdd(shipEnemy, worldDummy);

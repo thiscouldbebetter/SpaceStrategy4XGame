@@ -72,15 +72,20 @@ class ControlBuilderExtended extends ControlBuilder
 			),
 			(v: Entity) =>
 			{
-				return v.controllable().toControl
+				var venueStarsystem = universe.venueCurrent() as VenueStarsystem;
+				var place = venueStarsystem.starsystem;
+				var uwpe = new UniverseWorldPlaceEntities
 				(
-					new UniverseWorldPlaceEntities
-					(
-						universe, null, null, v, null
-					),
+					universe, universe.world, place, v, null
+				);
+				var controllable = v.controllable();
+				var control = controllable.toControl
+				(
+					uwpe,
 					controlSelectionSize,
 					Starsystem.name
 				);
+				return control;
 			}
 		);
 

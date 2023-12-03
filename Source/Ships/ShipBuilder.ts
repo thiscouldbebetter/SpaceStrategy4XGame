@@ -87,6 +87,8 @@ class ShipBuilder
 		{
 			size = universe.display.sizeDefault();
 		}
+		
+		var sizeDialog = size.clone().half();
 
 		var margin = 8;
 		var fontHeight = margin * 2;
@@ -145,10 +147,11 @@ class ShipBuilder
 
 				var venueToReturnTo = universe.venueCurrent();
 
-				var venue = VenueMessage.fromTextAndAcknowledge
+				var venue = VenueMessage.fromTextAcknowledgeAndSize
 				(
 					message,
-					() => universe.venueJumpTo(venueToReturnTo)
+					() => universe.venueJumpTo(venueToReturnTo),
+					sizeDialog
 				);
 
 				universe.venueJumpTo(venue);
@@ -175,7 +178,7 @@ class ShipBuilder
 					{
 						var ship = uwpe.entity as Ship;
 						ship.planetOrbitExit(world, planet);
-						back();
+						universe.venueJumpTo(venuePrev);
 					}
 				);
 
@@ -185,7 +188,41 @@ class ShipBuilder
 					0, // order
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
-						alert("todo - create colony");
+						var venueToReturnTo = universe.venueCurrent();
+						var planet = (uwpe.place as PlanetAsPlace).planet;
+						var ship = uwpe.entity as Ship;
+
+						var shipComponentEntities = ship.componentEntities;
+						var shipHasColonizer = shipComponentEntities.some
+						(
+							(x: Entity) => Buildable.ofEntity(x).defn.name == "Colonizer"
+						);
+						if (shipHasColonizer == false)
+						{
+							var message = "Ship has no colonizers on board."
+							var venue = VenueMessage.fromTextAcknowledgeAndSize
+							(
+								message,
+								() => universe.venueJumpTo(venueToReturnTo),
+								sizeDialog
+							);
+							universe.venueJumpTo(venue);							
+						}
+						else if (planet.factionable().factionName != null)
+						{
+							var message = "Planet is already colonized."
+							var venue = VenueMessage.fromTextAcknowledgeAndSize
+							(
+								message,
+								() => universe.venueJumpTo(venueToReturnTo),
+								sizeDialog
+							);
+							universe.venueJumpTo(venue);														
+						}
+						else
+						{
+							alert("todo - colonize planet");
+						}
 					}
 				);
 
@@ -195,7 +232,41 @@ class ShipBuilder
 					0, // order
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
-						alert("todo - conquer planet");
+						var venueToReturnTo = universe.venueCurrent();
+						var planet = (uwpe.place as PlanetAsPlace).planet;
+						var ship = uwpe.entity as Ship;
+
+						var shipComponentEntities = ship.componentEntities;
+						var shipHasInvader = shipComponentEntities.some
+						(
+							(x: Entity) => Buildable.ofEntity(x).defn.name == "Invasion Module"
+						);
+						if (shipHasInvader == false)
+						{
+							var message = "Ship has no invasion modules on board."
+							var venue = VenueMessage.fromTextAcknowledgeAndSize
+							(
+								message,
+								() => universe.venueJumpTo(venueToReturnTo),
+								sizeDialog
+							);
+							universe.venueJumpTo(venue);							
+						}
+						else if (planet.factionable().factionName == ship.factionable().factionName)
+						{
+							var message = "Planet is already owned by your faction."
+							var venue = VenueMessage.fromTextAcknowledgeAndSize
+							(
+								message,
+								() => universe.venueJumpTo(venueToReturnTo),
+								sizeDialog
+							);
+							universe.venueJumpTo(venue);														
+						}
+						else
+						{
+							alert("todo - conquer planet");
+						}
 					}
 				);
 
@@ -230,6 +301,17 @@ class ShipBuilder
 
 				var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
 
+				var shipComponentEntities =
+					this.buildableDefnsToBuild.map
+					(
+						(x: BuildableDefn) =>
+						{
+							var buildable = Buildable.fromDefn(x);
+							var entity = new Entity(x.name, [buildable] );
+							return entity;
+						}
+					);
+					
 				var shipEntity =
 					// shipAsBuildable.toEntity(world);
 					new Ship
@@ -238,7 +320,7 @@ class ShipBuilder
 						shipBodyDefn,
 						shipPosInCells,
 						faction,
-						new Array<Item>() // todo
+						shipComponentEntities
 					);
 
 				shipEntity.propertyAdd(shipAsBuildable);

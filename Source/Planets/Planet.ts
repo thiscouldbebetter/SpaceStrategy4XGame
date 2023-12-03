@@ -58,7 +58,7 @@ class Planet extends Entity
 		];
 	}
 
-	static fromNameTypeAndPos(name: string, planetType: PlanetType, pos: Coords)
+	static fromNameTypeAndPos(name: string, planetType: PlanetType, pos: Coords): Planet
 	{
 		return new Planet
 		(
@@ -288,6 +288,11 @@ class Planet extends Entity
 		return this;
 	}
 
+	toPlace(): Place
+	{
+		return new PlanetAsPlace(this);
+	}
+	
 	toStringDescription(universe: Universe, world: WorldExtended): string
 	{
 		var resourcesPerTurnAsString =
@@ -327,13 +332,10 @@ class Planet extends Entity
 			Coords.fromXY(0, 0), // pos
 			size,
 			[
-				new ControlLabel
+				ControlLabel.from4Uncentered
 				(
-					"labelName",
 					Coords.fromXY(0, 0), // pos
 					Coords.fromXY(size.x, 0), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
 					DataBinding.fromContext(this.name),
 					FontNameAndHeight.fromHeightInPixels(10)
 				)
@@ -576,7 +578,8 @@ class Planet extends Entity
 		{
 			this._resourcesPerTurn = new Array<Resource>();
 
-			var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
+			var thisAsPlace = this.toPlace();
+			var uwpe = new UniverseWorldPlaceEntities(universe, world, thisAsPlace, null, null);
 
 			var layout = this.layout(universe);
 			var facilities = layout.facilities();
@@ -586,7 +589,7 @@ class Planet extends Entity
 				var facility = Buildable.ofEntity(facilityAsEntity);
 				if (facility.isComplete)
 				{
-					uwpe.entity2Set(facilityAsEntity); // hack - Because the planet has to be .entity1?
+					uwpe.entitySet(facilityAsEntity);
 					facility.effectPerRoundApply(uwpe);
 				}
 			}

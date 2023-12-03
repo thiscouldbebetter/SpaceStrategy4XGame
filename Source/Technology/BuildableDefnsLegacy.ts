@@ -174,7 +174,7 @@ class BuildableDefnsLegacy
 				0, // order
 				(uwpe: UniverseWorldPlaceEntities) =>
 				{
-					var planet = uwpe.entity as Planet;
+					var planet = (uwpe.place as PlanetAsPlace).planet;
 					planet.resourcesPerTurnAdd(resourcesToAdd);
 				}
 			);

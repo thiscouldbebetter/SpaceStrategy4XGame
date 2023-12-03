@@ -1,5 +1,5 @@
 "use strict";
-class Starsystem extends Place {
+class Starsystem extends PlaceBase {
     constructor(name, size, star, linkPortals, planets, factionName) {
         super(name, Starsystem.name, // defnName
         null, // parentName
@@ -105,7 +105,7 @@ class Starsystem extends Place {
         return this.planetsByName.get(planetName);
     }
     projectiles() {
-        return this.entities.filter(x => x.constructor.name == Projectile.name);
+        return this.entitiesAll().filter((x) => x.constructor.name == Projectile.name);
     }
     shipAdd(shipToAdd, world) {
         this.entityToSpawnAdd(shipToAdd);

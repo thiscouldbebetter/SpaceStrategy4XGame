@@ -9,13 +9,15 @@ class Ship extends Entity
 	_devicesUsable: Device[];
 	_visual: VisualBase;
 
+	componentEntities: Entity[];
+
 	constructor
 	(
 		name: string,
 		defn: BodyDefn,
 		pos: Coords,
 		faction: Faction,
-		items: Item[]
+		componentEntities: Entity[]
 	)
 	{
 		super
@@ -33,7 +35,6 @@ class Ship extends Entity
 				),
 				new Controllable(Ship.toControl),
 				new Factionable(faction.name),
-				ItemHolder.fromItems(items),
 				Killable.fromIntegrityMax(10),
 				Locatable.fromPos(pos),
 				new Orderable(),
@@ -42,6 +43,7 @@ class Ship extends Entity
 		);
 
 		this.defn = defn;
+		this.componentEntities = componentEntities;
 	}
 	
 	// static methods
@@ -95,14 +97,7 @@ class Ship extends Entity
 
 	devices(): Device[]
 	{
-		var items = this.itemHolder().items;
-
-		var returnDevices = items.filter
-		(
-			x => x.constructor.name == Device.name
-		) as Device[];
-
-		return returnDevices;
+		return new Array<Device>(); // todo
 	}
 
 	devicesByDefnName(deviceDefnName: string): Device[]
@@ -795,7 +790,7 @@ class Ship extends Entity
 					Coords.fromXY(-.5, -.5).multiplyScalar(scaleFactor),
 				]),
 				color,
-				null, // colorBorder?
+				Color.Instances().Black, // colorBorder
 				false // shouldUseEntityOrientation
 			),
 		]);

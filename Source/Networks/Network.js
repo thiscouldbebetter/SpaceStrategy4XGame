@@ -1,5 +1,5 @@
 "use strict";
-class Network2 extends Place {
+class Network2 extends PlaceBase {
     constructor(name, nodes, links) {
         super(name, Network2.name, // defnName
         null, // parentName
@@ -112,7 +112,7 @@ class Network2 extends Place {
             for (var i = 0; i < nodePairClosestSoFar.length; i++) {
                 var node = nodePairClosestSoFar[i];
                 var starsystem = node.starsystem;
-                var starsystemSize = starsystem.size;
+                var starsystemSize = starsystem.size();
                 var starsystemOther = nodePairClosestSoFar[1 - i];
                 var linkName = "Link to " + starsystemOther.name;
                 var linkPortal = new LinkPortal(linkName, bodyDefnLinkPortal, Coords.create().randomize(universe.randomizer).multiply(starsystemSize).multiplyScalar(2).subtract(starsystemSize), 

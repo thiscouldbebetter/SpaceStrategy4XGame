@@ -1,5 +1,5 @@
 
-class Network2 extends Place
+class Network2 extends PlaceBase
 {
 	name: string;
 	nodes: NetworkNode2[];
@@ -231,7 +231,7 @@ class Network2 extends Place
 			{
 				var node = nodePairClosestSoFar[i];
 				var starsystem = node.starsystem;
-				var starsystemSize = starsystem.size;
+				var starsystemSize = starsystem.size();
 				var starsystemOther = nodePairClosestSoFar[1 - i];
 				var linkName = "Link to " + starsystemOther.name;
 

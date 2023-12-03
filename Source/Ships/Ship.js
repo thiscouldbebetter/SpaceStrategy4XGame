@@ -1,19 +1,19 @@
 "use strict";
 class Ship extends Entity {
-    constructor(name, defn, pos, faction, items) {
+    constructor(name, defn, pos, faction, componentEntities) {
         super(name, [
             Actor.default(),
             defn,
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Ship.toControl),
             new Factionable(faction.name),
-            ItemHolder.fromItems(items),
             Killable.fromIntegrityMax(10),
             Locatable.fromPos(pos),
             new Orderable(),
             new TurnTaker()
         ]);
         this.defn = defn;
+        this.componentEntities = componentEntities;
     }
     // static methods
     static bodyDefnBuild(color) {
@@ -46,9 +46,7 @@ class Ship extends Entity {
         }
     }
     devices() {
-        var items = this.itemHolder().items;
-        var returnDevices = items.filter(x => x.constructor.name == Device.name);
-        return returnDevices;
+        return new Array(); // todo
     }
     devicesByDefnName(deviceDefnName) {
         return this.devices().filter(x => x.defnName == deviceDefnName);
@@ -401,7 +399,7 @@ class Ship extends Entity {
                 Coords.fromXY(.5, 0).multiplyScalar(scaleFactor),
                 Coords.fromXY(-.5, .5).multiplyScalar(scaleFactor),
                 Coords.fromXY(-.5, -.5).multiplyScalar(scaleFactor),
-            ]), color, null, // colorBorder?
+            ]), color, Color.Instances().Black, // colorBorder
             false // shouldUseEntityOrientation
             ),
         ]);

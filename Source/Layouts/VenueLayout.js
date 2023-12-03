@@ -107,7 +107,12 @@ class VenueLayout {
                 var eReversed = effectsAvailableToUse.length - e - 1;
                 var buttonForEffect = ControlButton.from5(Coords.fromXY(margin.x, containerSize.y - (margin.y + buttonSize.y) * (3 + eReversed)), //pos,
                 buttonSize, effect.name, // text,
-                fontNameAndHeight, () => effect.apply(new UniverseWorldPlaceEntities(universe, null, null, buildableAtCursorEntity, null)));
+                fontNameAndHeight, () => {
+                    var planet = venueThis.modelParent;
+                    var planetAsPlace = planet.toPlace();
+                    var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, planetAsPlace, buildableAtCursorEntity, null);
+                    effect.apply(uwpe);
+                });
                 childControls.push(buttonForEffect);
             }
         }

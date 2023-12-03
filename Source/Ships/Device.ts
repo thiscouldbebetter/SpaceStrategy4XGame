@@ -22,27 +22,27 @@ class Device implements EntityProperty<Device>
 		return entity.propertyByName(Device.name) as Device;
 	}
 
-	defn(world: World): DeviceDefn
+	defn(): DeviceDefn
 	{
 		return this._defn;
 	}
 
-	toEntity(uwpe: UniverseWorldPlaceEntities): Entity
+	toEntity(): Entity
 	{
-		var defn = this.defn(uwpe.world);
+		var defn = this.defn();
 		return new Entity(Device.name + defn.name, [ this ]);
 	}
 
 	updateForRound(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var defn = this.defn(uwpe.world);
+		var defn = this.defn();
 		defn.updateForRound(uwpe);
 	}
 
 	use(uwpe: UniverseWorldPlaceEntities): void
 	{
-		uwpe.entity2 = this.toEntity(uwpe);
-		var defn = this.defn(uwpe.world);
+		uwpe.entity2 = this.toEntity();
+		var defn = this.defn();
 		defn.use(uwpe);
 	}
 

@@ -156,18 +156,18 @@ class Ship extends Entity {
         return returnValue;
     }
     // Devices.
-    devicesDrives(world) {
+    devicesDrives() {
         if (this._devicesDrives == null) {
             var devices = this.devices();
-            this._devicesDrives = devices.filter(x => x.defn(world).categoryNames.indexOf("Drive") >= 0);
+            this._devicesDrives = devices.filter(x => x.defn().categoryNames.indexOf("Drive") >= 0);
         }
         return this._devicesDrives;
     }
-    devicesUsable(world) {
+    devicesUsable() {
         if (this._devicesUsable == null) {
             var devices = this.devices();
             this._devicesUsable =
-                devices.filter(x => x.defn(world).isActive);
+                devices.filter(x => x.defn().isActive);
         }
         return this._devicesUsable;
     }
@@ -227,7 +227,7 @@ class Ship extends Entity {
     }
     moveStart(universe) {
         var ship = this;
-        var devicesDrives = ship.devicesDrives(universe.world);
+        var devicesDrives = ship.devicesDrives();
         var deviceDriveToSelect = devicesDrives[0];
         ship.deviceSelect(deviceDriveToSelect);
         var venue = universe.venueCurrent();
@@ -335,7 +335,7 @@ class Ship extends Entity {
                 ControlList.from8("listDevices", Coords.fromXY(margin, margin + controlSpacing * 4), // pos
                 Coords.fromXY(buttonSize.x, controlSpacing * 4), // size
                 // dataBindingForItems
-                DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable(world)), DataBinding.fromGet((c) => c.defn(world).name), // bindingForOptionText
+                DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable()), DataBinding.fromGet((c) => c.defn().name), // bindingForOptionText
                 fontNameAndHeight, new DataBinding(ship, (c) => c.deviceSelected(), (c, v) => c.deviceSelect(v)), // dataBindingForItemSelected
                 DataBinding.fromContext(null) // bindingForItemValue
                 ),
@@ -366,7 +366,7 @@ class Ship extends Entity {
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
         for (var i = 0; i < devices.length; i++) {
             var device = devices[i];
-            uwpe.entity2Set(device.toEntity(uwpe));
+            uwpe.entity2Set(device.toEntity());
             device.updateForRound(uwpe);
         }
     }

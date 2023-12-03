@@ -298,7 +298,7 @@ class Ship extends Entity
 
 	// Devices.
 
-	devicesDrives(world: WorldExtended): Device[]
+	devicesDrives(): Device[]
 	{
 		if (this._devicesDrives == null)
 		{
@@ -306,21 +306,21 @@ class Ship extends Entity
 
 			this._devicesDrives = devices.filter
 			(
-				x => x.defn(world).categoryNames.indexOf("Drive") >= 0
+				x => x.defn().categoryNames.indexOf("Drive") >= 0
 			);
 		}
 
 		return this._devicesDrives;
 	}
 
-	devicesUsable(world: WorldExtended): Device[]
+	devicesUsable(): Device[]
 	{
 		if (this._devicesUsable == null)
 		{
 			var devices = this.devices();
 
 			this._devicesUsable =
-				devices.filter(x => x.defn(world).isActive);
+				devices.filter(x => x.defn().isActive);
 		}
 
 		return this._devicesUsable;
@@ -412,7 +412,7 @@ class Ship extends Entity
 	{
 		var ship = this;
 
-		var devicesDrives = ship.devicesDrives(universe.world as WorldExtended);
+		var devicesDrives = ship.devicesDrives();
 		var deviceDriveToSelect = devicesDrives[0];
 		ship.deviceSelect(deviceDriveToSelect);
 
@@ -658,11 +658,11 @@ class Ship extends Entity
 					// dataBindingForItems
 					DataBinding.fromContextAndGet
 					(
-						ship, (c: Ship) => c.devicesUsable(world)
+						ship, (c: Ship) => c.devicesUsable()
 					),
 					DataBinding.fromGet
 					(
-						(c: Device) => c.defn(world).name
+						(c: Device) => c.defn().name
 					), // bindingForOptionText
 					fontNameAndHeight,
 					new DataBinding
@@ -733,7 +733,7 @@ class Ship extends Entity
 		for (var i = 0; i < devices.length; i++)
 		{
 			var device = devices[i];
-			uwpe.entity2Set(device.toEntity(uwpe));
+			uwpe.entity2Set(device.toEntity() );
 			device.updateForRound(uwpe);
 		}
 	}

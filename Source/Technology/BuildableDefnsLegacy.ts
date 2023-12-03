@@ -1,6 +1,16 @@
 
 class BuildableDefnsLegacy
 {
+	static _instance: BuildableDefnsLegacy;
+	static Instance(mapCellSizeInPixels: Coords): BuildableDefnsLegacy
+	{
+		if (BuildableDefnsLegacy._instance == null)
+		{
+			BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);	
+		}
+		return BuildableDefnsLegacy._instance;
+	}
+	
 	OrbitalCloaker: BuildableDefn;
 	OrbitalDocks: BuildableDefn;
 	OrbitalShield1OrbitalShield: BuildableDefn;
@@ -121,7 +131,7 @@ class BuildableDefnsLegacy
 
 	_All: BuildableDefn[];
 
-	constructor(mapCellSizeInPixels: Coords)
+	private constructor(mapCellSizeInPixels: Coords)
 	{
 		var fontHeight = mapCellSizeInPixels.y / 2;
 
@@ -439,6 +449,29 @@ class BuildableDefnsLegacy
 		// Drives.
 		
 		var categoryShipDrive = categories.ShipDrive;
+
+		var deviceDefnDrive = new DeviceDefn
+		(
+			"Drive",
+			false, // isActive
+			false, // needsTarget
+			[ "Drive" ], // categoryNames
+			(uwpe: UniverseWorldPlaceEntities) => // init
+			{},
+			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
+			{
+				var ship = uwpe.entity as Ship;
+				var shipTurnTaker = ship.turnTaker();
+				shipTurnTaker.distancePerMove += 50;
+				shipTurnTaker.energyPerMove += 1;
+			},
+			(uwpe: UniverseWorldPlaceEntities) => // use
+			{
+				var ship = uwpe.entity as Ship;
+				var shipTurnTaker = ship.turnTaker();
+				shipTurnTaker.energyForMoveDeduct();
+			}
+		);
 		
 		this.ShipDrive1TonklinMotor = shipComponent
 		(
@@ -446,7 +479,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Gray),
 			10,
 			categoryShipDrive,
-			null // deviceDefn
+			deviceDefnDrive
 		);
 
 		this.ShipDrive2IonBanger = shipComponent

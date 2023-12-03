@@ -113,7 +113,7 @@ class WorldExtended extends World
 
 		var buildableDefns =
 			// new BuildableDefnsBasic(mapCellSizeInPixels)._All;
-			new BuildableDefnsLegacy(mapCellSizeInPixels);
+			BuildableDefnsLegacy.Instance(mapCellSizeInPixels);
 
 		var technologyGraph =
 			// TechnologyGraph.demo(mapCellSizeInPixels);
@@ -486,10 +486,10 @@ class WorldExtended extends World
 		WorldExtended.create_FactionsAndShips_1_2_Ships
 		(
 			universe,
+			buildableDefns,
 			factionColor,
 			factionHomeStarsystem,
 			faction,
-			deviceDefnsByName,
 			factionShips
 		);
 
@@ -594,16 +594,29 @@ class WorldExtended extends World
 	static create_FactionsAndShips_1_2_Ships
 	(
 		universe: Universe,
+		buildableDefns: BuildableDefnsLegacy,
 		factionColor: Color,
 		factionHomeStarsystem: Starsystem,
 		faction: Faction,
-		deviceDefnsByName: Map<string, DeviceDefn>,
 		factionShips: Ship[]
 	): Ship[]
 	{
 		var factionHomeStarsystemSize = factionHomeStarsystem.size();
 		var shipDefn = Ship.bodyDefnBuild(factionColor);
 		var shipCount = (this.isDebuggingMode ? 2 : 0);
+				
+		var shipComponentsAsBuildableDefns = 
+		[
+			buildableDefns.ShipDrive1TonklinMotor,
+			buildableDefns.ShipGenerator1ProtonShaver,
+		];
+		
+		var shipComponentsAsBuildables =
+			shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x) );
+		
+		var shipComponentsAsEntities =
+			shipComponentsAsBuildables.map(x => new Entity(x.defn.name, [x] ) );
+						
 		for (var s = 0; s < shipCount; s++)
 		{
 			var ship = new Ship
@@ -624,14 +637,7 @@ class WorldExtended extends World
 					factionHomeStarsystemSize
 				),
 				faction,
-				[
-					/*
-					new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
-					new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
-					new Device(deviceDefnsByName.get("Ship Shield, Basic") ),
-					new Device(deviceDefnsByName.get("Ship Weapon, Basic") ),
-					*/
-				]
+				shipComponentsAsEntities
 			);
 
 			factionShips.push(ship);

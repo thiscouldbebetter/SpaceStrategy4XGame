@@ -139,8 +139,8 @@ class BuildableDefnsBasic {
             VisualRectangle.fromSizeAndColorFill(mapCellSizeInPixels, Color.byName("Orange"))
         ]), 100, effectNone, null, // effectsAvailableToUse
         null, // categories
-        // entityModifyOnBuild
-        (uwpe) => uwpe.entity.propertyAdd(new Shipyard()));
+        null // entityModifyOnBuild
+        );
         this.SurfaceCloak = facilitySurfaceUsable("Surface Cloak", visualBuild("Cloak", colors.Gray), 120, effectNone);
         this.SurfaceColonyHub = new BuildableDefn("Colony Hub", false, // isItem
         canBeBuiltInOrbit, mapCellSizeInPixels, visualBuild("Hub", colors.Gray), 30, effectTodo, null, // effectsAvailableToUse

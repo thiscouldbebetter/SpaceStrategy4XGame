@@ -1,5 +1,11 @@
 "use strict";
 class BuildableDefnsLegacy {
+    static Instance(mapCellSizeInPixels) {
+        if (BuildableDefnsLegacy._instance == null) {
+            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
+        }
+        return BuildableDefnsLegacy._instance;
+    }
     constructor(mapCellSizeInPixels) {
         var fontHeight = mapCellSizeInPixels.y / 2;
         var canBeBuiltNever = (m, p) => false;
@@ -112,8 +118,23 @@ class BuildableDefnsLegacy {
         var categories = BuildableCategory.Instances();
         // Drives.
         var categoryShipDrive = categories.ShipDrive;
-        this.ShipDrive1TonklinMotor = shipComponent("Tonklin Motor", visualBuild("Drive", colors.Gray), 10, categoryShipDrive, null // deviceDefn
-        );
+        var deviceDefnDrive = new DeviceDefn("Drive", false, // isActive
+        false, // needsTarget
+        ["Drive"], // categoryNames
+        (uwpe) => // init
+         { }, (uwpe) => // updateForRound
+         {
+            var ship = uwpe.entity;
+            var shipTurnTaker = ship.turnTaker();
+            shipTurnTaker.distancePerMove += 50;
+            shipTurnTaker.energyPerMove += 1;
+        }, (uwpe) => // use
+         {
+            var ship = uwpe.entity;
+            var shipTurnTaker = ship.turnTaker();
+            shipTurnTaker.energyForMoveDeduct();
+        });
+        this.ShipDrive1TonklinMotor = shipComponent("Tonklin Motor", visualBuild("Drive", colors.Gray), 10, categoryShipDrive, deviceDefnDrive);
         this.ShipDrive2IonBanger = shipComponent("Ion Banger", visualBuild("Drive", colors.Red), 30, categoryShipDrive, null // deviceDefn
         );
         this.ShipDrive3GravitonProjector = shipComponent("Graviton Projector", visualBuild("Drive", colors.Green), 40, categoryShipDrive, null // deviceDefn

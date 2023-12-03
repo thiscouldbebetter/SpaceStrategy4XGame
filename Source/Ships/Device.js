@@ -6,20 +6,20 @@ class Device {
     static ofEntity(entity) {
         return entity.propertyByName(Device.name);
     }
-    defn(world) {
+    defn() {
         return this._defn;
     }
-    toEntity(uwpe) {
-        var defn = this.defn(uwpe.world);
+    toEntity() {
+        var defn = this.defn();
         return new Entity(Device.name + defn.name, [this]);
     }
     updateForRound(uwpe) {
-        var defn = this.defn(uwpe.world);
+        var defn = this.defn();
         defn.updateForRound(uwpe);
     }
     use(uwpe) {
-        uwpe.entity2 = this.toEntity(uwpe);
-        var defn = this.defn(uwpe.world);
+        uwpe.entity2 = this.toEntity();
+        var defn = this.defn();
         defn.use(uwpe);
     }
     // EntityProperty.

@@ -519,9 +519,7 @@ class BuildableDefnsBasic
 			effectNone,
 			null, // effectsAvailableToUse
 			null, // categories
-			// entityModifyOnBuild
-			(uwpe: UniverseWorldPlaceEntities) =>
-				uwpe.entity.propertyAdd(new Shipyard() )
+			null // entityModifyOnBuild
 		);
 
 		this.SurfaceCloak = facilitySurfaceUsable

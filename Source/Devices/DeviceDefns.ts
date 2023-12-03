@@ -79,13 +79,13 @@ class DeviceDefns
 			[ "Shield" ], // categoryNames
 			(uwpe: UniverseWorldPlaceEntities) =>  // intialize
 			{
-				var device = Device.fromEntity(uwpe.entity2);
+				var device = Device.ofEntity(uwpe.entity2);
 				device.isActive = false;
 			},
 			(uwpe: UniverseWorldPlaceEntities) =>  // updateForRound
 			{
 				var ship = uwpe.entity as Ship;
-				var device = Device.fromEntity(uwpe.entity2);
+				var device = Device.ofEntity(uwpe.entity2);
 
 				if (device.isActive)
 				{
@@ -97,7 +97,7 @@ class DeviceDefns
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
 				var ship = uwpe.entity as Ship;
-				var device = Device.fromEntity(uwpe.entity2);
+				var device = Device.ofEntity(uwpe.entity2);
 				var shipTurnTaker = ship.turnTaker();
 
 				if (device.isActive)
@@ -150,7 +150,7 @@ class DeviceDefns
 			},
 			(uwpe: UniverseWorldPlaceEntities) =>  // updateForRound
 			{
-				var device = Device.fromEntity(uwpe.entity2);
+				var device = Device.ofEntity(uwpe.entity2);
 				device.usesThisTurn = 3;
 			},
 			this.shipWeaponBasicUse
@@ -160,7 +160,7 @@ class DeviceDefns
 	shipWeaponBasicUse(uwpe: UniverseWorldPlaceEntities)
 	{
 		var ship = uwpe.entity as Ship;
-		var device = Device.fromEntity(uwpe.entity2);
+		var device = Device.ofEntity(uwpe.entity2);
 
 		if (device.usesThisTurn > 0)
 		{

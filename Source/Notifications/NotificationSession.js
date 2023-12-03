@@ -17,8 +17,33 @@ class NotificationSession {
         ArrayHelper.remove(notifications, notification);
         this.notificationSelected = notifications[notificationIndex];
     }
-    notificationsDismissAll() {
+    notificationSelectedDismiss(universe) {
+        var world = universe.world;
+        var faction = world.factions[0]; // hack
+        var notificationSession = faction.notificationSession;
+        var notification = notificationSession.notificationSelected;
+        notificationSession.notificationDismiss(notification);
+        var areThereAnyMoreNotifications = notificationSession.notificationsExist();
+        if (areThereAnyMoreNotifications == false) {
+            var venueNext = world.toVenue();
+            universe.venueTransitionTo(venueNext);
+        }
+    }
+    notificationSelectedGoTo(universe) {
+        var notification = this.notificationSelected;
+        this.notificationDismiss(notification);
+        if (this.notificationsExist() == false) {
+            universe.venueCurrentRemove(); // Don't return to the notifications list if empty.
+        }
+        notification.jumpTo();
+    }
+    notificationsAllDismiss(universe) {
+        var world = universe.world;
+        // var faction = world.factions[0]; // hack
+        // var notificationSession = faction.notificationSession;
         this.clear();
+        var venueNext = world.toVenue();
+        universe.venueTransitionTo(venueNext);
     }
     notifications() {
         return this._notifications;
@@ -58,64 +83,20 @@ class NotificationSession {
         var buttonGoToSelected = ControlButton.from8("buttonGoToSelected", Coords.fromXY(margin, buttonPosY), // pos
         Coords.fromXY(buttonWidth, controlHeight), // size
         "Go To Selected", fontNameAndHeight, true, // hasBorder
-        dataBindingIsEnabled, () => // click
-         {
-            var notification = notificationSession.notificationSelected;
-            notificationSession.notificationDismiss(notification);
-            if (notificationSession.notificationsExist() == false) {
-                universe.venueCurrentRemove(); // Don't return to the notifications list if empty.
-            }
-            notification.jumpTo();
-        });
+        dataBindingIsEnabled, () => notificationSession.notificationSelectedGoTo(universe) // click
+        );
         var buttonDismissSelected = ControlButton.from8("buttonDismissSelected", Coords.fromXY(margin * 2 + buttonWidth * 1, buttonPosY), // pos
         Coords.fromXY(buttonWidth, controlHeight), // size
         "Dismiss Selected", fontNameAndHeight, true, // hasBorder
-        dataBindingIsEnabled, () => // click
-         {
-            var world = universe.world;
-            var faction = world.factions[0]; // hack
-            var notificationSession = faction.notificationSession;
-            var notification = notificationSession.notificationSelected;
-            notificationSession.notificationDismiss(notification);
-            var areThereAnyMoreNotifications = notificationSession.notificationsExist();
-            if (areThereAnyMoreNotifications == false) {
-                var venueNext = world.toVenue();
-                universe.venueTransitionTo(venueNext);
-            }
-        });
+        dataBindingIsEnabled, () => notificationSession.notificationSelectedDismiss(universe) // click
+        );
         var buttonDismissAll = ControlButton.from5(Coords.fromXY(margin * 3 + buttonWidth * 2, buttonPosY), // pos
         Coords.fromXY(buttonWidth, controlHeight), // size
-        "Dismiss All", fontNameAndHeight, () => // click
-         {
-            var world = universe.world;
-            var faction = world.factions[0]; // hack
-            var notificationSession = faction.notificationSession;
-            notificationSession.notificationsDismissAll();
-            var venueNext = world.toVenue();
-            universe.venueTransitionTo(venueNext);
-        });
+        "Dismiss All", fontNameAndHeight, () => notificationSession.notificationsAllDismiss(universe) // click
+        );
         var textMessage = ControlLabel.from4Uncentered(Coords.fromXY(margin, containerSize.y - margin - controlHeight), // pos
         Coords.fromXY(columnWidth, controlHeight), // size
         DataBinding.fromContext("All notifications must be handled before the round can be ended."), fontNameAndHeight);
-        /*
-        var buttonBack = ControlButton.from5
-        (
-            Coords.fromXY
-            (
-                containerSize.x - margin - buttonWidth,
-                containerSize.y - margin - controlHeight
-            ), // pos
-            Coords.fromXY(buttonWidth, controlHeight), // size
-            "Back",
-            fontNameAndHeight,
-            () => // click
-            {
-                var world = universe.world;
-                var venueNext: Venue = world.toVenue();
-                universe.venueTransitionTo(venueNext);
-            }
-        );
-        */
         var returnValue = ControlContainer.from4("Alerts", Coords.fromXY(0, 0), // pos
         containerSize, 
         // children
@@ -129,6 +110,43 @@ class NotificationSession {
             buttonDismissAll,
             textMessage
             //buttonBack
+        ]);
+        return returnValue;
+    }
+    toControl_Single(universe, containerSize) {
+        var notificationSession = this;
+        var notifications = notificationSession.notifications();
+        this.notificationSelected = notifications[0];
+        var controlHeight = containerSize.y / 16;
+        var margin = 10;
+        var columnWidth = containerSize.x - margin * 2;
+        var buttonCount = 3;
+        var buttonWidth = (containerSize.x - margin * 4) / buttonCount;
+        var fontHeightInPixels = controlHeight / 2;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+        var listHeight = controlHeight * 8;
+        var buttonPosY = containerSize.y - margin * 2 - controlHeight * 2;
+        var textNotificationSingle = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + controlHeight * 2 + listHeight), // pos
+        Coords.fromXY(columnWidth, controlHeight), // size
+        DataBinding.fromContextAndGet(this, (c) => c.notificationSelected.message), fontNameAndHeight);
+        var dataBindingIsEnabled = DataBinding.fromContextAndGet(this, (c) => (c.notificationSelected != null));
+        var buttonGoTo = ControlButton.from8("buttonGoTo", Coords.fromXY(margin, buttonPosY), // pos
+        Coords.fromXY(buttonWidth, controlHeight), // size
+        "Go To", fontNameAndHeight, true, // hasBorder
+        dataBindingIsEnabled, () => notificationSession.notificationSelectedGoTo(universe) // click
+        );
+        var buttonDismiss = ControlButton.from8("buttonDismiss", Coords.fromXY(margin * 2 + buttonWidth * 1, buttonPosY), // pos
+        Coords.fromXY(buttonWidth, controlHeight), // size
+        "Dismiss Selected", fontNameAndHeight, true, // hasBorder
+        dataBindingIsEnabled, () => notificationSession.notificationSelectedDismiss(universe) // click
+        );
+        var containerPos = universe.display.sizeInPixels.clone().subtract(containerSize).half();
+        var returnValue = ControlContainer.from4("containerNotificationSingle", containerPos, containerSize, 
+        // children
+        [
+            textNotificationSingle,
+            buttonGoTo,
+            buttonDismiss
         ]);
         return returnValue;
     }

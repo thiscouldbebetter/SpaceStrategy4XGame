@@ -21,7 +21,7 @@ class WorldExtended extends World {
         this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
         //this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
         this.defn.itemDefnsInitialize([]);
-        this.defn.itemDefns.push(...deviceDefns);
+        // this.defn.itemDefns.push(...deviceDefns);
         var buildableDefnsNonDevice = this.buildableDefns.filter(x => this.deviceDefnsByName.has(x.name) == false);
         var itemDefns = buildableDefnsNonDevice.map(x => ItemDefn.fromName(x.name));
         this.defn.itemDefns.push(...itemDefns);
@@ -89,15 +89,16 @@ class WorldExtended extends World {
         colorsForFactions.splice(colorsForFactions.indexOf(factionColorForPlayer), 1);
         colorsForFactions.splice(0, 0, factionColorForPlayer);
         var factionDefnsAll = FactionDefn.Instances()._All;
-        var factionDefnsAllMinusPlayerSelection = factionDefnsAll.map(x => x);
+        var randomizer = RandomizerSystem.Instance();
+        var factionDefns = randomizer.chooseNElementsFromArray(factionCount, factionDefnsAll);
         if (factionDefnNameForPlayer != null) {
             var factionDefnForPlayer = factionDefnsAll.find(x => x.name == factionDefnNameForPlayer);
-            factionDefnsAllMinusPlayerSelection.splice(factionDefnsAll.indexOf(factionDefnForPlayer), 1);
+            var factionDefnIndex = factionDefns.indexOf(factionDefnForPlayer);
+            factionDefns.splice(factionDefnIndex, 1);
+            factionDefns.splice(0, 0, factionDefnForPlayer);
         }
-        var randomizer = RandomizerSystem.Instance();
-        var factionDefnsToChooseFrom = randomizer.chooseNElementsFromArray(factionCount, factionDefnsAllMinusPlayerSelection);
         for (var i = 0; i < factionCount; i++) {
-            WorldExtended.create_FactionsAndShips_1(universe, worldDummy, network, colorsForFactions, factionDefnsToChooseFrom, technologyGraph, buildableDefns, deviceDefnsByName, i, ships);
+            WorldExtended.create_FactionsAndShips_1(universe, worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships);
         }
         if (factionDefnNameForPlayer != null) {
             factions[0].defnName = factionDefnNameForPlayer;
@@ -125,7 +126,7 @@ class WorldExtended extends World {
         var factionsAndShips = [factions, ships];
         return factionsAndShips;
     }
-    static create_FactionsAndShips_1(universe, worldDummy, network, colorsForFactions, factionDefnsToChooseFrom, technologyGraph, buildableDefns, deviceDefnsByName, i, ships) {
+    static create_FactionsAndShips_1(universe, worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships) {
         var factionIntelligenceAutomated = FactionIntelligence.demo();
         var factionHomeStarsystem = null;
         var numberOfNetworkNodes = network.nodes.length;
@@ -172,7 +173,7 @@ class WorldExtended extends World {
             technologiesToLearnNames.forEach(x => factionTechnologyResearcher.technologyLearnByName(x));
             factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
         }
-        var factionDefn = factionDefnsToChooseFrom[i];
+        var factionDefn = factionDefns[i];
         var factionHomePlanet = WorldExtended.create_FactionsAndShips_1_1_HomePlanet(universe, worldDummy, buildableDefns, factionHomeStarsystem, factionName, factionDefn);
         var factionShips = new Array();
         var factionKnowledge = new FactionKnowledge(factionName, // factionSelfName
@@ -237,10 +238,12 @@ class WorldExtended extends World {
             var buildableDefn = buildableDefnsToBuild[i];
             var buildablePos;
             if (i == 0) {
+                // todo - Sometimes the cell at this pos has a non-buildable terrain.
                 buildablePos =
                     factionHomePlanetSizeInCells.clone().half().floor().addXY(0, offsetForSurface);
             }
             else {
+                // todo - Sometimes the hub is surrounded by non-buildable terrain.
                 buildablePos =
                     factionHomePlanet.cellPositionsAvailableToBuildBuildableDefn(universe, buildableDefn)[0];
             }

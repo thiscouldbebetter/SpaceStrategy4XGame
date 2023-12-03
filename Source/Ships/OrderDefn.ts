@@ -98,7 +98,7 @@ class OrderDefn_Instances
 
 		var ship = entity as Ship;
 
-		var device = ship.deviceSelected;
+		var device = ship.deviceSelected();
 		if (device != null)
 		{
 			var venue = universe.venueCurrent() as VenueStarsystem;

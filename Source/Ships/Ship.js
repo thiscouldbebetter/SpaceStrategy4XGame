@@ -45,11 +45,16 @@ class Ship extends Entity {
             shipCollidable.collisionHandle(uwpe, collision);
         }
     }
-    devices() {
-        return new Array(); // todo
+    deviceSelect(deviceToSelect) {
+        this._deviceSelected = deviceToSelect;
     }
-    devicesByDefnName(deviceDefnName) {
-        return this.devices().filter(x => x.defnName == deviceDefnName);
+    deviceSelected() {
+        return this._deviceSelected;
+    }
+    devices() {
+        var deviceEntities = this.componentEntities.filter(x => Device.ofEntity(x) != null);
+        var devices = deviceEntities.map(x => Device.ofEntity(x));
+        return devices;
     }
     faction(world) {
         return this.factionable().faction(world);
@@ -153,29 +158,16 @@ class Ship extends Entity {
     // Devices.
     devicesDrives(world) {
         if (this._devicesDrives == null) {
-            this._devicesDrives = [];
             var devices = this.devices();
-            for (var i = 0; i < devices.length; i++) {
-                var device = devices[i];
-                var deviceDefn = device.deviceDefn(world);
-                if (deviceDefn.categoryNames.indexOf("Drive") >= 0) {
-                    this._devicesDrives.push(device);
-                }
-            }
+            this._devicesDrives = devices.filter(x => x.defn(world).categoryNames.indexOf("Drive") >= 0);
         }
         return this._devicesDrives;
     }
     devicesUsable(world) {
         if (this._devicesUsable == null) {
-            this._devicesUsable = [];
             var devices = this.devices();
-            for (var i = 0; i < devices.length; i++) {
-                var device = devices[i];
-                var deviceDefn = device.deviceDefn(world);
-                if (deviceDefn.isActive) {
-                    this._devicesUsable.push(device);
-                }
-            }
+            this._devicesUsable =
+                devices.filter(x => x.defn(world).isActive);
         }
         return this._devicesUsable;
     }
@@ -225,6 +217,23 @@ class Ship extends Entity {
         var shipFaction = ship.faction(world);
         var factionKnowledge = shipFaction.knowledge;
         factionKnowledge.starsystemAdd(starsystemDestination, world);
+    }
+    moveRepeat(universe) {
+        var ship = this;
+        var order = Orderable.fromEntity(ship).order;
+        if (order != null) {
+            order.obey(universe, null, null, ship);
+        }
+    }
+    moveStart(universe) {
+        var ship = this;
+        var devicesDrives = ship.devicesDrives(universe.world);
+        var deviceDriveToSelect = devicesDrives[0];
+        ship.deviceSelect(deviceDriveToSelect);
+        var venue = universe.venueCurrent();
+        var cursor = venue.cursor;
+        var orderDefns = OrderDefn.Instances();
+        cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
     }
     moveTowardTarget(uwpe, target, ship) {
         var turnTaker = this.turnTaker();
@@ -311,27 +320,13 @@ class Ship extends Entity {
                 DataBinding.fromContextAndGet(ship, (c) => "" + c.turnTaker().energyThisTurn), fontNameAndHeight),
                 ControlButton.from8("buttonMove", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
                 buttonHalfSize, "Move", fontNameAndHeight, true, // hasBorder
-                DataBinding.fromTrue(), // isEnabled
-                () => // click
-                 {
-                    var venue = universe.venueCurrent();
-                    var ship = venue.selectedEntity;
-                    ship.deviceSelected = ship.devicesDrives(world)[0];
-                    var orderDefns = OrderDefn.Instances();
-                    venue.cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
-                }),
+                DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
+                () => ship.moveStart(universe)),
                 ControlButton.from8("buttonRepeat", Coords.fromXY(margin + buttonHalfSize.x, margin + controlSpacing * 2), // pos
                 buttonHalfSize, "Repeat", fontNameAndHeight, true, // hasBorder
                 DataBinding.fromTrue(), // isEnabled
-                () => // click
-                 {
-                    var venue = universe.venueCurrent();
-                    var ship = venue.selectedEntity;
-                    var order = Orderable.fromEntity(ship).order;
-                    if (order != null) {
-                        order.obey(universe, null, null, ship);
-                    }
-                }),
+                () => ship.moveRepeat(universe) // click
+                ),
                 new ControlLabel("labelDevices", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
                 Coords.fromXY(containerSize.x, 0), // this.size
                 false, // isTextCenteredHorizontally
@@ -341,7 +336,7 @@ class Ship extends Entity {
                 Coords.fromXY(buttonSize.x, controlSpacing * 4), // size
                 // dataBindingForItems
                 DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable(world)), DataBinding.fromGet((c) => c.defn(world).name), // bindingForOptionText
-                fontNameAndHeight, new DataBinding(ship, (c) => c.deviceSelected, (c, v) => c.deviceSelected = v), // dataBindingForItemSelected
+                fontNameAndHeight, new DataBinding(ship, (c) => c.deviceSelected(), (c, v) => c.deviceSelect(v)), // dataBindingForItemSelected
                 DataBinding.fromContext(null) // bindingForItemValue
                 ),
                 ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
@@ -350,7 +345,7 @@ class Ship extends Entity {
                  {
                     var venue = universe.venueCurrent();
                     var ship = venue.selectedEntity;
-                    var device = ship.deviceSelected;
+                    var device = ship.deviceSelected();
                     device.use(uwpe);
                 })
             ];

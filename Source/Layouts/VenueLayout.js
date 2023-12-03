@@ -218,11 +218,11 @@ class VenueLayout {
         var world = universe.world;
         var display = universe.display;
         var containerMainSize = display.sizeInPixels.clone();
-        var margin = 8;
+        var margin = containerMainSize.x / 60;
         var fontHeightInPixels = margin;
         var controlHeight = margin * 2;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(8, 6));
+        var containerInnerSize = containerMainSize.clone().multiply(Coords.fromXY(.3, .12));
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
         var buttonBack = ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
         Coords.fromXY(buttonWidth, controlHeight), // size
@@ -234,13 +234,15 @@ class VenueLayout {
             var venueNext = venue.venueParent;
             universe.venueTransitionTo(venueNext);
         });
-        var controlVitals = this.toControl_Vitals(universe, containerMainSize, containerInnerSize, margin, controlHeight);
+        var controlNameTypeOwner = this.toControl_NameTypeOwner(universe, containerMainSize, containerInnerSize, margin, controlHeight);
+        var controlPopulationAndProduction = this.toControl_PopulationAndProduction(universe, containerMainSize, containerInnerSize, margin, controlHeight);
         var container = ControlContainer.from4("containerMain", Coords.fromXY(0, 0), // pos
         containerMainSize, 
         // children
         [
             buttonBack,
-            controlVitals
+            controlNameTypeOwner,
+            controlPopulationAndProduction
         ]);
         var planet = this.modelParent;
         var planetFactionName = planet.factionable().factionName;
@@ -256,14 +258,11 @@ class VenueLayout {
         var returnValue = new ControlContainerTransparent(container);
         return returnValue;
     }
-    toControl_Vitals(universe, containerMainSize, containerInnerSize, margin, controlHeight) {
-        containerInnerSize = containerInnerSize.clone().multiply(Coords.fromXY(2, 1));
+    toControl_NameTypeOwner(universe, containerMainSize, containerInnerSize, margin, controlHeight) {
         var planet = this.modelParent;
-        var world = universe.world;
-        var faction = planet.faction(world);
-        var column1PosX = margin * 8;
-        controlHeight = 10;
-        var fontHeightInPixels = controlHeight;
+        var column1PosX = margin * 6;
+        controlHeight = margin * 1;
+        var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var size = containerInnerSize;
         var labelName = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
@@ -284,30 +283,6 @@ class VenueLayout {
         var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
         DataBinding.fromContextAndGet(planet, (c) => c.factionable().factionName), fontNameAndHeight);
-        var labelPopulation = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 3), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext("Population:"), fontNameAndHeight);
-        var textPopulation = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => "" + c.populationOverMaxPlusIdle(universe)), fontNameAndHeight);
-        var labelIndustry = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 4), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext("Industry:"), fontNameAndHeight);
-        var textIndustry = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 4), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => "" + c.industryAndBuildableInProgress(universe, world)), fontNameAndHeight);
-        var labelProsperity = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 5), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext("Prosperity:"), fontNameAndHeight);
-        var textProsperity = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 5), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => c.prosperityNetWithNeededToGrow(universe)), fontNameAndHeight);
-        var labelResearch = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 6), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext("Research:"), fontNameAndHeight);
-        var textResearch = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 6), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => "" + c.researchPerTurn(universe, world, faction)), fontNameAndHeight);
         var returnValue = ControlContainer.from4("containerTimeAndPlace", Coords.fromXY(margin, margin), size, 
         // children
         [
@@ -316,7 +291,46 @@ class VenueLayout {
             labelType,
             textPlanetType,
             labelOwnedBy,
-            textFaction,
+            textFaction
+        ]);
+        return returnValue;
+    }
+    toControl_PopulationAndProduction(universe, containerMainSize, containerInnerSize, margin, controlHeight) {
+        var planet = this.modelParent;
+        var world = universe.world;
+        var faction = planet.faction(world);
+        var column1PosX = margin * 6;
+        controlHeight = margin * 1;
+        var fontHeightInPixels = margin;
+        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+        var size = containerInnerSize;
+        var labelPopulation = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 0), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        DataBinding.fromContext("Population:"), fontNameAndHeight);
+        var textPopulation = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 0), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        DataBinding.fromContextAndGet(planet, (c) => "" + c.populationOverMaxPlusIdle(universe)), fontNameAndHeight);
+        var labelIndustry = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 1), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        DataBinding.fromContext("Industry:"), fontNameAndHeight);
+        var textIndustry = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 1), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        DataBinding.fromContextAndGet(planet, (c) => "" + c.industryAndBuildableInProgress(universe, world)), fontNameAndHeight);
+        var labelProsperity = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 2), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        DataBinding.fromContext("Prosperity:"), fontNameAndHeight);
+        var textProsperity = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        DataBinding.fromContextAndGet(planet, (c) => c.prosperityNetWithNeededToGrow(universe)), fontNameAndHeight);
+        var labelResearch = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 3), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        DataBinding.fromContext("Research:"), fontNameAndHeight);
+        var textResearch = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
+        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+        DataBinding.fromContextAndGet(planet, (c) => "" + c.researchPerTurn(universe, world, faction)), fontNameAndHeight);
+        var returnValue = ControlContainer.from4("containerPopulationAndProduction", Coords.fromXY(margin, containerMainSize.y - margin - containerInnerSize.y), size, 
+        // children
+        [
             labelPopulation,
             textPopulation,
             labelIndustry,

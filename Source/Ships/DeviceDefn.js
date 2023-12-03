@@ -1,23 +1,17 @@
 "use strict";
-class DeviceDefn extends ItemDefn {
+class DeviceDefn {
     constructor(name, isActive, needsTarget, categoryNames, initialize, updateForRound, use) {
-        super(name, name, // appearance
-        name, // description
-        null, // mass
-        null, // tradeValue
-        null, // stackSizeMax
-        categoryNames, use, null, // visual
-        null);
+        this.name = name;
         this.isActive = isActive;
         this.needsTarget = needsTarget;
         this._initialize = initialize;
         this.updateForRound = updateForRound;
-        this.use = use;
+        this._use = use;
     }
     initialize(uwpe) {
         this._initialize(uwpe);
     }
-    toItem() {
-        return new Device(this);
+    use(uwpe) {
+        this._use(uwpe);
     }
 }

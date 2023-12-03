@@ -45,7 +45,7 @@ class OrderDefn_Instances {
         var orderable = Orderable.fromEntity(entity);
         var order = orderable.order;
         var ship = entity;
-        var device = ship.deviceSelected;
+        var device = ship.deviceSelected();
         if (device != null) {
             var venue = universe.venueCurrent();
             var starsystem = venue.starsystem;

@@ -93,10 +93,8 @@ class Faction {
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var faction = this;
         var size = Coords.fromXY(containerInnerSize.x, controlHeight * 2 + margin * 3);
-        var labelFaction = new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
+        var labelFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
         DataBinding.fromContext("Faction:"), fontNameAndHeight);
         var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size

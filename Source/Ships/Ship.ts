@@ -3,7 +3,7 @@ class Ship extends Entity
 {
 	defn: BodyDefn;
 
-	deviceSelected: Device;
+	_deviceSelected: Device;
 
 	_devicesDrives: Device[];
 	_devicesUsable: Device[];
@@ -95,14 +95,24 @@ class Ship extends Entity
 		}
 	}
 
-	devices(): Device[]
+	deviceSelect(deviceToSelect: Device): void
 	{
-		return new Array<Device>(); // todo
+		this._deviceSelected = deviceToSelect;
 	}
 
-	devicesByDefnName(deviceDefnName: string): Device[]
+	deviceSelected(): Device
 	{
-		return this.devices().filter(x => x.defnName == deviceDefnName);
+		return this._deviceSelected;
+	}
+
+	devices(): Device[]
+	{
+		var deviceEntities = this.componentEntities.filter
+		(
+			x => Device.ofEntity(x) != null
+		);
+		var devices = deviceEntities.map(x => Device.ofEntity(x) );
+		return devices;
 	}
 
 	faction(world: WorldExtended): Faction
@@ -154,7 +164,10 @@ class Ship extends Entity
 
 	notificationsForRoundAddToArray
 	(
-		universe: Universe, world: WorldExtended, faction: Faction, notificationsSoFar: Notification2[]
+		universe: Universe,
+		world: WorldExtended,
+		faction: Faction,
+		notificationsSoFar: Notification2[]
 	): Notification2[]
 	{
 		return notificationsSoFar; // todo
@@ -213,7 +226,7 @@ class Ship extends Entity
 			{
 				var itemForHub =
 					itemHolder.itemsByDefnName(itemDefnNameHub)[0];
-				
+
 				var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
 				var entityForHub = itemForHub.toEntity(uwpe);
 
@@ -289,18 +302,12 @@ class Ship extends Entity
 	{
 		if (this._devicesDrives == null)
 		{
-			this._devicesDrives = [];
-
 			var devices = this.devices();
-			for (var i = 0; i < devices.length; i++)
-			{
-				var device = devices[i];
-				var deviceDefn = device.deviceDefn(world);
-				if (deviceDefn.categoryNames.indexOf("Drive") >= 0)
-				{
-					this._devicesDrives.push(device);
-				}
-			}
+
+			this._devicesDrives = devices.filter
+			(
+				x => x.defn(world).categoryNames.indexOf("Drive") >= 0
+			);
 		}
 
 		return this._devicesDrives;
@@ -310,18 +317,10 @@ class Ship extends Entity
 	{
 		if (this._devicesUsable == null)
 		{
-			this._devicesUsable = [];
-
 			var devices = this.devices();
-			for (var i = 0; i < devices.length; i++)
-			{
-				var device = devices[i];
-				var deviceDefn = device.deviceDefn(world);
-				if (deviceDefn.isActive)
-				{
-					this._devicesUsable.push(device);
-				}
-			}
+
+			this._devicesUsable =
+				devices.filter(x => x.defn(world).isActive);
 		}
 
 		return this._devicesUsable;
@@ -397,6 +396,30 @@ class Ship extends Entity
 		var shipFaction = ship.faction(world);
 		var factionKnowledge = shipFaction.knowledge;
 		factionKnowledge.starsystemAdd(starsystemDestination, world);
+	}
+
+	moveRepeat(universe: Universe): void
+	{
+		var ship = this;
+		var order = Orderable.fromEntity(ship).order;
+		if (order != null)
+		{
+			order.obey(universe, null, null, ship);
+		}
+	}
+
+	moveStart(universe: Universe): void
+	{
+		var ship = this;
+
+		var devicesDrives = ship.devicesDrives(universe.world as WorldExtended);
+		var deviceDriveToSelect = devicesDrives[0];
+		ship.deviceSelect(deviceDriveToSelect);
+
+		var venue = universe.venueCurrent() as VenueStarsystem;
+		var cursor = venue.cursor;
+		var orderDefns = OrderDefn.Instances();
+		cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
 	}
 
 	moveTowardTarget(uwpe: UniverseWorldPlaceEntities, target: Entity, ship: Ship): void
@@ -596,17 +619,8 @@ class Ship extends Entity
 					"Move",
 					fontNameAndHeight,
 					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => // click
-					{
-						var venue = universe.venueCurrent() as VenueStarsystem;
-						var ship = venue.selectedEntity as Ship;
-
-						ship.deviceSelected = ship.devicesDrives(world)[0];
-
-						var orderDefns = OrderDefn.Instances();
-						venue.cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
-					}
+					DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
+					() => ship.moveStart(universe)
 				),
 
 				ControlButton.from8
@@ -622,16 +636,7 @@ class Ship extends Entity
 					fontNameAndHeight,
 					true, // hasBorder
 					DataBinding.fromTrue(), // isEnabled
-					() => // click
-					{
-						var venue = universe.venueCurrent() as VenueStarsystem;
-						var ship = venue.selectedEntity;
-						var order = Orderable.fromEntity(ship).order;
-						if (order != null)
-						{
-							order.obey(universe, null, null, ship);
-						}
-					}
+					() => ship.moveRepeat(universe) // click
 				),
 
 				new ControlLabel
@@ -663,8 +668,8 @@ class Ship extends Entity
 					new DataBinding
 					(
 						ship,
-						(c: Ship) => c.deviceSelected,
-						(c: Ship, v: Device) => c.deviceSelected = v
+						(c: Ship) => c.deviceSelected(),
+						(c: Ship, v: Device) => c.deviceSelect(v)
 					), // dataBindingForItemSelected
 					DataBinding.fromContext(null) // bindingForItemValue
 				),
@@ -686,7 +691,7 @@ class Ship extends Entity
 					{
 						var venue = universe.venueCurrent() as VenueStarsystem;
 						var ship = venue.selectedEntity as Ship;
-						var device = ship.deviceSelected;
+						var device = ship.deviceSelected();
 						device.use(uwpe);
 					}
 				)

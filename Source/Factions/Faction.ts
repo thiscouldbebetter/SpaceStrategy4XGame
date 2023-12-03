@@ -199,17 +199,14 @@ class Faction implements EntityProperty<Faction>
 			controlHeight * 2 + margin * 3
 		);
 
-		var labelFaction = new ControlLabel
+		var labelFaction = ControlLabel.from4Uncentered
 		(
-			"labelFaction",
 			Coords.fromXY(margin, margin),// pos
 			Coords.fromXY
 			(
 				containerInnerSize.x - margin * 3,
 				controlHeight
 			), // size
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext("Faction:"),
 			fontNameAndHeight
 		);

@@ -45,12 +45,12 @@ class DeviceDefns {
         ["Shield"], // categoryNames
         (uwpe) => // intialize
          {
-            var device = Device.fromEntity(uwpe.entity2);
+            var device = Device.ofEntity(uwpe.entity2);
             device.isActive = false;
         }, (uwpe) => // updateForRound
          {
             var ship = uwpe.entity;
-            var device = Device.fromEntity(uwpe.entity2);
+            var device = Device.ofEntity(uwpe.entity2);
             if (device.isActive) {
                 var shipTurnTaker = ship.turnTaker();
                 shipTurnTaker.energyThisTurn -= 1;
@@ -59,7 +59,7 @@ class DeviceDefns {
         }, (uwpe) => // use
          {
             var ship = uwpe.entity;
-            var device = Device.fromEntity(uwpe.entity2);
+            var device = Device.ofEntity(uwpe.entity2);
             var shipTurnTaker = ship.turnTaker();
             if (device.isActive) {
                 device.isActive = false;
@@ -95,13 +95,13 @@ class DeviceDefns {
             // todo
         }, (uwpe) => // updateForRound
          {
-            var device = Device.fromEntity(uwpe.entity2);
+            var device = Device.ofEntity(uwpe.entity2);
             device.usesThisTurn = 3;
         }, this.shipWeaponBasicUse);
     }
     shipWeaponBasicUse(uwpe) {
         var ship = uwpe.entity;
-        var device = Device.fromEntity(uwpe.entity2);
+        var device = Device.ofEntity(uwpe.entity2);
         if (device.usesThisTurn > 0) {
             var target = device.targetEntity; // todo
             if (target == null) {

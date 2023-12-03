@@ -1,11 +1,13 @@
 
-class DeviceDefn extends ItemDefn
+class DeviceDefn
 {
+	name: string;
 	isActive: boolean;
 	needsTarget: boolean;
 	categoryNames: string[];
 	_initialize: (uwpe: UniverseWorldPlaceEntities) => void;
 	updateForRound: (uwpe: UniverseWorldPlaceEntities) => void;
+	_use: (uwpe: UniverseWorldPlaceEntities) => void;
 
 	constructor
 	(
@@ -18,24 +20,12 @@ class DeviceDefn extends ItemDefn
 		use: (uwpe: UniverseWorldPlaceEntities) => void
 	)
 	{
-		super
-		(
-			name,
-			name, // appearance
-			name, // description
-			null, // mass
-			null, // tradeValue
-			null, // stackSizeMax
-			categoryNames,
-			use,
-			null, // visual
-			null, // toEntity
-		);
+		this.name = name;
 		this.isActive = isActive;
 		this.needsTarget = needsTarget;
 		this._initialize = initialize;
 		this.updateForRound = updateForRound;
-		this.use = use;
+		this._use = use;
 	}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
@@ -43,8 +33,8 @@ class DeviceDefn extends ItemDefn
 		this._initialize(uwpe);
 	}
 
-	toItem(): Device
+	use(uwpe: UniverseWorldPlaceEntities): void
 	{
-		return new Device(this);
+		this._use(uwpe);
 	}
 }

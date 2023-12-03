@@ -1,7 +1,7 @@
 
-class Device extends Item
+class Device implements EntityProperty<Device>
 {
-	_deviceDefn: DeviceDefn;
+	_defn: DeviceDefn;
 
 	energyThisTurn: number;
 	isActive: boolean;
@@ -14,30 +14,53 @@ class Device extends Item
 
 	constructor(defn: DeviceDefn)
 	{
-		super(defn.name, 1);
-		this._deviceDefn = defn;
+		this._defn = defn;
 	}
 
-	static fromEntity(deviceAsEntity: Entity): Device
+	static ofEntity(entity: Entity): Device
 	{
-		return deviceAsEntity.propertyByName(Device.name) as Device;
+		return entity.propertyByName(Device.name) as Device;
 	}
 
-	deviceDefn(world: World): DeviceDefn
+	defn(world: World): DeviceDefn
 	{
-		return this._deviceDefn;
+		return this._defn;
+	}
+
+	toEntity(uwpe: UniverseWorldPlaceEntities): Entity
+	{
+		var defn = this.defn(uwpe.world);
+		return new Entity(Device.name + defn.name, [ this ]);
 	}
 
 	updateForRound(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var defn = this.deviceDefn(uwpe.world);
+		var defn = this.defn(uwpe.world);
 		defn.updateForRound(uwpe);
 	}
 
 	use(uwpe: UniverseWorldPlaceEntities): void
 	{
 		uwpe.entity2 = this.toEntity(uwpe);
-		var defn = this.deviceDefn(uwpe.world);
+		var defn = this.defn(uwpe.world);
 		defn.use(uwpe);
 	}
+
+	// EntityProperty.
+
+	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+
+	// Clonable.
+
+	clone(): Device
+	{
+		return this; // todo
+	}
+
+	// Equatable.
+
+	equals(other: Device): boolean { return false; } // todo
+
 }

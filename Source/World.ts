@@ -65,7 +65,7 @@ class WorldExtended extends World
 		//this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
 
 		this.defn.itemDefnsInitialize([]);
-		this.defn.itemDefns.push(...deviceDefns);
+		// this.defn.itemDefns.push(...deviceDefns);
 		var buildableDefnsNonDevice = this.buildableDefns.filter(
 			x => this.deviceDefnsByName.has(x.name) == false
 		);
@@ -226,27 +226,22 @@ class WorldExtended extends World
 
 		var factionDefnsAll = FactionDefn.Instances()._All;
 
-		var factionDefnsAllMinusPlayerSelection =
-			factionDefnsAll.map(x => x);
+		var randomizer = RandomizerSystem.Instance();
+		var factionDefns =
+			randomizer.chooseNElementsFromArray
+			(
+				factionCount,
+				factionDefnsAll
+			);
 
 		if (factionDefnNameForPlayer != null)
 		{
 			var factionDefnForPlayer =
 				factionDefnsAll.find(x => x.name == factionDefnNameForPlayer);
-
-			factionDefnsAllMinusPlayerSelection.splice
-			(
-				factionDefnsAll.indexOf(factionDefnForPlayer), 1
-			);
+			var factionDefnIndex = factionDefns.indexOf(factionDefnForPlayer);
+			factionDefns.splice(factionDefnIndex, 1);
+			factionDefns.splice(0, 0, factionDefnForPlayer);
 		}
-
-		var randomizer = RandomizerSystem.Instance();
-		var factionDefnsToChooseFrom =
-			randomizer.chooseNElementsFromArray
-			(
-				factionCount,
-				factionDefnsAllMinusPlayerSelection
-			);
 
 		for (var i = 0; i < factionCount; i++)
 		{
@@ -256,7 +251,7 @@ class WorldExtended extends World
 				worldDummy,
 				network,
 				colorsForFactions,
-				factionDefnsToChooseFrom,
+				factionDefns,
 				technologyGraph,
 				buildableDefns,
 				deviceDefnsByName,
@@ -317,7 +312,7 @@ class WorldExtended extends World
 		worldDummy: WorldExtended,
 		network: Network2,
 		colorsForFactions: Color[],
-		factionDefnsToChooseFrom: FactionDefn[],
+		factionDefns: FactionDefn[],
 		technologyGraph: TechnologyGraph,
 		buildableDefns: BuildableDefnsLegacy,
 		deviceDefnsByName: Map<string, DeviceDefn>,
@@ -405,7 +400,7 @@ class WorldExtended extends World
 			factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
 		}
 
-		var factionDefn = factionDefnsToChooseFrom[i];
+		var factionDefn = factionDefns[i];
 
 		var factionHomePlanet = WorldExtended.create_FactionsAndShips_1_1_HomePlanet
 		(
@@ -542,9 +537,9 @@ class WorldExtended extends World
 				buildableDefns.SurfaceLaboratory,
 				buildableDefns.OrbitalShipyard
 			];
-			
+
 			buildableDefnsToBuild.push(...buildableDefnsForHeadStart);
-			
+
 			factionHomePlanet.populationAdd
 			(
 				universe,
@@ -561,6 +556,7 @@ class WorldExtended extends World
 			var buildablePos: Coords;
 			if (i == 0)
 			{
+				// todo - Sometimes the cell at this pos has a non-buildable terrain.
 				buildablePos =
 					factionHomePlanetSizeInCells.clone().half().floor().addXY
 					(
@@ -568,20 +564,21 @@ class WorldExtended extends World
 					);
 			}
 			else
-			{				
+			{
+				// todo - Sometimes the hub is surrounded by non-buildable terrain.
 				buildablePos =
 					factionHomePlanet.cellPositionsAvailableToBuildBuildableDefn
 					(
 						universe, buildableDefn
 					)[0];
 			}
-			
+
 			var buildable = Buildable.fromDefnAndPosComplete
 			(
 				buildableDefn,
 				buildablePos
 			);
-			
+
 			var buildableAsEntity = buildable.toEntity(worldDummy);
 			
 			factionHomePlanetLayoutMap.bodyAdd(buildableAsEntity);

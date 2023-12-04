@@ -17,15 +17,10 @@ class DeviceDefns {
         (uwpe) => // init
          { }, (uwpe) => // updateForRound
          {
-            var ship = uwpe.entity;
-            var shipTurnTaker = ship.turnTaker();
-            shipTurnTaker.distancePerMove += 50;
-            shipTurnTaker.energyPerMove += 1;
+            // todo - var ship = uwpe.entity as Ship;
         }, (uwpe) => // use
          {
-            var ship = uwpe.entity;
-            var shipTurnTaker = ship.turnTaker();
-            shipTurnTaker.energyForMoveDeduct();
+            // todo - var ship = uwpe.entity as Ship;
         });
         this.ShipGeneratorBasic = new DeviceDefn("Ship Generator, Basic", false, // isActive
         false, // needsTarget
@@ -33,9 +28,7 @@ class DeviceDefns {
         (uwpe) => // init
          { }, (uwpe) => // updateForRound
          {
-            var ship = uwpe.entity;
-            var shipTurnTaker = ship.turnTaker();
-            shipTurnTaker.energyThisTurn += 10;
+            // todo - var ship = uwpe.entity as Ship;
         }, (uwpe) => // use
          {
             // Do nothing.
@@ -49,26 +42,10 @@ class DeviceDefns {
             device.isActive = false;
         }, (uwpe) => // updateForRound
          {
-            var ship = uwpe.entity;
-            var device = Device.ofEntity(uwpe.entity2);
-            if (device.isActive) {
-                var shipTurnTaker = ship.turnTaker();
-                shipTurnTaker.energyThisTurn -= 1;
-                shipTurnTaker.shieldingThisTurn += 1;
-            }
+            // todo
         }, (uwpe) => // use
          {
-            var ship = uwpe.entity;
-            var device = Device.ofEntity(uwpe.entity2);
-            var shipTurnTaker = ship.turnTaker();
-            if (device.isActive) {
-                device.isActive = false;
-                shipTurnTaker.energyThisTurn += 1;
-            }
-            else {
-                device.isActive = true;
-                shipTurnTaker.energyThisTurn -= 1;
-            }
+            // todo
         });
         this.ShipWeaponBasic = this.shipWeaponBasic();
         this._All =
@@ -100,23 +77,29 @@ class DeviceDefns {
         }, this.shipWeaponBasicUse);
     }
     shipWeaponBasicUse(uwpe) {
-        var ship = uwpe.entity;
+        /*
+        var ship = uwpe.entity as Ship;
         var device = Device.ofEntity(uwpe.entity2);
-        if (device.usesThisTurn > 0) {
+
+        if (device.usesThisTurn > 0)
+        {
             var target = device.targetEntity; // todo
-            if (target == null) {
-                var venue = uwpe.universe.venueCurrent();
+            if (target == null)
+            {
+                var venue = uwpe.universe.venueCurrent() as VenueStarsystem;
                 venue.cursor.entityAndOrderNameSet(ship, "UseDevice");
             }
             else // if (target != null)
-             {
+            {
                 device.usesThisTurn--;
                 var targetKillable = target.killable();
                 targetKillable.integrity -= 1;
-                if (targetKillable.integrity <= 0) {
+                if (targetKillable.integrity <= 0)
+                {
                     alert("todo - ship destroyed");
                 }
             }
         }
+        */
     }
 }

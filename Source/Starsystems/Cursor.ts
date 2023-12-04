@@ -1,9 +1,8 @@
 
 class Cursor extends Entity
 {
+	entityUsingCursorToTarget: Entity;
 	entityUnderneath: Entity;
-	entityParent: Entity;
-	orderName: string;
 	hasXYPositionBeenSpecified: boolean;
 	hasZPositionBeenSpecified: boolean;
 
@@ -27,10 +26,9 @@ class Cursor extends Entity
 			this.bodyDefn()
 		);
 
+		this.entityUsingCursorToTarget = null;
 		this.entityUnderneath = null;
 
-		this.entityParent = null;
-		this.orderName = null;
 		this.hasXYPositionBeenSpecified = false;
 		this.hasZPositionBeenSpecified = false;
 
@@ -41,26 +39,26 @@ class Cursor extends Entity
 	{
 		var radius = 5;
 		var color = Color.Instances().White;
+		
+		var visualCrosshairs = new VisualGroup
+		([
+			VisualCircle.fromRadiusAndColors(radius, null, color),
+			new VisualLine
+			(
+				Coords.fromXY(-radius, 0), Coords.fromXY(radius, 0), color, null
+			),
+			new VisualLine
+			(
+				Coords.fromXY(0, -radius), Coords.fromXY(0, radius), color, null
+			),
+		]);
+
 		var visualReticle = new VisualSelect
 		(
 			new Map
 			([
 				[ "None", new VisualNone() ],
-				[
-					"Crosshairs",
-					new VisualGroup
-					([
-						new VisualCircle(radius, null, color, null),
-						new VisualLine
-						(
-							Coords.fromXY(-radius, 0), Coords.fromXY(radius, 0), color, null
-						),
-						new VisualLine
-						(
-							Coords.fromXY(0, -radius), Coords.fromXY(0, radius), color, null
-						),
-					])
-				]
+				[ "Crosshairs", visualCrosshairs ]
 			]),
 			// selectChildNames
 			(
@@ -69,7 +67,7 @@ class Cursor extends Entity
 			{
 				var returnValue;
 				var cursor = uwpe.entity as Cursor;
-				if (cursor.entityParent == null)
+				if (cursor.entityUsingCursorToTarget == null)
 				{
 					returnValue = "None";
 				}
@@ -123,24 +121,9 @@ class Cursor extends Entity
 
 	clear(): void
 	{
-		this.entityParent = null;
-		this.orderName = null;
+		this.entityUsingCursorToTarget = null;
 		this.hasXYPositionBeenSpecified = false;
 		this.hasZPositionBeenSpecified = false;
-	}
-
-	entityAndOrderNameSet(entity: Entity, orderName: string): Cursor
-	{
-		this.entityParent = entity;
-		this.orderName = orderName;
-		return this;
-	}
-
-	// controls
-
-	toControl(uwpe: UniverseWorldPlaceEntities, size: Coords): ControlBase
-	{
-		return this.entityParent.controllable().toControl(uwpe, size, null);
 	}
 
 	// drawable

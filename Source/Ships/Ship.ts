@@ -2,14 +2,13 @@
 class Ship extends Entity
 {
 	defn: BodyDefn;
+	componentEntities: Entity[];
 
 	_deviceSelected: Device;
-
 	_devicesDrives: Device[];
 	_devicesUsable: Device[];
+	_displacement: Coords;
 	_visual: VisualBase;
-
-	componentEntities: Entity[];
 
 	constructor
 	(
@@ -37,13 +36,14 @@ class Ship extends Entity
 				new Factionable(faction.name),
 				Killable.fromIntegrityMax(10),
 				Locatable.fromPos(pos),
-				new Orderable(),
-				new TurnTaker()
+				new Orderable()
 			]
 		);
 
 		this.defn = defn;
 		this.componentEntities = componentEntities;
+		
+		this._displacement = Coords.create();
 	}
 	
 	// static methods
@@ -95,26 +95,6 @@ class Ship extends Entity
 		}
 	}
 
-	deviceSelect(deviceToSelect: Device): void
-	{
-		this._deviceSelected = deviceToSelect;
-	}
-
-	deviceSelected(): Device
-	{
-		return this._deviceSelected;
-	}
-
-	devices(): Device[]
-	{
-		var deviceEntities = this.componentEntities.filter
-		(
-			x => Device.ofEntity(x) != null
-		);
-		var devices = deviceEntities.map(x => Device.ofEntity(x) );
-		return devices;
-	}
-
 	faction(world: WorldExtended): Faction
 	{
 		return this.factionable().faction(world);
@@ -132,7 +112,7 @@ class Ship extends Entity
 
 	isAwaitingTarget(): boolean
 	{
-		return (this.deviceSelected != null);
+		return (this.orderable().order(this).isAwaitingTarget() );
 	}
 
 	jumpTo(universe: Universe): void
@@ -175,13 +155,13 @@ class Ship extends Entity
 
 	order(): Order
 	{
-		return this.orderable().order;
+		return this.orderable().order(this);
 	}
 
 	orderSet(order: Order): void
 	{
 		var orderable = Orderable.fromEntity(this);
-		orderable.order = order;
+		orderable.orderSet(order);
 	}
 
 	orderable(): Orderable
@@ -284,11 +264,10 @@ class Ship extends Entity
 		var returnValue =
 			this.name
 			+ " - " + this.locatable().loc.placeName
-			+ " - Integrity: " + this.integrityCurrentOverMax()
-			+ ", " + this.turnTaker().toStringDescription();
+			+ " - Integrity: " + this.integrityCurrentOverMax();
 		
 		var order = this.order();
-		var orderAsString = (order == null ? "Doing nothing." : order.toStringDescription());
+		var orderAsString = order.toStringDescription();
 
 		returnValue +=
 			" - " + orderAsString;
@@ -297,6 +276,29 @@ class Ship extends Entity
 	}
 
 	// Devices.
+
+	deviceSelect(deviceToSelect: Device): void
+	{
+		this._deviceSelected = deviceToSelect;
+
+		var order = this.order();
+		order.deviceToUseSet(deviceToSelect);
+	}
+
+	deviceSelected(): Device
+	{
+		return this._deviceSelected;
+	}
+
+	devices(): Device[]
+	{
+		var deviceEntities = this.componentEntities.filter
+		(
+			x => Device.ofEntity(x) != null
+		);
+		var devices = deviceEntities.map(x => Device.ofEntity(x) );
+		return devices;
+	}
 
 	devicesDrives(): Device[]
 	{
@@ -400,32 +402,54 @@ class Ship extends Entity
 
 	moveRepeat(universe: Universe): void
 	{
-		var ship = this;
-		var order = Orderable.fromEntity(ship).order;
+		var order = this.order();
 		if (order != null)
 		{
-			order.obey(universe, null, null, ship);
+			var uwpe = new UniverseWorldPlaceEntities(universe, null, null, this, null);
+			order.obey(uwpe);
 		}
 	}
 
 	moveStart(universe: Universe): void
 	{
-		var ship = this;
-
-		var devicesDrives = ship.devicesDrives();
+		var devicesDrives = this.devicesDrives();
 		var deviceDriveToSelect = devicesDrives[0];
-		ship.deviceSelect(deviceDriveToSelect);
+		this.deviceSelect(deviceDriveToSelect);
 
-		var venue = universe.venueCurrent() as VenueStarsystem;
-		var cursor = venue.cursor;
-		var orderDefns = OrderDefn.Instances();
-		cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
+		var venueStarsystem = universe.venueCurrent() as VenueStarsystem;
+		var cursor = venueStarsystem.cursor;
+		cursor.clear();
+		cursor.entityUsingCursorToTarget = this;
+
+		var order = this.order();
+		var orderDefnGo = OrderDefn.Instances().Go;
+		order.clear().entityBeingOrderedSet(this).defnSet(orderDefnGo);
 	}
 
-	moveTowardTarget(uwpe: UniverseWorldPlaceEntities, target: Entity, ship: Ship): void
+	moveTowardTargetAndReturnDistance
+	(
+		target: Entity
+	): number
 	{
-		var turnTaker = this.turnTaker();
-		turnTaker.moveShipTowardTarget(uwpe, ship, target);
+		var shipPos = this.locatable().loc.pos;
+		var targetPos = target.locatable().loc.pos;
+		var displacementToTarget =
+			this._displacement.overwriteWith(targetPos).subtract(shipPos);
+		var distanceToTarget = displacementToTarget.magnitude();
+		var speed = 1;
+		if (distanceToTarget > speed)
+		{
+			var directionToTarget = displacementToTarget.divideScalar(distanceToTarget);
+			var displacementToMove = directionToTarget.multiplyScalar(speed);
+			shipPos.add(displacementToMove);
+			distanceToTarget -= speed;
+		}
+		else
+		{
+			shipPos.overwriteWith(targetPos);
+			distanceToTarget = 0;
+		}
+		return distanceToTarget;
 	}
 
 	movementThroughLinkPerTurn(link: NetworkLink2): number
@@ -606,7 +630,7 @@ class Ship extends Entity
 					false, // isTextCenteredVertically
 					DataBinding.fromContextAndGet
 					(
-						ship, (c: Ship) => "" + c.turnTaker().energyThisTurn
+						ship, (c: Ship) => "todo"
 					),
 					fontNameAndHeight
 				),
@@ -722,8 +746,6 @@ class Ship extends Entity
 
 	updateForRound(universe: Universe, world: World, faction: Faction): void
 	{
-		this.turnTaker().clear();
-
 		var devices = this.devices();
 		var uwpe = new UniverseWorldPlaceEntities
 		(
@@ -736,13 +758,6 @@ class Ship extends Entity
 			uwpe.entity2Set(device.toEntity() );
 			device.updateForRound(uwpe);
 		}
-	}
-
-	// TurnTaker.
-
-	turnTaker(): TurnTaker
-	{
-		return this.propertyByName(TurnTaker.name) as TurnTaker;
 	}
 
 	// drawable

@@ -124,15 +124,19 @@ class BuildableDefnsLegacy {
         (uwpe) => // init
          { }, (uwpe) => // updateForRound
          {
-            var ship = uwpe.entity;
+            /*
+            var ship = uwpe.entity as Ship;
             var shipTurnTaker = ship.turnTaker();
             shipTurnTaker.distancePerMove += 50;
             shipTurnTaker.energyPerMove += 1;
+            */
         }, (uwpe) => // use
          {
-            var ship = uwpe.entity;
+            /*
+            var ship = uwpe.entity as Ship;
             var shipTurnTaker = ship.turnTaker();
             shipTurnTaker.energyForMoveDeduct();
+            */
         });
         this.ShipDrive1TonklinMotor = shipComponent("Tonklin Motor", visualBuild("Drive", colors.Gray), 10, categoryShipDrive, deviceDefnDrive);
         this.ShipDrive2IonBanger = shipComponent("Ion Banger", visualBuild("Drive", colors.Red), 30, categoryShipDrive, null // deviceDefn

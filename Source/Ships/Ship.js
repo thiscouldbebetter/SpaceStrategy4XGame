@@ -9,11 +9,11 @@ class Ship extends Entity {
             new Factionable(faction.name),
             Killable.fromIntegrityMax(10),
             Locatable.fromPos(pos),
-            new Orderable(),
-            new TurnTaker()
+            new Orderable()
         ]);
         this.defn = defn;
         this.componentEntities = componentEntities;
+        this._displacement = Coords.create();
     }
     // static methods
     static bodyDefnBuild(color) {
@@ -45,17 +45,6 @@ class Ship extends Entity {
             shipCollidable.collisionHandle(uwpe, collision);
         }
     }
-    deviceSelect(deviceToSelect) {
-        this._deviceSelected = deviceToSelect;
-    }
-    deviceSelected() {
-        return this._deviceSelected;
-    }
-    devices() {
-        var deviceEntities = this.componentEntities.filter(x => Device.ofEntity(x) != null);
-        var devices = deviceEntities.map(x => Device.ofEntity(x));
-        return devices;
-    }
     faction(world) {
         return this.factionable().faction(world);
     }
@@ -66,7 +55,7 @@ class Ship extends Entity {
         return this.killable().integrityCurrentOverMax();
     }
     isAwaitingTarget() {
-        return (this.deviceSelected != null);
+        return (this.orderable().order(this).isAwaitingTarget());
     }
     jumpTo(universe) {
         var starsystem = this.starsystem(universe.world);
@@ -86,11 +75,11 @@ class Ship extends Entity {
         return notificationsSoFar; // todo
     }
     order() {
-        return this.orderable().order;
+        return this.orderable().order(this);
     }
     orderSet(order) {
         var orderable = Orderable.fromEntity(this);
-        orderable.order = order;
+        orderable.orderSet(order);
     }
     orderable() {
         return Orderable.fromEntity(this);
@@ -147,15 +136,27 @@ class Ship extends Entity {
     toStringDescription() {
         var returnValue = this.name
             + " - " + this.locatable().loc.placeName
-            + " - Integrity: " + this.integrityCurrentOverMax()
-            + ", " + this.turnTaker().toStringDescription();
+            + " - Integrity: " + this.integrityCurrentOverMax();
         var order = this.order();
-        var orderAsString = (order == null ? "Doing nothing." : order.toStringDescription());
+        var orderAsString = order.toStringDescription();
         returnValue +=
             " - " + orderAsString;
         return returnValue;
     }
     // Devices.
+    deviceSelect(deviceToSelect) {
+        this._deviceSelected = deviceToSelect;
+        var order = this.order();
+        order.deviceToUseSet(deviceToSelect);
+    }
+    deviceSelected() {
+        return this._deviceSelected;
+    }
+    devices() {
+        var deviceEntities = this.componentEntities.filter(x => Device.ofEntity(x) != null);
+        var devices = deviceEntities.map(x => Device.ofEntity(x));
+        return devices;
+    }
     devicesDrives() {
         if (this._devicesDrives == null) {
             var devices = this.devices();
@@ -219,25 +220,41 @@ class Ship extends Entity {
         factionKnowledge.starsystemAdd(starsystemDestination, world);
     }
     moveRepeat(universe) {
-        var ship = this;
-        var order = Orderable.fromEntity(ship).order;
+        var order = this.order();
         if (order != null) {
-            order.obey(universe, null, null, ship);
+            var uwpe = new UniverseWorldPlaceEntities(universe, null, null, this, null);
+            order.obey(uwpe);
         }
     }
     moveStart(universe) {
-        var ship = this;
-        var devicesDrives = ship.devicesDrives();
+        var devicesDrives = this.devicesDrives();
         var deviceDriveToSelect = devicesDrives[0];
-        ship.deviceSelect(deviceDriveToSelect);
-        var venue = universe.venueCurrent();
-        var cursor = venue.cursor;
-        var orderDefns = OrderDefn.Instances();
-        cursor.entityAndOrderNameSet(ship, orderDefns.Go.name);
+        this.deviceSelect(deviceDriveToSelect);
+        var venueStarsystem = universe.venueCurrent();
+        var cursor = venueStarsystem.cursor;
+        cursor.clear();
+        cursor.entityUsingCursorToTarget = this;
+        var order = this.order();
+        var orderDefnGo = OrderDefn.Instances().Go;
+        order.clear().entityBeingOrderedSet(this).defnSet(orderDefnGo);
     }
-    moveTowardTarget(uwpe, target, ship) {
-        var turnTaker = this.turnTaker();
-        turnTaker.moveShipTowardTarget(uwpe, ship, target);
+    moveTowardTargetAndReturnDistance(target) {
+        var shipPos = this.locatable().loc.pos;
+        var targetPos = target.locatable().loc.pos;
+        var displacementToTarget = this._displacement.overwriteWith(targetPos).subtract(shipPos);
+        var distanceToTarget = displacementToTarget.magnitude();
+        var speed = 1;
+        if (distanceToTarget > speed) {
+            var directionToTarget = displacementToTarget.divideScalar(distanceToTarget);
+            var displacementToMove = directionToTarget.multiplyScalar(speed);
+            shipPos.add(displacementToMove);
+            distanceToTarget -= speed;
+        }
+        else {
+            shipPos.overwriteWith(targetPos);
+            distanceToTarget = 0;
+        }
+        return distanceToTarget;
     }
     movementThroughLinkPerTurn(link) {
         return 8; // todo
@@ -317,7 +334,7 @@ class Ship extends Entity {
                 new ControlLabel("textEnergy", Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
                 false, // isTextCenteredHorizontally
                 false, // isTextCenteredVertically
-                DataBinding.fromContextAndGet(ship, (c) => "" + c.turnTaker().energyThisTurn), fontNameAndHeight),
+                DataBinding.fromContextAndGet(ship, (c) => "todo"), fontNameAndHeight),
                 ControlButton.from8("buttonMove", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
                 buttonHalfSize, "Move", fontNameAndHeight, true, // hasBorder
                 DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
@@ -361,7 +378,6 @@ class Ship extends Entity {
     }
     // turns
     updateForRound(universe, world, faction) {
-        this.turnTaker().clear();
         var devices = this.devices();
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
         for (var i = 0; i < devices.length; i++) {
@@ -369,10 +385,6 @@ class Ship extends Entity {
             uwpe.entity2Set(device.toEntity());
             device.updateForRound(uwpe);
         }
-    }
-    // TurnTaker.
-    turnTaker() {
-        return this.propertyByName(TurnTaker.name);
     }
     // drawable
     draw(universe, nodeRadiusActual, camera, drawPos) {

@@ -15,10 +15,15 @@ class ActivityDefn_Instances2
 			{
 				var ship = uwpe.entity as Ship;
 				var activity = ship.actor().activity;
-				ship.moveTowardTarget
-				(
-					uwpe, activity.targetEntity(), ship
-				);
+				var target = activity.targetEntity();
+				var distanceToTarget =
+					ship.moveTowardTargetAndReturnDistance(target);
+				if (distanceToTarget == 0)
+				{
+					var doNothing = ActivityDefn.Instances().DoNothing;
+					activity.clear().defnSet(doNothing);
+					// activity.isDoneSet(true);
+				}
 			}
 		);
 

@@ -460,16 +460,20 @@ class BuildableDefnsLegacy
 			{},
 			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
 			{
+				/*
 				var ship = uwpe.entity as Ship;
 				var shipTurnTaker = ship.turnTaker();
 				shipTurnTaker.distancePerMove += 50;
 				shipTurnTaker.energyPerMove += 1;
+				*/
 			},
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
+				/*
 				var ship = uwpe.entity as Ship;
 				var shipTurnTaker = ship.turnTaker();
 				shipTurnTaker.energyForMoveDeduct();
+				*/
 			}
 		);
 		

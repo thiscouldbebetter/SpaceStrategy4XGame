@@ -8,9 +8,8 @@ class Cursor extends Entity {
             Locatable.fromPos(Coords.create())
         ]);
         this.propertyAdd(this.bodyDefn());
+        this.entityUsingCursorToTarget = null;
         this.entityUnderneath = null;
-        this.entityParent = null;
-        this.orderName = null;
         this.hasXYPositionBeenSpecified = false;
         this.hasZPositionBeenSpecified = false;
         this.defn = this.bodyDefn();
@@ -18,22 +17,20 @@ class Cursor extends Entity {
     bodyDefn() {
         var radius = 5;
         var color = Color.Instances().White;
+        var visualCrosshairs = new VisualGroup([
+            VisualCircle.fromRadiusAndColors(radius, null, color),
+            new VisualLine(Coords.fromXY(-radius, 0), Coords.fromXY(radius, 0), color, null),
+            new VisualLine(Coords.fromXY(0, -radius), Coords.fromXY(0, radius), color, null),
+        ]);
         var visualReticle = new VisualSelect(new Map([
             ["None", new VisualNone()],
-            [
-                "Crosshairs",
-                new VisualGroup([
-                    new VisualCircle(radius, null, color, null),
-                    new VisualLine(Coords.fromXY(-radius, 0), Coords.fromXY(radius, 0), color, null),
-                    new VisualLine(Coords.fromXY(0, -radius), Coords.fromXY(0, radius), color, null),
-                ])
-            ]
+            ["Crosshairs", visualCrosshairs]
         ]), 
         // selectChildNames
         (uwpe, display) => {
             var returnValue;
             var cursor = uwpe.entity;
-            if (cursor.entityParent == null) {
+            if (cursor.entityUsingCursorToTarget == null) {
                 returnValue = "None";
             }
             else {
@@ -61,19 +58,9 @@ class Cursor extends Entity {
         return bodyDefn;
     }
     clear() {
-        this.entityParent = null;
-        this.orderName = null;
+        this.entityUsingCursorToTarget = null;
         this.hasXYPositionBeenSpecified = false;
         this.hasZPositionBeenSpecified = false;
-    }
-    entityAndOrderNameSet(entity, orderName) {
-        this.entityParent = entity;
-        this.orderName = orderName;
-        return this;
-    }
-    // controls
-    toControl(uwpe, size) {
-        return this.entityParent.controllable().toControl(uwpe, size, null);
     }
     // drawable
     draw(uwpe, display) {

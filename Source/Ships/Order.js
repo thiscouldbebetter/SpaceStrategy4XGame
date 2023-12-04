@@ -1,21 +1,14 @@
 "use strict";
 class Order //
  {
-    constructor(defnName, targetEntity) {
-        this.defnName = defnName;
-        this.targetEntity = targetEntity;
-        this.isComplete = false;
-    }
-    assignToEntityOrderable(entityOrderable) {
-        var orderable = Orderable.fromEntity(entityOrderable);
-        orderable.order = this;
-        return this;
+    constructor() {
+        this.clear();
     }
     clear() {
-        // This method seems linked to odd compile-time errors
-        // in SystemTests.playFromStart().
-        this.defnName = null;
-        this.targetEntity = null;
+        this.defn = OrderDefn.Instances().DoNothing;
+        this.entityBeingOrdered = null;
+        this.deviceToUse = null;
+        this.entityBeingTargeted = null;
         this.isComplete = false;
         return this;
     }
@@ -23,32 +16,46 @@ class Order //
         this.isComplete = true;
         return this;
     }
-    defn() {
-        var returnValue = OrderDefn.Instances()._AllByName.get(this.defnName);
-        return returnValue;
-    }
-    defnNameAndTargetEntitySet(defnName, targetEntity) {
-        this.defnName = defnName;
-        this.targetEntity = targetEntity;
+    defnSet(value) {
+        this.defn = value;
         return this;
     }
-    obey(universe, world, place, entity) {
-        var orderable = Orderable.fromEntity(entity);
-        if (this.isComplete) {
-            orderable.order = null;
-        }
-        else {
-            var defn = this.defn();
-            defn.obey(universe, world, place, entity);
-        }
+    deviceToUseSet(value) {
+        this.deviceToUse = value;
+        return this;
+    }
+    entityBeingOrderedSet(value) {
+        this.entityBeingOrdered = value;
+        return this;
+    }
+    entityBeingTargetedSet(value) {
+        this.entityBeingTargeted = value;
+        return this;
+    }
+    isAwaitingTarget() {
+        return (this.entityBeingTargeted == null);
+    }
+    obey(uwpe) {
+        var entityBeingOrdered = this.entityBeingOrdered;
+        uwpe.entitySet(entityBeingOrdered);
+        this.defn.obey(uwpe);
     }
     toStringDescription() {
-        return this.defn().description + " " + this.targetEntity.name;
+        return this.defn.description + " " + this.entityBeingTargeted.name;
     }
 }
 class Orderable {
     static fromEntity(entity) {
         return entity.propertyByName(Orderable.name);
+    }
+    order(entityOrderable) {
+        if (this._order == null) {
+            this._order = new Order().entityBeingOrderedSet(entityOrderable);
+        }
+        return this._order;
+    }
+    orderSet(value) {
+        this._order = value;
     }
     // EntityProperty.
     finalize(uwpe) { }

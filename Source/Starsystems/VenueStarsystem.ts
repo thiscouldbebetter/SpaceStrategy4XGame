@@ -56,6 +56,11 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 			this.venueControls.draw(universe);
 		}
 	}
+	
+	entitySelect(value: Entity): void
+	{
+		this.selectedEntity = value;
+	}
 
 	entitySelectedDetailsAreViewable(universe: Universe): boolean
 	{
@@ -385,7 +390,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 
 	updateForTimerTick_Input_Mouse_Selection
 	(
-		universe: Universe, bodyClicked: Entity
+		universe: Universe, entityClicked: Entity
 	): void
 	{
 		var selectionTypeName =
@@ -397,25 +402,25 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 
 		if (this.selectedEntity == null)
 		{
-			this.selectedEntity = bodyClicked;
+			this.entitySelect(entityClicked);
 		}
 		else if (selectionTypeName == Planet.name)
 		{
 			this.updateForTimerTick_Input_Mouse_Selection_Planet
 			(
-				universe, bodyClicked
+				universe, entityClicked
 			);
 		}
 		else if (selectionTypeName == Ship.name)
 		{
 			this.updateForTimerTick_Input_Mouse_Selection_Ship
 			(
-				universe, bodyClicked
+				universe, entityClicked
 			);
 		}
 		else
 		{
-			this.selectedEntity = bodyClicked;
+			this.entitySelect(entityClicked);
 		}
 	}
 
@@ -428,7 +433,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 
 		if (bodyClicked == null)
 		{
-			this.selectedEntity = null;
+			this.entitySelect(null);
 		}
 		else if (bodyClicked == planetSelected)
 		{
@@ -448,33 +453,37 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 		}
 		else
 		{
-			this.selectedEntity = bodyClicked;
+			this.entitySelect(bodyClicked);
 		}
 	}
 
 	updateForTimerTick_Input_Mouse_Selection_Ship
 	(
-		universe: Universe, bodyClicked: Entity
+		universe: Universe,
+		entityClicked: Entity
 	): void
 	{
-		var ship = this.selectedEntity as Ship;
+		var inputHelper = universe.inputHelper;
 
-		if (ship.isAwaitingTarget() == false)
+		var entityOrderable = this.selectedEntity;
+		var orderable = Orderable.fromEntity(entityOrderable);
+		var order = orderable.order(entityOrderable);
+
+		var isAwaitingTarget = order.isAwaitingTarget();
+
+		if (isAwaitingTarget == false)
 		{
-			this.selectedEntity = bodyClicked;
+			// Just select the other entity.
+			this.entitySelect(entityClicked);
 		}
-		else if (bodyClicked != null)
+		else if (entityClicked != null)
 		{
 			// Targeting an existing body, not an arbitrary point.
-			universe.inputHelper.isEnabled = false;
+			universe.inputHelper.pause(); // While the action plays out.
 
-			var targetEntity = bodyClicked;
-			if (this.cursor.orderName != null)
-			{
-				var order = new Order(this.cursor.orderName, targetEntity);
-				ship.orderSet(order);
-				order.obey(universe, universe.world as WorldExtended, null, ship);
-			}
+			var targetEntity = entityClicked;
+						
+			order.entityBeingTargetedSet(targetEntity);
 
 			this.cursor.clear();
 		}
@@ -484,7 +493,9 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 		}
 		else if (this.cursor.hasZPositionBeenSpecified == false)
 		{
-			universe.inputHelper.isEnabled = false;
+			this.cursor.hasZPositionBeenSpecified = true; // About to be cleared, though.
+
+			inputHelper.unpause(); // Should we wait longer?
 
 			var targetPos = Coords.create();
 			var target = new Entity
@@ -495,16 +506,24 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 					this.cursor.locatable().clone()
 				]
 			);
+			order.entityBeingTargetedSet(target);
 
-			var order = new Order(this.cursor.orderName, target);
-			Orderable.fromEntity(ship).order = order;
-			order.obey(universe, universe.world as WorldExtended, null, ship);
+			var uwpe = new UniverseWorldPlaceEntities
+			(
+				universe,
+				universe.world as WorldExtended,
+				this.starsystem,
+				null,
+				null
+			);
+
+			order.obey(uwpe);
 
 			this.cursor.clear();
 		}
 
+		inputHelper.mouseClickedSet(false); // hack
 	}
-
 
 	updateForTimerTick_Input_MouseMove(universe: Universe): void
 	{

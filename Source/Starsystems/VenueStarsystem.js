@@ -22,6 +22,9 @@ class VenueStarsystem {
             this.venueControls.draw(universe);
         }
     }
+    entitySelect(value) {
+        this.selectedEntity = value;
+    }
     entitySelectedDetailsAreViewable(universe) {
         var entitySelectedDetailsAreViewable = false;
         var entitySelected = this.selectedEntity;
@@ -205,27 +208,27 @@ class VenueStarsystem {
         }
         this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
     }
-    updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked) {
+    updateForTimerTick_Input_Mouse_Selection(universe, entityClicked) {
         var selectionTypeName = (this.selectedEntity == null
             ? null
             : this.selectedEntity.constructor.name);
         if (this.selectedEntity == null) {
-            this.selectedEntity = bodyClicked;
+            this.entitySelect(entityClicked);
         }
         else if (selectionTypeName == Planet.name) {
-            this.updateForTimerTick_Input_Mouse_Selection_Planet(universe, bodyClicked);
+            this.updateForTimerTick_Input_Mouse_Selection_Planet(universe, entityClicked);
         }
         else if (selectionTypeName == Ship.name) {
-            this.updateForTimerTick_Input_Mouse_Selection_Ship(universe, bodyClicked);
+            this.updateForTimerTick_Input_Mouse_Selection_Ship(universe, entityClicked);
         }
         else {
-            this.selectedEntity = bodyClicked;
+            this.entitySelect(entityClicked);
         }
     }
     updateForTimerTick_Input_Mouse_Selection_Planet(universe, bodyClicked) {
         var planetSelected = this.selectedEntity;
         if (bodyClicked == null) {
-            this.selectedEntity = null;
+            this.entitySelect(null);
         }
         else if (bodyClicked == planetSelected) {
             var detailsAreViewable = this.entitySelectedDetailsAreViewable(universe);
@@ -239,40 +242,43 @@ class VenueStarsystem {
             // todo
         }
         else {
-            this.selectedEntity = bodyClicked;
+            this.entitySelect(bodyClicked);
         }
     }
-    updateForTimerTick_Input_Mouse_Selection_Ship(universe, bodyClicked) {
-        var ship = this.selectedEntity;
-        if (ship.isAwaitingTarget() == false) {
-            this.selectedEntity = bodyClicked;
+    updateForTimerTick_Input_Mouse_Selection_Ship(universe, entityClicked) {
+        var inputHelper = universe.inputHelper;
+        var entityOrderable = this.selectedEntity;
+        var orderable = Orderable.fromEntity(entityOrderable);
+        var order = orderable.order(entityOrderable);
+        var isAwaitingTarget = order.isAwaitingTarget();
+        if (isAwaitingTarget == false) {
+            // Just select the other entity.
+            this.entitySelect(entityClicked);
         }
-        else if (bodyClicked != null) {
+        else if (entityClicked != null) {
             // Targeting an existing body, not an arbitrary point.
-            universe.inputHelper.isEnabled = false;
-            var targetEntity = bodyClicked;
-            if (this.cursor.orderName != null) {
-                var order = new Order(this.cursor.orderName, targetEntity);
-                ship.orderSet(order);
-                order.obey(universe, universe.world, null, ship);
-            }
+            universe.inputHelper.pause(); // While the action plays out.
+            var targetEntity = entityClicked;
+            order.entityBeingTargetedSet(targetEntity);
             this.cursor.clear();
         }
         else if (this.cursor.hasXYPositionBeenSpecified == false) {
             this.cursor.hasXYPositionBeenSpecified = true;
         }
         else if (this.cursor.hasZPositionBeenSpecified == false) {
-            universe.inputHelper.isEnabled = false;
+            this.cursor.hasZPositionBeenSpecified = true; // About to be cleared, though.
+            inputHelper.unpause(); // Should we wait longer?
             var targetPos = Coords.create();
             var target = new Entity("Target", [
                 new BodyDefn("MoveTarget", targetPos, null),
                 this.cursor.locatable().clone()
             ]);
-            var order = new Order(this.cursor.orderName, target);
-            Orderable.fromEntity(ship).order = order;
-            order.obey(universe, universe.world, null, ship);
+            order.entityBeingTargetedSet(target);
+            var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, this.starsystem, null, null);
+            order.obey(uwpe);
             this.cursor.clear();
         }
+        inputHelper.mouseClickedSet(false); // hack
     }
     updateForTimerTick_Input_MouseMove(universe) {
         var inputHelper = universe.inputHelper;

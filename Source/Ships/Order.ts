@@ -1,30 +1,23 @@
 
 class Order //
 {
-	defnName: string;
-	targetEntity: Entity;
+	defn: OrderDefn;
+	entityBeingOrdered: Entity;
+	deviceToUse: Device;
+	entityBeingTargeted: Entity;
 	isComplete: boolean;
 
-	constructor(defnName: string, targetEntity: Entity)
+	constructor()
 	{
-		this.defnName = defnName;
-		this.targetEntity = targetEntity;
-		this.isComplete = false;
-	}
-
-	assignToEntityOrderable(entityOrderable: Entity): Order
-	{
-		var orderable = Orderable.fromEntity(entityOrderable);
-		orderable.order = this;
-		return this;
+		this.clear();
 	}
 
 	clear(): Order
 	{
-		// This method seems linked to odd compile-time errors
-		// in SystemTests.playFromStart().
-		this.defnName = null;
-		this.targetEntity = null;
+		this.defn = OrderDefn.Instances().DoNothing;
+		this.entityBeingOrdered = null;
+		this.deviceToUse = null;
+		this.entityBeingTargeted = null;
 		this.isComplete = false;
 		return this;
 	}
@@ -35,46 +28,69 @@ class Order //
 		return this;
 	}
 
-	defn(): OrderDefn
+	defnSet(value: OrderDefn): Order
 	{
-		var returnValue = OrderDefn.Instances()._AllByName.get(this.defnName);
-		return returnValue;
+		this.defn = value;
+		return this;
 	}
-
-	defnNameAndTargetEntitySet(defnName: string, targetEntity: Entity): Order
+	
+	deviceToUseSet(value: Device): Order
 	{
-		this.defnName = defnName;
-		this.targetEntity = targetEntity;
+		this.deviceToUse = value;
 		return this;
 	}
 
-	obey(universe: Universe, world: WorldExtended, place: Place, entity: Entity): void
+	entityBeingOrderedSet(value: Entity): Order
 	{
-		var orderable = Orderable.fromEntity(entity);
-		if (this.isComplete)
-		{
-			orderable.order = null;
-		}
-		else
-		{
-			var defn = this.defn();
-			defn.obey(universe, world, place, entity);
-		}
+		this.entityBeingOrdered = value;
+		return this;
+	}
+	
+	entityBeingTargetedSet(value: Entity): Order
+	{
+		this.entityBeingTargeted = value;
+		return this;
+	}
+	
+	isAwaitingTarget(): boolean
+	{
+		return (this.entityBeingTargeted == null);
+	}
+
+	obey(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var entityBeingOrdered = this.entityBeingOrdered;
+		uwpe.entitySet(entityBeingOrdered);
+		this.defn.obey(uwpe);
 	}
 
 	toStringDescription(): string
 	{
-		return this.defn().description + " " + this.targetEntity.name;
+		return this.defn.description + " " + this.entityBeingTargeted.name;
 	}
 }
 
 class Orderable implements EntityPropertyBase
 {
-	order: Order;
+	_order: Order;
 
 	static fromEntity(entity: Entity): Orderable
 	{
 		return entity.propertyByName(Orderable.name) as Orderable;
+	}
+	
+	order(entityOrderable: Entity): Order
+	{
+		if (this._order == null)
+		{
+			this._order = new Order().entityBeingOrderedSet(entityOrderable);
+		}
+		return this._order;
+	}
+	
+	orderSet(value: Order): void
+	{
+		this._order = value;
 	}
 
 	// EntityProperty.

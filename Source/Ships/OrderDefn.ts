@@ -73,19 +73,43 @@ class OrderDefn_Instances
 
 	go(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var e = uwpe.entity;
+		var entityMoving = uwpe.entity;
+		
+		var orderable = Orderable.fromEntity(entityMoving);
+		var order = orderable.order(entityMoving);
 
-		var actor = e.actor();
-		var orderable = Orderable.fromEntity(e);
-		var order = orderable.order(e);
+		var targetFinal = order.entityBeingTargeted;
+		var targetFinalPos = targetFinal.locatable().loc.pos;
+		var entityMovingPos = entityMoving.locatable().loc.pos;
+		var displacementToTargetFinal =
+			targetFinalPos.clone().subtract(entityMovingPos);
+		var distanceToTargetFinal = displacementToTargetFinal.magnitude();
+		var distanceMaxPerMove = 100; // todo
+		var entityTargetImmediate: Entity; 
+		if (distanceToTargetFinal <= distanceMaxPerMove)
+		{
+			entityTargetImmediate = targetFinal;
+		}
+		else
+		{
+			var directionToTarget =
+				displacementToTargetFinal.divideScalar(distanceToTargetFinal);
+			var displacementToTargetImmediate =
+				directionToTarget.multiplyScalar(distanceMaxPerMove);
+			var targetImmediatePos =
+				displacementToTargetImmediate.add(entityMovingPos);
+			var targetAsLocatable = Locatable.fromPos(targetImmediatePos);
+			entityTargetImmediate = Entity.fromProperty(targetAsLocatable);
+		}
 
+		var actor = entityMoving.actor();
 		var activity = actor.activity;
 		var activityDefnDoNothing = ActivityDefn.Instances().DoNothing;
 		if (activity.defnName == activityDefnDoNothing.name)
 		{
 			activity.defnNameAndTargetEntitySet
 			(
-				"MoveToTarget", order.entityBeingTargeted
+				"MoveToTarget", entityTargetImmediate
 			);
 		}
 	}

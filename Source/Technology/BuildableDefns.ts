@@ -98,9 +98,11 @@ class BuildableDefnsBasic
 				(
 					mapCellSizeInPixels, color, null, null
 				),
-				VisualText.fromTextImmediateHeightAndColor
+				VisualText.fromTextImmediateFontAndColor
 				(
-					labelText, fontHeight, colors.White
+					labelText,
+					FontNameAndHeight.fromHeightInPixels(fontHeight),
+					colors.White
 				)
 			]);
 		};

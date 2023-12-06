@@ -40,19 +40,27 @@ class StarType
 	private _bodyDefn: BodyDefn
 	bodyDefn(): BodyDefn
 	{
-		var starName = this.name; // todo
+		// var starName = this.name; // todo
 		var starRadius = this.radiusInPixels;
 		var starColor = this.color;
 
 		if (this._bodyDefn == null)
 		{
+			var visualBody = new VisualCircle(starRadius, starColor, starColor, null);
+			var visualName = VisualText.fromTextBindingFontAndColorsFillAndBorder
+			(
+				DataBinding.fromGet
+				(
+					(c: any) => (c.place as Place).name
+				),
+				FontNameAndHeight.fromHeightInPixels(10),
+				Color.byName("White"),
+				Color.byName("Gray")
+			);
+
 			var visual = new VisualGroup
 			([
-				new VisualCircle(starRadius, starColor, starColor, null),
-				VisualText.fromTextImmediateHeightAndColor
-				(
-					starName, 10, Color.byName("Gray")
-				)
+				visualBody, visualName
 			]);
 
 			this._bodyDefn = new BodyDefn

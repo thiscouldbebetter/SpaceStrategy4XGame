@@ -46,7 +46,12 @@ class ControlBuilderExtended extends ControlBuilder {
             universe.venueCurrent().cameraCenterOnSelection();
         });
         var buttonDetailsIsEnabledGet = (c) => // hack
-         (c.constructor.name == VenueStarsystem.name ? c.entitySelectedDetailsAreViewable(universe) : false);
+         {
+            var returnValue = (c.entitySelectedDetailsAreViewable != null // hack - VenueFader.
+                ? c.entitySelectedDetailsAreViewable(universe)
+                : false);
+            return returnValue;
+        };
         var buttonDetailsIsEnabled = DataBinding.fromContextAndGet(universe.venueCurrent(), buttonDetailsIsEnabledGet);
         var buttonDetailsClick = () => {
             var venueCurrent = universe.venueCurrent();

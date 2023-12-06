@@ -84,7 +84,8 @@ class OrderDefn_Instances
 		var displacementToTargetFinal =
 			targetFinalPos.clone().subtract(entityMovingPos);
 		var distanceToTargetFinal = displacementToTargetFinal.magnitude();
-		var distanceMaxPerMove = 100; // todo
+		var starsystemTraverser = StarsystemTraverser.ofEntity(entityMoving);
+		var distanceMaxPerMove = starsystemTraverser.distanceMaxPerMove();
 		var entityTargetImmediate: Entity; 
 		if (distanceToTargetFinal <= distanceMaxPerMove)
 		{

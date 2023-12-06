@@ -1,5 +1,5 @@
 
-class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
+class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSelection
 {
 	world: WorldExtended;
 	cameraEntity: Entity;
@@ -431,7 +431,8 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 			}
 			else if (inputActive == "MouseClick")
 			{
-				inputHelper.mouseClickedSet(false);
+				// todo - Trying to fix holding down view buttons.
+				//inputHelper.mouseClickedSet(false);
 			}
 			else if (inputActive == "a")
 			{
@@ -459,4 +460,48 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 			}
 		}
 	}
+
+	// VenueWithCameraAndSelection.
+
+	entitySelectedDetailsAreViewable(universe: Universe): boolean
+	{
+		return true;
+	}
+
+	entitySelectedDetailsView(universe: Universe): void
+	{
+		var detailsAreViewable = this.entitySelectedDetailsAreViewable(universe);
+
+		if (detailsAreViewable == false)
+		{
+			return;
+		}
+
+		var selectedEntity = this.selectedEntity;
+		if (selectedEntity != null)
+		{
+			var venueNext: Venue;
+			var selectionTypeName = selectedEntity.constructor.name;
+
+			if (selectionTypeName == NetworkNode2.name)
+			{
+				var selectionAsNetworkNode = selectedEntity as NetworkNode2;
+				var starsystem = selectionAsNetworkNode.starsystem;
+				if (starsystem != null)
+				{
+					venueNext = new VenueStarsystem(this, starsystem);
+				}
+			}
+			else
+			{
+				throw new Error("Not yet implemented!");
+			}
+
+			if (venueNext != null)
+			{
+				universe.venueTransitionTo(venueNext);
+			}
+		}
+	}
+
 }

@@ -4,9 +4,6 @@ class Ship extends Entity
 	defn: BodyDefn;
 	componentEntities: Entity[];
 
-	_deviceSelected: Device;
-	_devicesDrives: Device[];
-	_devicesUsable: Device[];
 	_displacement: Coords;
 	_visual: VisualBase;
 
@@ -25,18 +22,14 @@ class Ship extends Entity
 			[
 				Actor.default(),
 				defn,
-				Collidable.fromCollider
-				(
-					Sphere.fromRadiusAndCenter
-					(
-						VisualStar.radiusActual(), pos
-					)
-				),
+				Ship.collidableBuild(pos),
 				new Controllable(Ship.toControl),
+				new DeviceUser(),
 				new Factionable(faction.name),
 				Killable.fromIntegrityMax(10),
 				Locatable.fromPos(pos),
-				new Orderable()
+				new Orderable(),
+				new StarsystemTraverser(100)
 			]
 		);
 
@@ -62,6 +55,17 @@ class Ship extends Entity
 		);
 
 		return returnValue;
+	}
+
+	static collidableBuild(pos: Coords): Collidable
+	{
+		return Collidable.fromCollider
+		(
+			Sphere.fromRadiusAndCenter
+			(
+				VisualStar.radiusActual(), pos
+			)
+		);
 	}
 
 	// instance methods
@@ -279,7 +283,8 @@ class Ship extends Entity
 
 	deviceSelect(deviceToSelect: Device): void
 	{
-		this._deviceSelected = deviceToSelect;
+		var deviceUser = this.deviceUser();
+		deviceUser.deviceSelect(deviceToSelect);
 
 		var order = this.order();
 		order.deviceToUseSet(deviceToSelect);
@@ -287,45 +292,27 @@ class Ship extends Entity
 
 	deviceSelected(): Device
 	{
-		return this._deviceSelected;
+		return this.deviceUser().deviceSelected();
+	}
+
+	deviceUser(): DeviceUser
+	{
+		return DeviceUser.ofEntity(this);
 	}
 
 	devices(): Device[]
 	{
-		var deviceEntities = this.componentEntities.filter
-		(
-			x => Device.ofEntity(x) != null
-		);
-		var devices = deviceEntities.map(x => Device.ofEntity(x) );
-		return devices;
+		return this.deviceUser().devices(this);
 	}
 
 	devicesDrives(): Device[]
 	{
-		if (this._devicesDrives == null)
-		{
-			var devices = this.devices();
-
-			this._devicesDrives = devices.filter
-			(
-				x => x.defn().categoryNames.indexOf("Drive") >= 0
-			);
-		}
-
-		return this._devicesDrives;
+		return this.deviceUser().devicesDrives(this);
 	}
 
 	devicesUsable(): Device[]
 	{
-		if (this._devicesUsable == null)
-		{
-			var devices = this.devices();
-
-			this._devicesUsable =
-				devices.filter(x => x.defn().isActive);
-		}
-
-		return this._devicesUsable;
+		return this.deviceUser().devicesUsable(this);
 	}
 
 	// movement

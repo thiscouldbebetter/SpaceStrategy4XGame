@@ -41,7 +41,7 @@ class BuildableDefn {
     }
     visualWrapWithOverlay(visualToWrap) {
         var visualOverlayShadedRectangle = VisualRectangle.fromSizeAndColorFill(this.sizeInPixels, Color.byName("BlackHalfTransparent"));
-        var visualOverlayText = VisualText.fromTextBindingHeightAndColor(DataBinding.fromGet((c) => {
+        var visualOverlayText = VisualText.fromTextBindingFontAndColor(DataBinding.fromGet((c) => {
             var buildableProgress = "";
             var venueCurrent = c.universe.venueCurrent();
             var venueCurrentTypeName = venueCurrent.constructor.name;
@@ -55,7 +55,7 @@ class BuildableDefn {
             var planet = venueLayout.modelParent;
             buildableProgress = planet.industryBuildableProgress(c.universe);
             return buildableProgress;
-        }), this.sizeInPixels.y / 2, Color.byName("White"));
+        }), FontNameAndHeight.fromHeightInPixels(this.sizeInPixels.y / 2), Color.byName("White"));
         var visualOverlayTextAndShade = new VisualGroup([
             visualOverlayShadedRectangle,
             visualOverlayText

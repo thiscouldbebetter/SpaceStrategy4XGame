@@ -98,7 +98,7 @@ class BuildableDefn
 			Color.byName("BlackHalfTransparent")
 		);
 
-		var visualOverlayText = VisualText.fromTextBindingHeightAndColor
+		var visualOverlayText = VisualText.fromTextBindingFontAndColor
 		(
 			DataBinding.fromGet
 			(
@@ -122,7 +122,7 @@ class BuildableDefn
 					return buildableProgress;
 				}
 			),
-			this.sizeInPixels.y / 2,
+			FontNameAndHeight.fromHeightInPixels(this.sizeInPixels.y / 2),
 			Color.byName("White")
 		);
 

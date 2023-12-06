@@ -4,12 +4,14 @@ class Ship extends Entity {
         super(name, [
             Actor.default(),
             defn,
-            Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
+            Ship.collidableBuild(pos),
             new Controllable(Ship.toControl),
+            new DeviceUser(),
             new Factionable(faction.name),
             Killable.fromIntegrityMax(10),
             Locatable.fromPos(pos),
-            new Orderable()
+            new Orderable(),
+            new StarsystemTraverser(100)
         ]);
         this.defn = defn;
         this.componentEntities = componentEntities;
@@ -22,6 +24,9 @@ class Ship extends Entity {
         var returnValue = new BodyDefn("Ship", Coords.fromXY(1, 1).multiplyScalar(scaleFactor), // size
         visual);
         return returnValue;
+    }
+    static collidableBuild(pos) {
+        return Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos));
     }
     // instance methods
     collideWithEntity(uwpe, target) {
@@ -145,32 +150,25 @@ class Ship extends Entity {
     }
     // Devices.
     deviceSelect(deviceToSelect) {
-        this._deviceSelected = deviceToSelect;
+        var deviceUser = this.deviceUser();
+        deviceUser.deviceSelect(deviceToSelect);
         var order = this.order();
         order.deviceToUseSet(deviceToSelect);
     }
     deviceSelected() {
-        return this._deviceSelected;
+        return this.deviceUser().deviceSelected();
+    }
+    deviceUser() {
+        return DeviceUser.ofEntity(this);
     }
     devices() {
-        var deviceEntities = this.componentEntities.filter(x => Device.ofEntity(x) != null);
-        var devices = deviceEntities.map(x => Device.ofEntity(x));
-        return devices;
+        return this.deviceUser().devices(this);
     }
     devicesDrives() {
-        if (this._devicesDrives == null) {
-            var devices = this.devices();
-            this._devicesDrives = devices.filter(x => x.defn().categoryNames.indexOf("Drive") >= 0);
-        }
-        return this._devicesDrives;
+        return this.deviceUser().devicesDrives(this);
     }
     devicesUsable() {
-        if (this._devicesUsable == null) {
-            var devices = this.devices();
-            this._devicesUsable =
-                devices.filter(x => x.defn().isActive);
-        }
-        return this._devicesUsable;
+        return this.deviceUser().devicesUsable(this);
     }
     // movement
     linkPortalEnter(cluster, linkPortal, ship) {

@@ -223,7 +223,8 @@ class VenueWorldExtended extends VenueWorld {
                 // Do nothing.
             }
             else if (inputActive == "MouseClick") {
-                inputHelper.mouseClickedSet(false);
+                // todo - Trying to fix holding down view buttons.
+                //inputHelper.mouseClickedSet(false);
             }
             else if (inputActive == "a") {
                 this.cameraLeft(cameraSpeed);
@@ -242,6 +243,34 @@ class VenueWorldExtended extends VenueWorld {
             }
             else if (inputActive == "r") {
                 this.cameraIn(cameraSpeed);
+            }
+        }
+    }
+    // VenueWithCameraAndSelection.
+    entitySelectedDetailsAreViewable(universe) {
+        return true;
+    }
+    entitySelectedDetailsView(universe) {
+        var detailsAreViewable = this.entitySelectedDetailsAreViewable(universe);
+        if (detailsAreViewable == false) {
+            return;
+        }
+        var selectedEntity = this.selectedEntity;
+        if (selectedEntity != null) {
+            var venueNext;
+            var selectionTypeName = selectedEntity.constructor.name;
+            if (selectionTypeName == NetworkNode2.name) {
+                var selectionAsNetworkNode = selectedEntity;
+                var starsystem = selectionAsNetworkNode.starsystem;
+                if (starsystem != null) {
+                    venueNext = new VenueStarsystem(this, starsystem);
+                }
+            }
+            else {
+                throw new Error("Not yet implemented!");
+            }
+            if (venueNext != null) {
+                universe.venueTransitionTo(venueNext);
             }
         }
     }

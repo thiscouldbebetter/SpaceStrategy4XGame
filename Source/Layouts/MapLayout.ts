@@ -269,9 +269,11 @@ class MapLayout
 
 					if (isBuildableAllowedOnCell == false)
 					{
-						var visualNotAllowed = VisualText.fromTextImmediateHeightAndColor
+						var visualNotAllowed = VisualText.fromTextImmediateFontAndColor
 						(
-							"X", this.cellSizeInPixels.y, Color.byName("Red"),
+							"X",
+							FontNameAndHeight.fromHeightInPixels(this.cellSizeInPixels.y),
+							Color.byName("Red"),
 						);
 						visualNotAllowed.draw
 						(

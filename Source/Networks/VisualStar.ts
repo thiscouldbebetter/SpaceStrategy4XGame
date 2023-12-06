@@ -216,9 +216,11 @@ class VisualStar implements Visual<VisualStar>
 			shipFactionPrev = shipFaction;
 		}
 
-		var visualText = VisualText.fromTextImmediateHeightAndColor
+		var visualText = VisualText.fromTextImmediateFontAndColor
 		(
-			starsystem.name, radiusApparent, nodeColor
+			starsystem.name,
+			FontNameAndHeight.fromHeightInPixels(radiusApparent),
+			nodeColor
 		);
 		drawablePosTransformed.overwriteWith(starsystemDrawPos);
 		drawablePosTransformed.y += radiusApparent * 2;

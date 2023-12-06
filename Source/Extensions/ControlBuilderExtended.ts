@@ -99,27 +99,36 @@ class ControlBuilderExtended extends ControlBuilder
 			true, // hasBorder
 			DataBinding.fromContextAndGet
 			(
-				universe.venueCurrent() as VenueStarsystem,
-				(c: VenueStarsystem) => (c.selectedEntity != null)
+				universe.venueCurrent() as VenueWithCameraAndSelection,
+				(c: VenueWithCameraAndSelection) => (c.selectedEntity != null)
 			), // isEnabled
 			() => // click
 			{
-				(universe.venueCurrent() as VenueStarsystem).cameraCenterOnSelection();
+				(universe.venueCurrent() as VenueWithCameraAndSelection).cameraCenterOnSelection();
 			}
 		);
 
-		var buttonDetailsIsEnabledGet = (c: VenueStarsystem) => // hack
-			(c.constructor.name == VenueStarsystem.name ? c.entitySelectedDetailsAreViewable(universe) : false);
+		var buttonDetailsIsEnabledGet =
+			(c: VenueWithCameraAndSelection) => // hack
+			{
+				var returnValue =
+				(
+					c.entitySelectedDetailsAreViewable != null // hack - VenueFader.
+					? c.entitySelectedDetailsAreViewable(universe)
+					: false
+				);
+				return returnValue;
+			}
 
 		var buttonDetailsIsEnabled = DataBinding.fromContextAndGet
 		(
-			universe.venueCurrent() as VenueStarsystem,
+			universe.venueCurrent() as VenueWithCameraAndSelection,
 			buttonDetailsIsEnabledGet
 		);
 
 		var buttonDetailsClick = () =>
 		{
-			var venueCurrent = universe.venueCurrent() as VenueStarsystem;
+			var venueCurrent = universe.venueCurrent() as VenueWithCameraAndSelection;
 			venueCurrent.entitySelectedDetailsView(universe);
 		};
 
@@ -485,4 +494,12 @@ class ControlBuilderExtended extends ControlBuilder
 
 		return returnValue;
 	}
+}
+
+interface VenueWithCameraAndSelection extends Venue
+{
+	cameraCenterOnSelection(): void;
+	entitySelectedDetailsAreViewable(universe: Universe): boolean;
+	entitySelectedDetailsView(universe: Universe): void;
+	selectedEntity: Entity;
 }

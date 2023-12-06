@@ -40,7 +40,7 @@ class PlanetType {
                 var factionName = planet.factionable().factionName;
                 var returnValue = (factionName == null
                     ? new VisualNone()
-                    : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateHeightAndColor("Owned by " + factionName, planetDimension, Color.byName("White"))));
+                    : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColor("Owned by " + factionName, FontNameAndHeight.fromHeightInPixels(planetDimension), Color.byName("White"))));
                 return returnValue;
             });
             var visual = new VisualGroup([

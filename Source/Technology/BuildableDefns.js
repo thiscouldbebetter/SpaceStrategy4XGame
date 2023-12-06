@@ -14,7 +14,7 @@ class BuildableDefnsBasic {
         var visualBuild = (labelText, color) => {
             return new VisualGroup([
                 new VisualRectangle(mapCellSizeInPixels, color, null, null),
-                VisualText.fromTextImmediateHeightAndColor(labelText, fontHeight, colors.White)
+                VisualText.fromTextImmediateFontAndColor(labelText, FontNameAndHeight.fromHeightInPixels(fontHeight), colors.White)
             ]);
         };
         var effects = BuildableEffect.Instances();

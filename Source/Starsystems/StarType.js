@@ -18,13 +18,14 @@ class StarType {
         return StarType.Instances().random();
     }
     bodyDefn() {
-        var starName = this.name; // todo
+        // var starName = this.name; // todo
         var starRadius = this.radiusInPixels;
         var starColor = this.color;
         if (this._bodyDefn == null) {
+            var visualBody = new VisualCircle(starRadius, starColor, starColor, null);
+            var visualName = VisualText.fromTextBindingFontAndColorsFillAndBorder(DataBinding.fromGet((c) => c.place.name), FontNameAndHeight.fromHeightInPixels(10), Color.byName("White"), Color.byName("Gray"));
             var visual = new VisualGroup([
-                new VisualCircle(starRadius, starColor, starColor, null),
-                VisualText.fromTextImmediateHeightAndColor(starName, 10, Color.byName("Gray"))
+                visualBody, visualName
             ]);
             this._bodyDefn = new BodyDefn("Star", Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
             visual);

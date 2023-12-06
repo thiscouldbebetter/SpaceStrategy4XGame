@@ -1,5 +1,5 @@
 
-class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
+class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSelection
 {
 	venueParent: Venue;
 	starsystem: Starsystem;
@@ -102,16 +102,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 			var venueNext: Venue;
 			var selectionTypeName = selectedEntity.constructor.name;
 
-			if (selectionTypeName == NetworkNode2.name)
-			{
-				var selectionAsNetworkNode = selectedEntity as NetworkNode2;
-				var starsystem = selectionAsNetworkNode.starsystem;
-				if (starsystem != null)
-				{
-					venueNext = new VenueStarsystem(this, starsystem);
-				}
-			}
-			else if (selectionTypeName == Planet.name)
+			if (selectionTypeName == Planet.name)
 			{
 				var selectionAsPlanet = selectedEntity as Planet;
 				var layout = selectionAsPlanet.layout(universe);
@@ -639,7 +630,13 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 		var containerMainSize = display.sizeInPixels.clone();
 		var margin = containerMainSize.x / 60;
 		var controlHeight = margin * 1.5;
-		var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 10) );
+		var containerInnerSize =
+			containerMainSize.clone().divide(Coords.fromXY(6, 10) );
+		var containerSelectionSize = Coords.fromXY
+		(
+			containerInnerSize.x,
+			(containerMainSize.y - margin * 3) / 2
+		);
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
 		var fontHeightInPixels = margin;
@@ -647,71 +644,71 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated
 
 		var controlBuilder = universe.controlBuilder as ControlBuilderExtended;
 
-		var container = ControlContainer.from4
+		var buttonBack = ControlButton.from5
+		(
+			Coords.fromXY
+			(
+				(containerMainSize.x - buttonWidth) / 2,
+				containerMainSize.y - margin - controlHeight
+			), // pos
+			Coords.fromXY(buttonWidth, controlHeight), // size
+			"Back",
+			fontNameAndHeight,
+			() => // click
+			{
+				var venue = universe.venueCurrent() as VenueStarsystem;
+				var venueNext = venue.venueParent;
+				universe.venueTransitionTo(venueNext);
+			}
+		);
+
+		var containerTimeAndPlace = controlBuilder.timeAndPlace
+		(
+			universe,
+			containerMainSize,
+			containerInnerSize,
+			margin,
+			controlHeight,
+			false // includeRoundAdvanceButtons
+		);
+
+		var containerView = controlBuilder.view
+		(
+			universe,
+			containerMainSize,
+			containerInnerSize,
+			margin,
+			controlHeight
+		);
+
+		var containerSelection = controlBuilder.selection
+		(
+			universe,
+			Coords.fromXY
+			(
+				containerMainSize.x - margin - containerSelectionSize.x,
+				containerMainSize.y - margin - containerSelectionSize.y
+			), // pos
+			containerSelectionSize,
+			margin,
+			controlHeight
+		);
+
+		var containerMain = ControlContainer.from4
 		(
 			"containerStarsystem",
 			Coords.fromXY(0, 0), // pos
 			containerMainSize,
 			// children
 			[
-				ControlButton.from5
-				(
-					Coords.fromXY
-					(
-						(containerMainSize.x - buttonWidth) / 2,
-						containerMainSize.y - margin - controlHeight
-					), // pos
-					Coords.fromXY(buttonWidth, controlHeight), // size
-					"Back",
-					fontNameAndHeight,
-					() => // click
-					{
-						var venue = universe.venueCurrent() as VenueStarsystem;
-						var venueNext = venue.venueParent;
-						universe.venueTransitionTo(venueNext);
-					}
-				),
-
-				controlBuilder.timeAndPlace
-				(
-					universe,
-					containerMainSize,
-					containerInnerSize,
-					margin,
-					controlHeight,
-					false // includeRoundAdvanceButtons
-				),
-
-				controlBuilder.view
-				(
-					universe,
-					containerMainSize,
-					containerInnerSize,
-					margin,
-					controlHeight
-				),
-
-				controlBuilder.selection
-				(
-					universe,
-					Coords.fromXY
-					(
-						containerMainSize.x - margin - containerInnerSize.x,
-						margin
-					), // pos
-					Coords.fromXY
-					(
-						containerInnerSize.x,
-						containerMainSize.y - margin * 2
-					), // size
-					margin,
-					controlHeight
-				),
-
+				buttonBack,
+				containerTimeAndPlace,
+				containerView,
+				containerSelection
 			]
 		);
 
-		var returnValue = new ControlContainerTransparent(container);
+		var returnValue = new ControlContainerTransparent(containerMain);
 
 		return returnValue;
 	}

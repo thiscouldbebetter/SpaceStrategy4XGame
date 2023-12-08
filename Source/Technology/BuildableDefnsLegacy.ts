@@ -10,7 +10,7 @@ class BuildableDefnsLegacy
 		}
 		return BuildableDefnsLegacy._instance;
 	}
-	
+
 	OrbitalCloaker: BuildableDefn;
 	OrbitalDocks: BuildableDefn;
 	OrbitalShield1OrbitalShield: BuildableDefn;
@@ -103,7 +103,7 @@ class BuildableDefnsLegacy
 	ShipWeapon08FergnatzLens: BuildableDefn;
 	ShipWeapon09HypersphereDriver: BuildableDefn;
 	ShipWeapon10Nanomanipulator: BuildableDefn;
-	SurfaceArtificialHypdroponifer: BuildableDefn;
+	SurfaceArtificialHydroponifier: BuildableDefn;
 	SurfaceAutomation: BuildableDefn;
 	SurfaceCloaker: BuildableDefn;
 	SurfaceCloningPlant: BuildableDefn;
@@ -283,32 +283,34 @@ class BuildableDefnsLegacy
 				}
 			);
 
+		var names = BuildableDefnsLegacyNames.Instance;
+
 		// Planet - Orbit.
 
 		this.OrbitalCloaker = facilityOrbital
 		(
-			"Orbital Cloak",
+			names.OrbitalCloaker,
 			visualBuild("C", colors.Gray),
 			40
 		);
 
 		this.OrbitalDocks = facilityOrbital
 		(
-			"Orbital Docks",
+			names.OrbitalDocks,
 			visualBuild("D", colors.Gray),
 			170
 		);
 
 		this.OrbitalShield1OrbitalShield = facilityOrbital
 		(
-			"Orbital Shield",
+			names.OrbitalShield1OrbitalShield,
 			visualBuild("S", colors.Red),
 			60
 		);
 
 		this.OrbitalShield2OrbitalMegaShield = facilityOrbital
 		(
-			"Orbital Mega Shield",
+			names.OrbitalShield2OrbitalMegaShield,
 			visualBuild("S", colors.Blue),
 			120
 		);
@@ -385,11 +387,11 @@ class BuildableDefnsLegacy
 
 		this.OrbitalShipyard = new BuildableDefn
 		(
-			"Shipyard",
+			names.OrbitalShipyard,
 			false, // isItem
 			canBeBuiltInOrbit,
 			mapCellSizeInPixels,
-			visualBuild("Shipyard", colors.Blue),
+			visualBuild(names.OrbitalShipyard, colors.Blue),
 			120, // industryToBuild
 			effectNone, // effectPerRound
 			[ effectBuildShip ], // effectsAvailableToUse
@@ -399,21 +401,21 @@ class BuildableDefnsLegacy
 
 		this.OrbitalWeapon1OrbitalMissileBase = facilityOrbital
 		(
-			"Orbital Missile Base",
-			visualBuild("Missile Base", colors.Gray),
+			names.OrbitalWeapon1OrbitalMissileBase,
+			visualBuild(names.OrbitalWeapon1OrbitalMissileBase, colors.Gray),
 			60
 		);
 
 		this.OrbitalWeapon2ShortRangeOrbitalWhopper = facilityOrbital
 		(
-			"Short-Range Orbital Whopper",
-			visualBuild("Short-Range Whopper", colors.Red),
+			names.OrbitalWeapon2ShortRangeOrbitalWhopper,
+			visualBuild(names.OrbitalWeapon2ShortRangeOrbitalWhopper, colors.Red),
 			90
 		);
 
 		this.OrbitalWeapon3LongRangeOrbitalWhopper = facilityOrbital
 		(
-			"Long-Range Orbital Whopper",
+			names.OrbitalWeapon3LongRangeOrbitalWhopper,
 			visualBuild("Long-Range Whopper", colors.Green),
 			180
 		);
@@ -422,26 +424,26 @@ class BuildableDefnsLegacy
 
 		this.PlanetwideFocusAlienHospitality = planetwideFocus
 		(
-			"Alien Hospitality",
-			visualBuild("Focus", colors.Orange)
+			names.PlanetwideFocusAlienHospitality,
+			visualBuild(names.PlanetwideFocusAlienHospitality, colors.Orange)
 		);
 
 		this.PlanetwideFocusEndlessParty = planetwideFocus
 		(
-			"Endless Party",
-			visualBuild("Focus", colors.Green)
+			names.PlanetwideFocusEndlessParty,
+			visualBuild(names.PlanetwideFocusEndlessParty, colors.Green)
 		);
 
 		this.PlanetwideFocusScientistTakeover = planetwideFocus
 		(
-			"Scientist Takeover",
-			visualBuild("Focus", colors.Blue)
+			names.PlanetwideFocusScientistTakeover,
+			visualBuild(names.PlanetwideFocusScientistTakeover, colors.Blue)
 		);
 
 		this.PlanetwideLushGrowthBomb = planetwideFocus
 		(
-			"Lush Growth Bomb",
-			visualBuild("Focus", colors.Violet) // todo - 200
+			names.PlanetwideLushGrowthBomb,
+			visualBuild(names.PlanetwideLushGrowthBomb, colors.Violet) // todo - 200
 		);
 
 		// Ships.
@@ -481,7 +483,7 @@ class BuildableDefnsLegacy
 		
 		this.ShipDrive1TonklinMotor = shipComponent
 		(
-			"Tonklin Motor",
+			names.ShipDrive1TonklinMotor,
 			visualBuild("Drive", colors.Gray),
 			10,
 			categoryShipDrive,
@@ -490,7 +492,7 @@ class BuildableDefnsLegacy
 
 		this.ShipDrive2IonBanger = shipComponent
 		(
-			"Ion Banger",
+			names.ShipDrive2IonBanger,
 			visualBuild("Drive", colors.Red),
 			30,
 			categoryShipDrive,
@@ -499,7 +501,7 @@ class BuildableDefnsLegacy
 
 		this.ShipDrive3GravitonProjector = shipComponent
 		(
-			"Graviton Projector",
+			names.ShipDrive3GravitonProjector,
 			visualBuild("Drive", colors.Green),
 			40,
 			categoryShipDrive,
@@ -508,7 +510,7 @@ class BuildableDefnsLegacy
 
 		this.ShipDrive4InertiaNegator = shipComponent
 		(
-			"Inertia Negator",
+			names.ShipDrive4InertiaNegator,
 			visualBuild("Drive", colors.Red),
 			20,
 			categoryShipDrive,
@@ -517,7 +519,7 @@ class BuildableDefnsLegacy
 
 		this.ShipDrive5NanowaveSpaceBender = shipComponent
 		(
-			"Inertia Negator",
+			names.ShipDrive5NanowaveSpaceBender,
 			visualBuild("Drive", colors.Red),
 			80,
 			categoryShipDrive,
@@ -530,7 +532,7 @@ class BuildableDefnsLegacy
 
 		this.ShipGenerator1ProtonShaver = shipComponent
 		(
-			"Proton Shaver",
+			names.ShipGenerator1ProtonShaver,
 			visualBuild("Generator", colors.Gray),
 			20,
 			categoryShipGenerator,
@@ -539,7 +541,7 @@ class BuildableDefnsLegacy
 
 		this.ShipGenerator2SubatomicScoop = shipComponent
 		(
-			"Subatomic Scoop",
+			names.ShipGenerator2SubatomicScoop,
 			visualBuild("Generator", colors.Red),
 			35,
 			categoryShipGenerator,
@@ -548,7 +550,7 @@ class BuildableDefnsLegacy
 
 		this.ShipGenerator3QuarkExpress = shipComponent
 		(
-			"Quark Express",
+			names.ShipGenerator3QuarkExpress,
 			visualBuild("Generator", colors.Green),
 			60,
 			categoryShipGenerator,
@@ -557,7 +559,7 @@ class BuildableDefnsLegacy
 
 		this.ShipGenerator4VanKreegHypersplicer = shipComponent
 		(
-			"Van Kreeg Hypersplicer",
+			names.ShipGenerator4VanKreegHypersplicer,
 			visualBuild("Generator", colors.Blue),
 			80,
 			categoryShipGenerator,
@@ -566,7 +568,7 @@ class BuildableDefnsLegacy
 
 		this.ShipGenerator5Nanotwirler = shipComponent
 		(
-			"Nanotwirler",
+			names.ShipGenerator5Nanotwirler,
 			visualBuild("Generator", colors.Violet),
 			100,
 			categoryShipGenerator,
@@ -577,7 +579,7 @@ class BuildableDefnsLegacy
 
 		this.ShipHull1Small = new BuildableDefn
 		(
-			"Small Ship Hull",
+			names.ShipHull1Small,
 			false, // isItem
 			canBeBuiltNever,
 			mapCellSizeInPixels,
@@ -591,7 +593,7 @@ class BuildableDefnsLegacy
 
 		this.ShipHull2Medium = new BuildableDefn
 		(
-			"Medium Ship Hull",
+			names.ShipHull2Medium,
 			false, // isItem
 			canBeBuiltNever,
 			mapCellSizeInPixels,
@@ -605,7 +607,7 @@ class BuildableDefnsLegacy
 
 		this.ShipHull3Large = new BuildableDefn
 		(
-			"Large Ship Hull",
+			names.ShipHull3Large,
 			false, // isItem
 			canBeBuiltNever,
 			mapCellSizeInPixels,
@@ -619,7 +621,7 @@ class BuildableDefnsLegacy
 
 		this.ShipHull4Enormous = new BuildableDefn
 		(
-			"Enormous Ship Hull",
+			names.ShipHull4Enormous,
 			false, // isItem
 			canBeBuiltNever,
 			mapCellSizeInPixels,
@@ -636,117 +638,117 @@ class BuildableDefnsLegacy
 		var sc = (name: string, industry: number) =>
 			shipComponent(name, visualBuild(name, colors.Gray), industry, categories.ShipItem, null);
 
-		this.ShipItemAccutron 				= sc("Accutron", 				60);
-		this.ShipItemBackfirer 				= sc("Backfirer", 				60);
-		this.ShipItemBrunswikDissipator 	= sc("Brunswik Dissipator", 	100);
-		this.ShipItemCannibalizer 			= sc("Cannibalizer", 			20);
-		this.ShipItemCloaker 				= sc("Cloaker", 				30);
-		this.ShipItemColonizer 				= sc("Colonizer", 				35);
-		this.ShipItemContainmentDevice 		= sc("Containment Device", 		15);
-		this.ShipItemDisarmer 				= sc("Disarmer", 				30);
-		this.ShipItemDisintegrator 			= sc("Disintegrator", 			150);
-		this.ShipItemFleetDisperser 		= sc("Fleet Disperser", 		30);
-		this.ShipItemGizmogrifier 			= sc("Gizmogrifier", 			30);
-		this.ShipItemGravimetricCatapult 	= sc("Gravimetric Catapult", 	16);
-		this.ShipItemGravimetricCondensor 	= sc("Gravimetric Condensor",	30);
-		this.ShipItemGravityDistorter 		= sc("Gravity Distorter", 		20);
-		this.ShipItemGyroInductor 			= sc("Gyro-Inductor", 			20);
-		this.ShipItemHyperfuel 				= sc("Hyperfuel", 				20);
-		this.ShipItemHyperswapper 			= sc("Hyperswapper", 			20);
-		this.ShipItemIntellectScrambler 	= sc("Intellect Scrambler", 	20);
-		this.ShipItemInvasionModule 		= sc("Invasion Module", 		70);
-		this.ShipItemInvulnerablizer 		= sc("Invulnerablizer", 		60);
-		this.ShipItemLaneBlocker 			= sc("Lane Blocker", 			30);
-		this.ShipItemLaneDestabilizer 		= sc("Lane Destabilizer", 		40);
-		this.ShipItemLaneEndoscope 			= sc("Lane Endoscope", 			20);
-		this.ShipItemLaneMagnetron 			= sc("Lane Magnetron", 			50);
-		this.ShipItemMassCondensor 			= sc("Mass Condensor", 			50);
-		this.ShipItemMolecularTieDown 		= sc("Molecular Tie Down", 		20);
-		this.ShipItemMovingPartExploiter 	= sc("Moving Part Exploiter", 	60);
-		this.ShipItemMyrmidonicCarbonizer 	= sc("Myrmidonic Carbonizer", 	70);
-		this.ShipItemPhaseBomb 				= sc("PhaseBomb", 				40);
-		this.ShipItemPlasmaCoupler 			= sc("Plasma Coupler", 			20);
-		this.ShipItemPositronBouncer 		= sc("Positron Bouncer", 		10);
-		this.ShipItemRecaller 				= sc("Recaller", 				40);
-		this.ShipItemRemoteRepairFacility 	= sc("Remote Repair Facility", 	70);
-		this.ShipItemReplenisher 			= sc("Replenisher", 			60);
-		this.ShipItemSacrificialOrb 		= sc("Sacrificial Orb", 		20);
-		this.ShipItemSelfDestructotron 		= sc("Self-Destructotron", 		50);
-		this.ShipItemShieldBlaster 			= sc("Shield Blaster", 			30);
-		this.ShipItemSmartBomb 				= sc("Smart Bomb", 				30);
-		this.ShipItemSpecialtyBlaster 		= sc("Specialty Blaster", 		30);
-		this.ShipItemToroidalBlaster 		= sc("Toroidal Blaster", 		20);
-		this.ShipItemTractorBeam 			= sc("Tractor Beam", 			30);
-		this.ShipItemXRayMegaglasses 		= sc("X-Ray Megaglasses", 		100);
+		this.ShipItemAccutron 				= sc(names.ShipItemAccutron, 				60);
+		this.ShipItemBackfirer 				= sc(names.ShipItemBackfirer, 				60);
+		this.ShipItemBrunswikDissipator 	= sc(names.ShipItemBrunswikDissipator, 		100);
+		this.ShipItemCannibalizer 			= sc(names.ShipItemCannibalizer, 			20);
+		this.ShipItemCloaker 				= sc(names.ShipItemCloaker, 				30);
+		this.ShipItemColonizer 				= sc(names.ShipItemColonizer, 				35);
+		this.ShipItemContainmentDevice 		= sc(names.ShipItemContainmentDevice, 		15);
+		this.ShipItemDisarmer 				= sc(names.ShipItemDisarmer, 				30);
+		this.ShipItemDisintegrator 			= sc(names.ShipItemDisintegrator, 			150);
+		this.ShipItemFleetDisperser 		= sc(names.ShipItemFleetDisperser, 			30);
+		this.ShipItemGizmogrifier 			= sc(names.ShipItemGizmogrifier, 			30);
+		this.ShipItemGravimetricCatapult 	= sc(names.ShipItemGravimetricCatapult, 	16);
+		this.ShipItemGravimetricCondensor 	= sc(names.ShipItemGravimetricCondensor,	30);
+		this.ShipItemGravityDistorter 		= sc(names.ShipItemGravityDistorter, 		20);
+		this.ShipItemGyroInductor 			= sc(names.ShipItemGyroInductor, 			20);
+		this.ShipItemHyperfuel 				= sc(names.ShipItemHyperfuel, 				20);
+		this.ShipItemHyperswapper 			= sc(names.ShipItemHyperswapper, 			20);
+		this.ShipItemIntellectScrambler 	= sc(names.ShipItemIntellectScrambler, 		20);
+		this.ShipItemInvasionModule 		= sc(names.ShipItemInvasionModule, 			70);
+		this.ShipItemInvulnerablizer 		= sc(names.ShipItemInvulnerablizer, 		60);
+		this.ShipItemLaneBlocker 			= sc(names.ShipItemLaneBlocker, 			30);
+		this.ShipItemLaneDestabilizer 		= sc(names.ShipItemLaneDestabilizer, 		40);
+		this.ShipItemLaneEndoscope 			= sc(names.ShipItemLaneEndoscope, 			20);
+		this.ShipItemLaneMagnetron 			= sc(names.ShipItemLaneMagnetron, 			50);
+		this.ShipItemMassCondensor 			= sc(names.ShipItemMassCondensor, 			50);
+		this.ShipItemMolecularTieDown 		= sc(names.ShipItemMolecularTieDown, 		20);
+		this.ShipItemMovingPartExploiter 	= sc(names.ShipItemMovingPartExploiter, 	60);
+		this.ShipItemMyrmidonicCarbonizer 	= sc(names.ShipItemMyrmidonicCarbonizer, 	70);
+		this.ShipItemPhaseBomb 				= sc(names.ShipItemPhaseBomb, 				40);
+		this.ShipItemPlasmaCoupler 			= sc(names.ShipItemPlasmaCoupler, 			20);
+		this.ShipItemPositronBouncer 		= sc(names.ShipItemPositronBouncer, 		10);
+		this.ShipItemRecaller 				= sc(names.ShipItemRecaller, 				40);
+		this.ShipItemRemoteRepairFacility 	= sc(names.ShipItemRemoteRepairFacility, 	70);
+		this.ShipItemReplenisher 			= sc(names.ShipItemReplenisher, 			60);
+		this.ShipItemSacrificialOrb 		= sc(names.ShipItemSacrificialOrb, 			20);
+		this.ShipItemSelfDestructotron 		= sc(names.ShipItemSelfDestructotron, 		50);
+		this.ShipItemShieldBlaster 			= sc(names.ShipItemShieldBlaster, 			30);
+		this.ShipItemSmartBomb 				= sc(names.ShipItemSmartBomb, 				30);
+		this.ShipItemSpecialtyBlaster 		= sc(names.ShipItemSpecialtyBlaster, 		30);
+		this.ShipItemToroidalBlaster 		= sc(names.ShipItemToroidalBlaster, 		20);
+		this.ShipItemTractorBeam 			= sc(names.ShipItemTractorBeam, 			30);
+		this.ShipItemXRayMegaglasses 		= sc(names.ShipItemXRayMegaglasses, 		100);
 
 		// Sensors.
 
 		var categoryShipSensor = categories.ShipSensor;
 
-		this.ShipSensor1TonklinFrequencyAnalyzer 		= shipComponent("Tonklin Frequency Analyzer", 	visualBuild("Sensors1", colors.Gray), 20, categoryShipSensor, null);
-		this.ShipSensor2SubspacePhaseArray 				= shipComponent("Subspace Phase Array", 		visualBuild("Sensors2", colors.Gray), 40, categoryShipSensor, null);
-		this.ShipSensor3AuralCloudConstrictor 			= shipComponent("Aural Cloud Constrictor", 		visualBuild("Sensors3", colors.Gray), 60, categoryShipSensor, null);
-		this.ShipSensor4HyperwaveTympanum 				= shipComponent("Hyperwave Tympanum", 			visualBuild("Sensors4", colors.Gray), 80, categoryShipSensor, null);
-		this.ShipSensor5MurgatroydsKnower 				= shipComponent("Murgatroyd's Knower", 			visualBuild("Sensors5", colors.Gray), 100, categoryShipSensor, null);
-		this.ShipSensor6NanowaveDecouplingNet 			= shipComponent("Nanowave Decoupling Net", 		visualBuild("Sensors6", colors.Gray), 200, categoryShipSensor, null);
+		this.ShipSensor1TonklinFrequencyAnalyzer 		= shipComponent(names.ShipSensor1TonklinFrequencyAnalyzer, 		visualBuild("Sensor1", colors.Gray), 20, categoryShipSensor, null);
+		this.ShipSensor2SubspacePhaseArray 				= shipComponent(names.ShipSensor2SubspacePhaseArray, 			visualBuild("Sensor2", colors.Gray), 40, categoryShipSensor, null);
+		this.ShipSensor3AuralCloudConstrictor 			= shipComponent(names.ShipSensor3AuralCloudConstrictor, 		visualBuild("Sensor3", colors.Gray), 60, categoryShipSensor, null);
+		this.ShipSensor4HyperwaveTympanum 				= shipComponent(names.ShipSensor4HyperwaveTympanum, 			visualBuild("Sensor4", colors.Gray), 80, categoryShipSensor, null);
+		this.ShipSensor5MurgatroydsKnower 				= shipComponent(names.ShipSensor5MurgatroydsKnower, 			visualBuild("Sensor5", colors.Gray), 100, categoryShipSensor, null);
+		this.ShipSensor6NanowaveDecouplingNet 			= shipComponent(names.ShipSensor6NanowaveDecouplingNet, 		visualBuild("Sensor6", colors.Gray), 200, categoryShipSensor, null);
 
 		// Shields.
 
 		var categoryShipShield = categories.ShipShield;
 
-		this.ShipShield1IonWrap 						= shipComponent("Ion Wrap", 					visualBuild("Shield1", colors.Gray), 10, categoryShipShield, null);
-		this.ShipShield2ConcussionShield 				= shipComponent("Concussion Shield", 			visualBuild("Shield2", colors.Gray), 30, categoryShipShield, null);
-		this.ShipShield3WaveScatterer 					= shipComponent("Wave Scatterer", 				visualBuild("Shield3", colors.Gray), 50, categoryShipShield, null);
-		this.ShipShield4Deactotron 						= shipComponent("Deactotron", 					visualBuild("Shield4", colors.Gray), 50, categoryShipShield, null);
-		this.ShipShield5HyperwaveNullifier 				= shipComponent("Hyperwave Nullifier", 			visualBuild("Shield5", colors.Gray), 100, categoryShipShield, null);
-		this.ShipShield6Nanoshell 						= shipComponent("Nanoshell", 					visualBuild("Shield6", colors.Gray), 200, categoryShipShield, null);
+		this.ShipShield1IonWrap 						= shipComponent(names.ShipShield1IonWrap, 					visualBuild("Shield1", colors.Gray), 10, categoryShipShield, null);
+		this.ShipShield2ConcussionShield 				= shipComponent(names.ShipShield2ConcussionShield, 			visualBuild("Shield2", colors.Gray), 30, categoryShipShield, null);
+		this.ShipShield3WaveScatterer 					= shipComponent(names.ShipShield3WaveScatterer, 			visualBuild("Shield3", colors.Gray), 50, categoryShipShield, null);
+		this.ShipShield4Deactotron 						= shipComponent(names.ShipShield4Deactotron, 				visualBuild("Shield4", colors.Gray), 50, categoryShipShield, null);
+		this.ShipShield5HyperwaveNullifier 				= shipComponent(names.ShipShield5HyperwaveNullifier, 		visualBuild("Shield5", colors.Gray), 100, categoryShipShield, null);
+		this.ShipShield6Nanoshell 						= shipComponent(names.ShipShield6Nanoshell, 				visualBuild("Shield6", colors.Gray), 200, categoryShipShield, null);
 
 		// Starlane Drives.
 		
 		var categoryShipStarlaneDrive = categories.ShipStarlaneDrive;
 
-		this.ShipStarlaneDrive1StarLaneDrive 			= shipComponent("Star Lane Drive", 				visualBuild("StarDrive", colors.Gray), 30, categoryShipStarlaneDrive, null);
-		this.ShipStarlaneDrive2StarLaneHyperdrive 		= shipComponent("Star Lane Hyperdrive", 		visualBuild("StarDrive2", colors.Gray), 30, categoryShipStarlaneDrive, null);
+		this.ShipStarlaneDrive1StarLaneDrive 			= shipComponent(names.ShipStarlaneDrive1StarLaneDrive, 			visualBuild("StarDrive", colors.Gray), 30, categoryShipStarlaneDrive, null);
+		this.ShipStarlaneDrive2StarLaneHyperdrive 		= shipComponent(names.ShipStarlaneDrive2StarLaneHyperdrive, 	visualBuild("StarDrive2", colors.Gray), 30, categoryShipStarlaneDrive, null);
 
 		// Weapons.
 
 		var categoryShipWeapon = categories.ShipWeapon;
 
-		this.ShipWeapon01MassBarrageGun 				= shipComponent("Mass Barrage Gun", 				visualBuild("Weapon", colors.Gray), 10, categoryShipWeapon, null);
-		this.ShipWeapon02FourierMissiles 				= shipComponent("Fourier Missiles", 				visualBuild("Weapon", colors.Gray), 20, categoryShipWeapon, null);
-		this.ShipWeapon03QuantumSingularityLauncher 	= shipComponent("Quantum Singularity Launcher", 	visualBuild("Weapon", colors.Gray), 30, categoryShipWeapon, null);
-		this.ShipWeapon04MolecularDisassociator 		= shipComponent("Molecular Disassociator", 			visualBuild("Weapon", colors.Gray), 40, categoryShipWeapon, null);
-		this.ShipWeapon05ElectromagneticPulser 			= shipComponent("Electromagnetic Pulser", 			visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
-		this.ShipWeapon06Plasmatron 					= shipComponent("Plasmatron", 						visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
-		this.ShipWeapon07Ueberlaser 					= shipComponent("Ueberlaser", 						visualBuild("Weapon", colors.Gray), 70, categoryShipWeapon, null);
-		this.ShipWeapon08FergnatzLens 					= shipComponent("Fergnatz Lens", 					visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
-		this.ShipWeapon09HypersphereDriver 				= shipComponent("Hypersphere Driver", 				visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, null);
-		this.ShipWeapon10Nanomanipulator 				= shipComponent("Nanomanipulator", 					visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, null);
+		this.ShipWeapon01MassBarrageGun 				= shipComponent(names.ShipWeapon01MassBarrageGun, 				visualBuild("Weapon", colors.Gray), 10, categoryShipWeapon, null);
+		this.ShipWeapon02FourierMissiles 				= shipComponent(names.ShipWeapon02FourierMissiles, 				visualBuild("Weapon", colors.Gray), 20, categoryShipWeapon, null);
+		this.ShipWeapon03QuantumSingularityLauncher 	= shipComponent(names.ShipWeapon03QuantumSingularityLauncher, 	visualBuild("Weapon", colors.Gray), 30, categoryShipWeapon, null);
+		this.ShipWeapon04MolecularDisassociator 		= shipComponent(names.ShipWeapon04MolecularDisassociator, 		visualBuild("Weapon", colors.Gray), 40, categoryShipWeapon, null);
+		this.ShipWeapon05ElectromagneticPulser 			= shipComponent(names.ShipWeapon05ElectromagneticPulser, 		visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
+		this.ShipWeapon06Plasmatron 					= shipComponent(names.ShipWeapon06Plasmatron, 					visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
+		this.ShipWeapon07Ueberlaser 					= shipComponent(names.ShipWeapon07Ueberlaser, 					visualBuild("Weapon", colors.Gray), 70, categoryShipWeapon, null);
+		this.ShipWeapon08FergnatzLens 					= shipComponent(names.ShipWeapon08FergnatzLens, 				visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
+		this.ShipWeapon09HypersphereDriver 				= shipComponent(names.ShipWeapon09HypersphereDriver, 			visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, null);
+		this.ShipWeapon10Nanomanipulator 				= shipComponent(names.ShipWeapon10Nanomanipulator, 				visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, null);
 
 		// Surface.
 
-		this.SurfaceArtificialHypdroponifer 	= facilitySurfaceUsable("Artificial Hydroponifier", visualBuild("Artificial Hydroponifier", colors.Gray), 	100, null);
-		this.SurfaceAutomation 					= facilitySurfaceUsable("Automation", 				visualBuild("todo", colors.Gray), 						9999, null);
-		this.SurfaceCloaker 					= facilitySurfaceUsable("Surface Cloak", 			visualBuild("Cloak", colors.Gray), 						120, null);
-		this.SurfaceCloningPlant 				= facilitySurfaceUsable("Cloning Plant", 			visualBuild("Cloning Plant", colors.Gray), 				250, null);
-		this.SurfaceEngineeringRetreat 			= facilitySurfaceUsable("Engineering Retreat", 		visualBuild("Engineering Retreat", colors.Gray), 		80, null);
-		this.SurfaceFertilizationPlant 			= facilitySurfaceUsable("Fertilization Plant", 		visualBuild("Fertilization Plant", colors.Gray), 		200, null);
-		this.SurfaceHabitat 					= facilitySurfaceUsable("Habitat", 					visualBuild("Habitat", colors.Gray), 					160, null);
-		this.SurfaceHyperpowerPlant 			= facilitySurfaceUsable("Hyperpower Plant", 		visualBuild("Hyperpower Plant", colors.Gray), 			200, null);
-		this.SurfaceIndustrialMegafacility 		= facilitySurfaceUsable("Industrial Megafacility", 	visualBuild("Industrial Megafacility", colors.Gray), 	110, null);
-		this.SurfaceInternet 					= facilitySurfaceUsable("Internet", 				visualBuild("Internet", colors.Gray), 					250, null);
-		this.SurfaceLogicFactory 				= facilitySurfaceUsable("Logic Factory", 			visualBuild("Logic Factory", colors.Gray), 				80, null);
-		this.SurfaceMetroplex 					= facilitySurfaceUsable("Metroplex", 				visualBuild("Metroplex", colors.Gray), 					200, null);
-		this.SurfaceObservationInstallation 	= facilitySurfaceUsable("Observation Installation", visualBuild("Observation Installation", colors.Gray), 	40, null);
-		this.SurfacePlanetaryTractorBeam 		= facilitySurfaceUsable("Tractor Beam", 			visualBuild("Tractor Beam", colors.Gray), 				50, null);
-		this.SurfaceResearchCampus 				= facilitySurfaceUsable("Research Campus", 			visualBuild("Research Campus", colors.Gray), 			160, null);
-		this.SurfaceShield1SurfaceShield 		= facilitySurfaceUsable("Surface Shield", 			visualBuild("Surface Shield", colors.Gray), 			100, null);
-		this.SurfaceShield2SurfaceMegaShield 	= facilitySurfaceUsable("Surface Mega-Shield",		visualBuild("Surface Mega-Shield", colors.Gray), 		180, null);
-		this.SurfaceTerraforming 				= facilitySurfaceUsable("Terraforming", 			visualBuild("Terraforming", colors.Gray), 				50, null);
+		this.SurfaceArtificialHydroponifier 	= facilitySurfaceUsable(names.SurfaceArtificialHydroponifier, 		visualBuild("Artificial Hydroponifier", colors.Gray), 	100, null);
+		this.SurfaceAutomation 					= facilitySurfaceUsable(names.SurfaceAutomation, 					visualBuild("todo", colors.Gray), 						9999, null);
+		this.SurfaceCloaker 					= facilitySurfaceUsable(names.SurfaceCloaker, 						visualBuild("Cloak", colors.Gray), 						120, null);
+		this.SurfaceCloningPlant 				= facilitySurfaceUsable(names.SurfaceCloningPlant, 					visualBuild("Cloning Plant", colors.Gray), 				250, null);
+		this.SurfaceEngineeringRetreat 			= facilitySurfaceUsable(names.SurfaceEngineeringRetreat, 			visualBuild("Engineering Retreat", colors.Gray), 		80, null);
+		this.SurfaceFertilizationPlant 			= facilitySurfaceUsable(names.SurfaceFertilizationPlant, 			visualBuild("Fertilization Plant", colors.Gray), 		200, null);
+		this.SurfaceHabitat 					= facilitySurfaceUsable(names.SurfaceHabitat, 						visualBuild("Habitat", colors.Gray), 					160, null);
+		this.SurfaceHyperpowerPlant 			= facilitySurfaceUsable(names.SurfaceHyperpowerPlant, 				visualBuild("Hyperpower Plant", colors.Gray), 			200, null);
+		this.SurfaceIndustrialMegafacility 		= facilitySurfaceUsable(names.SurfaceIndustrialMegafacility, 		visualBuild("Industrial Megafacility", colors.Gray), 	110, null);
+		this.SurfaceInternet 					= facilitySurfaceUsable(names.SurfaceInternet, 						visualBuild("Internet", colors.Gray), 					250, null);
+		this.SurfaceLogicFactory 				= facilitySurfaceUsable(names.SurfaceLogicFactory, 					visualBuild("Logic Factory", colors.Gray), 				80, null);
+		this.SurfaceMetroplex 					= facilitySurfaceUsable(names.SurfaceMetroplex, 					visualBuild("Metroplex", colors.Gray), 					200, null);
+		this.SurfaceObservationInstallation 	= facilitySurfaceUsable(names.SurfaceObservationInstallation, 		visualBuild("Observation Installation", colors.Gray), 	40, null);
+		this.SurfacePlanetaryTractorBeam 		= facilitySurfaceUsable(names.SurfacePlanetaryTractorBeam, 			visualBuild("Tractor Beam", colors.Gray), 				50, null);
+		this.SurfaceResearchCampus 				= facilitySurfaceUsable(names.SurfaceResearchCampus, 				visualBuild("Research Campus", colors.Gray), 			160, null);
+		this.SurfaceShield1SurfaceShield 		= facilitySurfaceUsable(names.SurfaceShield1SurfaceShield, 			visualBuild("Surface Shield", colors.Gray), 			100, null);
+		this.SurfaceShield2SurfaceMegaShield 	= facilitySurfaceUsable(names.SurfaceShield2SurfaceMegaShield,		visualBuild("Surface Mega-Shield", colors.Gray), 		180, null);
+		this.SurfaceTerraforming 				= facilitySurfaceUsable(names.SurfaceTerraforming, 					visualBuild("Terraforming", colors.Gray), 				50, null);
 
 		this.SurfaceXenoArchaeologicalDig = new BuildableDefn
 		(
-			"Xeno Archaeological Dig",
+			names.SurfaceXenoArchaeologicalDig,
 			false, // isItem
 			(m: MapLayout, p: Coords) =>
 			{
@@ -754,7 +756,7 @@ class BuildableDefnsLegacy
 				return false; // todo - Build only on ruins.
 			},
 			mapCellSizeInPixels,
-			visualBuild("Xeno Archaeological Dig", colors.Gray),
+			visualBuild(names.SurfaceXenoArchaeologicalDig, colors.Gray),
 			50,
 			effectNone,
 			null, // effectsAvailableToUse
@@ -767,15 +769,15 @@ class BuildableDefnsLegacy
 
 		this.SurfaceAgriplot = facilitySurfaceUsable
 		(
-			"Agriplot",
-			visualBuild("Agriplot", colors.GreenDark),
+			names.SurfaceAgriplot,
+			visualBuild(names.SurfaceAgriplot, colors.GreenDark),
 			30,
 			effectResourcesAdd( [ new Resource("Prosperity", 1) ] )
 		);
 
 		this.SurfaceColonyHub = new BuildableDefn
 		(
-			"Colony Hub",
+			names.SurfaceColonyHub,
 			false, // isItem
 			canBeBuiltNever,
 			mapCellSizeInPixels,
@@ -789,23 +791,23 @@ class BuildableDefnsLegacy
 
 		this.SurfaceFactory = facilitySurfaceUsable
 		(
-			"Factory",
-			visualBuild("Factory", colors.Red),
+			names.SurfaceFactory,
+			visualBuild(names.SurfaceFactory, colors.Red),
 			30,
 			effectResourcesAdd( [ new Resource("Industry", 1) ] )
 		);
 
 		this.SurfaceLaboratory = facilitySurfaceUsable
 		(
-			"Laboratory",
-			visualBuild("Laboratory", colors.Blue),
+			names.SurfaceLaboratory,
+			visualBuild(names.SurfaceLaboratory, colors.Blue),
 			50,
 			effectResourcesAdd( [ new Resource("Research", 1) ] )
 		);
 
 		this.SurfaceTransportTubes = facilitySurfaceAnywhere
 		(
-			"Transport Tubes",
+			names.SurfaceTransportTubes,
 			visualBuild("Transport", colors.GrayDark),
 			10,
 			effectNone
@@ -905,7 +907,7 @@ class BuildableDefnsLegacy
 			this.ShipWeapon08FergnatzLens,
 			this.ShipWeapon09HypersphereDriver,
 			this.ShipWeapon10Nanomanipulator,
-			this.SurfaceArtificialHypdroponifer,
+			this.SurfaceArtificialHydroponifier,
 			this.SurfaceAutomation,
 			this.SurfaceCloaker,
 			this.SurfaceCloningPlant,
@@ -932,6 +934,250 @@ class BuildableDefnsLegacy
 			this.SurfaceTransportTubes
 
 		];
+	}
+}
+
+class BuildableDefnsLegacyNames
+{
+	static Instance = new BuildableDefnsLegacyNames();
+
+	OrbitalCloaker: string;
+	OrbitalDocks: string;
+	OrbitalShield1OrbitalShield: string;
+	OrbitalShield2OrbitalMegaShield: string;
+	OrbitalShipyard: string;
+	OrbitalWeapon1OrbitalMissileBase: string;
+	OrbitalWeapon2ShortRangeOrbitalWhopper: string;
+	OrbitalWeapon3LongRangeOrbitalWhopper: string;
+	PlanetwideFocusAlienHospitality: string;
+	PlanetwideFocusEndlessParty: string;
+	PlanetwideFocusScientistTakeover: string;
+	PlanetwideLushGrowthBomb: string;
+	ShipDrive1TonklinMotor: string;
+	ShipDrive2IonBanger: string;
+	ShipDrive3GravitonProjector: string;
+	ShipDrive4InertiaNegator: string;
+	ShipDrive5NanowaveSpaceBender: string;
+	ShipGenerator1ProtonShaver
+	ShipGenerator2SubatomicScoop: string;
+	ShipGenerator3QuarkExpress: string;
+	ShipGenerator4VanKreegHypersplicer: string;
+	ShipGenerator5Nanotwirler: string;
+	ShipHull1Small: string;
+	ShipHull2Medium: string;
+	ShipHull3Large: string;
+	ShipHull4Enormous: string;
+	ShipItemAccutron: string;
+	ShipItemBackfirer: string;
+	ShipItemBrunswikDissipator: string;
+	ShipItemCannibalizer: string;
+	ShipItemCloaker: string;
+	ShipItemColonizer: string;
+	ShipItemContainmentDevice: string;
+	ShipItemDisarmer: string;
+	ShipItemDisintegrator: string;
+	ShipItemFleetDisperser: string;
+	ShipItemGizmogrifier: string;
+	ShipItemGravimetricCatapult: string;
+	ShipItemGravimetricCondensor: string;
+	ShipItemGravityDistorter: string;
+	ShipItemGyroInductor: string;
+	ShipItemHyperfuel: string;
+	ShipItemHyperswapper: string;
+	ShipItemIntellectScrambler: string;
+	ShipItemInvasionModule: string;
+	ShipItemInvulnerablizer: string;
+	ShipItemLaneBlocker: string;
+	ShipItemLaneDestabilizer: string;
+	ShipItemLaneEndoscope: string;
+	ShipItemLaneMagnetron: string;
+	ShipItemMassCondensor: string;
+	ShipItemMolecularTieDown: string;
+	ShipItemMovingPartExploiter: string;
+	ShipItemMyrmidonicCarbonizer: string;
+	ShipItemPhaseBomb: string;
+	ShipItemPlasmaCoupler: string;
+	ShipItemPositronBouncer: string;
+	ShipItemRecaller: string;
+	ShipItemRemoteRepairFacility: string;
+	ShipItemReplenisher: string;
+	ShipItemSacrificialOrb: string;
+	ShipItemSelfDestructotron: string;
+	ShipItemShieldBlaster: string;
+	ShipItemSmartBomb: string;
+	ShipItemSpecialtyBlaster: string;
+	ShipItemToroidalBlaster: string;
+	ShipItemTractorBeam: string;
+	ShipItemXRayMegaglasses: string;
+	ShipSensor1TonklinFrequencyAnalyzer: string;
+	ShipSensor2SubspacePhaseArray: string;
+	ShipSensor3AuralCloudConstrictor: string;
+	ShipSensor4HyperwaveTympanum: string;
+	ShipSensor5MurgatroydsKnower: string;
+	ShipSensor6NanowaveDecouplingNet: string;
+	ShipShield1IonWrap: string;
+	ShipShield2ConcussionShield: string;
+	ShipShield3WaveScatterer: string;
+	ShipShield4Deactotron: string;
+	ShipShield5HyperwaveNullifier: string;
+	ShipShield6Nanoshell: string;
+	ShipStarlaneDrive1StarLaneDrive: string;
+	ShipStarlaneDrive2StarLaneHyperdrive: string;
+	ShipWeapon01MassBarrageGun: string;
+	ShipWeapon02FourierMissiles: string;
+	ShipWeapon03QuantumSingularityLauncher: string;
+	ShipWeapon04MolecularDisassociator: string;
+	ShipWeapon05ElectromagneticPulser: string;
+	ShipWeapon06Plasmatron: string;
+	ShipWeapon07Ueberlaser: string;
+	ShipWeapon08FergnatzLens: string;
+	ShipWeapon09HypersphereDriver: string;
+	ShipWeapon10Nanomanipulator: string;
+	SurfaceArtificialHydroponifier: string;
+	SurfaceAutomation: string;
+	SurfaceCloaker: string;
+	SurfaceCloningPlant: string;
+	SurfaceEngineeringRetreat: string;
+	SurfaceFertilizationPlant: string;
+	SurfaceHabitat: string;
+	SurfaceHyperpowerPlant: string;
+	SurfaceIndustrialMegafacility: string;
+	SurfaceInternet: string;
+	SurfaceLogicFactory: string;
+	SurfaceMetroplex: string;
+	SurfaceObservationInstallation: string;
+	SurfacePlanetaryTractorBeam: string;
+	SurfaceResearchCampus: string;
+	SurfaceShield1SurfaceShield: string;
+	SurfaceShield2SurfaceMegaShield: string;
+	SurfaceTerraforming: string;
+	SurfaceXenoArchaeologicalDig: string;
+
+	SurfaceAgriplot: string;
+	SurfaceColonyHub: string;
+	SurfaceFactory: string;
+	SurfaceLaboratory: string;
+	SurfaceTransportTubes: string;
+
+	constructor()
+	{
+		this.OrbitalCloaker = "Orbital Cloaker";
+		this.OrbitalDocks = "Orbital Docks";
+		this.OrbitalShield1OrbitalShield = "Orbital Shield";
+		this.OrbitalShield2OrbitalMegaShield = "Orbital Mega-Shield";
+		this.OrbitalShipyard = "Shipyard";
+		this.OrbitalWeapon1OrbitalMissileBase = "Orbital Missile Base";
+		this.OrbitalWeapon2ShortRangeOrbitalWhopper = "Short-Range Orbital Whopper";
+		this.OrbitalWeapon3LongRangeOrbitalWhopper = "Long-Range Orbital Whopper";
+		this.PlanetwideFocusAlienHospitality = "Alien Hospitality";
+		this.PlanetwideFocusEndlessParty = "Endless Party";
+		this.PlanetwideFocusScientistTakeover = "Scientist Takeover";
+		this.PlanetwideLushGrowthBomb = "Lush Growth Bomb";
+		this.ShipDrive1TonklinMotor = "Tonklin Motor";
+		this.ShipDrive2IonBanger = "Ion Banger";
+		this.ShipDrive3GravitonProjector = "Graviton Projector";
+		this.ShipDrive4InertiaNegator = "Inertia Negator";
+		this.ShipDrive5NanowaveSpaceBender = "Nanowave Space Bender";
+		this.ShipGenerator1ProtonShaver = "Proton Shaver";
+		this.ShipGenerator2SubatomicScoop = "Subatomic Scoop";
+		this.ShipGenerator3QuarkExpress = "Quark Express";
+		this.ShipGenerator4VanKreegHypersplicer = "Van Kreeg Hypersplicer";
+		this.ShipGenerator5Nanotwirler = "Nanotwirler";
+		this.ShipHull1Small = "Small Ship Hull";
+		this.ShipHull2Medium = "Medium Ship Hull";
+		this.ShipHull3Large = "Large Ship Hull";
+		this.ShipHull4Enormous = "Enormous Ship Hull";
+		this.ShipItemAccutron = "Accutron";
+		this.ShipItemBackfirer = "Backfirer";
+		this.ShipItemBrunswikDissipator = "Brunswik Dissipator";
+		this.ShipItemCannibalizer = "Cannibalizer";
+		this.ShipItemCloaker = "Cloaker";
+		this.ShipItemColonizer = "Colonizer";
+		this.ShipItemContainmentDevice = "Containment Device";
+		this.ShipItemDisarmer = "Disarmer";
+		this.ShipItemDisintegrator = "Disintegrator";
+		this.ShipItemFleetDisperser = "Fleet Disperser";
+		this.ShipItemGizmogrifier = "Gizmogrifier";
+		this.ShipItemGravimetricCatapult = "Gravimetric Catapult";
+		this.ShipItemGravimetricCondensor = "Gravimetric Condensor";
+		this.ShipItemGravityDistorter = "Gravity Distorter";
+		this.ShipItemGyroInductor = "Gyro-Inductor";
+		this.ShipItemHyperfuel = "Hyperfuel";
+		this.ShipItemHyperswapper = "Hyperswapper";
+		this.ShipItemIntellectScrambler = "Intellect Scrambler";
+		this.ShipItemInvasionModule = "Invasion Module";
+		this.ShipItemInvulnerablizer = "Invulerablizer";
+		this.ShipItemLaneBlocker = "Lane Blocker";
+		this.ShipItemLaneDestabilizer = "Lane Destabilizer";
+		this.ShipItemLaneEndoscope = "Lane Endoscope";
+		this.ShipItemLaneMagnetron = "Lane Magnetron";
+		this.ShipItemMassCondensor = "Mass Condensor";
+		this.ShipItemMolecularTieDown = "Molecular Tie-Down";
+		this.ShipItemMovingPartExploiter = "Moving Part Exploiter";
+		this.ShipItemMyrmidonicCarbonizer = "Myrmidonic Carbonizer";
+		this.ShipItemPhaseBomb = "Phase Bomb";
+		this.ShipItemPlasmaCoupler = "Plasma Coupler";
+		this.ShipItemPositronBouncer = "Positron Bouncer";
+		this.ShipItemRecaller = "Recaller";
+		this.ShipItemRemoteRepairFacility = "Remote Repair Facility";
+		this.ShipItemReplenisher = "Replenisher";
+		this.ShipItemSacrificialOrb = "Sacrificial Orb";
+		this.ShipItemSelfDestructotron = "Destructotron";
+		this.ShipItemShieldBlaster = "Shield Blaster";
+		this.ShipItemSmartBomb = "Smart Bomb";
+		this.ShipItemSpecialtyBlaster = "Specialty Blaster";
+		this.ShipItemToroidalBlaster = "Toroidal Blaster";
+		this.ShipItemTractorBeam = "Tractor Beam";
+		this.ShipItemXRayMegaglasses = "X-Ray Megaglasses";
+		this.ShipSensor1TonklinFrequencyAnalyzer = "Tonklin Frequency Analyzer";
+		this.ShipSensor2SubspacePhaseArray = "Subspace Phase Array";
+		this.ShipSensor3AuralCloudConstrictor = "Aural Cloud Constrictor";
+		this.ShipSensor4HyperwaveTympanum = "Hyperwave Tympanum";
+		this.ShipSensor5MurgatroydsKnower = "Murgatroyd's Knower";
+		this.ShipSensor6NanowaveDecouplingNet = "Nanowave Decoupling Net";
+		this.ShipShield1IonWrap = "Ion Wrap";
+		this.ShipShield2ConcussionShield = "Concussion Shield";
+		this.ShipShield3WaveScatterer = "Wave Scatterer";
+		this.ShipShield4Deactotron = "Deactotron";
+		this.ShipShield5HyperwaveNullifier = "Hyperwave Nullifier";
+		this.ShipShield6Nanoshell = "Nanoshell";
+		this.ShipStarlaneDrive1StarLaneDrive = "Star Lane Drive";
+		this.ShipStarlaneDrive2StarLaneHyperdrive = "Star Lane Hyperdrive";
+		this.ShipWeapon01MassBarrageGun = "Mass Barrage Gun";
+		this.ShipWeapon02FourierMissiles = "Fourier Missiles";
+		this.ShipWeapon03QuantumSingularityLauncher = "Quantum Singularity Launcher";
+		this.ShipWeapon04MolecularDisassociator = "Molecular Disassociator";
+		this.ShipWeapon05ElectromagneticPulser = "Electromagnetic Pulser";
+		this.ShipWeapon06Plasmatron = "Plasmatron";
+		this.ShipWeapon07Ueberlaser = "Ueberlaser";
+		this.ShipWeapon08FergnatzLens = "Fergnatz Lens";
+		this.ShipWeapon09HypersphereDriver = "Hypersphere Driver";
+		this.ShipWeapon10Nanomanipulator = "Nanomanipulator";
+		this.SurfaceArtificialHydroponifier = "Artificial Hydroponifier";
+		this.SurfaceAutomation = "Automation";
+		this.SurfaceCloaker = "Surface Cloaker";
+		this.SurfaceCloningPlant = "Cloning Plant";
+		this.SurfaceEngineeringRetreat = "Engineering Retreat";
+		this.SurfaceFertilizationPlant = "Fertilization Plant";
+		this.SurfaceHabitat = "Habitat";
+		this.SurfaceHyperpowerPlant = "Hyperpower Plant";
+		this.SurfaceIndustrialMegafacility = "Industrial Megafacility";
+		this.SurfaceInternet = "Internet";
+		this.SurfaceLogicFactory = "Logic Factory";
+		this.SurfaceMetroplex = "Metroplex";
+		this.SurfaceObservationInstallation = "Observation Installation";
+		this.SurfacePlanetaryTractorBeam = "Planetary Tractor Beam";
+		this.SurfaceResearchCampus = "Research Campus";
+		this.SurfaceShield1SurfaceShield = "Surface Shield";
+		this.SurfaceShield2SurfaceMegaShield = "Surface Megashield";
+		this.SurfaceTerraforming = "Terraforming";
+		this.SurfaceXenoArchaeologicalDig = "Achaeological Dig";
+
+		this.SurfaceAgriplot = "Agriplot";
+		this.SurfaceColonyHub = "Colony Hub";
+		this.SurfaceFactory = "Factory";
+		this.SurfaceLaboratory = "Laboratory";
+		this.SurfaceTransportTubes = "Transport Tubes";
 	}
 }
 

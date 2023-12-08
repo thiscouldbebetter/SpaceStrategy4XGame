@@ -168,7 +168,7 @@ t(EnvironmentalEncapsulation,		[ Xenobiology ],											50,			[ bds.ShipShield
 t(SpectralAnalysis,					[ TonklinDiary ],											120,		[ bds.ShipWeapon02FourierMissiles ] ),
 t(Superconductivity,				[ TonklinDiary ],											100,		[ bds.SurfaceShield1SurfaceShield, bds.ShipWeapon01MassBarrageGun ] ),
 t(SpacetimeSurfing,					[ TonklinDiary, InterplanetaryExploration ],				90,			[ bds.ShipStarlaneDrive1StarLaneDrive ] ),
-t(AdvancedChemistry,				[ EnvironmentalEncapsulation ],								100,		[ bds.SurfaceArtificialHypdroponifer, bds.ShipDrive2IonBanger ] ),
+t(AdvancedChemistry,				[ EnvironmentalEncapsulation ],								100,		[ bds.SurfaceArtificialHydroponifier, bds.ShipDrive2IonBanger ] ),
 t(AdvancedInterferometry,			[ SpectralAnalysis ],										90,			[ bds.ShipSensor2SubspacePhaseArray, bds.ShipItemInvasionModule ] ),
 t(Cloaking,							[ AdvancedInterferometry ],									1800,		[ bds.SurfaceCloaker, bds.OrbitalCloaker, bds.ShipItemCloaker ] ),
 t(PowerConversion,					[ SpacetimeSurfing ],										100,		[ bds.OrbitalWeapon1OrbitalMissileBase, bds.ShipGenerator2SubatomicScoop ] ),

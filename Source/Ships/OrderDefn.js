@@ -54,7 +54,7 @@ class OrderDefn_Instances {
         var activity = actor.activity;
         var activityDefnDoNothing = ActivityDefn.Instances().DoNothing;
         if (activity.defnName == activityDefnDoNothing.name) {
-            activity.defnNameAndTargetEntitySet("MoveToTarget", entityTargetImmediate);
+            activity.defnNameAndTargetEntitySet("MoveToTargetAndCollide", entityTargetImmediate);
         }
     }
     useDevice(uwpe) {
@@ -73,7 +73,7 @@ class OrderDefn_Instances {
                 entityOrderable.locatable().loc.pos.clone(), entityOrderable // shipFiredFrom
                 );
                 projectile.actor().activity =
-                    Activity.fromDefnNameAndTargetEntity("MoveToTarget", order.entityBeingTargeted);
+                    Activity.fromDefnNameAndTargetEntity("MoveToTargetAndCollide", order.entityBeingTargeted);
                 starsystem.entityToSpawnAdd(projectile);
                 device.projectile = projectile;
             }

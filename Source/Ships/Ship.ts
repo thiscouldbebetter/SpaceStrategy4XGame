@@ -28,6 +28,7 @@ class Ship extends Entity
 				new Factionable(faction.name),
 				Killable.fromIntegrityMax(10),
 				Locatable.fromPos(pos),
+				Movable.default(),
 				new Orderable(),
 				new StarsystemTraverser(100)
 			]
@@ -59,43 +60,48 @@ class Ship extends Entity
 
 	static collidableBuild(pos: Coords): Collidable
 	{
-		return Collidable.fromCollider
+		var collider = Sphere.fromRadiusAndCenter
 		(
-			Sphere.fromRadiusAndCenter
-			(
-				VisualStar.radiusActual(), pos
-			)
+			VisualStar.radiusActual(), pos
+		);
+
+		return Collidable.fromColliderAndCollideEntities
+		(
+			collider,
+			Ship.collideEntities
 		);
 	}
 
-	// instance methods
-
-	collideWithEntity(uwpe: UniverseWorldPlaceEntities, target: Entity): void
+	static collideEntities(uwpe: UniverseWorldPlaceEntities, collision: Collision): void
 	{
-		var ship = this;
 		var universe = uwpe.universe;
+		var ship = uwpe.entity as Ship;
+		var target = uwpe.entity2;
 
-		var targetBodyDefn = BodyDefn.fromEntity(target);
-		var targetDefnName = targetBodyDefn.name;
-		if (targetDefnName == LinkPortal.name)
+		var targetTypeName = target.constructor.name;
+		if (targetTypeName == LinkPortal.name)
 		{
 			var portal = target as LinkPortal;
 			ship.linkPortalEnter(
 				(universe.world as WorldExtended).network, portal, ship
 			);
 		}
-		else if (targetDefnName == Planet.name)
+		else if (targetTypeName == Planet.name)
 		{
 			var planet = target as Planet;
 			var venue = universe.venueCurrent() as VenueStarsystem;
 			var starsystem = venue.starsystem;
 			ship.planetOrbitEnter(universe, starsystem, planet);
 		}
-		else if (targetDefnName == Ship.name)
+		else if (targetTypeName == Ship.name)
 		{
 			var shipCollidable = ship.collidable();
 			var collision = Collision.fromEntitiesColliding(ship, target);
 			shipCollidable.collisionHandle(uwpe, collision);
+		}
+		else
+		{
+			throw new Error("Unexpected collision!");
 		}
 	}
 
@@ -570,142 +576,152 @@ class Ship extends Entity
 
 		if (shipBelongsToUser)
 		{
+			var labelIntegrity = new ControlLabel
+			(
+				"labelIntegrity",
+				Coords.fromXY(margin, margin + controlSpacing),
+				Coords.fromXY(containerSize.x, controlSpacing), // this.size
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
+				DataBinding.fromContext("H:"),
+				fontNameAndHeight
+			);
+
+			var textIntegrity = new ControlLabel
+			(
+				"textIntegrity",
+				Coords.fromXY(containerSize.x / 4, margin + controlSpacing),
+				Coords.fromXY(containerSize.x, controlSpacing), // this.size
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
+				DataBinding.fromContextAndGet
+				(
+					ship, (c: Ship) => "" + c.integrityCurrentOverMax()
+				),
+				fontNameAndHeight
+			);
+
+			var labelEnergy = new ControlLabel
+			(
+				"labelEnergy",
+				Coords.fromXY(containerSize.x / 2, margin + controlSpacing),
+				Coords.fromXY(containerSize.x, controlSpacing), // this.size
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
+				DataBinding.fromContext("E:"),
+				fontNameAndHeight
+			);
+
+			var textEnergy = new ControlLabel
+			(
+				"textEnergy",
+				Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing),
+				Coords.fromXY(containerSize.x, controlSpacing), // this.size
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
+				DataBinding.fromContextAndGet
+				(
+					ship, (c: Ship) => "todo"
+				),
+				fontNameAndHeight
+			);
+
+			var buttonMove = ControlButton.from8
+			(
+				"buttonMove",
+				Coords.fromXY(margin, margin + controlSpacing * 2), // pos
+				buttonHalfSize,
+				"Move",
+				fontNameAndHeight,
+				true, // hasBorder
+				DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
+				() => ship.moveStart(universe)
+			);
+
+			var buttonRepeat = ControlButton.from8
+			(
+				"buttonRepeat",
+				Coords.fromXY
+				(
+					margin + buttonHalfSize.x,
+					margin + controlSpacing * 2
+				), // pos
+				buttonHalfSize,
+				"Repeat",
+				fontNameAndHeight,
+				true, // hasBorder
+				DataBinding.fromTrue(), // isEnabled
+				() => ship.moveRepeat(universe) // click
+			);
+
+			var labelDevices = new ControlLabel
+			(
+				"labelDevices",
+				Coords.fromXY(margin, margin + controlSpacing * 3), // pos
+				Coords.fromXY(containerSize.x, 0), // this.size
+				false, // isTextCenteredHorizontally
+				false, // isTextCenteredVertically
+				DataBinding.fromContext("Devices:"),
+				fontNameAndHeight
+			);
+
+			var listDevices = ControlList.from8
+			(
+				"listDevices",
+				Coords.fromXY(margin, margin + controlSpacing * 4), // pos
+				Coords.fromXY(buttonSize.x, controlSpacing * 4), // size
+				// dataBindingForItems
+				DataBinding.fromContextAndGet
+				(
+					ship, (c: Ship) => c.devicesUsable()
+				),
+				DataBinding.fromGet
+				(
+					(c: Device) => c.defn().name
+				), // bindingForOptionText
+				fontNameAndHeight,
+				new DataBinding
+				(
+					ship,
+					(c: Ship) => c.deviceSelected(),
+					(c: Ship, v: Device) => c.deviceSelect(v)
+				), // dataBindingForItemSelected
+				DataBinding.fromContext(null) // bindingForItemValue
+			);
+
+			var buttonDeviceUse = ControlButton.from8
+			(
+				"buttonDeviceUse",
+				Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
+				buttonSize,
+				"Use Device",
+				fontNameAndHeight,
+				true, // hasBorder
+				DataBinding.fromContextAndGet
+				(
+					ship,
+					(c) => (c.deviceSelected != null)
+				),
+				() => // click
+				{
+					var venue = universe.venueCurrent() as VenueStarsystem;
+					var ship = venue.selectedEntity as Ship;
+					var device = ship.deviceSelected();
+					device.use(uwpe);
+				}
+			);
+
 			var childControlsDetailed: ControlBase[] =
 			[
-				new ControlLabel
-				(
-					"labelIntegrity",
-					Coords.fromXY(margin, margin + controlSpacing),
-					Coords.fromXY(containerSize.x, controlSpacing), // this.size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("H:"),
-					fontNameAndHeight
-				),
-
-				new ControlLabel
-				(
-					"textIntegrity",
-					Coords.fromXY(containerSize.x / 4, margin + controlSpacing),
-					Coords.fromXY(containerSize.x, controlSpacing), // this.size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						ship, (c: Ship) => "" + c.integrityCurrentOverMax()
-					),
-					fontNameAndHeight
-				),
-
-				new ControlLabel
-				(
-					"labelEnergy",
-					Coords.fromXY(containerSize.x / 2, margin + controlSpacing),
-					Coords.fromXY(containerSize.x, controlSpacing), // this.size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("E:"),
-					fontNameAndHeight
-				),
-
-				new ControlLabel
-				(
-					"textEnergy",
-					Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing),
-					Coords.fromXY(containerSize.x, controlSpacing), // this.size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						ship, (c: Ship) => "todo"
-					),
-					fontNameAndHeight
-				),
-
-				ControlButton.from8
-				(
-					"buttonMove",
-					Coords.fromXY(margin, margin + controlSpacing * 2), // pos
-					buttonHalfSize,
-					"Move",
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
-					() => ship.moveStart(universe)
-				),
-
-				ControlButton.from8
-				(
-					"buttonRepeat",
-					Coords.fromXY
-					(
-						margin + buttonHalfSize.x,
-						margin + controlSpacing * 2
-					), // pos
-					buttonHalfSize,
-					"Repeat",
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromTrue(), // isEnabled
-					() => ship.moveRepeat(universe) // click
-				),
-
-				new ControlLabel
-				(
-					"labelDevices",
-					Coords.fromXY(margin, margin + controlSpacing * 3), // pos
-					Coords.fromXY(containerSize.x, 0), // this.size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Devices:"),
-					fontNameAndHeight
-				),
-
-				ControlList.from8
-				(
-					"listDevices",
-					Coords.fromXY(margin, margin + controlSpacing * 4), // pos
-					Coords.fromXY(buttonSize.x, controlSpacing * 4), // size
-					// dataBindingForItems
-					DataBinding.fromContextAndGet
-					(
-						ship, (c: Ship) => c.devicesUsable()
-					),
-					DataBinding.fromGet
-					(
-						(c: Device) => c.defn().name
-					), // bindingForOptionText
-					fontNameAndHeight,
-					new DataBinding
-					(
-						ship,
-						(c: Ship) => c.deviceSelected(),
-						(c: Ship, v: Device) => c.deviceSelect(v)
-					), // dataBindingForItemSelected
-					DataBinding.fromContext(null) // bindingForItemValue
-				),
-
-				ControlButton.from8
-				(
-					"buttonDeviceUse",
-					Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
-					buttonSize,
-					"Use Device",
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromContextAndGet
-					(
-						ship,
-						(c) => (c.deviceSelected != null)
-					),
-					() => // click
-					{
-						var venue = universe.venueCurrent() as VenueStarsystem;
-						var ship = venue.selectedEntity as Ship;
-						var device = ship.deviceSelected();
-						device.use(uwpe);
-					}
-				)
+				labelIntegrity,
+				textIntegrity,
+				labelEnergy,
+				textEnergy,
+				buttonMove,
+				buttonRepeat,
+				labelDevices,
+				listDevices,
+				buttonDeviceUse
 			];
 
 			childControls.push(...childControlsDetailed);

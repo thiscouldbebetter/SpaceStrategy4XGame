@@ -145,6 +145,11 @@ class Starsystem extends PlaceBase
 
 	// instance methods
 
+	entitiesForPlanetsLinksAndShips(): Entity[]
+	{
+		return new Array<Entity>(); // todo
+	}
+
 	faction(world: WorldExtended): Faction
 	{
 		return (this.factionName == null ? null : world.factionByName(this.factionName));
@@ -272,6 +277,7 @@ class Starsystem extends PlaceBase
 	shipRemove(shipToRemove: Ship): void
 	{
 		ArrayHelper.remove(this.ships, shipToRemove);
+		this.entityRemove(shipToRemove);
 	}
 
 	toVenue(): VenueStarsystem

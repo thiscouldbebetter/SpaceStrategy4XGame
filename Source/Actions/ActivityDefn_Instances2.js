@@ -1,7 +1,7 @@
 "use strict";
 class ActivityDefn_Instances2 {
     constructor() {
-        this.MoveToTarget = new ActivityDefn("MoveToTarget", (uwpe) => {
+        this.MoveToTargetAndCollide = new ActivityDefn("MoveToTargetAndCollide", (uwpe) => {
             var ship = uwpe.entity;
             var activity = ship.actor().activity;
             var target = activity.targetEntity();
@@ -9,12 +9,17 @@ class ActivityDefn_Instances2 {
             if (distanceToTarget == 0) {
                 var doNothing = ActivityDefn.Instances().DoNothing;
                 activity.clear().defnSet(doNothing);
-                // activity.isDoneSet(true);
+                var targetCollidable = target.collidable();
+                if (targetCollidable != null) {
+                    var shipCollidable = ship.collidable();
+                    uwpe.entitySet(ship).entity2Set(target);
+                    shipCollidable.collideEntitiesForUniverseWorldPlaceEntities(uwpe);
+                }
             }
         });
         this._All =
             [
-                this.MoveToTarget,
+                this.MoveToTargetAndCollide,
             ];
     }
 }

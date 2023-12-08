@@ -2,15 +2,15 @@
 class ActivityDefn_Instances2
 {
 	DoNothing: ActivityDefn;
-	MoveToTarget: ActivityDefn;
+	MoveToTargetAndCollide: ActivityDefn;
 
 	_All: ActivityDefn[];
 
 	constructor()
 	{
-		this.MoveToTarget = new ActivityDefn
+		this.MoveToTargetAndCollide = new ActivityDefn
 		(
-			"MoveToTarget",
+			"MoveToTargetAndCollide",
 			(uwpe: UniverseWorldPlaceEntities) =>
 			{
 				var ship = uwpe.entity as Ship;
@@ -22,14 +22,21 @@ class ActivityDefn_Instances2
 				{
 					var doNothing = ActivityDefn.Instances().DoNothing;
 					activity.clear().defnSet(doNothing);
-					// activity.isDoneSet(true);
+
+					var targetCollidable = target.collidable();
+					if (targetCollidable != null)
+					{
+						var shipCollidable = ship.collidable();
+						uwpe.entitySet(ship).entity2Set(target);
+						shipCollidable.collideEntitiesForUniverseWorldPlaceEntities(uwpe);
+					}
 				}
 			}
 		);
 
 		this._All =
 		[
-			this.MoveToTarget,
+			this.MoveToTargetAndCollide,
 		];
 	}
 }

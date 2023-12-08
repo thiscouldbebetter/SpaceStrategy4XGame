@@ -251,8 +251,10 @@ class VenueStarsystem {
         else if (entityClicked != null) {
             // Targeting an existing body, not an arbitrary point.
             universe.inputHelper.pause(); // While the action plays out.
-            var targetEntity = entityClicked;
-            order.entityBeingTargetedSet(targetEntity);
+            var entityTarget = entityClicked;
+            var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, this.starsystem, entityOrderable, entityTarget);
+            order.entityBeingTargetedSet(entityTarget);
+            order.obey(uwpe);
             this.cursor.clear();
         }
         else if (this.cursor.hasXYPositionBeenSpecified == false) {
@@ -262,12 +264,12 @@ class VenueStarsystem {
             this.cursor.hasZPositionBeenSpecified = true; // About to be cleared, though.
             inputHelper.unpause(); // Should we wait longer?
             var targetPos = Coords.create();
-            var target = new Entity("Target", [
+            var entityTarget = new Entity("Target", [
                 new BodyDefn("MoveTarget", targetPos, null),
                 this.cursor.locatable().clone()
             ]);
-            order.entityBeingTargetedSet(target);
-            var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, this.starsystem, null, null);
+            var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, this.starsystem, entityOrderable, entityTarget);
+            order.entityBeingTargetedSet(entityTarget);
             order.obey(uwpe);
             this.cursor.clear();
         }
@@ -332,6 +334,7 @@ class VenueStarsystem {
         var controlHeight = margin * 1.5;
         var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 10));
         var containerSelectionSize = Coords.fromXY(containerInnerSize.x, (containerMainSize.y - margin * 3) / 2);
+        var containerPlanetsLinksAndShipsSize = Coords.fromXY(containerInnerSize.x, (containerMainSize.y - margin * 3) / 2);
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
@@ -346,6 +349,8 @@ class VenueStarsystem {
         });
         var containerTimeAndPlace = controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, false // includeRoundAdvanceButtons
         );
+        var containerPlanetsLinksAndShips = controlBuilder.starsystemPlanetsLinksAndShips(universe, Coords.fromXY(containerMainSize.x - margin - containerPlanetsLinksAndShipsSize.x, margin), // pos
+        containerPlanetsLinksAndShipsSize, margin, controlHeight, this.starsystem);
         var containerView = controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight);
         var containerSelection = controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerSelectionSize.x, containerMainSize.y - margin - containerSelectionSize.y), // pos
         containerSelectionSize, margin, controlHeight);
@@ -355,6 +360,7 @@ class VenueStarsystem {
         [
             buttonBack,
             containerTimeAndPlace,
+            containerPlanetsLinksAndShips,
             containerView,
             containerSelection
         ]);

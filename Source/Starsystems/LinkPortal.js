@@ -4,6 +4,7 @@ class LinkPortal extends Entity {
         super(name, [
             defn,
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
+            new Controllable(LinkPortal.toControl),
             Locatable.fromPos(pos)
         ]);
         this.defn = defn;
@@ -45,11 +46,9 @@ class LinkPortal extends Entity {
         return returnValue;
     }
     // controls
-    toControl() {
-        var returnValue = new ControlLabel("labelLinkPortalAsSelection", Coords.fromXY(0, 0), Coords.fromXY(0, 0), // this.size
-        false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContext("Link to " + this.starsystemNamesFromAndTo[1]), FontNameAndHeight.fromHeightInPixels(10));
+    static toControl(uwpe, size, controlTypeName) {
+        var linkPortal = uwpe.entity;
+        var returnValue = ControlLabel.from4Uncentered(Coords.fromXY(0, 0), size, DataBinding.fromContext("Link to " + linkPortal.starsystemNamesFromAndTo[1]), FontNameAndHeight.fromHeightInPixels(10));
         return returnValue;
     }
 }

@@ -430,7 +430,7 @@ class Faction implements EntityProperty<Faction>
 		);
 
 		var containerNotifications =
-			this.toControl_Details_Notifications(universe, tabbedControlSize);
+			this.notificationSession.toControl(universe, tabbedControlSize);
 
 		var containerDiplomacy =
 			this.toControl_Details_Diplomacy(universe, tabbedControlSize);
@@ -491,14 +491,6 @@ class Faction implements EntityProperty<Faction>
 			diplomaticSession.toControl(universe, size);
 
 		return diplomaticSessionAsControl;
-	}
-
-	toControl_Details_Notifications
-	(
-		universe: Universe, size: Coords
-	): ControlBase
-	{
-		return this.notificationSession.toControl(universe, size);
 	}
 
 	toControl_Details_Planets
@@ -829,11 +821,10 @@ class Faction implements EntityProperty<Faction>
 
 	notificationSessionStart(universe: Universe): void
 	{
-		var notificationSessionAsControl =
-			this.toControl_Details_Notifications
-			(
-				universe, universe.display.sizeInPixels
-			);
+		var notificationSessionAsControl = this.notificationSession.toControl
+		(
+			universe, universe.display.sizeInPixels
+		);
 		var venueNext: Venue = notificationSessionAsControl.toVenue();
 		universe.venueTransitionTo(venueNext);
 	}

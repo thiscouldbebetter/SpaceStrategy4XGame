@@ -167,6 +167,83 @@ class ControlBuilderExtended extends ControlBuilder
 		return returnValue;
 	}
 
+	starsystemPlanetsLinksAndShips
+	(
+		universe: Universe,
+		pos: Coords,
+		size: Coords,
+		margin: number,
+		controlHeight: number,
+		starsystem: Starsystem
+	)
+	{
+		// todo - Move this to starsystem?
+
+		var fontHeightInPixels = margin;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+
+		var labelPlanetsLinksShips = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin), // pos
+			Coords.fromXY(size.x - margin * 2, controlHeight), // size
+			DataBinding.fromContext("Objects:"), // text
+			fontNameAndHeight
+		);
+
+		var textPlanetsLinksShipsCount = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+			Coords.fromXY(size.x - margin * 2, controlHeight), // size
+			DataBinding.fromContextAndGet
+			(
+				starsystem,
+				(c: Starsystem) => "" + c.entitiesForPlanetsLinksAndShips().length
+			),
+			fontNameAndHeight
+		);
+
+		var listSize = Coords.fromXY
+		(
+			size.x - margin * 2,
+			size.y - margin * 4 - controlHeight * 2
+		);
+
+		var listPlanetsLinksShips = ControlList.from6
+		(
+			"listPlanetsLinksShips",
+			Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
+			listSize,
+			// items
+			DataBinding.fromContextAndGet
+			(
+				starsystem,
+				(c: Starsystem) => c.entitiesForPlanetsLinksAndShips()
+			),
+			DataBinding.fromGet
+			(
+				(c: Entity) => c.name
+			), // bindingForItemText
+			fontNameAndHeight
+		);
+
+		var returnValue = new ControlContainer
+		(
+			"containerSelected",
+			pos.clone(),
+			size.clone(),
+			// children
+			[
+				labelPlanetsLinksShips,
+				textPlanetsLinksShipsCount,
+				listPlanetsLinksShips
+			],
+			null, null // actions, actionToInputsMappings
+		);
+
+		return returnValue;
+	}
+
 	timeAndPlace
 	(
 		universe: Universe,

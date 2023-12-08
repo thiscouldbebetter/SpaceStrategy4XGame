@@ -73,11 +73,13 @@ var Face = gf.Face;
 var Hemispace = gf.Hemispace;
 var Path = gf.Path;
 var Plane = gf.Plane;
+var Point = gf.Point;
 var Ray = gf.Ray;
 var ShapeContainer = gf.ShapeContainer;
 var ShapeGroupAll = gf.ShapeGroupAll;
 var ShapeGroupAny = gf.ShapeGroupAny;
 var ShapeInverse = gf.ShapeInverse;
+var ShapeNone = gf.ShapeNone;
 var Sphere = gf.Sphere;
 // Geometry - Shapes - Map.
 var MapLocated = gf.MapLocated;
@@ -131,6 +133,7 @@ var ItemHolder = gf.ItemHolder;
 // Model - Physics.
 var Constrainable = gf.Constrainable;
 var Locatable = gf.Locatable;
+var Movable = gf.Movable;
 // Model - Talk.
 var ConversationDefn = gf.ConversationDefn;
 var ConversationRun = gf.ConversationRun;

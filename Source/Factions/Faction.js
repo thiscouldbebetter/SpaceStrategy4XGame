@@ -184,7 +184,7 @@ class Faction {
             labelFactionType, textFactionType,
             labelAbility, textAbility, buttonAbilityUse
         ]);
-        var containerNotifications = this.toControl_Details_Notifications(universe, tabbedControlSize);
+        var containerNotifications = this.notificationSession.toControl(universe, tabbedControlSize);
         var containerDiplomacy = this.toControl_Details_Diplomacy(universe, tabbedControlSize);
         var containerTechnology = this.toControl_Details_Technology(universe, tabbedControlSize);
         var containerPlanets = this.toControl_Details_Planets(universe, tabbedControlSize, margin, controlHeight, fontNameAndHeight);
@@ -209,9 +209,6 @@ class Faction {
         var diplomaticSession = DiplomaticSession.demo(factionCurrent, universe.venueCurrent());
         var diplomaticSessionAsControl = diplomaticSession.toControl(universe, size);
         return diplomaticSessionAsControl;
-    }
-    toControl_Details_Notifications(universe, size) {
-        return this.notificationSession.toControl(universe, size);
     }
     toControl_Details_Planets(universe, size, margin, controlHeight, fontNameAndHeight) {
         var world = universe.world;
@@ -334,7 +331,7 @@ class Faction {
         this.notificationSession.notificationAdd(notification);
     }
     notificationSessionStart(universe) {
-        var notificationSessionAsControl = this.toControl_Details_Notifications(universe, universe.display.sizeInPixels);
+        var notificationSessionAsControl = this.notificationSession.toControl(universe, universe.display.sizeInPixels);
         var venueNext = notificationSessionAsControl.toVenue();
         universe.venueTransitionTo(venueNext);
     }

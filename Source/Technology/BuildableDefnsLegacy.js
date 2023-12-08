@@ -1,11 +1,5 @@
 "use strict";
 class BuildableDefnsLegacy {
-    static Instance(mapCellSizeInPixels) {
-        if (BuildableDefnsLegacy._instance == null) {
-            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
-        }
-        return BuildableDefnsLegacy._instance;
-    }
     constructor(mapCellSizeInPixels) {
         var fontHeight = mapCellSizeInPixels.y / 2;
         var canBeBuiltNever = (m, p) => false;
@@ -412,5 +406,11 @@ class BuildableDefnsLegacy {
                 this.SurfaceLaboratory,
                 this.SurfaceTransportTubes
             ];
+    }
+    static Instance(mapCellSizeInPixels) {
+        if (BuildableDefnsLegacy._instance == null) {
+            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
+        }
+        return BuildableDefnsLegacy._instance;
     }
 }

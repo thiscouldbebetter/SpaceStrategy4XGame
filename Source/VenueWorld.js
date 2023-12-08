@@ -223,7 +223,11 @@ class VenueWorldExtended extends VenueWorld {
                 // Do nothing.
             }
             else if (inputActive == "MouseClick") {
-                // todo - Trying to fix holding down view buttons.
+                // todo
+                // fix
+                // Leaving this in makes it impossible to hold down view rotate/zoom buttons,
+                // but commenting it out means that you only have to click once to view a starsystem,
+                // because the second click comes so fast after the first.
                 //inputHelper.mouseClickedSet(false);
             }
             else if (inputActive == "a") {

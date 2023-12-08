@@ -56,7 +56,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			this.venueControls.draw(universe);
 		}
 	}
-	
+
 	entitySelect(value: Entity): void
 	{
 		this.selectedEntity = value;
@@ -472,9 +472,18 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			// Targeting an existing body, not an arbitrary point.
 			universe.inputHelper.pause(); // While the action plays out.
 
-			var targetEntity = entityClicked;
-						
-			order.entityBeingTargetedSet(targetEntity);
+			var entityTarget = entityClicked;
+
+			var uwpe = new UniverseWorldPlaceEntities
+			(
+				universe,
+				universe.world,
+				this.starsystem,
+				entityOrderable,
+				entityTarget
+			);
+			order.entityBeingTargetedSet(entityTarget);
+			order.obey(uwpe);
 
 			this.cursor.clear();
 		}
@@ -489,7 +498,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			inputHelper.unpause(); // Should we wait longer?
 
 			var targetPos = Coords.create();
-			var target = new Entity
+			var entityTarget = new Entity
 			(
 				"Target",
 				[
@@ -497,17 +506,16 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 					this.cursor.locatable().clone()
 				]
 			);
-			order.entityBeingTargetedSet(target);
 
 			var uwpe = new UniverseWorldPlaceEntities
 			(
 				universe,
 				universe.world as WorldExtended,
 				this.starsystem,
-				null,
-				null
+				entityOrderable,
+				entityTarget
 			);
-
+			order.entityBeingTargetedSet(entityTarget);
 			order.obey(uwpe);
 
 			this.cursor.clear();
@@ -637,6 +645,11 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			containerInnerSize.x,
 			(containerMainSize.y - margin * 3) / 2
 		);
+		var containerPlanetsLinksAndShipsSize = Coords.fromXY
+		(
+			containerInnerSize.x,
+			(containerMainSize.y - margin * 3) / 2
+		);
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
 		var fontHeightInPixels = margin;
@@ -672,6 +685,20 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			false // includeRoundAdvanceButtons
 		);
 
+		var containerPlanetsLinksAndShips = controlBuilder.starsystemPlanetsLinksAndShips
+		(
+			universe,
+			Coords.fromXY
+			(
+				containerMainSize.x - margin - containerPlanetsLinksAndShipsSize.x,
+				margin
+			), // pos
+			containerPlanetsLinksAndShipsSize,
+			margin,
+			controlHeight,
+			this.starsystem
+		);
+
 		var containerView = controlBuilder.view
 		(
 			universe,
@@ -703,6 +730,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			[
 				buttonBack,
 				containerTimeAndPlace,
+				containerPlanetsLinksAndShips,
 				containerView,
 				containerSelection
 			]

@@ -25,6 +25,7 @@ class LinkPortal extends Entity
 						VisualStar.radiusActual(), pos
 					)
 				),
+				new Controllable(LinkPortal.toControl),
 				Locatable.fromPos(pos)
 			]
 		);
@@ -98,16 +99,20 @@ class LinkPortal extends Entity
 
 	// controls
 
-	toControl(): ControlBase
+	static toControl
+	(
+		uwpe: UniverseWorldPlaceEntities,
+		size: Coords,
+		controlTypeName: string
+	): ControlBase
 	{
-		var returnValue = new ControlLabel
+		var linkPortal = uwpe.entity as LinkPortal;
+
+		var returnValue = ControlLabel.from4Uncentered
 		(
-			"labelLinkPortalAsSelection",
 			Coords.fromXY(0, 0),
-			Coords.fromXY(0, 0), // this.size
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
-			DataBinding.fromContext("Link to " + this.starsystemNamesFromAndTo[1]),
+			size,
+			DataBinding.fromContext("Link to " + linkPortal.starsystemNamesFromAndTo[1]),
 			FontNameAndHeight.fromHeightInPixels(10)
 		);
 

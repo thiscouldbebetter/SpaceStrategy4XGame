@@ -110,7 +110,7 @@ class OrderDefn_Instances
 		{
 			activity.defnNameAndTargetEntitySet
 			(
-				"MoveToTarget", entityTargetImmediate
+				"MoveToTargetAndCollide", entityTargetImmediate
 			);
 		}
 	}
@@ -145,7 +145,7 @@ class OrderDefn_Instances
 				projectile.actor().activity = 
 					Activity.fromDefnNameAndTargetEntity
 					(
-						"MoveToTarget", order.entityBeingTargeted
+						"MoveToTargetAndCollide", order.entityBeingTargeted
 					);
 
 				starsystem.entityToSpawnAdd(projectile);

@@ -97,11 +97,13 @@ import Face = gf.Face;
 import Hemispace = gf.Hemispace;
 import Path = gf.Path;
 import Plane = gf.Plane;
+import Point = gf.Point;
 import Ray = gf.Ray;
 import ShapeContainer = gf.ShapeContainer;
 import ShapeGroupAll = gf.ShapeGroupAll;
 import ShapeGroupAny = gf.ShapeGroupAny;
 import ShapeInverse = gf.ShapeInverse;
+import ShapeNone = gf.ShapeNone;
 import Sphere = gf.Sphere;
 
 // Geometry - Shapes - Map.
@@ -187,6 +189,7 @@ import ItemHolder = gf.ItemHolder;
 import Constrainable = gf.Constrainable;
 import Constraint = gf.Constraint;
 import Locatable = gf.Locatable;
+import Movable = gf.Movable;
 
 // Model - Talk.
 

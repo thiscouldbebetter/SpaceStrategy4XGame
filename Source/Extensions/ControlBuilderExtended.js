@@ -75,29 +75,48 @@ class ControlBuilderExtended extends ControlBuilder {
         );
         return returnValue;
     }
-    starsystemPlanetsLinksAndShips(universe, pos, size, margin, controlHeight, starsystem) {
+    starsystemPlanetsLinksAndShips(universe, pos, size, margin, controlHeight, venueStarsystem) {
         // todo - Move this to starsystem?
+        var starsystem = venueStarsystem.starsystem;
+        controlHeight /= 2;
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var labelPlanetsLinksShips = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), // size
         DataBinding.fromContext("Objects:"), // text
         fontNameAndHeight);
-        var textPlanetsLinksShipsCount = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+        var textPlanetsLinksShipsCount = ControlLabel.from4Uncentered(Coords.fromXY(size.x / 2, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(starsystem, (c) => "" + c.entitiesForPlanetsLinksAndShips().length), fontNameAndHeight);
-        var listSize = Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2);
-        var listPlanetsLinksShips = ControlList.from6("listPlanetsLinksShips", Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
+        DataBinding.fromContextAndGet(starsystem, (c) => "" + c.entitiesForPlanetsLinkPortalsAndShips().length), fontNameAndHeight);
+        var buttonSize = Coords.fromXY((size.x - margin * 3) / 2, controlHeight * 2);
+        var listSize = Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2 - buttonSize.y);
+        var listPlanetsLinksShips = ControlList.from7("listPlanetsLinksShips", Coords.fromXY(margin, margin * 2 + controlHeight * 1), // pos
         listSize, 
         // items
-        DataBinding.fromContextAndGet(starsystem, (c) => c.entitiesForPlanetsLinksAndShips()), DataBinding.fromGet((c) => c.name), // bindingForItemText
-        fontNameAndHeight);
+        DataBinding.fromContextAndGet(venueStarsystem, (c) => c.starsystem.entitiesForPlanetsLinkPortalsAndShips()), DataBinding.fromGet((c) => c.name), // bindingForItemText
+        fontNameAndHeight, new DataBinding(venueStarsystem, (c) => c.entityHighlighted, (c, v) => c.entityHighlighted = v));
+        var buttonSelect = ControlButton.from8("buttonSelect", // name,
+        Coords.fromXY(margin, size.y - margin - buttonSize.y), // pos
+        buttonSize, "Select", // text,
+        fontNameAndHeight, true, // hasBorder
+        DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.entityHighlighted != null)), // isEnabled
+        () => // click
+         venueStarsystem.selectedEntity = venueStarsystem.entityHighlighted);
+        var buttonTarget = ControlButton.from8("buttonTarget", // name,
+        Coords.fromXY(margin * 2 + buttonSize.x, size.y - margin - buttonSize.y), // pos
+        buttonSize, "Target", // text,
+        fontNameAndHeight, true, // hasBorder
+        DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.selectedEntity != null)), // isEnabled
+        () => alert("todo - target") // click
+        );
         var returnValue = new ControlContainer("containerSelected", pos.clone(), size.clone(), 
         // children
         [
             labelPlanetsLinksShips,
             textPlanetsLinksShipsCount,
-            listPlanetsLinksShips
+            listPlanetsLinksShips,
+            buttonSelect,
+            buttonTarget
         ], null, null // actions, actionToInputsMappings
         );
         return returnValue;

@@ -53,9 +53,15 @@ class Starsystem extends PlaceBase {
         );
         return returnValue;
     }
-    // instance methods
-    entitiesForPlanetsLinksAndShips() {
-        return new Array(); // todo
+    entitiesForPlanetsLinkPortalsAndShips() {
+        if (this._entitiesForPlanetsLinkPortalsAndShips == null) {
+            var entities = new Array();
+            entities.push(...this.planets);
+            entities.push(...this.linkPortals);
+            entities.push(...this.ships);
+            this._entitiesForPlanetsLinkPortalsAndShips = entities;
+        }
+        return this._entitiesForPlanetsLinkPortalsAndShips;
     }
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));

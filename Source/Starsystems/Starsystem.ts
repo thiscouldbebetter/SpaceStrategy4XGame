@@ -145,9 +145,20 @@ class Starsystem extends PlaceBase
 
 	// instance methods
 
-	entitiesForPlanetsLinksAndShips(): Entity[]
+	_entitiesForPlanetsLinkPortalsAndShips: Entity[];
+
+	entitiesForPlanetsLinkPortalsAndShips(): Entity[]
 	{
-		return new Array<Entity>(); // todo
+		if (this._entitiesForPlanetsLinkPortalsAndShips == null)
+		{
+			var entities = new Array<Entity>();
+			entities.push(...this.planets);
+			entities.push(...this.linkPortals);
+			entities.push(...this.ships);
+			this._entitiesForPlanetsLinkPortalsAndShips = entities;
+		}
+		return this._entitiesForPlanetsLinkPortalsAndShips;
+
 	}
 
 	faction(world: WorldExtended): Faction
@@ -226,7 +237,7 @@ class Starsystem extends PlaceBase
 		return this._linkPortalsByStarsystemName.get(starsystemName);
 	}
 
-	links(cluster: Network2)
+	links(cluster: Network2) // todo
 	{
 		var returnValues = [];
 

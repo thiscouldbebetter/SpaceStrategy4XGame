@@ -350,7 +350,7 @@ class VenueStarsystem {
         var containerTimeAndPlace = controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, false // includeRoundAdvanceButtons
         );
         var containerPlanetsLinksAndShips = controlBuilder.starsystemPlanetsLinksAndShips(universe, Coords.fromXY(containerMainSize.x - margin - containerPlanetsLinksAndShipsSize.x, margin), // pos
-        containerPlanetsLinksAndShipsSize, margin, controlHeight, this.starsystem);
+        containerPlanetsLinksAndShipsSize, margin, controlHeight, this);
         var containerView = controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight);
         var containerSelection = controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerSelectionSize.x, containerMainSize.y - margin - containerSelectionSize.y), // pos
         containerSelectionSize, margin, controlHeight);

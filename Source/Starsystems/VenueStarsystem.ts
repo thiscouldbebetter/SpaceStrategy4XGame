@@ -6,6 +6,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	cursor: Cursor;
 	selectedEntity: Entity;
+	entityHighlighted: Entity;
 
 	_mouseClickPos: Coords;
 
@@ -696,7 +697,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			containerPlanetsLinksAndShipsSize,
 			margin,
 			controlHeight,
-			this.starsystem
+			this
 		);
 
 		var containerView = controlBuilder.view

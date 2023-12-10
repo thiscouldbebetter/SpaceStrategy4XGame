@@ -1,7 +1,7 @@
 "use strict";
 class ActivityDefn_Instances2 {
     constructor() {
-        this.MoveToTargetAndCollide = new ActivityDefn("MoveToTargetAndCollide", (uwpe) => {
+        this.MoveToTargetCollideAndEndMove = new ActivityDefn("MoveToTargetCollideAndEndMove", (uwpe) => {
             var ship = uwpe.entity;
             var activity = ship.actor().activity;
             var target = activity.targetEntity();
@@ -15,11 +15,17 @@ class ActivityDefn_Instances2 {
                     uwpe.entitySet(ship).entity2Set(target);
                     shipCollidable.collideEntitiesForUniverseWorldPlaceEntities(uwpe);
                 }
+                var universe = uwpe.universe;
+                var world = universe.world;
+                var venueStarsystem = universe.venueCurrent();
+                venueStarsystem.entityMoving = null;
+                var starsystem = venueStarsystem.starsystem;
+                starsystem.factionToMoveAdvance(world);
             }
         });
         this._All =
             [
-                this.MoveToTargetAndCollide,
+                this.MoveToTargetCollideAndEndMove,
             ];
     }
 }

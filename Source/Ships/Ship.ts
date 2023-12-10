@@ -572,9 +572,10 @@ class Ship extends Entity
 			)
 		];
 
-		var shipBelongsToUser = ship.faction(world).isControlledByUser();
+		var shipFaction = ship.faction(world);
+		var shipBelongsToHuman = shipFaction.isControlledByHuman();
 
-		if (shipBelongsToUser)
+		if (shipBelongsToHuman)
 		{
 			var labelIntegrity = new ControlLabel
 			(
@@ -705,7 +706,7 @@ class Ship extends Entity
 				() => // click
 				{
 					var venue = universe.venueCurrent() as VenueStarsystem;
-					var ship = venue.selectedEntity as Ship;
+					var ship = venue.entitySelected as Ship;
 					var device = ship.deviceSelected();
 					device.use(uwpe);
 				}

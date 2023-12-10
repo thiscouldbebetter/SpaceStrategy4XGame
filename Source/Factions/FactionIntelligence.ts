@@ -2,25 +2,82 @@
 class FactionIntelligence
 {
 	name: string;
-	chooseMove: (u: Universe) => void;
+	_starsystemMoveChoose: (uwpe: UniverseWorldPlaceEntities) => void;
 
-	constructor(name: string, chooseMove: (u: Universe) => void)
+	constructor
+	(
+		name: string,
+		moveChoose: (uwpe: UniverseWorldPlaceEntities) => void
+	)
 	{
 		this.name = name;
-		this.chooseMove = chooseMove;
+		this._starsystemMoveChoose = moveChoose;
 	}
 
-	static demo(): FactionIntelligence
+	static _instances: FactionIntelligence_Instances;
+	static Instances(): FactionIntelligence_Instances
 	{
-		return new FactionIntelligence
+		if (FactionIntelligence._instances == null)
+		{
+			FactionIntelligence._instances = new FactionIntelligence_Instances();
+		}
+		return FactionIntelligence._instances;
+	}
+
+	starsystemMoveChoose(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this._starsystemMoveChoose(uwpe);
+	}
+}
+
+class FactionIntelligence_Instances
+{
+	Computer: FactionIntelligence;
+	Human: FactionIntelligence;
+
+	constructor()
+	{
+		this.Computer = new FactionIntelligence
 		(
-			"Demo",
-			FactionIntelligence.demoChooseMove
-		)
-	}
+			"Computer",
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				// For now, choose a random ship and move it toward a random position.
 
-	static demoChooseMove(universe: Universe): void
-	{
-		// todo
+				var universe = uwpe.universe;
+				var venueStarsystem = universe.venueCurrent() as VenueStarsystem;
+				var starsystem = venueStarsystem.starsystem;
+				var world = universe.world as WorldExtended;
+				var factionToMove = starsystem.factionToMove(world);
+				var shipsAll = starsystem.ships;
+				var factionToMoveShips =
+					shipsAll.filter(x => x.factionable().faction(world) == factionToMove);
+				if (factionToMoveShips.length == 0)
+				{
+					starsystem.factionToMoveAdvance(world);
+				}
+				else
+				{
+					var shipToMove = factionToMoveShips[0];
+					var shipToMoveOrder = shipToMove.orderable().order(shipToMove);
+					var orderDefns = OrderDefn.Instances();
+					shipToMoveOrder.defnSet(orderDefns.Go);
+					var posToTarget = Coords.random(universe.randomizer).multiply(starsystem.size());
+					var entityToTarget = Entity.fromProperty(Locatable.fromPos(posToTarget));
+					shipToMoveOrder.entityBeingTargetedSet(entityToTarget);
+					shipToMoveOrder.obey(uwpe);
+				}
+
+			}
+		);
+
+		this.Human = new FactionIntelligence
+		(
+			"Human",
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				// Do nothing.
+			}
+		);
 	}
 }

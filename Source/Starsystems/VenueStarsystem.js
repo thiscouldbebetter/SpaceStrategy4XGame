@@ -23,11 +23,11 @@ class VenueStarsystem {
         }
     }
     entitySelect(value) {
-        this.selectedEntity = value;
+        this.entitySelected = value;
     }
     entitySelectedDetailsAreViewable(universe) {
         var entitySelectedDetailsAreViewable = false;
-        var entitySelected = this.selectedEntity;
+        var entitySelected = this.entitySelected;
         if (entitySelected != null) {
             var world = universe.world;
             var factionable = Factionable.ofEntity(entitySelected);
@@ -47,7 +47,7 @@ class VenueStarsystem {
         if (detailsAreViewable == false) {
             return;
         }
-        var selectedEntity = this.selectedEntity;
+        var selectedEntity = this.entitySelected;
         if (selectedEntity != null) {
             var venueNext;
             var selectionTypeName = selectedEntity.constructor.name;
@@ -63,6 +63,9 @@ class VenueStarsystem {
                 universe.venueTransitionTo(venueNext);
             }
         }
+    }
+    factionsPresent(world) {
+        return this.starsystem.factionsPresent(world);
     }
     finalize(universe) {
         universe.soundHelper.soundForMusic.pause(universe);
@@ -103,16 +106,21 @@ class VenueStarsystem {
         return this.starsystem;
     }
     selectionName() {
-        return (this.selectedEntity == null ? "[none]" : this.selectedEntity.name);
+        return (this.entitySelected == null ? "[none]" : this.entitySelected.name);
     }
     updateForTimerTick(universe) {
         var world = universe.world;
-        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, this.starsystem, null, null);
         this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
         if (this.cursor != null) {
             this.cursor.constrainable().constrain(uwpe.entitySet(this.cursor));
         }
         this.starsystem.updateForTimerTick(uwpe);
+        var factionsPresent = this.factionsPresent(world);
+        for (var f = 0; f < factionsPresent.length; f++) {
+            var faction = factionsPresent[f];
+            faction.updateForTimerTick(uwpe);
+        }
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
         this.updateForTimerTick_Input(universe);
@@ -179,14 +187,14 @@ class VenueStarsystem {
                 ArrayHelper.insertElementAt(bodiesClickedAsCollisionsSorted, collisionToSort, j);
             }
             var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
-            if (this.selectedEntity == null || numberOfCollisions == 1) {
+            if (this.entitySelected == null || numberOfCollisions == 1) {
                 bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
             }
             else {
                 for (var c = 0; c < numberOfCollisions; c++) {
                     var collision = bodiesClickedAsCollisionsSorted[c];
                     bodyClicked = collision.colliders[0];
-                    if (bodyClicked == this.selectedEntity) {
+                    if (bodyClicked == this.entitySelected) {
                         var cNext = c + 1;
                         if (cNext >= numberOfCollisions) {
                             cNext = 0;
@@ -202,10 +210,10 @@ class VenueStarsystem {
         this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
     }
     updateForTimerTick_Input_Mouse_Selection(universe, entityClicked) {
-        var selectionTypeName = (this.selectedEntity == null
+        var selectionTypeName = (this.entitySelected == null
             ? null
-            : this.selectedEntity.constructor.name);
-        if (this.selectedEntity == null) {
+            : this.entitySelected.constructor.name);
+        if (this.entitySelected == null) {
             this.entitySelect(entityClicked);
         }
         else if (selectionTypeName == Planet.name) {
@@ -219,7 +227,7 @@ class VenueStarsystem {
         }
     }
     updateForTimerTick_Input_Mouse_Selection_Planet(universe, bodyClicked) {
-        var planetSelected = this.selectedEntity;
+        var planetSelected = this.entitySelected;
         if (bodyClicked == null) {
             this.entitySelect(null);
         }
@@ -240,9 +248,10 @@ class VenueStarsystem {
     }
     updateForTimerTick_Input_Mouse_Selection_Ship(universe, entityClicked) {
         var inputHelper = universe.inputHelper;
-        var entityOrderable = this.selectedEntity;
+        var entityOrderable = this.entitySelected;
         var orderable = Orderable.fromEntity(entityOrderable);
         var order = orderable.order(entityOrderable);
+        var entityTarget;
         var isAwaitingTarget = order.isAwaitingTarget();
         if (isAwaitingTarget == false) {
             // Just select the other entity.
@@ -251,11 +260,7 @@ class VenueStarsystem {
         else if (entityClicked != null) {
             // Targeting an existing body, not an arbitrary point.
             universe.inputHelper.pause(); // While the action plays out.
-            var entityTarget = entityClicked;
-            var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, this.starsystem, entityOrderable, entityTarget);
-            order.entityBeingTargetedSet(entityTarget);
-            order.obey(uwpe);
-            this.cursor.clear();
+            entityTarget = entityClicked;
         }
         else if (this.cursor.hasXYPositionBeenSpecified == false) {
             this.cursor.hasXYPositionBeenSpecified = true;
@@ -264,10 +269,15 @@ class VenueStarsystem {
             this.cursor.hasZPositionBeenSpecified = true; // About to be cleared, though.
             inputHelper.unpause(); // Should we wait longer?
             var targetPos = Coords.create();
-            var entityTarget = new Entity("Target", [
+            entityTarget = new Entity("Target", [
                 new BodyDefn("MoveTarget", targetPos, null),
                 this.cursor.locatable().clone()
             ]);
+        }
+        else {
+            throw new Error("Unexpected state!");
+        }
+        if (entityTarget != null) {
             var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, this.starsystem, entityOrderable, entityTarget);
             order.entityBeingTargetedSet(entityTarget);
             order.obey(uwpe);
@@ -298,10 +308,10 @@ class VenueStarsystem {
         return this.cameraEntity.camera();
     }
     cameraCenterOnSelection() {
-        if (this.selectedEntity != null) {
+        if (this.entitySelected != null) {
             var constraint = this.cameraEntity.constrainable().constraintByClassName(Constraint_PositionOnCylinder.name);
             var constraintPosition = constraint;
-            var selectionPos = this.selectedEntity.locatable().loc.pos;
+            var selectionPos = this.entitySelected.locatable().loc.pos;
             constraintPosition.center.overwriteWith(selectionPos);
         }
     }

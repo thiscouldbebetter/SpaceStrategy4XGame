@@ -56,8 +56,8 @@ class Faction {
         var venueNext = new VenueControls(factionDetailsAsControl, false);
         universe.venueTransitionTo(venueNext);
     }
-    isControlledByUser() {
-        return (this.intelligence == null);
+    isControlledByHuman() {
+        return (this.intelligence == FactionIntelligence.Instances().Human);
     }
     researchSessionStart(universe) {
         var researchSession = new TechnologyResearchSession(universe.world.technologyGraph, this.technologyResearcher);
@@ -372,7 +372,23 @@ class Faction {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
-    updateForTimerTick(uwpe) { }
+    updateForTimerTick(uwpe) {
+        var universe = uwpe.universe;
+        var venueCurrent = universe.venueCurrent();
+        if (venueCurrent.constructor.name == VenueStarsystem.name) {
+            var world = universe.world;
+            var venueStarsystem = venueCurrent;
+            var noEntitiesAreMovingYet = (venueStarsystem.entityMoving == null);
+            if (noEntitiesAreMovingYet) {
+                var starsystem = venueStarsystem.starsystem;
+                var factionToMove = starsystem.factionToMove(world);
+                var isItThisFactionsTurnToMove = (factionToMove == this);
+                if (isItThisFactionsTurnToMove && noEntitiesAreMovingYet) {
+                    this.intelligence.starsystemMoveChoose(uwpe);
+                }
+            }
+        }
+    }
     // Equatable.
     equals(other) {
         return (this.name == other.name);

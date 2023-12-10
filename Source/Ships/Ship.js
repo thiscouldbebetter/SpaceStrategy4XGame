@@ -318,8 +318,9 @@ class Ship extends Entity {
             false, // isTextCenteredVertically
             DataBinding.fromContext(this.name), fontNameAndHeight)
         ];
-        var shipBelongsToUser = ship.faction(world).isControlledByUser();
-        if (shipBelongsToUser) {
+        var shipFaction = ship.faction(world);
+        var shipBelongsToHuman = shipFaction.isControlledByHuman();
+        if (shipBelongsToHuman) {
             var labelIntegrity = new ControlLabel("labelIntegrity", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
             false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
@@ -362,7 +363,7 @@ class Ship extends Entity {
             DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected != null)), () => // click
              {
                 var venue = universe.venueCurrent();
-                var ship = venue.selectedEntity;
+                var ship = venue.entitySelected;
                 var device = ship.deviceSelected();
                 device.use(uwpe);
             });

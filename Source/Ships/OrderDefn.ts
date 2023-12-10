@@ -110,8 +110,11 @@ class OrderDefn_Instances
 		{
 			activity.defnNameAndTargetEntitySet
 			(
-				"MoveToTargetAndCollide", entityTargetImmediate
+				"MoveToTargetCollideAndEndMove", entityTargetImmediate
 			);
+			var universe = uwpe.universe;
+			var venue = universe.venueCurrent() as VenueStarsystem;
+			venue.entityMoving = entityMoving;
 		}
 	}
 
@@ -145,7 +148,7 @@ class OrderDefn_Instances
 				projectile.actor().activity = 
 					Activity.fromDefnNameAndTargetEntity
 					(
-						"MoveToTargetAndCollide", order.entityBeingTargeted
+						"MoveToTargetCollideAndEndMove", order.entityBeingTargeted
 					);
 
 				starsystem.entityToSpawnAdd(projectile);

@@ -97,7 +97,7 @@ class NetworkNode2 extends Entity
 				var venueCurrent =
 					universe.venueCurrent() as VenueWorldExtended;
 				var starsystemToView =
-					(venueCurrent.selectedEntity as NetworkNode2).starsystem;
+					(venueCurrent.entitySelected as NetworkNode2).starsystem;
 				if (starsystemToView != null)
 				{
 					universe.venueTransitionTo

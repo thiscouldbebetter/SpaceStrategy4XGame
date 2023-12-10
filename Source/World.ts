@@ -324,9 +324,6 @@ class WorldExtended extends World
 		ships: Ship[]
 	): void
 	{
-		var factionIntelligenceAutomated =
-			FactionIntelligence.demo();
-
 		var factionHomeStarsystem: Starsystem = null;
 
 		var numberOfNetworkNodes = network.nodes.length;
@@ -430,8 +427,9 @@ class WorldExtended extends World
 			)
 		);
 
+		var factionIntelligences = FactionIntelligence.Instances();
 		var factionIntelligence =
-			(i == 0 ? null : factionIntelligenceAutomated);
+			(i == 0 ? factionIntelligences.Human : factionIntelligences.Computer);
 
 		var shipHullSizes = ShipHullSize.Instances();
 

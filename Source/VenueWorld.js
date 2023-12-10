@@ -11,8 +11,8 @@ class VenueWorldExtended extends VenueWorld {
     }
     // camera
     cameraCenterOnSelection() {
-        if (this.selectedEntity != null) {
-            var targetPosNew = this.selectedEntity.locatable().loc.pos;
+        if (this.entitySelected != null) {
+            var targetPosNew = this.entitySelected.locatable().loc.pos;
             var cameraConstrainable = this.cameraEntity.constrainable();
             var constraint = cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
             var constraintDistance = constraint;
@@ -155,7 +155,7 @@ class VenueWorldExtended extends VenueWorld {
         this.hasBeenUpdatedSinceDrawn = true;
     }
     selectionName() {
-        var returnValue = (this.selectedEntity == null ? "[none]" : this.selectedEntity.name);
+        var returnValue = (this.entitySelected == null ? "[none]" : this.entitySelected.name);
         return returnValue;
     }
     updateForTimerTick(universe) {
@@ -193,7 +193,7 @@ class VenueWorldExtended extends VenueWorld {
                     }
                 }
                 var bodyClicked = collisionNearest.colliders[0]; // todo
-                if (bodyClicked == this.selectedEntity) {
+                if (bodyClicked == this.entitySelected) {
                     var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
                     if (isFastForwarding == false) {
                         var venueCurrent = universe.venueCurrent();
@@ -205,7 +205,7 @@ class VenueWorldExtended extends VenueWorld {
                         }
                     }
                 }
-                this.selectedEntity = bodyClicked;
+                this.entitySelected = bodyClicked;
             }
         }
     }
@@ -259,7 +259,7 @@ class VenueWorldExtended extends VenueWorld {
         if (detailsAreViewable == false) {
             return;
         }
-        var selectedEntity = this.selectedEntity;
+        var selectedEntity = this.entitySelected;
         if (selectedEntity != null) {
             var venueNext;
             var selectionTypeName = selectedEntity.constructor.name;

@@ -68,7 +68,7 @@ class ControlBuilderExtended extends ControlBuilder
 			(
 				universe,
 				(c: Universe) =>
-					(c.venueCurrent() as VenueStarsystem).selectedEntity, // get
+					(c.venueCurrent() as VenueStarsystem).entitySelected, // get
 			),
 			(v: Entity) =>
 			{
@@ -100,7 +100,7 @@ class ControlBuilderExtended extends ControlBuilder
 			DataBinding.fromContextAndGet
 			(
 				universe.venueCurrent() as VenueWithCameraAndSelection,
-				(c: VenueWithCameraAndSelection) => (c.selectedEntity != null)
+				(c: VenueWithCameraAndSelection) => (c.entitySelected != null)
 			), // isEnabled
 			() => // click
 			{
@@ -256,7 +256,7 @@ class ControlBuilderExtended extends ControlBuilder
 				(c: VenueStarsystem) => (c.entityHighlighted != null)
 			), // isEnabled
 			() => // click
-				venueStarsystem.selectedEntity = venueStarsystem.entityHighlighted
+				venueStarsystem.entitySelected = venueStarsystem.entityHighlighted
 		);
 
 		var buttonTarget = ControlButton.from8
@@ -274,7 +274,7 @@ class ControlBuilderExtended extends ControlBuilder
 			DataBinding.fromContextAndGet
 			(
 				venueStarsystem,
-				(c: VenueStarsystem) => (c.selectedEntity != null)
+				(c: VenueStarsystem) => (c.entitySelected != null)
 			), // isEnabled
 			() => alert("todo - target")// click
 		);
@@ -632,5 +632,5 @@ interface VenueWithCameraAndSelection extends Venue
 	cameraCenterOnSelection(): void;
 	entitySelectedDetailsAreViewable(universe: Universe): boolean;
 	entitySelectedDetailsView(universe: Universe): void;
-	selectedEntity: Entity;
+	entitySelected: Entity;
 }

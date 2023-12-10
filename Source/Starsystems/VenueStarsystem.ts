@@ -5,8 +5,9 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 	starsystem: Starsystem;
 
 	cursor: Cursor;
-	selectedEntity: Entity;
+	entitySelected: Entity;
 	entityHighlighted: Entity;
+	entityMoving: Entity;
 
 	_mouseClickPos: Coords;
 
@@ -60,14 +61,14 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	entitySelect(value: Entity): void
 	{
-		this.selectedEntity = value;
+		this.entitySelected = value;
 	}
 
 	entitySelectedDetailsAreViewable(universe: Universe): boolean
 	{
 		var entitySelectedDetailsAreViewable = false;
 
-		var entitySelected = this.selectedEntity;
+		var entitySelected = this.entitySelected;
 
 		if (entitySelected != null)
 		{
@@ -97,7 +98,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			return;
 		}
 
-		var selectedEntity = this.selectedEntity;
+		var selectedEntity = this.entitySelected;
 		if (selectedEntity != null)
 		{
 			var venueNext: Venue;
@@ -122,6 +123,11 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 				universe.venueTransitionTo(venueNext);
 			}
 		}
+	}
+
+	factionsPresent(world: WorldExtended): Faction[]
+	{
+		return this.starsystem.factionsPresent(world);
 	}
 
 	finalize(universe: Universe): void
@@ -200,7 +206,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	selectionName(): string
 	{
-		return (this.selectedEntity == null ? "[none]" : this.selectedEntity.name);
+		return (this.entitySelected == null ? "[none]" : this.entitySelected.name);
 	}
 
 	updateForTimerTick(universe: Universe): void
@@ -209,7 +215,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 		var uwpe = new UniverseWorldPlaceEntities
 		(
-			universe, world, null, null, null
+			universe, world, this.starsystem, null, null
 		);
 
 		this.cameraEntity.constrainable().constrain
@@ -226,6 +232,13 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		}
 
 		this.starsystem.updateForTimerTick(uwpe);
+
+		var factionsPresent = this.factionsPresent(world);
+		for (var f = 0; f < factionsPresent.length; f++)
+		{
+			var faction = factionsPresent[f];
+			faction.updateForTimerTick(uwpe);
+		}
 
 		this.draw(universe);
 
@@ -349,7 +362,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			}
 
 			var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
-			if (this.selectedEntity == null || numberOfCollisions == 1)
+			if (this.entitySelected == null || numberOfCollisions == 1)
 			{
 				bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
 			}
@@ -360,7 +373,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 					var collision = bodiesClickedAsCollisionsSorted[c];
 					bodyClicked = collision.colliders[0];
 
-					if (bodyClicked == this.selectedEntity)
+					if (bodyClicked == this.entitySelected)
 					{
 						var cNext = c + 1;
 						if (cNext >= numberOfCollisions)
@@ -387,12 +400,12 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 	{
 		var selectionTypeName =
 		(
-			this.selectedEntity == null
+			this.entitySelected == null
 			? null
-			: this.selectedEntity.constructor.name
+			: this.entitySelected.constructor.name
 		);
 
-		if (this.selectedEntity == null)
+		if (this.entitySelected == null)
 		{
 			this.entitySelect(entityClicked);
 		}
@@ -421,7 +434,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		universe: Universe, bodyClicked: Entity
 	): void
 	{
-		var planetSelected = this.selectedEntity as Planet;
+		var planetSelected = this.entitySelected as Planet;
 
 		if (bodyClicked == null)
 		{
@@ -457,9 +470,11 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 	{
 		var inputHelper = universe.inputHelper;
 
-		var entityOrderable = this.selectedEntity;
+		var entityOrderable = this.entitySelected;
 		var orderable = Orderable.fromEntity(entityOrderable);
 		var order = orderable.order(entityOrderable);
+
+		var entityTarget: Entity;
 
 		var isAwaitingTarget = order.isAwaitingTarget();
 
@@ -473,20 +488,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			// Targeting an existing body, not an arbitrary point.
 			universe.inputHelper.pause(); // While the action plays out.
 
-			var entityTarget = entityClicked;
-
-			var uwpe = new UniverseWorldPlaceEntities
-			(
-				universe,
-				universe.world,
-				this.starsystem,
-				entityOrderable,
-				entityTarget
-			);
-			order.entityBeingTargetedSet(entityTarget);
-			order.obey(uwpe);
-
-			this.cursor.clear();
+			entityTarget = entityClicked;
 		}
 		else if (this.cursor.hasXYPositionBeenSpecified == false)
 		{
@@ -499,7 +501,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			inputHelper.unpause(); // Should we wait longer?
 
 			var targetPos = Coords.create();
-			var entityTarget = new Entity
+			entityTarget = new Entity
 			(
 				"Target",
 				[
@@ -507,11 +509,18 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 					this.cursor.locatable().clone()
 				]
 			);
+		}
+		else
+		{
+			throw new Error("Unexpected state!");
+		}
 
+		if (entityTarget != null)
+		{
 			var uwpe = new UniverseWorldPlaceEntities
 			(
 				universe,
-				universe.world as WorldExtended,
+				universe.world,
 				this.starsystem,
 				entityOrderable,
 				entityTarget
@@ -583,7 +592,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	cameraCenterOnSelection(): void
 	{
-		if (this.selectedEntity != null)
+		if (this.entitySelected != null)
 		{
 			var constraint =
 				this.cameraEntity.constrainable().constraintByClassName
@@ -591,7 +600,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 					Constraint_PositionOnCylinder.name
 				);
 			var constraintPosition = constraint as Constraint_PositionOnCylinder;
-			var selectionPos = this.selectedEntity.locatable().loc.pos;
+			var selectionPos = this.entitySelected.locatable().loc.pos;
 			constraintPosition.center.overwriteWith(selectionPos);
 		}
 	}

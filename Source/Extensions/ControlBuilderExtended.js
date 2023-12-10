@@ -27,7 +27,7 @@ class ControlBuilderExtended extends ControlBuilder {
         }), fontNameAndHeight);
         var dynamicSelection = new ControlDynamic("dynamicSelection", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
         controlSelectionSize, // size
-        DataBinding.fromContextAndGet(universe, (c) => c.venueCurrent().selectedEntity), (v) => {
+        DataBinding.fromContextAndGet(universe, (c) => c.venueCurrent().entitySelected), (v) => {
             var venueStarsystem = universe.venueCurrent();
             var place = venueStarsystem.starsystem;
             var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, place, v, null);
@@ -40,7 +40,7 @@ class ControlBuilderExtended extends ControlBuilder {
         Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
         "Center", // text,
         fontNameAndHeight, true, // hasBorder
-        DataBinding.fromContextAndGet(universe.venueCurrent(), (c) => (c.selectedEntity != null)), // isEnabled
+        DataBinding.fromContextAndGet(universe.venueCurrent(), (c) => (c.entitySelected != null)), // isEnabled
         () => // click
          {
             universe.venueCurrent().cameraCenterOnSelection();
@@ -101,12 +101,12 @@ class ControlBuilderExtended extends ControlBuilder {
         fontNameAndHeight, true, // hasBorder
         DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.entityHighlighted != null)), // isEnabled
         () => // click
-         venueStarsystem.selectedEntity = venueStarsystem.entityHighlighted);
+         venueStarsystem.entitySelected = venueStarsystem.entityHighlighted);
         var buttonTarget = ControlButton.from8("buttonTarget", // name,
         Coords.fromXY(margin * 2 + buttonSize.x, size.y - margin - buttonSize.y), // pos
         buttonSize, "Target", // text,
         fontNameAndHeight, true, // hasBorder
-        DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.selectedEntity != null)), // isEnabled
+        DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.entitySelected != null)), // isEnabled
         () => alert("todo - target") // click
         );
         var returnValue = new ControlContainer("containerSelected", pos.clone(), size.clone(), 

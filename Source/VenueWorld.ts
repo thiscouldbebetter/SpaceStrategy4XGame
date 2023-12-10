@@ -4,7 +4,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 	world: WorldExtended;
 	cameraEntity: Entity;
 
-	selectedEntity: Entity;
+	entitySelected: Entity;
 
 	hasBeenUpdatedSinceDrawn: boolean;
 
@@ -28,9 +28,9 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 
 	cameraCenterOnSelection(): void
 	{
-		if (this.selectedEntity != null)
+		if (this.entitySelected != null)
 		{
-			var targetPosNew = this.selectedEntity.locatable().loc.pos;
+			var targetPosNew = this.entitySelected.locatable().loc.pos;
 
 			var cameraConstrainable = this.cameraEntity.constrainable();
 			var constraint =
@@ -298,7 +298,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 	{
 		var returnValue =
 		(
-			this.selectedEntity == null ? "[none]" : this.selectedEntity.name
+			this.entitySelected == null ? "[none]" : this.entitySelected.name
 		);
 		return returnValue;
 	}
@@ -384,7 +384,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 
 				var bodyClicked = collisionNearest.colliders[0]; // todo
 
-				if (bodyClicked == this.selectedEntity)
+				if (bodyClicked == this.entitySelected)
 				{
 					var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
 					
@@ -402,7 +402,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 					}
 				}
 
-				this.selectedEntity = bodyClicked;
+				this.entitySelected = bodyClicked;
 			}
 		}
 	}
@@ -481,7 +481,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 			return;
 		}
 
-		var selectedEntity = this.selectedEntity;
+		var selectedEntity = this.entitySelected;
 		if (selectedEntity != null)
 		{
 			var venueNext: Venue;

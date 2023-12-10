@@ -121,9 +121,9 @@ class Faction implements EntityProperty<Faction>
 		universe.venueTransitionTo(venueNext);
 	}
 
-	isControlledByUser(): boolean
+	isControlledByHuman(): boolean
 	{
-		return (this.intelligence == null)
+		return (this.intelligence == FactionIntelligence.Instances().Human);
 	}
 
 	researchSessionStart(universe: Universe): void
@@ -897,8 +897,33 @@ class Faction implements EntityProperty<Faction>
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var universe = uwpe.universe;
+		var venueCurrent = universe.venueCurrent();
+		if (venueCurrent.constructor.name == VenueStarsystem.name)
+		{
+			var world = universe.world as WorldExtended;
+			var venueStarsystem = venueCurrent as VenueStarsystem;
+
+			var noEntitiesAreMovingYet = (venueStarsystem.entityMoving == null);
+			if (noEntitiesAreMovingYet)
+			{
+				var starsystem = venueStarsystem.starsystem;
+				var factionToMove = starsystem.factionToMove(world);
+
+				var isItThisFactionsTurnToMove = (factionToMove == this);
+
+				if (isItThisFactionsTurnToMove && noEntitiesAreMovingYet)
+				{
+					this.intelligence.starsystemMoveChoose(uwpe);
+				}
+			}
+		}
+	}
 
 	// Equatable.
 

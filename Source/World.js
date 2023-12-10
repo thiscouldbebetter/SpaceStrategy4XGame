@@ -128,7 +128,6 @@ class WorldExtended extends World {
         return factionsAndShips;
     }
     static create_FactionsAndShips_1(universe, worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships) {
-        var factionIntelligenceAutomated = FactionIntelligence.demo();
         var factionHomeStarsystem = null;
         var numberOfNetworkNodes = network.nodes.length;
         var random = Math.random();
@@ -181,7 +180,8 @@ class WorldExtended extends World {
         [factionName], // factionNames
         ships.map(x => x.id), // shipIds
         [factionHomeStarsystem.name], factionHomeStarsystem.links(network).map((x) => x.name));
-        var factionIntelligence = (i == 0 ? null : factionIntelligenceAutomated);
+        var factionIntelligences = FactionIntelligence.Instances();
+        var factionIntelligence = (i == 0 ? factionIntelligences.Human : factionIntelligences.Computer);
         var shipHullSizes = ShipHullSize.Instances();
         var factionVisualsForHullSizesByName = new Map([
             [

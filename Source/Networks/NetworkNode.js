@@ -34,7 +34,7 @@ class NetworkNode2 extends Entity {
         "View", fontNameAndHeight, () => // click
          {
             var venueCurrent = universe.venueCurrent();
-            var starsystemToView = venueCurrent.selectedEntity.starsystem;
+            var starsystemToView = venueCurrent.entitySelected.starsystem;
             if (starsystemToView != null) {
                 universe.venueTransitionTo(new VenueStarsystem(venueCurrent, starsystemToView));
             }

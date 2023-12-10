@@ -166,6 +166,28 @@ class Starsystem extends PlaceBase
 		return (this.factionName == null ? null : world.factionByName(this.factionName));
 	}
 
+	private _factionToMoveIndex: number;
+	factionToMove(world: WorldExtended): Faction
+	{
+		if (this._factionToMoveIndex == null)
+		{
+			this._factionToMoveIndex = 0;
+		}
+		var factionsPresent = this.factionsPresent(world);
+		var factionToMove = factionsPresent[this._factionToMoveIndex];
+		return factionToMove;
+	}
+
+	factionToMoveAdvance(world: WorldExtended): void
+	{
+		var factionsPresent = this.factionsPresent(world);
+		this._factionToMoveIndex++;
+		if (this._factionToMoveIndex >= factionsPresent.length)
+		{
+			this._factionToMoveIndex = 0;
+		}
+	}
+
 	factionsPresent(world: WorldExtended): Faction[]
 	{
 		var factionsPresentByName = new Map<string, Faction>();

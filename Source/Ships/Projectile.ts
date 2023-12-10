@@ -1,7 +1,7 @@
 
 class Projectile extends Entity
 {
-	defn: BodyDefn;
+	bodyDefn: BodyDefn;
 	shipFiredFrom: Ship;
 	entityTarget: Entity;
 
@@ -10,7 +10,7 @@ class Projectile extends Entity
 	constructor
 	(
 		name: string,
-		defn: BodyDefn,
+		bodyDefn: BodyDefn,
 		pos: Coords,
 		shipFiredFrom: Ship,
 		entityTarget: Entity
@@ -28,14 +28,14 @@ class Projectile extends Entity
 						entityTarget
 					)
 				),
-				Collidable.default(),
-				defn,
+				bodyDefn,
+				Projectile.collidableBuild(pos),
 				Killable.fromIntegrityMax(1),
 				Locatable.fromPos(pos)
 			]
 		);
 
-		this.defn = defn;
+		this.bodyDefn = bodyDefn;
 		this.shipFiredFrom = shipFiredFrom;
 
 		this._displacement = Coords.create();

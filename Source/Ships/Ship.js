@@ -162,6 +162,20 @@ class Ship extends Entity {
     deviceSelected() {
         return this.deviceUser().deviceSelected();
     }
+    deviceUseStart(universe) {
+        var venueStarsystem = universe.venueCurrent();
+        var cursor = venueStarsystem.cursor;
+        cursor.clear();
+        cursor.entityUsingCursorToTarget = this;
+        var order = this.order();
+        order.clear();
+        order.entityBeingOrderedSet(this);
+        var orderDefnAttack = OrderDefn.Instances().UseDevice;
+        order.defnSet(orderDefnAttack);
+        var deviceSelected = this.deviceSelected();
+        order.deviceToUseSet(deviceSelected);
+        console.log("todo - Ship.deviceUseStart()");
+    }
     deviceUser() {
         return DeviceUser.ofEntity(this);
     }
@@ -312,7 +326,6 @@ class Ship extends Entity {
         var buttonSize = Coords.fromXY(containerSize.x - margin * 2, buttonHeight);
         var buttonHalfSize = buttonSize.clone().multiply(Coords.fromXY(.5, 1));
         var labelHeight = fontHeightInPixels;
-        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
         var labelSize = Coords.fromXY(containerSize.x - margin * 2, fontHeightInPixels);
         var childControls = new Array();
         var shipFaction = ship.faction(world);
@@ -346,12 +359,11 @@ class Ship extends Entity {
             );
             var buttonDeviceUse = ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, listPos.y + listSize.y), // pos
             buttonSize, "Use Device", fontNameAndHeight, true, // hasBorder
-            DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected != null)), () => // click
+            DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected() != null)), () => // click
              {
                 var venue = universe.venueCurrent();
                 var ship = venue.entitySelected;
-                var device = ship.deviceSelected();
-                device.use(uwpe);
+                ship.deviceUseStart(universe);
             });
             var childControlsDetailed = [
                 labelIntegrity,

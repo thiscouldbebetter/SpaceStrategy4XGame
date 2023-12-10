@@ -47,15 +47,17 @@ class StarType
 		if (this._bodyDefn == null)
 		{
 			var visualBody = new VisualCircle(starRadius, starColor, starColor, null);
+
+			var colors = Color.Instances();
 			var visualName = VisualText.fromTextBindingFontAndColorsFillAndBorder
 			(
 				DataBinding.fromGet
 				(
 					(c: any) => (c.place as Place).name
 				),
-				FontNameAndHeight.fromHeightInPixels(10),
-				Color.byName("White"),
-				Color.byName("Gray")
+				FontNameAndHeight.fromHeightInPixels(starRadius / 2),
+				colors.Gray,
+				colors.White
 			);
 
 			var visual = new VisualGroup

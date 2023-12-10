@@ -78,11 +78,12 @@ class PlanetType
 								0,
 								planet.planetType.size.radiusInPixels * 2
 							),
-							VisualText.fromTextImmediateFontAndColor
+							VisualText.fromTextImmediateFontAndColorsFillAndBorder
 							(
 								"Owned by " + factionName,
-								FontNameAndHeight.fromHeightInPixels(planetDimension),
-								Color.byName("White"),
+								FontNameAndHeight.fromHeightInPixels(planetDimension * 1.5),
+								colors.Black,
+								colors.White
 							)
 						)
 					);

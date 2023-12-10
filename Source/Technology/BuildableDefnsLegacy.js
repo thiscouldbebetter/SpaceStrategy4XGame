@@ -1,7 +1,7 @@
 "use strict";
 class BuildableDefnsLegacy {
     constructor(mapCellSizeInPixels) {
-        var fontHeight = mapCellSizeInPixels.y / 2;
+        var fontHeight = mapCellSizeInPixels.y / 3;
         var canBeBuiltNever = (m, p) => false;
         var terrains = MapTerrain.Instances(mapCellSizeInPixels);
         var terrainNamesOrbital = [terrains.Orbit.name];

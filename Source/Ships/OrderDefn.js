@@ -24,7 +24,7 @@ class OrderDefn_Instances {
             [
                 this.DoNothing,
                 this.Go,
-                this.UseDevice,
+                this.UseDevice
             ];
         this._AllByName = ArrayHelper.addLookupsByName(this._All);
     }
@@ -72,7 +72,7 @@ class OrderDefn_Instances {
             var starsystem = venue.starsystem;
             var projectile = device.projectile;
             if (projectile == null) {
-                projectile = new Projectile(entityOrderable.name + "_projectile", Ship.bodyDefnBuild(null), // hack
+                projectile = new Projectile(entityOrderable.name + "_projectile", Projectile.bodyDefnBuild(null), // hack
                 entityOrderable.locatable().loc.pos.clone(), entityOrderable, // shipFiredFrom
                 order.entityBeingTargeted);
                 projectile.actor().activity =

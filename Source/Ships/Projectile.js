@@ -1,14 +1,14 @@
 "use strict";
 class Projectile extends Entity {
-    constructor(name, defn, pos, shipFiredFrom, entityTarget) {
+    constructor(name, bodyDefn, pos, shipFiredFrom, entityTarget) {
         super(name, [
             new Actor(Activity.fromDefnNameAndTargetEntity("MoveToTargetCollideAndEndMove", entityTarget)),
-            Collidable.default(),
-            defn,
+            bodyDefn,
+            Projectile.collidableBuild(pos),
             Killable.fromIntegrityMax(1),
             Locatable.fromPos(pos)
         ]);
-        this.defn = defn;
+        this.bodyDefn = bodyDefn;
         this.shipFiredFrom = shipFiredFrom;
         this._displacement = Coords.create();
     }

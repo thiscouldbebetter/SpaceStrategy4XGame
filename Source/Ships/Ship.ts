@@ -301,6 +301,27 @@ class Ship extends Entity
 		return this.deviceUser().deviceSelected();
 	}
 
+	deviceUseStart(universe: Universe): void
+	{
+		var venueStarsystem = universe.venueCurrent() as VenueStarsystem;
+		var cursor = venueStarsystem.cursor;
+		cursor.clear();
+		cursor.entityUsingCursorToTarget = this;
+
+		var order = this.order();
+		order.clear();
+
+		order.entityBeingOrderedSet(this)
+
+		var orderDefnAttack = OrderDefn.Instances().UseDevice;
+		order.defnSet(orderDefnAttack)
+
+		var deviceSelected = this.deviceSelected();
+		order.deviceToUseSet(deviceSelected);
+
+		console.log("todo - Ship.deviceUseStart()");
+	}
+
 	deviceUser(): DeviceUser
 	{
 		return DeviceUser.ofEntity(this);
@@ -561,11 +582,6 @@ class Ship extends Entity
 		
 		var labelHeight = fontHeightInPixels;
 
-		var uwpe = new UniverseWorldPlaceEntities
-		(
-			universe, world, null, ship, null
-		);
-
 		var labelSize = Coords.fromXY(containerSize.x - margin * 2, fontHeightInPixels);
 
 		var childControls = new Array<ControlBase>();
@@ -708,14 +724,13 @@ class Ship extends Entity
 				DataBinding.fromContextAndGet
 				(
 					ship,
-					(c) => (c.deviceSelected != null)
+					(c) => (c.deviceSelected() != null)
 				),
 				() => // click
 				{
 					var venue = universe.venueCurrent() as VenueStarsystem;
 					var ship = venue.entitySelected as Ship;
-					var device = ship.deviceSelected();
-					device.use(uwpe);
+					ship.deviceUseStart(universe);
 				}
 			);
 

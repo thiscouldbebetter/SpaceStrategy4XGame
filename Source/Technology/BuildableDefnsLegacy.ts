@@ -133,7 +133,7 @@ class BuildableDefnsLegacy
 
 	private constructor(mapCellSizeInPixels: Coords)
 	{
-		var fontHeight = mapCellSizeInPixels.y / 2;
+		var fontHeight = mapCellSizeInPixels.y / 3;
 
 		var canBeBuiltNever = (m: MapLayout, p: Coords) => false;
 

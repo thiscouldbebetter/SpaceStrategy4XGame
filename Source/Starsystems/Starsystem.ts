@@ -95,7 +95,8 @@ class Starsystem extends PlaceBase
 			Math.random() * numberOfPlanetsRange
 		);
 
-		var planets = new Array<Planet>();
+		var planetsInOrderOfIncreasingDistanceFromSun = new Array<Planet>();
+
 		for (var i = 0; i < numberOfPlanets; i++)
 		{
 			var planetName = name + " " + (i + 1);
@@ -127,7 +128,21 @@ class Starsystem extends PlaceBase
 				null // layout
 			);
 
-			planets.push(planet);
+			var planetDistanceFromSun = planetPos.magnitude();
+
+			var p = 0;
+			for (p = 0; p < planetsInOrderOfIncreasingDistanceFromSun.length; p++)
+			{
+				var planetExisting = planetsInOrderOfIncreasingDistanceFromSun[p];
+				var planetExistingDistanceFromSun
+					= planetExisting.locatable().loc.pos.magnitude();
+				if (planetDistanceFromSun < planetExistingDistanceFromSun)
+				{
+					break;
+				}
+			}
+
+			planetsInOrderOfIncreasingDistanceFromSun.splice(p, 0, planet);
 		}
 
 		var returnValue = new Starsystem
@@ -136,7 +151,7 @@ class Starsystem extends PlaceBase
 			size,
 			star,
 			[], // linkPortals - generated later
-			planets,
+			planetsInOrderOfIncreasingDistanceFromSun,
 			null // factionName
 		);
 

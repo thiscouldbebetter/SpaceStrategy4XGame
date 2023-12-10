@@ -76,6 +76,18 @@ class Buildable implements EntityProperty<Buildable>
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
+	// Clonable.
+
+	clone(): Buildable
+	{
+		throw new Error("Not yet implemented.");
+	}
+
+	overwriteWith(other: Buildable): Buildable
+	{
+		throw new Error("Not yet implemented.");
+	}
+
 	// Equatable.
 	equals(other: Buildable): boolean { return false; }
 }

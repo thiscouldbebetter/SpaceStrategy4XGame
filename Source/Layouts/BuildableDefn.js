@@ -1,6 +1,6 @@
 "use strict";
 class BuildableDefn {
-    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effectPerRound, effectsAvailableToUse, categories, entityModifyOnBuild) {
+    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effectPerRound, effectsAvailableToUse, categories, entityProperties, entityModifyOnBuild) {
         this.name = name;
         this.isItem = isItem;
         this._canBeBuiltOnMapAtPosInCells = canBeBuiltOnMapAtPosInCells;
@@ -10,20 +10,25 @@ class BuildableDefn {
         this.effectPerRound = effectPerRound;
         this.effectsAvailableToUse = effectsAvailableToUse || new Array();
         this.categories = categories || new Array();
+        this.entityProperties = entityProperties;
         this._entityModifyOnBuild = entityModifyOnBuild;
     }
     buildableToEntity(buildable, world) {
-        var returnValue = new Entity(this.name, [
-            buildable,
-            buildable.locatable(),
-            Drawable.fromVisual(this.visual)
-        ]);
-        if (this.isItem) {
-            returnValue.propertyAdd(new Item(this.name, 1));
+        var properties = new Array();
+        properties.push(buildable);
+        properties.push(buildable.locatable());
+        properties.push(Drawable.fromVisual(this.visual));
+        var returnEntity = new Entity(this.name, properties);
+        var uwpe = new UniverseWorldPlaceEntities(null, world, null, returnEntity, null);
+        if (this.entityProperties != null) {
+            var propertiesActualized = this.entityProperties(uwpe);
+            propertiesActualized.forEach(x => returnEntity.propertyAdd(x));
         }
-        var uwpe = new UniverseWorldPlaceEntities(null, world, null, returnValue, null);
+        if (this.isItem) {
+            returnEntity.propertyAdd(new Item(this.name, 1));
+        }
         this.entityModifyOnBuild(uwpe);
-        return returnValue;
+        return returnEntity;
     }
     canBeBuiltOnMapAtPosInCells(map, posInCells) {
         return this._canBeBuiltOnMapAtPosInCells(map, posInCells);
@@ -74,6 +79,13 @@ class BuildableDefn {
         var buildableAsEntity = uwpe.entity;
         var buildable = Buildable.ofEntity(buildableAsEntity);
         return (buildable.isComplete ? ["Complete"] : ["Incomplete"]);
+    }
+    // Clonable.
+    clone() {
+        throw new Error("Not yet implemented.");
+    }
+    overwriteWith(other) {
+        throw new Error("Not yet implemented.");
     }
 }
 class BuildableCategory {

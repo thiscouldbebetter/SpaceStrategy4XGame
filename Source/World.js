@@ -206,7 +206,7 @@ class WorldExtended extends World {
             ]
         ]);
         var faction = new Faction(factionName, factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, factionDiplomacy, factionTechnologyResearcher, [factionHomePlanet], factionShips, factionKnowledge, factionIntelligence, factionVisualsForHullSizesByName);
-        WorldExtended.create_FactionsAndShips_1_2_Ships(universe, buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips);
+        WorldExtended.create_FactionsAndShips_1_2_Ships(universe, buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy);
         ships.push(...factionShips);
         worldDummy.factionAdd(faction);
         factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, worldDummy));
@@ -254,16 +254,19 @@ class WorldExtended extends World {
         }
         return factionHomePlanet;
     }
-    static create_FactionsAndShips_1_2_Ships(universe, buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips) {
+    static create_FactionsAndShips_1_2_Ships(universe, buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy) {
         var factionHomeStarsystemSize = factionHomeStarsystem.size();
         var shipDefn = Ship.bodyDefnBuild(factionColor);
         var shipCount = (this.isDebuggingMode ? 2 : 0);
         var shipComponentsAsBuildableDefns = [
             buildableDefns.ShipDrive1TonklinMotor,
             buildableDefns.ShipGenerator1ProtonShaver,
+            buildableDefns.ShipSensor1TonklinFrequencyAnalyzer,
+            buildableDefns.ShipShield1IonWrap,
+            buildableDefns.ShipWeapon01MassBarrageGun,
         ];
         var shipComponentsAsBuildables = shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x));
-        var shipComponentsAsEntities = shipComponentsAsBuildables.map(x => new Entity(x.defn.name, [x]));
+        var shipComponentsAsEntities = shipComponentsAsBuildables.map(x => x.toEntity(worldDummy));
         for (var s = 0; s < shipCount; s++) {
             var ship = new Ship("Ship" + s, shipDefn, Coords.create().randomize(universe.randomizer).multiply(factionHomeStarsystemSize).multiplyScalar(2).subtract(factionHomeStarsystemSize), faction, shipComponentsAsEntities);
             factionShips.push(ship);

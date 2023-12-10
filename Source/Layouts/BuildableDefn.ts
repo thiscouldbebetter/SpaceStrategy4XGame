@@ -10,6 +10,7 @@ class BuildableDefn
 	effectPerRound: BuildableEffect;
 	effectsAvailableToUse: BuildableEffect[];
 	categories: BuildableCategory[];
+	entityProperties: (uwpe: UniverseWorldPlaceEntities) => EntityPropertyBase[];
 	_entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void;
 
 	constructor
@@ -23,6 +24,7 @@ class BuildableDefn
 		effectPerRound: BuildableEffect,
 		effectsAvailableToUse: BuildableEffect[],
 		categories: BuildableCategory[],
+		entityProperties: (uwpe: UniverseWorldPlaceEntities) => EntityPropertyBase[],
 		entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void
 	)
 	{
@@ -35,36 +37,42 @@ class BuildableDefn
 		this.effectPerRound = effectPerRound;
 		this.effectsAvailableToUse = effectsAvailableToUse || new Array<BuildableEffect>();
 		this.categories = categories || new Array<BuildableCategory>();
+		this.entityProperties = entityProperties;
 		this._entityModifyOnBuild = entityModifyOnBuild;
 	}
 
 	buildableToEntity(buildable: Buildable, world: WorldExtended): Entity
 	{
-		var returnValue = new Entity
+		var properties = new Array<EntityPropertyBase>();
+
+		properties.push(buildable);
+		properties.push(buildable.locatable() );
+		properties.push(Drawable.fromVisual(this.visual) );
+
+		var returnEntity = new Entity(this.name, properties);
+
+		var uwpe = new UniverseWorldPlaceEntities
 		(
-			this.name,
-			[
-				buildable,
-				buildable.locatable(),
-				Drawable.fromVisual(this.visual)
-			]
+			null, world, null, returnEntity, null
 		);
+
+		if (this.entityProperties != null)
+		{
+			var propertiesActualized = this.entityProperties(uwpe);
+			propertiesActualized.forEach(x => returnEntity.propertyAdd(x) );
+		}
 
 		if (this.isItem)
 		{
-			returnValue.propertyAdd
+			returnEntity.propertyAdd
 			(
 				new Item(this.name, 1)
 			);
 		}
 
-		var uwpe = new UniverseWorldPlaceEntities
-		(
-			null, world, null, returnValue, null
-		);
 		this.entityModifyOnBuild(uwpe);
 
-		return returnValue;
+		return returnEntity;
 	}
 
 	canBeBuiltOnMapAtPosInCells(map: MapLayout, posInCells: Coords): boolean
@@ -156,6 +164,18 @@ class BuildableDefn
 		var buildableAsEntity = uwpe.entity;
 		var buildable = Buildable.ofEntity(buildableAsEntity);
 		return (buildable.isComplete ? ["Complete"] : ["Incomplete"] );
+	}
+
+	// Clonable.
+
+	clone(): BuildableDefn
+	{
+		throw new Error("Not yet implemented.");
+	}
+
+	overwriteWith(other: BuildableDefn): BuildableDefn
+	{
+		throw new Error("Not yet implemented.");
 	}
 
 }

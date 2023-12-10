@@ -56,7 +56,12 @@ class Device implements EntityProperty<Device>
 
 	clone(): Device
 	{
-		return this; // todo
+		throw new Error("Not yet implemented.");
+	}
+
+	overwriteWith(other: Device): Device
+	{
+		throw new Error("Not yet implemented.");
 	}
 
 	// Equatable.

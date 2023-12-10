@@ -925,6 +925,18 @@ class Faction implements EntityProperty<Faction>
 		}
 	}
 
+	// Clonable.
+
+	clone(): Faction
+	{
+		throw new Error("Not yet implemented.");
+	}
+
+	overwriteWith(other: Faction): Faction
+	{
+		throw new Error("Not yet implemented.");
+	}
+
 	// Equatable.
 
 	equals(other: Faction): boolean

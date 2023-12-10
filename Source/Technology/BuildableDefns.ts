@@ -123,6 +123,7 @@ class BuildableDefnsBasic
 				effectTodo, // effectPerRound
 				null, // // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				null // entityModifyOnBuild
 			);
 
@@ -141,6 +142,7 @@ class BuildableDefnsBasic
 				effectPerRound,
 				null, // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				null // entityModifyOnBuild
 			);
 
@@ -156,6 +158,7 @@ class BuildableDefnsBasic
 				effectTodo,
 				null, // // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				null // entityModifyOnBuild
 			);
 
@@ -171,6 +174,7 @@ class BuildableDefnsBasic
 				effectTodo, // effectPerRound
 				null, // // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				null // entityModifyOnBuild
 			);
 
@@ -192,6 +196,7 @@ class BuildableDefnsBasic
 				effectTodo, // effectPerRound
 				null, // // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				// entityModifyOnBuild
 				(uwpe: UniverseWorldPlaceEntities) =>
 				{
@@ -339,6 +344,7 @@ class BuildableDefnsBasic
 			null, // effectPerRound
 			null, // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 
@@ -353,6 +359,7 @@ class BuildableDefnsBasic
 			null, // effect
 			null, // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 
@@ -367,6 +374,7 @@ class BuildableDefnsBasic
 			null, // effect
 			null, // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 
@@ -381,6 +389,7 @@ class BuildableDefnsBasic
 			null, // effectPerRound
 			null, // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 
@@ -521,6 +530,7 @@ class BuildableDefnsBasic
 			effectNone,
 			null, // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 
@@ -543,6 +553,7 @@ class BuildableDefnsBasic
 			effectTodo,
 			null, // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 

@@ -488,7 +488,8 @@ class WorldExtended extends World
 			factionColor,
 			factionHomeStarsystem,
 			faction,
-			factionShips
+			factionShips,
+			worldDummy
 		);
 
 		ships.push(...factionShips);
@@ -596,25 +597,29 @@ class WorldExtended extends World
 		factionColor: Color,
 		factionHomeStarsystem: Starsystem,
 		faction: Faction,
-		factionShips: Ship[]
+		factionShips: Ship[],
+		worldDummy: WorldExtended
 	): Ship[]
 	{
 		var factionHomeStarsystemSize = factionHomeStarsystem.size();
 		var shipDefn = Ship.bodyDefnBuild(factionColor);
 		var shipCount = (this.isDebuggingMode ? 2 : 0);
-				
+
 		var shipComponentsAsBuildableDefns = 
 		[
 			buildableDefns.ShipDrive1TonklinMotor,
 			buildableDefns.ShipGenerator1ProtonShaver,
+			buildableDefns.ShipSensor1TonklinFrequencyAnalyzer,
+			buildableDefns.ShipShield1IonWrap,
+			buildableDefns.ShipWeapon01MassBarrageGun,
 		];
 		
 		var shipComponentsAsBuildables =
 			shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x) );
-		
+
 		var shipComponentsAsEntities =
-			shipComponentsAsBuildables.map(x => new Entity(x.defn.name, [x] ) );
-						
+			shipComponentsAsBuildables.map(x => x.toEntity(worldDummy) );
+
 		for (var s = 0; s < shipCount; s++)
 		{
 			var ship = new Ship

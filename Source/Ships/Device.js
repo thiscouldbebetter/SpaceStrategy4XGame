@@ -28,7 +28,10 @@ class Device {
     initialize(uwpe) { }
     // Clonable.
     clone() {
-        return this; // todo
+        throw new Error("Not yet implemented.");
+    }
+    overwriteWith(other) {
+        throw new Error("Not yet implemented.");
     }
     // Equatable.
     equals(other) { return false; } // todo

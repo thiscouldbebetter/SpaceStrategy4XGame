@@ -136,6 +136,7 @@ class ShipBuilder {
                 visual, industryToBuild, // industryToBuild
                 effectNone, // effectPerRound
                 effectsAvailableForUse, null, // categories
+                null, // entityProperties
                 null // modifyOnBuild
                 );
                 var shipAsBuildable = new Buildable(shipAsBuildableDefn, shipPosInCells, false, // isComplete,

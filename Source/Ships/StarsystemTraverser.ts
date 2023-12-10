@@ -24,6 +24,18 @@ class StarsystemTraverser implements EntityProperty<StarsystemTraverser>
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
+	// Clonable.
+
+	clone(): StarsystemTraverser
+	{
+		throw new Error("Not yet implemented.");
+	}
+
+	overwriteWith(other: StarsystemTraverser): StarsystemTraverser
+	{
+		throw new Error("Not yet implemented.");
+	}
+
 	// Equatable.
 
 	equals(other: StarsystemTraverser): boolean

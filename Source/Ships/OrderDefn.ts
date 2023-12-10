@@ -142,7 +142,8 @@ class OrderDefn_Instances
 					entityOrderable.name + "_projectile",
 					Ship.bodyDefnBuild(null), // hack
 					entityOrderable.locatable().loc.pos.clone(),
-					entityOrderable // shipFiredFrom
+					entityOrderable, // shipFiredFrom
+					order.entityBeingTargeted
 				);
 
 				projectile.actor().activity = 

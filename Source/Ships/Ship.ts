@@ -50,7 +50,7 @@ class Ship extends Entity
 
 		var returnValue = new BodyDefn
 		(
-			"Ship",
+			Ship.name,
 			Coords.fromXY(1, 1).multiplyScalar(scaleFactor), // size
 			visual
 		);

@@ -261,7 +261,7 @@ class ShipBuilder
 								() => universe.venueJumpTo(venueToReturnTo),
 								sizeDialog
 							);
-							universe.venueJumpTo(venue);														
+							universe.venueJumpTo(venue);
 						}
 						else
 						{
@@ -288,6 +288,7 @@ class ShipBuilder
 					effectNone, // effectPerRound
 					effectsAvailableForUse,
 					null, // categories
+					null, // entityProperties
 					null // modifyOnBuild
 				);
 

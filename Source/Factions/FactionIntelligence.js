@@ -18,7 +18,6 @@ class FactionIntelligence_Instances {
     constructor() {
         this.Computer = new FactionIntelligence("Computer", (uwpe) => {
             // For now, choose a random ship and move it toward a random position.
-            console.log("todo - FactionIntelligence Computer");
             var universe = uwpe.universe;
             var venueStarsystem = universe.venueCurrent();
             var starsystem = venueStarsystem.starsystem;

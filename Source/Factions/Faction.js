@@ -389,6 +389,13 @@ class Faction {
             }
         }
     }
+    // Clonable.
+    clone() {
+        throw new Error("Not yet implemented.");
+    }
+    overwriteWith(other) {
+        throw new Error("Not yet implemented.");
+    }
     // Equatable.
     equals(other) {
         return (this.name == other.name);

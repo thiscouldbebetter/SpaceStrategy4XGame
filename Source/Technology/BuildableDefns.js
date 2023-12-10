@@ -24,16 +24,19 @@ class BuildableDefnsBasic {
         canBeBuiltInOrbit, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, // effectPerRound
         null, // // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         var facilitySurfaceUsable = (name, visual, industryToBuildAmount, effectPerRound) => new BuildableDefn(name, false, // isItem
         canBeBuiltOnSurfaceUsable, mapCellSizeInPixels, visual, industryToBuildAmount, effectPerRound, null, // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         var facilitySurfaceAnywhere = (name, visual, industryToBuildAmount) => new BuildableDefn(name, false, // isItem
         canBeBuiltOnSurfaceAnywhere, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null, // // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         var planetwideFocus = (name, visual) => new BuildableDefn(name, null, // isItem
@@ -42,12 +45,14 @@ class BuildableDefnsBasic {
         effectTodo, // effectPerRound
         null, // // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         var shipComponent = (name, visual, industryToBuildAmount, deviceDefn) => new BuildableDefn(name, true, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, // effectPerRound
         null, // // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         // entityModifyOnBuild
         (uwpe) => {
             if (deviceDefn != null) {
@@ -84,24 +89,28 @@ class BuildableDefnsBasic {
         canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Blue), 240, null, // effectPerRound
         null, // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         this.ShipHullLarge = new BuildableDefn("Ship Hull, Large", false, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Green), 120, null, // effect
         null, // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         this.ShipHullMedium = new BuildableDefn("Ship Hull, Medium", false, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Red), 60, null, // effect
         null, // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         this.ShipHullSmall = new BuildableDefn("Ship Hull, Small", false, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hull", colors.Gray), 30, null, // effectPerRound
         null, // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         this.ShipItemCloak = shipComponent("Cloak", visualBuild("Cloak", colors.Gray), 100, null // deviceDefn
@@ -139,12 +148,14 @@ class BuildableDefnsBasic {
             VisualRectangle.fromSizeAndColorFill(mapCellSizeInPixels, Color.byName("Orange"))
         ]), 100, effectNone, null, // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         this.SurfaceCloak = facilitySurfaceUsable("Surface Cloak", visualBuild("Cloak", colors.Gray), 120, effectNone);
         this.SurfaceColonyHub = new BuildableDefn("Colony Hub", false, // isItem
         canBeBuiltInOrbit, mapCellSizeInPixels, visualBuild("Hub", colors.Gray), 30, effectTodo, null, // effectsAvailableToUse
         null, // categories
+        null, // entityProperties
         null // entityModifyOnBuild
         );
         this.SurfaceFactory = facilitySurfaceUsable("Factory", visualBuild("Factory", colors.Red), 30, effectTodo // [ new Resource("Industry", 1) ] // resourcesPerTurn

@@ -22,7 +22,7 @@ class Ship extends Entity {
     static bodyDefnBuild(color) {
         var scaleFactor = 10;
         var visual = Ship.visualForColorAndScaleFactor(color, scaleFactor);
-        var returnValue = new BodyDefn("Ship", Coords.fromXY(1, 1).multiplyScalar(scaleFactor), // size
+        var returnValue = new BodyDefn(Ship.name, Coords.fromXY(1, 1).multiplyScalar(scaleFactor), // size
         visual);
         return returnValue;
     }

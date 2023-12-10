@@ -205,6 +205,7 @@ class BuildableDefnsLegacy
 				effectNone,
 				null, // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				null // entityModifyOnBuild
 			);
 
@@ -220,6 +221,7 @@ class BuildableDefnsLegacy
 				effect,
 				null, // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				null // entityModifyOnBuild
 			);
 
@@ -235,6 +237,7 @@ class BuildableDefnsLegacy
 				effect,
 				null, // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				null // entityModifyOnBuild
 			);
 
@@ -250,6 +253,7 @@ class BuildableDefnsLegacy
 				effectTodo,
 				null, // effectsAvailableToUse
 				null, // categories
+				null, // entityProperties
 				null // entityModifyOnBuild
 			);
 
@@ -272,15 +276,12 @@ class BuildableDefnsLegacy
 				effectTodo,
 				null, // effectsAvailableToUse
 				[ category ],
-				// entityModifyOnBuild
 				(uwpe: UniverseWorldPlaceEntities) =>
-				{
-					if (deviceDefn != null)
-					{
-						var device = new Device(deviceDefn);
-						uwpe.entity.propertyAdd(device);
-					}
-				}
+					deviceDefn == null
+					? []
+					: [ new Device(deviceDefn) ],
+				// entityModifyOnBuild
+				null
 			);
 
 		var names = BuildableDefnsLegacyNames.Instance;
@@ -396,6 +397,7 @@ class BuildableDefnsLegacy
 			effectNone, // effectPerRound
 			[ effectBuildShip ], // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 
@@ -464,23 +466,14 @@ class BuildableDefnsLegacy
 			{},
 			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
 			{
-				/*
-				var ship = uwpe.entity as Ship;
-				var shipTurnTaker = ship.turnTaker();
-				shipTurnTaker.distancePerMove += 50;
-				shipTurnTaker.energyPerMove += 1;
-				*/
+				// todo
 			},
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
-				/*
-				var ship = uwpe.entity as Ship;
-				var shipTurnTaker = ship.turnTaker();
-				shipTurnTaker.energyForMoveDeduct();
-				*/
+				// todo
 			}
 		);
-		
+
 		this.ShipDrive1TonklinMotor = shipComponent
 		(
 			names.ShipDrive1TonklinMotor,
@@ -496,7 +489,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Red),
 			30,
 			categoryShipDrive,
-			null // deviceDefn
+			deviceDefnDrive
 		);
 
 		this.ShipDrive3GravitonProjector = shipComponent
@@ -505,7 +498,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Green),
 			40,
 			categoryShipDrive,
-			null // deviceDefn
+			deviceDefnDrive
 		);
 
 		this.ShipDrive4InertiaNegator = shipComponent
@@ -514,7 +507,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Red),
 			20,
 			categoryShipDrive,
-			null // deviceDefn
+			deviceDefnDrive
 		);
 
 		this.ShipDrive5NanowaveSpaceBender = shipComponent
@@ -523,7 +516,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Red),
 			80,
 			categoryShipDrive,
-			null // deviceDefn
+			deviceDefnDrive
 		);
 
 		// Generators.
@@ -577,61 +570,28 @@ class BuildableDefnsLegacy
 
 		// Hulls.
 
-		this.ShipHull1Small = new BuildableDefn
-		(
-			names.ShipHull1Small,
-			false, // isItem
-			canBeBuiltNever,
-			mapCellSizeInPixels,
-			visualBuild("Hull", colors.Gray),
-			30,
-			effectNone,
-			null, // effectsAvailableToUse
-			null, // categories
-			null // entityModifyOnBuild
-		);
+		var shipHull = (name: string, color: Color, industryToBuild: number) => 
+		{
+			return new BuildableDefn
+			(
+				name,
+				false, // isItem
+				canBeBuiltNever,
+				mapCellSizeInPixels,
+				visualBuild("Hull", color),
+				industryToBuild,
+				effectNone,
+				null, // effectsAvailableToUse
+				null, // categories
+				null, // entityProperties
+				null // entityModifyOnBuild
+			);
+		};
 
-		this.ShipHull2Medium = new BuildableDefn
-		(
-			names.ShipHull2Medium,
-			false, // isItem
-			canBeBuiltNever,
-			mapCellSizeInPixels,
-			visualBuild("Hull", colors.Red),
-			60,
-			effectNone,
-			null, // effectsAvailableToUse
-			null, // categories
-			null // entityModifyOnBuild
-		);
-
-		this.ShipHull3Large = new BuildableDefn
-		(
-			names.ShipHull3Large,
-			false, // isItem
-			canBeBuiltNever,
-			mapCellSizeInPixels,
-			visualBuild("Hull", colors.Green),
-			120,
-			effectNone,
-			null, // effectsAvailableToUse
-			null, // categories
-			null // entityModifyOnBuild
-		);
-
-		this.ShipHull4Enormous = new BuildableDefn
-		(
-			names.ShipHull4Enormous,
-			false, // isItem
-			canBeBuiltNever,
-			mapCellSizeInPixels,
-			visualBuild("Hull", colors.Blue),
-			240,
-			effectNone,
-			null, // effectsAvailableToUse
-			null, // categories
-			null // entityModifyOnBuild
-		);
+		this.ShipHull1Small = shipHull(names.ShipHull1Small, colors.Gray, 30);
+		this.ShipHull2Medium = shipHull(names.ShipHull2Medium, colors.Red, 60);
+		this.ShipHull3Large = shipHull(names.ShipHull3Large, colors.Green, 120);
+		this.ShipHull4Enormous = shipHull(names.ShipHull4Enormous, colors.Blue, 240);
 
 		// Items.
 
@@ -714,16 +674,52 @@ class BuildableDefnsLegacy
 
 		var categoryShipWeapon = categories.ShipWeapon;
 
-		this.ShipWeapon01MassBarrageGun 				= shipComponent(names.ShipWeapon01MassBarrageGun, 				visualBuild("Weapon", colors.Gray), 10, categoryShipWeapon, null);
-		this.ShipWeapon02FourierMissiles 				= shipComponent(names.ShipWeapon02FourierMissiles, 				visualBuild("Weapon", colors.Gray), 20, categoryShipWeapon, null);
-		this.ShipWeapon03QuantumSingularityLauncher 	= shipComponent(names.ShipWeapon03QuantumSingularityLauncher, 	visualBuild("Weapon", colors.Gray), 30, categoryShipWeapon, null);
-		this.ShipWeapon04MolecularDisassociator 		= shipComponent(names.ShipWeapon04MolecularDisassociator, 		visualBuild("Weapon", colors.Gray), 40, categoryShipWeapon, null);
-		this.ShipWeapon05ElectromagneticPulser 			= shipComponent(names.ShipWeapon05ElectromagneticPulser, 		visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
-		this.ShipWeapon06Plasmatron 					= shipComponent(names.ShipWeapon06Plasmatron, 					visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
-		this.ShipWeapon07Ueberlaser 					= shipComponent(names.ShipWeapon07Ueberlaser, 					visualBuild("Weapon", colors.Gray), 70, categoryShipWeapon, null);
-		this.ShipWeapon08FergnatzLens 					= shipComponent(names.ShipWeapon08FergnatzLens, 				visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, null);
-		this.ShipWeapon09HypersphereDriver 				= shipComponent(names.ShipWeapon09HypersphereDriver, 			visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, null);
-		this.ShipWeapon10Nanomanipulator 				= shipComponent(names.ShipWeapon10Nanomanipulator, 				visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, null);
+		var deviceDefnWeapon = (name: string, usesPerRound: number, energyPerUse: number, range: number, damage: number) =>
+			new DeviceDefn
+			(
+				name,
+				true, // isActive
+				true, // needsTarget
+				[ categoryShipWeapon.name ], // categoryNames
+				(uwpe: UniverseWorldPlaceEntities) => // init
+				{
+					// todo
+				},
+				(uwpe: UniverseWorldPlaceEntities) => // updateForRound
+				{
+					// todo
+				},
+				(uwpe: UniverseWorldPlaceEntities) => // use
+				{
+					var shipFiring = uwpe.entity as Ship;
+					var entityTarget = uwpe.entity2;
+					var bodyDefn = Projectile.bodyDefnBuild(colors.Yellow);
+					var pos = shipFiring.locatable().loc.pos.clone();
+					var projectile = new Projectile
+					(
+						shipFiring.name + "_" + Projectile.name,
+						bodyDefn,
+						pos,
+						shipFiring,
+						entityTarget
+					);
+					var universe = uwpe.universe;
+					var venue = universe.venueCurrent() as VenueStarsystem;
+					var starsystem = venue.starsystem;
+					starsystem.entityToSpawnAdd(projectile);
+				}
+			);
+
+		this.ShipWeapon01MassBarrageGun 				= shipComponent(names.ShipWeapon01MassBarrageGun, 				visualBuild("Weapon", colors.Gray), 10, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon01MassBarrageGun, 				1, 1, 100, 1) );
+		this.ShipWeapon02FourierMissiles 				= shipComponent(names.ShipWeapon02FourierMissiles, 				visualBuild("Weapon", colors.Gray), 20, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon02FourierMissiles, 			1, 1, 100, 1) );
+		this.ShipWeapon03QuantumSingularityLauncher 	= shipComponent(names.ShipWeapon03QuantumSingularityLauncher, 	visualBuild("Weapon", colors.Gray), 30, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon03QuantumSingularityLauncher, 	1, 1, 100, 1) );
+		this.ShipWeapon04MolecularDisassociator 		= shipComponent(names.ShipWeapon04MolecularDisassociator, 		visualBuild("Weapon", colors.Gray), 40, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon04MolecularDisassociator, 		1, 1, 100, 1) );
+		this.ShipWeapon05ElectromagneticPulser 			= shipComponent(names.ShipWeapon05ElectromagneticPulser, 		visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon05ElectromagneticPulser, 		1, 1, 100, 1) );
+		this.ShipWeapon06Plasmatron 					= shipComponent(names.ShipWeapon06Plasmatron, 					visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon06Plasmatron, 					1, 1, 100, 1) );
+		this.ShipWeapon07Ueberlaser 					= shipComponent(names.ShipWeapon07Ueberlaser, 					visualBuild("Weapon", colors.Gray), 70, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon07Ueberlaser, 					1, 1, 100, 1) );
+		this.ShipWeapon08FergnatzLens 					= shipComponent(names.ShipWeapon08FergnatzLens, 				visualBuild("Weapon", colors.Gray), 50, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon08FergnatzLens, 				1, 1, 100, 1) );
+		this.ShipWeapon09HypersphereDriver 				= shipComponent(names.ShipWeapon09HypersphereDriver, 			visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon09HypersphereDriver, 			1, 1, 100, 1) );
+		this.ShipWeapon10Nanomanipulator 				= shipComponent(names.ShipWeapon10Nanomanipulator, 				visualBuild("Weapon", colors.Gray), 100, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon10Nanomanipulator, 			1, 1, 100, 1) );
 
 		// Surface.
 
@@ -761,6 +757,7 @@ class BuildableDefnsLegacy
 			effectNone,
 			null, // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 
@@ -786,6 +783,7 @@ class BuildableDefnsLegacy
 			effectResourcesAdd( [ new Resource("Industry", 1), new Resource("Prosperity", 1) ] ),
 			null, // effectsAvailableToUse
 			null, // categories
+			null, // entityProperties
 			null // entityModifyOnBuild
 		);
 

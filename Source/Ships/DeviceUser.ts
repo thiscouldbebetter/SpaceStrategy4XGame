@@ -65,6 +65,18 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesUsable;
 	}
 
+	// Clonable.
+
+	clone(): DeviceUser
+	{
+		throw new Error("Not yet implemented.");
+	}
+
+	overwriteWith(other: DeviceUser): DeviceUser
+	{
+		throw new Error("Not yet implemented.");
+	}
+
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
@@ -77,5 +89,4 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	{
 		return false; // todo
 	}
-
 }

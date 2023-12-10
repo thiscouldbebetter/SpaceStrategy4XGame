@@ -145,7 +145,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 		var fontHeightInPixels = margin;
 		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
-		var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 8) );
+		var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 6) );
 
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
@@ -198,8 +198,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 			universe,
 			containerMainSize,
 			containerInnerSize,
-			margin,
-			controlHeight
+			margin
 		);
 
 		var containerSelection = controlBuilder.selection
@@ -211,8 +210,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 				containerMainSize.y - margin - containerInnerSize.y
 			), // pos
 			containerInnerSize,
-			margin,
-			controlHeight
+			margin
 		);
 
 		var container = ControlContainer.from4

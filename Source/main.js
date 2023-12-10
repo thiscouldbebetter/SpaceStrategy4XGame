@@ -56,7 +56,7 @@ function main() {
         }
     };
     var worldCreator = new WorldCreator((universe, worldCreator) => {
-        return WorldExtended.create(universe, worldCreator);
+        return new WorldExtendedCreator(universe, worldCreator).create();
     }, (universe, worldCreator) => {
         return worldCreatorToControl(universe, worldCreator);
     }, worldCreatorSettings);
@@ -92,7 +92,7 @@ function worldCreatorToControl(universe, worldCreator) {
     fontNameAndHeight, DataBinding.fromTrue() // isEnabled
     );
     var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
-    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Faction Type:"), fontNameAndHeight);
+    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Faction:"), fontNameAndHeight);
     var selectFactionType = new ControlSelect("selectFactionType", Coords.fromXY(margin * 8, margin * 4 + controlHeight * 3), // pos
     Coords.fromXY(controlHeight * 3, controlHeight), // size
     new DataBinding(worldCreator, (c) => c.settings.factionDefnName, (c, v) => c.settings.factionDefnName = v), // valueSelected
@@ -101,7 +101,7 @@ function worldCreatorToControl(universe, worldCreator) {
     DataBinding.fromGet((c) => c.name), // bindingForOptionText
     fontNameAndHeight);
     var labelFactionColor = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 5 + controlHeight * 4), // pos
-    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Faction Color:"), fontNameAndHeight);
+    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Color:"), fontNameAndHeight);
     var selectFactionColor = new ControlSelect("selectFactionColor", Coords.fromXY(margin * 8, margin * 5 + controlHeight * 4), // pos
     Coords.fromXY(controlHeight * 3, controlHeight), // size
     new DataBinding(worldCreator, (c) => c.settings.factionColor, (c, v) => c.settings.factionColor = v), // valueSelected

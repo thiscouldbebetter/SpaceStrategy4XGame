@@ -535,66 +535,59 @@ class Ship extends Entity
 		return returnControl;
 	}
 
-	toControl_Starsystem(universe: Universe, containerSize: Coords): ControlBase
+	toControl_Starsystem
+	(
+		universe: Universe, containerSize: Coords
+	): ControlBase
 	{
 		var ship = this;
 
 		var world = universe.world as WorldExtended;
 
-		var margin = 8;
-		var controlSpacing = 16;
+		var margin = universe.display.sizeInPixels.x / 60; // hack
+
+		var fontHeightInPixels = margin;
+		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+
+		var buttonHeight = fontHeightInPixels * 1.25;
+
 		var buttonSize = Coords.fromXY
 		(
 			containerSize.x - margin * 2,
-			15
+			buttonHeight
 		);
 		var buttonHalfSize =
 			buttonSize.clone().multiply(Coords.fromXY(.5, 1));
-		var fontHeightInPixels = margin;
-		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+		
+		var labelHeight = fontHeightInPixels;
 
 		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, world, null, ship, null
 		);
 
-		var childControls: ControlBase[] =
-		[
-			new ControlLabel
-			(
-				"textShipAsSelection",
-				Coords.fromXY(margin, margin),
-				Coords.fromXY(containerSize.x, 0), // this.size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext(this.name),
-				fontNameAndHeight
-			)
-		];
+		var labelSize = Coords.fromXY(containerSize.x - margin * 2, fontHeightInPixels);
+
+		var childControls = new Array<ControlBase>();
 
 		var shipFaction = ship.faction(world);
-		var shipBelongsToHuman = shipFaction.isControlledByHuman();
+		var factionCurrent = world.factionCurrent();
+		var shipBelongsToFactionCurrent = (shipFaction == factionCurrent);
 
-		if (shipBelongsToHuman)
+		if (shipBelongsToFactionCurrent)
 		{
-			var labelIntegrity = new ControlLabel
+			var labelIntegrity = ControlLabel.from4Uncentered
 			(
-				"labelIntegrity",
-				Coords.fromXY(margin, margin + controlSpacing),
-				Coords.fromXY(containerSize.x, controlSpacing), // this.size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext("H:"),
+				Coords.fromXY(margin, margin),
+				labelSize,
+				DataBinding.fromContext("Hull:"),
 				fontNameAndHeight
 			);
 
-			var textIntegrity = new ControlLabel
+			var textIntegrity = ControlLabel.from4Uncentered
 			(
-				"textIntegrity",
-				Coords.fromXY(containerSize.x / 4, margin + controlSpacing),
-				Coords.fromXY(containerSize.x, controlSpacing), // this.size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
+				Coords.fromXY(containerSize.x / 4, margin),
+				labelSize,
 				DataBinding.fromContextAndGet
 				(
 					ship, (c: Ship) => "" + c.integrityCurrentOverMax()
@@ -602,24 +595,18 @@ class Ship extends Entity
 				fontNameAndHeight
 			);
 
-			var labelEnergy = new ControlLabel
+			var labelEnergy = ControlLabel.from4Uncentered
 			(
-				"labelEnergy",
-				Coords.fromXY(containerSize.x / 2, margin + controlSpacing),
-				Coords.fromXY(containerSize.x, controlSpacing), // this.size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
-				DataBinding.fromContext("E:"),
+				Coords.fromXY(containerSize.x / 2, margin),
+				labelSize,
+				DataBinding.fromContext("Energy:"),
 				fontNameAndHeight
 			);
 
-			var textEnergy = new ControlLabel
+			var textEnergy = ControlLabel.from4Uncentered
 			(
-				"textEnergy",
-				Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing),
-				Coords.fromXY(containerSize.x, controlSpacing), // this.size
-				false, // isTextCenteredHorizontally
-				false, // isTextCenteredVertically
+				Coords.fromXY(containerSize.x * 3/4, margin),
+				labelSize,
 				DataBinding.fromContextAndGet
 				(
 					ship, (c: Ship) => "todo"
@@ -630,7 +617,11 @@ class Ship extends Entity
 			var buttonMove = ControlButton.from8
 			(
 				"buttonMove",
-				Coords.fromXY(margin, margin + controlSpacing * 2), // pos
+				Coords.fromXY
+				(
+					margin,
+					margin * 2 + labelHeight
+				), // pos
 				buttonHalfSize,
 				"Move",
 				fontNameAndHeight,
@@ -645,7 +636,7 @@ class Ship extends Entity
 				Coords.fromXY
 				(
 					margin + buttonHalfSize.x,
-					margin + controlSpacing * 2
+					margin * 2 + labelHeight
 				), // pos
 				buttonHalfSize,
 				"Repeat",
@@ -658,19 +649,35 @@ class Ship extends Entity
 			var labelDevices = new ControlLabel
 			(
 				"labelDevices",
-				Coords.fromXY(margin, margin + controlSpacing * 3), // pos
-				Coords.fromXY(containerSize.x, 0), // this.size
+				Coords.fromXY
+				(
+					margin,
+					margin * 3 + labelHeight + buttonHeight
+				), // pos
+				labelSize,
 				false, // isTextCenteredHorizontally
 				false, // isTextCenteredVertically
 				DataBinding.fromContext("Devices:"),
 				fontNameAndHeight
 			);
 
+			var listSize = Coords.fromXY
+			(
+				containerSize.x - margin  * 2,
+				containerSize.y - margin * 4 - labelHeight * 2 - buttonHeight * 2
+			); // size
+
+			var listPos = Coords.fromXY
+			(
+				margin,
+				margin * 3 + labelHeight * 2 + buttonHeight
+			); // pos
+
 			var listDevices = ControlList.from8
 			(
 				"listDevices",
-				Coords.fromXY(margin, margin + controlSpacing * 4), // pos
-				Coords.fromXY(buttonSize.x, controlSpacing * 4), // size
+				listPos,
+				listSize,
 				// dataBindingForItems
 				DataBinding.fromContextAndGet
 				(
@@ -693,7 +700,7 @@ class Ship extends Entity
 			var buttonDeviceUse = ControlButton.from8
 			(
 				"buttonDeviceUse",
-				Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
+				Coords.fromXY(margin, listPos.y + listSize.y), // pos
 				buttonSize,
 				"Use Device",
 				fontNameAndHeight,

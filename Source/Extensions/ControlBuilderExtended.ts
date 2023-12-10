@@ -11,32 +11,29 @@ class ControlBuilderExtended extends ControlBuilder
 		universe: Universe,
 		pos: Coords,
 		size: Coords,
-		margin: number,
-		controlHeight: number
+		margin: number
 	)
 	{
 		var fontHeightInPixels = margin;
+
+		var labelHeight = fontHeightInPixels;
+		var buttonHeight = fontHeightInPixels * 2;
+
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-
-		var controlSelectionSize = Coords.fromXY
-		(
-			size.x - margin * 2,
-			size.y - margin * 4 - controlHeight * 3
-		);
 
 		var labelSelection = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY(margin, margin), // pos
-			Coords.fromXY(size.x - margin * 2, controlHeight), // size
+			Coords.fromXY(size.x - margin * 2, labelHeight), // size
 			DataBinding.fromContext("Selection:"), // text
 			fontNameAndHeight
 		);
 
 		var textSelectionName = ControlLabel.from4Uncentered
 		(
-			Coords.fromXY(margin, margin + controlHeight * .6), // pos
-			Coords.fromXY(size.x - margin * 2, controlHeight), // size
+			Coords.fromXY(margin, margin + labelHeight), // pos
+			Coords.fromXY(size.x - margin * 2, labelHeight), // size
 			DataBinding.fromContextAndGet
 			(
 				universe,
@@ -59,10 +56,16 @@ class ControlBuilderExtended extends ControlBuilder
 			fontNameAndHeight
 		);
 
+		var controlSelectionSize = Coords.fromXY
+		(
+			size.x - margin * 2,
+			size.y - margin * 4 - labelHeight * 2 - buttonHeight
+		);
+
 		var dynamicSelection = new ControlDynamic
 		(
 			"dynamicSelection",
-			Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
+			Coords.fromXY(margin, margin * 2 + labelHeight * 2), // pos
 			controlSelectionSize, // size
 			DataBinding.fromContextAndGet
 			(
@@ -89,11 +92,14 @@ class ControlBuilderExtended extends ControlBuilder
 			}
 		);
 
+		var buttonSize =
+			Coords.fromXY((size.x - margin * 3) / 2, buttonHeight);
+
 		var buttonCenter = ControlButton.from8
 		(
 			"buttonCenter", // name,
-			Coords.fromXY(margin, size.y - margin - controlHeight), // pos
-			Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
+			Coords.fromXY(margin, size.y - margin - buttonHeight), // pos
+			buttonSize,
 			"Center", // text,
 			fontNameAndHeight,
 			true, // hasBorder
@@ -138,9 +144,9 @@ class ControlBuilderExtended extends ControlBuilder
 			Coords.fromXY
 			(
 				margin * 2 + ((size.x - margin * 3) / 2),
-				size.y - margin - controlHeight
+				size.y - margin - buttonHeight
 			), // pos
-			Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
+			buttonSize,
 			"Details", // text,
 			fontNameAndHeight,
 			true, // hasBorder
@@ -439,19 +445,16 @@ class ControlBuilderExtended extends ControlBuilder
 		containerMainSize: Coords,
 		containerInnerSize: Coords,
 		margin: number,
-		controlHeight: number
 	)
 	{
 		var cameraSpeed = 10;
 		var fontHeightInPixels = margin;
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+		var labelHeight = fontHeightInPixels;
+		var buttonWidthAndHeight = (containerInnerSize.x - margin * 2) / 5;
 
-		var size = Coords.fromXY
-		(
-			containerInnerSize.x,
-			margin * 3 + controlHeight * 3
-		);
+		var size = containerInnerSize.clone();
 
 		var pos = Coords.fromXY
 		(
@@ -464,20 +467,22 @@ class ControlBuilderExtended extends ControlBuilder
 		var labelView = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY(margin, margin),// pos
-			Coords.fromXY(containerInnerSize.x, controlHeight), // size
+			Coords.fromXY(containerInnerSize.x, labelHeight), // size
 			DataBinding.fromContext("View:"),
 			fontNameAndHeight
 		);
+
+		var buttonSize = Coords.fromXY(1, 1).multiplyScalar(buttonWidthAndHeight);
 
 		var buttonViewRotateUp = new ControlButton
 		(
 			"buttonViewRotateUp",
 			Coords.fromXY
 			(
-				margin + controlHeight,
-				margin * 2 + controlHeight
+				margin + buttonWidthAndHeight,
+				size.y - margin - buttonWidthAndHeight * 2
 			), // pos
-			Coords.fromXY(controlHeight, controlHeight), // size
+			buttonSize,
 			"^",
 			fontNameAndHeight,
 			true, // hasBorder
@@ -494,10 +499,10 @@ class ControlBuilderExtended extends ControlBuilder
 			"buttonViewRotateDown",
 			Coords.fromXY
 			(
-				margin + controlHeight,
-				margin * 2 + controlHeight * 2
+				margin + buttonWidthAndHeight,
+				size.y - margin - buttonWidthAndHeight
 			), // pos
-			Coords.fromXY(controlHeight, controlHeight), // size
+			buttonSize,
 			"v",
 			fontNameAndHeight,
 			true, // hasBorder
@@ -515,9 +520,9 @@ class ControlBuilderExtended extends ControlBuilder
 			Coords.fromXY
 			(
 				margin,
-				margin * 2 + controlHeight * 2
+				size.y - margin - buttonWidthAndHeight
 			), // pos
-			Coords.fromXY(controlHeight, controlHeight), // size
+			buttonSize,
 			"<",
 			fontNameAndHeight,
 			true, // hasBorder
@@ -534,10 +539,10 @@ class ControlBuilderExtended extends ControlBuilder
 			"buttonViewRotateRight",
 			Coords.fromXY
 			(
-				margin + controlHeight * 2,
-				margin * 2 + controlHeight * 2
+				margin + buttonWidthAndHeight * 2,
+				size.y - margin - buttonWidthAndHeight
 			), // pos
-			Coords.fromXY(controlHeight, controlHeight), // size
+			buttonSize,
 			">",
 			fontNameAndHeight,
 			true, // hasBorder
@@ -554,10 +559,10 @@ class ControlBuilderExtended extends ControlBuilder
 			"buttonViewZoomIn",
 			Coords.fromXY
 			(
-				margin * 2 + controlHeight * 2,
+				size.x - margin - buttonWidthAndHeight * 2,
 				margin
 			), // pos
-			Coords.fromXY(controlHeight, controlHeight), // size
+			buttonSize,
 			"In",
 			fontNameAndHeight,
 			true, // hasBorder
@@ -574,10 +579,10 @@ class ControlBuilderExtended extends ControlBuilder
 			"buttonViewZoomOut",
 			Coords.fromXY
 			(
-				margin * 2 + controlHeight * 3,
+				size.x - margin - buttonWidthAndHeight,
 				margin
 			), // pos
-			Coords.fromXY(controlHeight, controlHeight), // size
+			buttonSize, // size
 			"Out",
 			fontNameAndHeight,
 			true, // hasBorder
@@ -593,10 +598,10 @@ class ControlBuilderExtended extends ControlBuilder
 		(
 			Coords.fromXY
 			(
-				margin * 2.5 + controlHeight * 3,
-				margin * 2 + controlHeight * 2
+				size.x - margin - buttonWidthAndHeight,
+				size.y - margin - buttonWidthAndHeight,
 			), // pos
-			Coords.fromXY(controlHeight, controlHeight), // size
+			buttonSize,
 			"x",
 			fontNameAndHeight,
 			() => // click

@@ -84,7 +84,7 @@ class VenueWorldExtended extends VenueWorld {
         var controlHeight = margin * 1.5;
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 8));
+        var containerInnerSize = containerMainSize.clone().divide(Coords.fromXY(6, 6));
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
         var world = universe.world;
         var faction = world.factionCurrent();
@@ -100,9 +100,9 @@ class VenueWorldExtended extends VenueWorld {
         );
         var containerFaction = faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, true // includeDetailsButton
         );
-        var containerView = controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, controlHeight);
+        var containerView = controlBuilder.view(universe, containerMainSize, containerInnerSize, margin);
         var containerSelection = controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, containerMainSize.y - margin - containerInnerSize.y), // pos
-        containerInnerSize, margin, controlHeight);
+        containerInnerSize, margin);
         var container = ControlContainer.from4("containerNetwork", Coords.fromXY(0, 0), // pos
         containerMainSize, 
         // children

@@ -1,42 +1,12 @@
 "use strict";
-class WorldExtended extends World {
-    constructor(name, dateCreated, activityDefns, buildableDefns, deviceDefns, technologyGraph, network, factions, ships, camera) {
-        super(name, dateCreated, new WorldDefn([
-            activityDefns
-        ]), // worldDefn
-        (placeName) => {
-            return this.places.find(x => x.name == placeName);
-        }, // placeGetByName
-        (network == null ? "dummy" : network.name));
-        this.buildableDefns = buildableDefns;
-        this.deviceDefns = deviceDefns;
-        this.technologyGraph = technologyGraph;
-        this.network = network;
-        this.factions = factions;
-        this.ships = ships;
-        this.camera = camera;
-        this.dateSaved = this.dateCreated;
-        this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
-        this.deviceDefnsByName = ArrayHelper.addLookupsByName(this.deviceDefns);
-        this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
-        //this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
-        this.defn.itemDefnsInitialize([]);
-        // this.defn.itemDefns.push(...deviceDefns);
-        var buildableDefnsNonDevice = this.buildableDefns.filter(x => this.deviceDefnsByName.has(x.name) == false);
-        var itemDefns = buildableDefnsNonDevice.map(x => ItemDefn.fromName(x.name));
-        this.defn.itemDefns.push(...itemDefns);
-        this.defn.itemDefnsByName = ArrayHelper.addLookupsByName(this.defn.itemDefns);
-        this.roundsSoFar = 0;
-        this._isAdvancingThroughRoundsUntilNotification = false;
-        this.factionIndexCurrent = 0;
-        this.places = [];
-        this.places.push(this.network);
-        this.places.push(...this.network.nodes.map(x => x.starsystem));
-        this.shouldDrawOnlyWhenUpdated = true;
+class WorldExtendedCreator {
+    constructor(universe, worldCreator) {
+        this.universe = universe;
+        this.worldCreator = worldCreator;
+        this.isDebuggingMode = true;
     }
-    // static methods
-    static create(universe, worldCreator) {
-        var settings = worldCreator.settings;
+    create() {
+        var settings = this.worldCreator.settings;
         var starsystemCount = parseInt(settings.starsystemCount);
         var factionCount = parseInt(settings.factionCount);
         var factionDefnNameForPlayer = settings.factionDefnName;
@@ -46,7 +16,7 @@ class WorldExtended extends World {
             new ActivityDefn_Instances2()._All,
             ActivityDefn.Instances()._All
         ]);
-        var viewSize = universe.display.sizeInPixels.clone();
+        var viewSize = this.universe.display.sizeInPixels.clone();
         var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
         var buildableDefns = 
         // new BuildableDefnsBasic(mapCellSizeInPixels)._All;
@@ -56,12 +26,12 @@ class WorldExtended extends World {
         TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
         var viewDimension = viewSize.y;
         var networkRadius = viewDimension * .25;
-        var network = Network2.generateRandom(universe, worldName, NetworkNodeDefn.Instances()._All, starsystemCount).scale(networkRadius);
+        var network = Network2.generateRandom(this.universe, worldName, NetworkNodeDefn.Instances()._All, starsystemCount).scale(networkRadius);
         var focalLength = viewDimension;
         viewSize.z = focalLength;
-        var deviceDefns = WorldExtended.create_DeviceDefns();
+        var deviceDefns = this.create_DeviceDefns();
         var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
-        var factionsAndShips = WorldExtended.create_FactionsAndShips(universe, network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
+        var factionsAndShips = this.create_FactionsAndShips(network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
         var factions = factionsAndShips[0];
         var ships = factionsAndShips[1];
         factions.forEach(x => x.diplomacy.initializeForFactions(factions));
@@ -70,10 +40,10 @@ class WorldExtended extends World {
         var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns._All, deviceDefns, technologyGraph, network, factions, ships, camera);
         return returnValue;
     }
-    static create_DeviceDefns() {
+    create_DeviceDefns() {
         return DeviceDefns.Instance()._All;
     }
-    static create_FactionsAndShips(universe, network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {
+    create_FactionsAndShips(network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {
         var factions = new Array();
         var ships = new Array();
         // hack
@@ -85,7 +55,7 @@ class WorldExtended extends World {
         factions, ships, // ships
         null // camera
         );
-        universe.world = worldDummy;
+        this.universe.world = worldDummy;
         var colorsForFactions = Faction.colors();
         colorsForFactions.splice(colorsForFactions.indexOf(factionColorForPlayer), 1);
         colorsForFactions.splice(0, 0, factionColorForPlayer);
@@ -99,7 +69,7 @@ class WorldExtended extends World {
             factionDefns.splice(0, 0, factionDefnForPlayer);
         }
         for (var i = 0; i < factionCount; i++) {
-            WorldExtended.create_FactionsAndShips_1(universe, worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships);
+            this.create_FactionsAndShips_1(worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships);
         }
         if (factionDefnNameForPlayer != null) {
             factions[0].defnName = factionDefnNameForPlayer;
@@ -121,13 +91,13 @@ class WorldExtended extends World {
                 communicationStyleName;
             communicationStyleNames.splice(communicationStyleNames.indexOf(communicationStyleName), 1);
         }
-        if (WorldExtended.isDebuggingMode) {
-            WorldExtended.create_FactionsAndShips_2_ShipEnemy(universe, worldDummy, factions, deviceDefnsByName);
+        if (this.isDebuggingMode) {
+            this.create_FactionsAndShips_2_ShipEnemy(worldDummy, factions, deviceDefnsByName);
         }
         var factionsAndShips = [factions, ships];
         return factionsAndShips;
     }
-    static create_FactionsAndShips_1(universe, worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships) {
+    create_FactionsAndShips_1(worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships) {
         var factionHomeStarsystem = null;
         var numberOfNetworkNodes = network.nodes.length;
         var random = Math.random();
@@ -159,7 +129,7 @@ class WorldExtended extends World {
         var factionTechnologyResearcher = new TechnologyResearcher(factionName, null, // nameOfTechnologyBeingResearched,
         0, // researchAccumulated
         technologiesKnownNames);
-        if (WorldExtended.isDebuggingMode) {
+        if (this.isDebuggingMode) {
             var technologiesToLearnNames = [
                 "Orbital Structures",
                 "Interplanetary Exploration",
@@ -174,7 +144,7 @@ class WorldExtended extends World {
             factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
         }
         var factionDefn = factionDefns[i];
-        var factionHomePlanet = WorldExtended.create_FactionsAndShips_1_1_HomePlanet(universe, worldDummy, buildableDefns, factionHomeStarsystem, factionName, factionDefn);
+        var factionHomePlanet = this.create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionName, factionDefn);
         var factionShips = new Array();
         var factionKnowledge = new FactionKnowledge(factionName, // factionSelfName
         [factionName], // factionNames
@@ -206,12 +176,13 @@ class WorldExtended extends World {
             ]
         ]);
         var faction = new Faction(factionName, factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, factionDiplomacy, factionTechnologyResearcher, [factionHomePlanet], factionShips, factionKnowledge, factionIntelligence, factionVisualsForHullSizesByName);
-        WorldExtended.create_FactionsAndShips_1_2_Ships(universe, buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy);
+        this.create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy);
         ships.push(...factionShips);
         worldDummy.factionAdd(faction);
         factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, worldDummy));
     }
-    static create_FactionsAndShips_1_1_HomePlanet(universe, worldDummy, buildableDefns, factionHomeStarsystem, factionName, factionDefn) {
+    create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionName, factionDefn) {
+        var universe = this.universe;
         var planets = factionHomeStarsystem.planets;
         var planetIndexRandom = Math.floor(planets.length * Math.random());
         var factionHomePlanet = planets[planetIndexRandom];
@@ -224,7 +195,7 @@ class WorldExtended extends World {
         var buildableDefnsToBuild = [
             buildableDefns.SurfaceColonyHub
         ];
-        if (WorldExtended.isDebuggingMode) {
+        if (this.isDebuggingMode) {
             var buildableDefnsForHeadStart = [
                 buildableDefns.SurfaceAgriplot,
                 buildableDefns.SurfaceFactory,
@@ -254,7 +225,7 @@ class WorldExtended extends World {
         }
         return factionHomePlanet;
     }
-    static create_FactionsAndShips_1_2_Ships(universe, buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy) {
+    create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy) {
         var factionHomeStarsystemSize = factionHomeStarsystem.size();
         var shipDefn = Ship.bodyDefnBuild(factionColor);
         var shipCount = (this.isDebuggingMode ? 2 : 0);
@@ -267,20 +238,21 @@ class WorldExtended extends World {
         ];
         var shipComponentsAsBuildables = shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x));
         var shipComponentsAsEntities = shipComponentsAsBuildables.map(x => x.toEntity(worldDummy));
+        var randomizer = this.universe.randomizer;
         for (var s = 0; s < shipCount; s++) {
-            var ship = new Ship("Ship" + s, shipDefn, Coords.create().randomize(universe.randomizer).multiply(factionHomeStarsystemSize).multiplyScalar(2).subtract(factionHomeStarsystemSize), faction, shipComponentsAsEntities);
+            var ship = new Ship("Ship" + s, shipDefn, Coords.create().randomize(randomizer).multiply(factionHomeStarsystemSize).multiplyScalar(2).subtract(factionHomeStarsystemSize), faction, shipComponentsAsEntities);
             factionShips.push(ship);
         }
         return factionShips;
     }
-    static create_FactionsAndShips_2_ShipEnemy(universe, worldDummy, factions, deviceDefnsByName) {
+    create_FactionsAndShips_2_ShipEnemy(worldDummy, factions, deviceDefnsByName) {
         var factionUser = factions[0];
         var factionUserHomeStarsystem = factionUser.starsystemHome(worldDummy);
         var factionUserHomeStarsystemSize = factionUserHomeStarsystem.size();
         var factionEnemy = factions[1];
         var factionEnemyColor = factionEnemy.color;
         var factionEnemyShipDefn = Ship.bodyDefnBuild(factionEnemyColor);
-        var shipEnemy = new Ship("ShipEnemy", factionEnemyShipDefn, Coords.create().randomize(universe.randomizer).multiply(factionUserHomeStarsystemSize).multiplyScalar(2).subtract(factionUserHomeStarsystemSize), factionEnemy, [
+        var shipEnemy = new Ship("ShipEnemy", factionEnemyShipDefn, Coords.create().randomize(this.universe.randomizer).multiply(factionUserHomeStarsystemSize).multiplyScalar(2).subtract(factionUserHomeStarsystemSize), factionEnemy, [
         /*
         new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
         new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
@@ -291,106 +263,4 @@ class WorldExtended extends World {
         factionEnemy.shipAdd(shipEnemy);
         factionUserHomeStarsystem.shipAdd(shipEnemy, worldDummy);
     }
-    // instance methods
-    activityDefnByName(activityDefnName) {
-        return this.defn.activityDefnByName(activityDefnName);
-    }
-    buildableDefnAdd(buildableDefn) {
-        this.buildableDefns.push(buildableDefn);
-        this.buildableDefnsByName.set(buildableDefn.name, buildableDefn);
-    }
-    buildableDefnByName(buildableDefnName) {
-        return this.buildableDefnsByName.get(buildableDefnName);
-    }
-    buildableDefnRemove(buildableDefn) {
-        this.buildableDefns.splice(this.buildableDefns.indexOf(buildableDefn), 1);
-        this.buildableDefnsByName.delete(buildableDefn.name);
-    }
-    deviceDefnByName(deviceDefnName) {
-        return this.deviceDefnsByName.get(deviceDefnName);
-    }
-    factionAdd(faction) {
-        this.factions.push(faction);
-        this.factionsByName.set(faction.name, faction);
-    }
-    factionByName(factionName) {
-        return this.factionsByName.get(factionName);
-    }
-    factionCurrent() {
-        return this.factions[this.factionIndexCurrent];
-    }
-    factionsOtherThanCurrent() {
-        return this.factionsOtherThan(this.factionCurrent());
-    }
-    factionsOtherThan(faction) {
-        return this.factions.filter(x => x.name != faction.name);
-    }
-    initialize(uwpe) {
-        // Do nothing.
-    }
-    isAdvancingThroughRoundsUntilNotification() {
-        return this._isAdvancingThroughRoundsUntilNotification;
-    }
-    mapCellSizeInPixels(universe) {
-        if (this._mapCellSizeInPixels == null) {
-            var viewSize = universe.display.sizeInPixels;
-            this._mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0);
-        }
-        return this._mapCellSizeInPixels;
-    }
-    notificationsExist() {
-        var faction = this.factionCurrent();
-        var notificationSession = faction.notificationSession;
-        var areThereAnyNotifications = notificationSession.notificationsExist();
-        return areThereAnyNotifications;
-    }
-    placeForEntityLocatable(entityLocatable) {
-        return this.network.placeForEntityLocatable(entityLocatable);
-    }
-    roundAdvanceUntilNotificationDisable() {
-        this._isAdvancingThroughRoundsUntilNotification = false;
-    }
-    roundAdvanceUntilNotificationToggle(uwpe) {
-        this._isAdvancingThroughRoundsUntilNotification =
-            (this._isAdvancingThroughRoundsUntilNotification == false);
-    }
-    roundNumberCurrent() {
-        return this.roundsSoFar + 1;
-    }
-    toVenue() {
-        return new VenueWorldExtended(this);
-    }
-    updateForRound(uwpe) {
-        var universe = uwpe.universe;
-        var factionCurrent = this.factionCurrent();
-        var notificationsBlocking = factionCurrent.notificationsForRoundAddToArray(universe, []);
-        if (notificationsBlocking.length > 0) {
-            this.roundAdvanceUntilNotificationDisable();
-            factionCurrent.notificationsAdd(notificationsBlocking);
-            factionCurrent.notificationSessionStart(universe);
-        }
-        else {
-            uwpe.world = this;
-            var world = universe.world;
-            this.network.updateForRound(universe, world);
-            this.factions.forEach(x => x.updateForRound(universe, world));
-            this.roundsSoFar++;
-        }
-    }
-    updateForTimerTick(uwpe) {
-        var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
-        if (isFastForwarding) {
-            var world = this;
-            var factionCurrent = world.factionCurrent();
-            var areThereAnyNotifications = factionCurrent.notificationsExist();
-            if (areThereAnyNotifications) {
-                this.roundAdvanceUntilNotificationToggle(uwpe);
-                factionCurrent.notificationSessionStart(uwpe.universe);
-            }
-            else {
-                world.updateForRound(uwpe);
-            }
-        }
-    }
 }
-WorldExtended.isDebuggingMode = true;

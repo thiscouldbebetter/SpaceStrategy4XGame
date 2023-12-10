@@ -82,7 +82,7 @@ function main()
 	(
 		(universe, worldCreator) =>
 		{
-			return WorldExtended.create(universe, worldCreator)
+			return new WorldExtendedCreator(universe, worldCreator).create();
 		},
 		(universe, worldCreator) =>
 		{
@@ -179,7 +179,7 @@ function worldCreatorToControl
 	(
 		Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
-		DataBinding.fromContext("Faction Type:"),
+		DataBinding.fromContext("Player Faction:"),
 		fontNameAndHeight
 	);
 
@@ -214,7 +214,7 @@ function worldCreatorToControl
 	(
 		Coords.fromXY(margin, margin * 5 + controlHeight * 4), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
-		DataBinding.fromContext("Faction Color:"),
+		DataBinding.fromContext("Player Color:"),
 		fontNameAndHeight
 	);
 

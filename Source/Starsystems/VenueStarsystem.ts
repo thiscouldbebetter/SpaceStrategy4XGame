@@ -650,11 +650,6 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		var controlHeight = margin * 1.5;
 		var containerInnerSize =
 			containerMainSize.clone().divide(Coords.fromXY(6, 10) );
-		var containerSelectionSize = Coords.fromXY
-		(
-			containerInnerSize.x,
-			(containerMainSize.y - margin * 3) / 2
-		);
 		var containerPlanetsLinksAndShipsSize = Coords.fromXY
 		(
 			containerInnerSize.x,
@@ -709,13 +704,20 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			this
 		);
 
+		var containerViewSize = containerMainSize.clone().divideScalar(6);
+
 		var containerView = controlBuilder.view
 		(
 			universe,
 			containerMainSize,
-			containerInnerSize,
-			margin,
-			controlHeight
+			containerViewSize,
+			margin
+		);
+
+		var containerSelectionSize = Coords.fromXY
+		(
+			containerInnerSize.x * 1.5,
+			(containerMainSize.y - margin * 3) / 2
 		);
 
 		var containerSelection = controlBuilder.selection
@@ -727,8 +729,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 				containerMainSize.y - margin - containerSelectionSize.y
 			), // pos
 			containerSelectionSize,
-			margin,
-			controlHeight
+			margin
 		);
 
 		var containerMain = ControlContainer.from4

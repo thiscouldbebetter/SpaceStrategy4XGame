@@ -305,60 +305,46 @@ class Ship extends Entity {
     toControl_Starsystem(universe, containerSize) {
         var ship = this;
         var world = universe.world;
-        var margin = 8;
-        var controlSpacing = 16;
-        var buttonSize = Coords.fromXY(containerSize.x - margin * 2, 15);
-        var buttonHalfSize = buttonSize.clone().multiply(Coords.fromXY(.5, 1));
+        var margin = universe.display.sizeInPixels.x / 60; // hack
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+        var buttonHeight = fontHeightInPixels * 1.25;
+        var buttonSize = Coords.fromXY(containerSize.x - margin * 2, buttonHeight);
+        var buttonHalfSize = buttonSize.clone().multiply(Coords.fromXY(.5, 1));
+        var labelHeight = fontHeightInPixels;
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
-        var childControls = [
-            new ControlLabel("textShipAsSelection", Coords.fromXY(margin, margin), Coords.fromXY(containerSize.x, 0), // this.size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext(this.name), fontNameAndHeight)
-        ];
+        var labelSize = Coords.fromXY(containerSize.x - margin * 2, fontHeightInPixels);
+        var childControls = new Array();
         var shipFaction = ship.faction(world);
-        var shipBelongsToHuman = shipFaction.isControlledByHuman();
-        if (shipBelongsToHuman) {
-            var labelIntegrity = new ControlLabel("labelIntegrity", Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("H:"), fontNameAndHeight);
-            var textIntegrity = new ControlLabel("textIntegrity", Coords.fromXY(containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontNameAndHeight);
-            var labelEnergy = new ControlLabel("labelEnergy", Coords.fromXY(containerSize.x / 2, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("E:"), fontNameAndHeight);
-            var textEnergy = new ControlLabel("textEnergy", Coords.fromXY(3 * containerSize.x / 4, margin + controlSpacing), Coords.fromXY(containerSize.x, controlSpacing), // this.size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(ship, (c) => "todo"), fontNameAndHeight);
-            var buttonMove = ControlButton.from8("buttonMove", Coords.fromXY(margin, margin + controlSpacing * 2), // pos
+        var factionCurrent = world.factionCurrent();
+        var shipBelongsToFactionCurrent = (shipFaction == factionCurrent);
+        if (shipBelongsToFactionCurrent) {
+            var labelIntegrity = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), labelSize, DataBinding.fromContext("Hull:"), fontNameAndHeight);
+            var textIntegrity = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x / 4, margin), labelSize, DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontNameAndHeight);
+            var labelEnergy = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x / 2, margin), labelSize, DataBinding.fromContext("Energy:"), fontNameAndHeight);
+            var textEnergy = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x * 3 / 4, margin), labelSize, DataBinding.fromContextAndGet(ship, (c) => "todo"), fontNameAndHeight);
+            var buttonMove = ControlButton.from8("buttonMove", Coords.fromXY(margin, margin * 2 + labelHeight), // pos
             buttonHalfSize, "Move", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
             () => ship.moveStart(universe));
-            var buttonRepeat = ControlButton.from8("buttonRepeat", Coords.fromXY(margin + buttonHalfSize.x, margin + controlSpacing * 2), // pos
+            var buttonRepeat = ControlButton.from8("buttonRepeat", Coords.fromXY(margin + buttonHalfSize.x, margin * 2 + labelHeight), // pos
             buttonHalfSize, "Repeat", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
             () => ship.moveRepeat(universe) // click
             );
-            var labelDevices = new ControlLabel("labelDevices", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
-            Coords.fromXY(containerSize.x, 0), // this.size
-            false, // isTextCenteredHorizontally
+            var labelDevices = new ControlLabel("labelDevices", Coords.fromXY(margin, margin * 3 + labelHeight + buttonHeight), // pos
+            labelSize, false, // isTextCenteredHorizontally
             false, // isTextCenteredVertically
             DataBinding.fromContext("Devices:"), fontNameAndHeight);
-            var listDevices = ControlList.from8("listDevices", Coords.fromXY(margin, margin + controlSpacing * 4), // pos
-            Coords.fromXY(buttonSize.x, controlSpacing * 4), // size
+            var listSize = Coords.fromXY(containerSize.x - margin * 2, containerSize.y - margin * 4 - labelHeight * 2 - buttonHeight * 2); // size
+            var listPos = Coords.fromXY(margin, margin * 3 + labelHeight * 2 + buttonHeight); // pos
+            var listDevices = ControlList.from8("listDevices", listPos, listSize, 
             // dataBindingForItems
             DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable()), DataBinding.fromGet((c) => c.defn().name), // bindingForOptionText
             fontNameAndHeight, new DataBinding(ship, (c) => c.deviceSelected(), (c, v) => c.deviceSelect(v)), // dataBindingForItemSelected
             DataBinding.fromContext(null) // bindingForItemValue
             );
-            var buttonDeviceUse = ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, margin * 2 + controlSpacing * 7.5), // pos
+            var buttonDeviceUse = ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, listPos.y + listSize.y), // pos
             buttonSize, "Use Device", fontNameAndHeight, true, // hasBorder
             DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected != null)), () => // click
              {

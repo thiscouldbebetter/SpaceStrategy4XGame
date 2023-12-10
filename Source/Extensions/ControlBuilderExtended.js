@@ -3,16 +3,17 @@ class ControlBuilderExtended extends ControlBuilder {
     constructor() {
         super(null, null);
     }
-    selection(universe, pos, size, margin, controlHeight) {
+    selection(universe, pos, size, margin) {
         var fontHeightInPixels = margin;
+        var labelHeight = fontHeightInPixels;
+        var buttonHeight = fontHeightInPixels * 2;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var controlSelectionSize = Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 3);
         var labelSelection = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
-        Coords.fromXY(size.x - margin * 2, controlHeight), // size
+        Coords.fromXY(size.x - margin * 2, labelHeight), // size
         DataBinding.fromContext("Selection:"), // text
         fontNameAndHeight);
-        var textSelectionName = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * .6), // pos
-        Coords.fromXY(size.x - margin * 2, controlHeight), // size
+        var textSelectionName = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + labelHeight), // pos
+        Coords.fromXY(size.x - margin * 2, labelHeight), // size
         DataBinding.fromContextAndGet(universe, (c) => {
             var returnValue = null;
             var venue = c.venueCurrent();
@@ -25,7 +26,8 @@ class ControlBuilderExtended extends ControlBuilder {
             }
             return returnValue;
         }), fontNameAndHeight);
-        var dynamicSelection = new ControlDynamic("dynamicSelection", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
+        var controlSelectionSize = Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - labelHeight * 2 - buttonHeight);
+        var dynamicSelection = new ControlDynamic("dynamicSelection", Coords.fromXY(margin, margin * 2 + labelHeight * 2), // pos
         controlSelectionSize, // size
         DataBinding.fromContextAndGet(universe, (c) => c.venueCurrent().entitySelected), (v) => {
             var venueStarsystem = universe.venueCurrent();
@@ -35,10 +37,10 @@ class ControlBuilderExtended extends ControlBuilder {
             var control = controllable.toControl(uwpe, controlSelectionSize, Starsystem.name);
             return control;
         });
+        var buttonSize = Coords.fromXY((size.x - margin * 3) / 2, buttonHeight);
         var buttonCenter = ControlButton.from8("buttonCenter", // name,
-        Coords.fromXY(margin, size.y - margin - controlHeight), // pos
-        Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
-        "Center", // text,
+        Coords.fromXY(margin, size.y - margin - buttonHeight), // pos
+        buttonSize, "Center", // text,
         fontNameAndHeight, true, // hasBorder
         DataBinding.fromContextAndGet(universe.venueCurrent(), (c) => (c.entitySelected != null)), // isEnabled
         () => // click
@@ -58,9 +60,8 @@ class ControlBuilderExtended extends ControlBuilder {
             venueCurrent.entitySelectedDetailsView(universe);
         };
         var buttonDetails = ControlButton.from8("buttonDetails", // name,
-        Coords.fromXY(margin * 2 + ((size.x - margin * 3) / 2), size.y - margin - controlHeight), // pos
-        Coords.fromXY((size.x - margin * 3) / 2, controlHeight), // size,
-        "Details", // text,
+        Coords.fromXY(margin * 2 + ((size.x - margin * 3) / 2), size.y - margin - buttonHeight), // pos
+        buttonSize, "Details", // text,
         fontNameAndHeight, true, // hasBorder
         buttonDetailsIsEnabled, buttonDetailsClick);
         var returnValue = new ControlContainer("containerSelected", pos.clone(), size.clone(), 
@@ -166,64 +167,62 @@ class ControlBuilderExtended extends ControlBuilder {
         var returnValue = ControlContainer.from4("containerTimeAndPlace", Coords.fromXY(margin, margin), size, childControls);
         return returnValue;
     }
-    view(universe, containerMainSize, containerInnerSize, margin, controlHeight) {
+    view(universe, containerMainSize, containerInnerSize, margin) {
         var cameraSpeed = 10;
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var size = Coords.fromXY(containerInnerSize.x, margin * 3 + controlHeight * 3);
+        var labelHeight = fontHeightInPixels;
+        var buttonWidthAndHeight = (containerInnerSize.x - margin * 2) / 5;
+        var size = containerInnerSize.clone();
         var pos = Coords.fromXY(margin, containerMainSize.y
             - margin
             - size.y);
         var labelView = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
-        Coords.fromXY(containerInnerSize.x, controlHeight), // size
+        Coords.fromXY(containerInnerSize.x, labelHeight), // size
         DataBinding.fromContext("View:"), fontNameAndHeight);
-        var buttonViewRotateUp = new ControlButton("buttonViewRotateUp", Coords.fromXY(margin + controlHeight, margin * 2 + controlHeight), // pos
-        Coords.fromXY(controlHeight, controlHeight), // size
-        "^", fontNameAndHeight, true, // hasBorder
+        var buttonSize = Coords.fromXY(1, 1).multiplyScalar(buttonWidthAndHeight);
+        var buttonViewRotateUp = new ControlButton("buttonViewRotateUp", Coords.fromXY(margin + buttonWidthAndHeight, size.y - margin - buttonWidthAndHeight * 2), // pos
+        buttonSize, "^", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         () => // click
          {
             universe.venueCurrent().cameraUp(cameraSpeed);
         }, true // canBeHeldDown
         );
-        var buttonViewRotateDown = new ControlButton("buttonViewRotateDown", Coords.fromXY(margin + controlHeight, margin * 2 + controlHeight * 2), // pos
-        Coords.fromXY(controlHeight, controlHeight), // size
-        "v", fontNameAndHeight, true, // hasBorder
+        var buttonViewRotateDown = new ControlButton("buttonViewRotateDown", Coords.fromXY(margin + buttonWidthAndHeight, size.y - margin - buttonWidthAndHeight), // pos
+        buttonSize, "v", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         () => // click
          {
             universe.venueCurrent().cameraDown(cameraSpeed);
         }, true // canBeHeldDown
         );
-        var buttonViewRotateLeft = new ControlButton("buttonViewRotateLeft", Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
-        Coords.fromXY(controlHeight, controlHeight), // size
-        "<", fontNameAndHeight, true, // hasBorder
+        var buttonViewRotateLeft = new ControlButton("buttonViewRotateLeft", Coords.fromXY(margin, size.y - margin - buttonWidthAndHeight), // pos
+        buttonSize, "<", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         () => // click
          {
             universe.venueCurrent().cameraLeft(cameraSpeed);
         }, true // canBeHeldDown
         );
-        var buttonViewRotateRight = new ControlButton("buttonViewRotateRight", Coords.fromXY(margin + controlHeight * 2, margin * 2 + controlHeight * 2), // pos
-        Coords.fromXY(controlHeight, controlHeight), // size
-        ">", fontNameAndHeight, true, // hasBorder
+        var buttonViewRotateRight = new ControlButton("buttonViewRotateRight", Coords.fromXY(margin + buttonWidthAndHeight * 2, size.y - margin - buttonWidthAndHeight), // pos
+        buttonSize, ">", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         () => // click
          {
             universe.venueCurrent().cameraRight(cameraSpeed);
         }, true // canBeHeldDown
         );
-        var buttonViewZoomIn = new ControlButton("buttonViewZoomIn", Coords.fromXY(margin * 2 + controlHeight * 2, margin), // pos
-        Coords.fromXY(controlHeight, controlHeight), // size
-        "In", fontNameAndHeight, true, // hasBorder
+        var buttonViewZoomIn = new ControlButton("buttonViewZoomIn", Coords.fromXY(size.x - margin - buttonWidthAndHeight * 2, margin), // pos
+        buttonSize, "In", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         () => // click
          {
             universe.venueCurrent().cameraIn(cameraSpeed);
         }, true // canBeHeldDown
         );
-        var buttonViewZoomOut = new ControlButton("buttonViewZoomOut", Coords.fromXY(margin * 2 + controlHeight * 3, margin), // pos
-        Coords.fromXY(controlHeight, controlHeight), // size
+        var buttonViewZoomOut = new ControlButton("buttonViewZoomOut", Coords.fromXY(size.x - margin - buttonWidthAndHeight, margin), // pos
+        buttonSize, // size
         "Out", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         () => // click
@@ -231,9 +230,8 @@ class ControlBuilderExtended extends ControlBuilder {
             universe.venueCurrent().cameraOut(cameraSpeed);
         }, true // canBeHeldDown
         );
-        var buttonViewReset = ControlButton.from5(Coords.fromXY(margin * 2.5 + controlHeight * 3, margin * 2 + controlHeight * 2), // pos
-        Coords.fromXY(controlHeight, controlHeight), // size
-        "x", fontNameAndHeight, () => // click
+        var buttonViewReset = ControlButton.from5(Coords.fromXY(size.x - margin - buttonWidthAndHeight, size.y - margin - buttonWidthAndHeight), // pos
+        buttonSize, "x", fontNameAndHeight, () => // click
          {
             universe.venueCurrent().cameraReset();
         });

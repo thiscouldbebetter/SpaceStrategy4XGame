@@ -134,5 +134,6 @@ class WorldExtended extends World {
                 world.updateForRound(uwpe);
             }
         }
+        this.timerTicksSoFar++;
     }
 }

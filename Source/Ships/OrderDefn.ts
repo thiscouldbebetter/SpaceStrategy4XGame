@@ -138,10 +138,12 @@ class OrderDefn_Instances
 
 			if (projectile == null)
 			{
+				var projectileDefn = ProjectileDefn.Instances().Default;
+
 				projectile = new Projectile
 				(
 					entityOrderable.name + "_projectile",
-					Projectile.bodyDefnBuild(null), // hack
+					projectileDefn,
 					entityOrderable.locatable().loc.pos.clone(),
 					entityOrderable, // shipFiredFrom
 					order.entityBeingTargeted

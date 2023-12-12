@@ -235,9 +235,9 @@ class BuildableDefnsLegacy {
          {
             var shipFiring = uwpe.entity;
             var entityTarget = uwpe.entity2;
-            var bodyDefn = Projectile.bodyDefnBuild(colors.Yellow);
             var pos = shipFiring.locatable().loc.pos.clone();
-            var projectile = new Projectile(shipFiring.name + "_" + Projectile.name, bodyDefn, pos, shipFiring, entityTarget);
+            var projectileDefn = ProjectileDefn.Instances().Default;
+            var projectile = new Projectile(shipFiring.name + "_" + Projectile.name, projectileDefn, pos, shipFiring, entityTarget);
             var universe = uwpe.universe;
             var venue = universe.venueCurrent();
             var starsystem = venue.starsystem;

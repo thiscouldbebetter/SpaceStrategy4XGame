@@ -47,11 +47,11 @@ class Ship extends Entity {
         }
         else if (targetTypeName == Ship.name) {
             var shipCollidable = ship.collidable();
-            var collision = Collision.fromEntitiesColliding(ship, target);
-            shipCollidable.collisionHandle(uwpe, collision);
+            shipCollidable.collideEntities(ship, target);
         }
         else {
-            throw new Error("Unexpected collision!");
+            // Do nothing.
+            // throw new Error("Unexpected collision!");
         }
     }
     faction(world) {

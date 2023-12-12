@@ -40,6 +40,7 @@ var VisualCircle = gf.VisualCircle;
 var VisualCircleGradient = gf.VisualCircleGradient;
 var VisualDirectional = gf.VisualDirectional;
 var VisualDynamic = gf.VisualDynamic;
+var VisualEllipse = gf.VisualEllipse;
 var VisualGroup = gf.VisualGroup;
 var VisualImageFromLibrary = gf.VisualImageFromLibrary;
 var VisualImageImmediate = gf.VisualImageImmediate;
@@ -49,6 +50,7 @@ var VisualNone = gf.VisualNone;
 var VisualOffset = gf.VisualOffset;
 var VisualPolygon = gf.VisualPolygon;
 var VisualRectangle = gf.VisualRectangle;
+var VisualRotate = gf.VisualRotate;
 var VisualSelect = gf.VisualSelect;
 var VisualText = gf.VisualText;
 // Display - Visuals - Animation.

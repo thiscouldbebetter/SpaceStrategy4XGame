@@ -245,6 +245,8 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		this.venueControls.updateForTimerTick(universe);
 
 		this.updateForTimerTick_Input(universe);
+
+		universe.world.timerTicksSoFar++;
 	}
 
 	updateForTimerTick_Input(universe: Universe): void

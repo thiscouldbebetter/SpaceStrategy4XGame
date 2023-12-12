@@ -58,6 +58,7 @@ import VisualCircle = gf.VisualCircle;
 import VisualCircleGradient = gf.VisualCircleGradient;
 import VisualDirectional = gf.VisualDirectional;
 import VisualDynamic = gf.VisualDynamic;
+import VisualEllipse = gf.VisualEllipse;
 import VisualGroup = gf.VisualGroup;
 import VisualImageFromLibrary = gf.VisualImageFromLibrary;
 import VisualImageImmediate = gf.VisualImageImmediate;
@@ -67,6 +68,7 @@ import VisualNone = gf.VisualNone;
 import VisualOffset = gf.VisualOffset;
 import VisualPolygon = gf.VisualPolygon;
 import VisualRectangle = gf.VisualRectangle;
+import VisualRotate = gf.VisualRotate;
 import VisualSelect = gf.VisualSelect;
 import VisualText = gf.VisualText;
 

@@ -693,12 +693,12 @@ class BuildableDefnsLegacy
 				{
 					var shipFiring = uwpe.entity as Ship;
 					var entityTarget = uwpe.entity2;
-					var bodyDefn = Projectile.bodyDefnBuild(colors.Yellow);
 					var pos = shipFiring.locatable().loc.pos.clone();
+					var projectileDefn = ProjectileDefn.Instances().Default;
 					var projectile = new Projectile
 					(
 						shipFiring.name + "_" + Projectile.name,
-						bodyDefn,
+						projectileDefn,
 						pos,
 						shipFiring,
 						entityTarget

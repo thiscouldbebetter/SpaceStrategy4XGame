@@ -1,7 +1,7 @@
 
 class Projectile extends Entity
 {
-	bodyDefn: BodyDefn;
+	projectileDefn: ProjectileDefn;
 	shipFiredFrom: Ship;
 	entityTarget: Entity;
 
@@ -10,7 +10,7 @@ class Projectile extends Entity
 	constructor
 	(
 		name: string,
-		bodyDefn: BodyDefn,
+		projectileDefn: ProjectileDefn,
 		pos: Coords,
 		shipFiredFrom: Ship,
 		entityTarget: Entity
@@ -28,24 +28,24 @@ class Projectile extends Entity
 						entityTarget
 					)
 				),
-				bodyDefn,
+				Projectile.bodyDefnBuild(projectileDefn),
+				//Drawable.fromVisual(projectileDefn.visual),
+				Locatable.fromPos(pos),
 				Projectile.collidableBuild(pos),
 				Killable.fromIntegrityMax(1),
 				Locatable.fromPos(pos)
 			]
 		);
 
-		this.bodyDefn = bodyDefn;
 		this.shipFiredFrom = shipFiredFrom;
 
 		this._displacement = Coords.create();
 	}
 
-	static bodyDefnBuild(color: Color): BodyDefn
+	static bodyDefnBuild(projectileDefn: ProjectileDefn): BodyDefn
 	{
-		var scaleFactor = 10;
-
-		var visual = Projectile.visualForColorAndScaleFactor(color, scaleFactor);
+		var scaleFactor = 1;
+		var visual = projectileDefn.visual;
 
 		var returnValue = new BodyDefn
 		(
@@ -76,26 +76,39 @@ class Projectile extends Entity
 		var projectile = uwpe.entity as Projectile;
 		var target = uwpe.entity2;
 
+		var didCollide = false;
+
 		var targetTypeName = target.constructor.name;
 		if (targetTypeName == LinkPortal.name)
 		{
 			var portal = target as LinkPortal;
 			console.log("todo - projectile - collision - portal: " + portal.name);
+			didCollide = true;
 		}
 		else if (targetTypeName == Planet.name)
 		{
 			var planet = target as Planet;
 			console.log("todo - projectile - collision - planet: " + planet.name);
+			didCollide = true;
 		}
 		else if (targetTypeName == Ship.name)
 		{
-			var projectileCollidable = projectile.collidable();
-			var collision = Collision.fromEntitiesColliding(projectile, target);
-			projectileCollidable.collisionHandle(uwpe, collision);
+			var ship = target as Ship;
+			if (ship != projectile.shipFiredFrom)
+			{
+				console.log("todo - projectile - collision - ship: " + ship.name);
+				didCollide = true;
+			}
 		}
 		else
 		{
-			throw new Error("Unexpected collision!");
+			// Do nothing.  Presumably this is just a point in space.
+		}
+
+		if (didCollide)
+		{
+			var starsystem = uwpe.place as Starsystem;
+			starsystem.entityToRemoveAdd(projectile);
 		}
 	}
 
@@ -143,5 +156,77 @@ class Projectile extends Entity
 			distanceToTarget = 0;
 		}
 		return distanceToTarget;
+	}
+}
+
+
+class ProjectileDefn
+{
+	name: string;
+	range: number;
+	damage: number;
+	visual: VisualBase;
+
+	constructor
+	(
+		name: string,
+		range: number,
+		damage: number,
+		visual: VisualBase
+	)
+	{
+		this.name = name;
+		this.range = range;
+		this.damage = damage;
+		this.visual = visual;
+	}
+
+	static _instances: ProjectileDefn_Instances;
+	static Instances(): ProjectileDefn_Instances
+	{
+		if (ProjectileDefn._instances == null)
+		{
+			ProjectileDefn._instances = new ProjectileDefn_Instances();
+		}
+		return ProjectileDefn._instances;
+	}
+}
+
+class ProjectileDefn_Instances
+{
+	Default: ProjectileDefn;
+
+	constructor()
+	{
+		var colors = Color.Instances();
+		var dimension = 3;
+
+		var visualEllipse = VisualEllipse.fromSemiaxesAndColorFill
+		(
+			dimension, dimension / 2, colors.Yellow
+		);
+
+		var frameCount = 16;
+		var visualsForFrames = [];
+
+		for (let i = 0; i < frameCount; i++) // Must be let, not var.
+		{
+			var visualFrame = new VisualRotate
+			(
+				visualEllipse,
+				(uwpe: UniverseWorldPlaceEntities) => i / frameCount
+			);
+			visualsForFrames.push(visualFrame);
+		}
+
+		var visual = VisualAnimation.fromFramesRepeating(visualsForFrames);
+
+		this.Default = new ProjectileDefn
+		(
+			"Default",
+			100, // range
+			1, // damage
+			visual
+		);
 	}
 }

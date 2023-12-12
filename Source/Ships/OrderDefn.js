@@ -72,8 +72,8 @@ class OrderDefn_Instances {
             var starsystem = venue.starsystem;
             var projectile = device.projectile;
             if (projectile == null) {
-                projectile = new Projectile(entityOrderable.name + "_projectile", Projectile.bodyDefnBuild(null), // hack
-                entityOrderable.locatable().loc.pos.clone(), entityOrderable, // shipFiredFrom
+                var projectileDefn = ProjectileDefn.Instances().Default;
+                projectile = new Projectile(entityOrderable.name + "_projectile", projectileDefn, entityOrderable.locatable().loc.pos.clone(), entityOrderable, // shipFiredFrom
                 order.entityBeingTargeted);
                 projectile.actor().activity =
                     Activity.fromDefnNameAndTargetEntity("MoveToTargetCollideAndEndMove", order.entityBeingTargeted);

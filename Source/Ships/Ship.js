@@ -1,6 +1,6 @@
 "use strict";
 class Ship extends Entity {
-    constructor(name, defn, pos, faction, componentEntities) {
+    constructor(name, hullSize, defn, pos, faction, componentEntities) {
         super(name, [
             Actor.default(),
             defn,
@@ -8,13 +8,14 @@ class Ship extends Entity {
             new Controllable(Ship.toControl),
             new DeviceUser(),
             new Factionable(faction.name),
-            Killable.fromIntegrityMax(10),
+            Ship.killableBuild(hullSize.integrityMax),
             Locatable.fromPos(pos),
             Movable.default(),
             new Orderable(),
             new StarsystemTraverser(100)
         ]);
         this.defn = defn;
+        this.hullSize = hullSize;
         this.componentEntities = componentEntities;
         this._displacement = Coords.create();
     }
@@ -53,6 +54,13 @@ class Ship extends Entity {
             // Do nothing.
             // throw new Error("Unexpected collision!");
         }
+    }
+    static killableBuild(integrityMax) {
+        return Killable.fromIntegrityMaxAndDie(integrityMax, Ship.killableDie);
+    }
+    static killableDie(uwpe) {
+        // todo
+        console.log("todo - Ship.die()");
     }
     faction(world) {
         return this.factionable().faction(world);
@@ -159,9 +167,6 @@ class Ship extends Entity {
         var order = this.order();
         order.deviceToUseSet(deviceToSelect);
     }
-    deviceSelected() {
-        return this.deviceUser().deviceSelected();
-    }
     deviceUseStart(universe) {
         var venueStarsystem = universe.venueCurrent();
         var cursor = venueStarsystem.cursor;
@@ -172,22 +177,12 @@ class Ship extends Entity {
         order.entityBeingOrderedSet(this);
         var orderDefnAttack = OrderDefn.Instances().UseDevice;
         order.defnSet(orderDefnAttack);
-        var deviceSelected = this.deviceSelected();
+        var deviceUser = this.deviceUser();
+        var deviceSelected = deviceUser.deviceSelected();
         order.deviceToUseSet(deviceSelected);
         console.log("todo - Ship.deviceUseStart()");
     }
-    deviceUser() {
-        return DeviceUser.ofEntity(this);
-    }
-    devices() {
-        return this.deviceUser().devices(this);
-    }
-    devicesDrives() {
-        return this.deviceUser().devicesDrives(this);
-    }
-    devicesUsable() {
-        return this.deviceUser().devicesUsable(this);
-    }
+    deviceUser() { return DeviceUser.ofEntity(this); }
     // movement
     linkPortalEnter(cluster, linkPortal, ship) {
         var starsystemFrom = linkPortal.starsystemFrom(cluster);
@@ -243,7 +238,8 @@ class Ship extends Entity {
         }
     }
     moveStart(universe) {
-        var devicesDrives = this.devicesDrives();
+        var deviceUser = this.deviceUser();
+        var devicesDrives = deviceUser.devicesDrives(this);
         var deviceDriveToSelect = devicesDrives[0];
         this.deviceSelect(deviceDriveToSelect);
         var venueStarsystem = universe.venueCurrent();
@@ -335,7 +331,7 @@ class Ship extends Entity {
             var labelIntegrity = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), labelSize, DataBinding.fromContext("Hull:"), fontNameAndHeight);
             var textIntegrity = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x / 4, margin), labelSize, DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontNameAndHeight);
             var labelEnergy = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x / 2, margin), labelSize, DataBinding.fromContext("Energy:"), fontNameAndHeight);
-            var textEnergy = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x * 3 / 4, margin), labelSize, DataBinding.fromContextAndGet(ship, (c) => "todo"), fontNameAndHeight);
+            var textEnergy = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x * 3 / 4, margin), labelSize, DataBinding.fromContextAndGet(ship, (c) => "" + c.deviceUser().energyRemainingThisRound()), fontNameAndHeight);
             var buttonMove = ControlButton.from8("buttonMove", Coords.fromXY(margin, margin * 2 + labelHeight), // pos
             buttonHalfSize, "Move", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
@@ -353,13 +349,14 @@ class Ship extends Entity {
             var listPos = Coords.fromXY(margin, margin * 3 + labelHeight * 2 + buttonHeight); // pos
             var listDevices = ControlList.from8("listDevices", listPos, listSize, 
             // dataBindingForItems
-            DataBinding.fromContextAndGet(ship, (c) => c.devicesUsable()), DataBinding.fromGet((c) => c.defn().name), // bindingForOptionText
-            fontNameAndHeight, new DataBinding(ship, (c) => c.deviceSelected(), (c, v) => c.deviceSelect(v)), // dataBindingForItemSelected
+            DataBinding.fromContextAndGet(ship, (c) => c.deviceUser().devicesUsable(c)), DataBinding.fromGet((c) => c.defn().name), // bindingForOptionText
+            fontNameAndHeight, new DataBinding(ship, (c) => c.deviceUser().deviceSelected(), (c, v) => c.deviceSelect(v)), // dataBindingForItemSelected
             DataBinding.fromContext(null) // bindingForItemValue
             );
             var buttonDeviceUse = ControlButton.from8("buttonDeviceUse", Coords.fromXY(margin, listPos.y + listSize.y), // pos
             buttonSize, "Use Device", fontNameAndHeight, true, // hasBorder
-            DataBinding.fromContextAndGet(ship, (c) => (c.deviceSelected() != null)), () => // click
+            DataBinding.fromContextAndGet(ship, (c) => (c.deviceUser().deviceSelectedCanBeUsedThisRound() != null)), // isEnabled
+            () => // click
              {
                 var venue = universe.venueCurrent();
                 var ship = venue.entitySelected;
@@ -384,11 +381,17 @@ class Ship extends Entity {
     }
     // diplomacy
     strategicValue(world) {
-        return 1; // todo
+        var returnValue = this.hullSize.strategicValue();
+        this.componentEntities.forEach((x) => {
+            returnValue += Buildable.ofEntity(x).defn.strategicValue();
+        });
+        return returnValue;
     }
-    // turns
+    // Rounds.
     updateForRound(universe, world, faction) {
-        var devices = this.devices();
+        var deviceUser = this.deviceUser();
+        deviceUser.energyRemainingThisRoundClear();
+        var devices = deviceUser.devices(this);
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
         for (var i = 0; i < devices.length; i++) {
             var device = devices[i];

@@ -38,6 +38,7 @@ class Planet extends Entity
 					)
 				),
 				new Controllable(Planet.toControl),
+				new DeviceUser(),
 				new Factionable(factionName),
 				ItemHolder.create(),
 				Locatable.fromPos(pos)

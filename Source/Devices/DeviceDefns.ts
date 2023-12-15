@@ -21,6 +21,8 @@ class DeviceDefns
 			{},
 			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
 			{},
+			1, // usesPerRound
+			0, // energyPerUse
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
 				var ship = uwpe.entity as Ship;
@@ -40,6 +42,8 @@ class DeviceDefns
 			{
 				// todo - var ship = uwpe.entity as Ship;
 			},
+			0, // usesPerRound
+			1, // energyPerUse
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
 				// todo - var ship = uwpe.entity as Ship;
@@ -58,6 +62,8 @@ class DeviceDefns
 			{
 				// todo - var ship = uwpe.entity as Ship;
 			},
+			0, // usesPerRound
+			1, // energyPerUse
 			(uwpe: UniverseWorldPlaceEntities) =>  // use
 			{
 				// Do nothing.
@@ -79,6 +85,8 @@ class DeviceDefns
 			{
 				// todo
 			},
+			0, // usesPerRound
+			1, // energyPerUse
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
 				// todo
@@ -122,9 +130,12 @@ class DeviceDefns
 			},
 			(uwpe: UniverseWorldPlaceEntities) =>  // updateForRound
 			{
-				var device = Device.ofEntity(uwpe.entity2);
-				device.usesThisTurn = 3;
+				// todo
+				//var device = Device.ofEntity(uwpe.entity2);
+				//device.usesThisTurn = 3;
 			},
+			1, // usesPerRound
+			1, // energyPerUse
 			this.shipWeaponBasicUse
 		);
 	}

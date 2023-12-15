@@ -1,5 +1,11 @@
 "use strict";
 class BuildableDefnsLegacy {
+    static Instance(mapCellSizeInPixels) {
+        if (BuildableDefnsLegacy._instance == null) {
+            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
+        }
+        return BuildableDefnsLegacy._instance;
+    }
     constructor(mapCellSizeInPixels) {
         var fontHeight = mapCellSizeInPixels.y / 3;
         var canBeBuiltNever = (m, p) => false;
@@ -122,7 +128,9 @@ class BuildableDefnsLegacy {
          { }, (uwpe) => // updateForRound
          {
             // todo
-        }, (uwpe) => // use
+        }, 0, // usesPerRound
+        0, // energyPerUse
+        (uwpe) => // use
          {
             // todo
         });
@@ -133,16 +141,28 @@ class BuildableDefnsLegacy {
         this.ShipDrive5NanowaveSpaceBender = shipComponent(names.ShipDrive5NanowaveSpaceBender, visualBuild("Drive", colors.Red), 80, categoryShipDrive, deviceDefnDrive);
         // Generators.
         var categoryShipGenerator = categories.ShipGenerator;
-        this.ShipGenerator1ProtonShaver = shipComponent(names.ShipGenerator1ProtonShaver, visualBuild("Generator", colors.Gray), 20, categoryShipGenerator, null // deviceDefn
-        );
-        this.ShipGenerator2SubatomicScoop = shipComponent(names.ShipGenerator2SubatomicScoop, visualBuild("Generator", colors.Red), 35, categoryShipGenerator, null // deviceDefn
-        );
-        this.ShipGenerator3QuarkExpress = shipComponent(names.ShipGenerator3QuarkExpress, visualBuild("Generator", colors.Green), 60, categoryShipGenerator, null // deviceDefn
-        );
-        this.ShipGenerator4VanKreegHypersplicer = shipComponent(names.ShipGenerator4VanKreegHypersplicer, visualBuild("Generator", colors.Blue), 80, categoryShipGenerator, null // deviceDefn
-        );
-        this.ShipGenerator5Nanotwirler = shipComponent(names.ShipGenerator5Nanotwirler, visualBuild("Generator", colors.Violet), 100, categoryShipGenerator, null // deviceDefn
-        );
+        var deviceDefnGenerator = (energyPerTurn) => {
+            return new DeviceDefn("Generator", false, // isActive
+            false, // needsTarget
+            [categoryShipGenerator.name], null, // initialize
+            // updateForRound
+            (uwpe) => {
+                var ship = uwpe.entity;
+                ship.deviceUser().energyRemainingThisRoundAdd(energyPerTurn);
+            }, 0, // usesPerRound
+            0, // energyPerUse
+            null // use
+            );
+        };
+        var colorGenerator = colors.Yellow;
+        var shipGenerator = (name, industryToBuild, energyPerTurn) => {
+            return shipComponent(name, visualBuild(name, colorGenerator), industryToBuild, categoryShipGenerator, deviceDefnGenerator(energyPerTurn));
+        };
+        this.ShipGenerator1ProtonShaver = shipGenerator(names.ShipGenerator1ProtonShaver, 20, 1);
+        this.ShipGenerator2SubatomicScoop = shipGenerator(names.ShipGenerator2SubatomicScoop, 35, 2);
+        this.ShipGenerator3QuarkExpress = shipGenerator(names.ShipGenerator3QuarkExpress, 60, 3);
+        this.ShipGenerator4VanKreegHypersplicer = shipGenerator(names.ShipGenerator4VanKreegHypersplicer, 80, 4);
+        this.ShipGenerator5Nanotwirler = shipGenerator(names.ShipGenerator5Nanotwirler, 100, 5);
         // Hulls.
         var shipHull = (name, color, industryToBuild) => {
             return new BuildableDefn(name, false, // isItem
@@ -231,7 +251,7 @@ class BuildableDefnsLegacy {
         }, (uwpe) => // updateForRound
          {
             // todo
-        }, (uwpe) => // use
+        }, usesPerRound, energyPerUse, (uwpe) => // use
          {
             var shipFiring = uwpe.entity;
             var entityTarget = uwpe.entity2;
@@ -411,12 +431,6 @@ class BuildableDefnsLegacy {
                 this.SurfaceLaboratory,
                 this.SurfaceTransportTubes
             ];
-    }
-    static Instance(mapCellSizeInPixels) {
-        if (BuildableDefnsLegacy._instance == null) {
-            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
-        }
-        return BuildableDefnsLegacy._instance;
     }
 }
 class BuildableDefnsLegacyNames {

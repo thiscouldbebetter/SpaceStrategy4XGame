@@ -1,7 +1,7 @@
 "use strict";
 class DeviceUser {
     constructor() {
-        // todo
+        this._energyRemainingThisRound = 0;
     }
     static ofEntity(entity) {
         return entity.propertyByName(DeviceUser.name);
@@ -11,6 +11,13 @@ class DeviceUser {
     }
     deviceSelected() {
         return this._deviceSelected;
+    }
+    deviceSelectedCanBeUsedThisRound() {
+        var deviceSelected = this.deviceSelected();
+        var canBeUsed = deviceSelected == null
+            ? false
+            : deviceSelected.canBeUsedThisRoundByDeviceUser(this);
+        return canBeUsed;
     }
     devices(ship) {
         var deviceEntities = ship.componentEntities.filter((x) => Device.ofEntity(x) != null);
@@ -30,6 +37,21 @@ class DeviceUser {
             this._devicesUsable = devices.filter((x) => x.defn().isActive);
         }
         return this._devicesUsable;
+    }
+    energyRemainingThisRound() {
+        return this._energyRemainingThisRound;
+    }
+    energyRemainingThisRoundAdd(energyToAdd) {
+        this._energyRemainingThisRound += energyToAdd;
+    }
+    energyRemainingThisRoundClear() {
+        this._energyRemainingThisRound = 0;
+    }
+    energyRemainingThisRoundSubtract(energyToSubtract) {
+        this._energyRemainingThisRound -= energyToSubtract;
+    }
+    energyRemainsThisRound(energyToCheck) {
+        return (this._energyRemainingThisRound >= energyToCheck);
     }
     // Clonable.
     clone() {

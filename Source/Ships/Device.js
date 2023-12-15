@@ -6,6 +6,12 @@ class Device {
     static ofEntity(entity) {
         return entity.propertyByName(Device.name);
     }
+    canBeUsedThisRoundByDeviceUser(deviceUser) {
+        var defn = this.defn();
+        var returnValue = this.usesRemainingThisRound > 0
+            && deviceUser.energyRemainsThisRound(defn.energyPerUse);
+        return returnValue;
+    }
     defn() {
         return this._defn;
     }
@@ -18,9 +24,14 @@ class Device {
         defn.updateForRound(uwpe);
     }
     use(uwpe) {
-        uwpe.entity2 = this.toEntity();
-        var defn = this.defn();
-        defn.use(uwpe);
+        var deviceUser = DeviceUser.ofEntity(uwpe.entity);
+        if (this.canBeUsedThisRoundByDeviceUser(deviceUser)) {
+            this.usesRemainingThisRound--;
+            var defn = this.defn();
+            deviceUser.energyRemainingThisRoundSubtract(defn.energyPerUse);
+            uwpe.entity2 = this.toEntity();
+            defn.use(uwpe);
+        }
     }
     // EntityProperty.
     finalize(uwpe) { }

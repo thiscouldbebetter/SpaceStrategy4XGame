@@ -44,6 +44,9 @@ class BuildableDefn {
     nameAndCost() {
         return this.name + " (" + this.industryToBuild + ")";
     }
+    strategicValue() {
+        return this.industryToBuild;
+    }
     visualWrapWithOverlay(visualToWrap) {
         var visualOverlayShadedRectangle = VisualRectangle.fromSizeAndColorFill(this.sizeInPixels, Color.byName("BlackHalfTransparent"));
         var visualOverlayText = VisualText.fromTextBindingFontAndColor(DataBinding.fromGet((c) => {

@@ -52,7 +52,7 @@ class ShipBuilder
 	{
 		return "" + this.componentCount() + "/" + this.componentCountMax()
 	}
-	
+
 	// Controls.
 
 	toControl
@@ -63,11 +63,11 @@ class ShipBuilder
 	): ControlBase
 	{
 		var shipBuilder = this;
-		
+
 		var world = universe.world as WorldExtended;
 		var faction = world.factionCurrent();
 		var researcher = faction.technologyResearcher;
-		
+
 		var buildableDefnsAvailable =
 			researcher.buildablesAvailable(world);
 		this.buildableDefnsAvailable =
@@ -87,7 +87,7 @@ class ShipBuilder
 		{
 			size = universe.display.sizeDefault();
 		}
-		
+
 		var sizeDialog = size.clone().half();
 
 		var margin = 8;
@@ -118,7 +118,7 @@ class ShipBuilder
 						(c: BuildableCategory) => c == categories.ShipGenerator
 					)
 				);
-				
+
 			var doesShipHaveADrive =
 				this.buildableDefnsToBuild.some
 				(
@@ -131,9 +131,9 @@ class ShipBuilder
 			var doesShipHaveAGeneratorAndDrive =
 				doesShipHaveAGenerator
 				&& doesShipHaveADrive;
-			
+
 			var canShipBeBuilt = doesShipHaveAGeneratorAndDrive;
-			
+
 			if (canShipBeBuilt == false)
 			{
 				var messageLines =
@@ -170,111 +170,11 @@ class ShipBuilder
 				var effects = BuildableEffect.Instances();
 				var effectNone = effects.None;
 
-				var effectLeaveOrbit = new BuildableEffect
-				(
-					"Leave Orbit",
-					0, // order
-					(uwpe: UniverseWorldPlaceEntities) =>
-					{
-						var ship = uwpe.entity as Ship;
-						ship.planetOrbitExit(world, planet);
-						universe.venueJumpTo(venuePrev);
-					}
-				);
-
-				var effectCreateColony = new BuildableEffect
-				(
-					"Colonize Planet",
-					0, // order
-					(uwpe: UniverseWorldPlaceEntities) =>
-					{
-						var venueToReturnTo = universe.venueCurrent();
-						var planet = (uwpe.place as PlanetAsPlace).planet;
-						var ship = uwpe.entity as Ship;
-
-						var shipComponentEntities = ship.componentEntities;
-						var shipHasColonizer = shipComponentEntities.some
-						(
-							(x: Entity) => Buildable.ofEntity(x).defn.name == "Colonizer"
-						);
-						if (shipHasColonizer == false)
-						{
-							var message = "Ship has no colonizers on board."
-							var venue = VenueMessage.fromTextAcknowledgeAndSize
-							(
-								message,
-								() => universe.venueJumpTo(venueToReturnTo),
-								sizeDialog
-							);
-							universe.venueJumpTo(venue);							
-						}
-						else if (planet.factionable().factionName != null)
-						{
-							var message = "Planet is already colonized."
-							var venue = VenueMessage.fromTextAcknowledgeAndSize
-							(
-								message,
-								() => universe.venueJumpTo(venueToReturnTo),
-								sizeDialog
-							);
-							universe.venueJumpTo(venue);														
-						}
-						else
-						{
-							alert("todo - colonize planet");
-						}
-					}
-				);
-
-				var effectConquerPlanet = new BuildableEffect
-				(
-					"Conquer Planet",
-					0, // order
-					(uwpe: UniverseWorldPlaceEntities) =>
-					{
-						var venueToReturnTo = universe.venueCurrent();
-						var planet = (uwpe.place as PlanetAsPlace).planet;
-						var ship = uwpe.entity as Ship;
-
-						var shipComponentEntities = ship.componentEntities;
-						var shipHasInvader = shipComponentEntities.some
-						(
-							(x: Entity) => Buildable.ofEntity(x).defn.name == "Invasion Module"
-						);
-						if (shipHasInvader == false)
-						{
-							var message = "Ship has no invasion modules on board."
-							var venue = VenueMessage.fromTextAcknowledgeAndSize
-							(
-								message,
-								() => universe.venueJumpTo(venueToReturnTo),
-								sizeDialog
-							);
-							universe.venueJumpTo(venue);							
-						}
-						else if (planet.factionable().factionName == ship.factionable().factionName)
-						{
-							var message = "Planet is already owned by your faction."
-							var venue = VenueMessage.fromTextAcknowledgeAndSize
-							(
-								message,
-								() => universe.venueJumpTo(venueToReturnTo),
-								sizeDialog
-							);
-							universe.venueJumpTo(venue);
-						}
-						else
-						{
-							alert("todo - conquer planet");
-						}
-					}
-				);
-
 				var effectsAvailableForUse =
 				[
-					effectLeaveOrbit,
-					effectCreateColony,
-					effectConquerPlanet
+					this.effectLeaveOrbit(planet, venuePrev),
+					this.effectCreateColony(sizeDialog),
+					this.effectConquerPlanet(sizeDialog)
 				];
 
 				var shipAsBuildableDefn = new BuildableDefn
@@ -312,12 +212,13 @@ class ShipBuilder
 							return entity;
 						}
 					);
-					
+
 				var shipEntity =
 					// shipAsBuildable.toEntity(world);
 					new Ship
 					(
 						this.shipName,
+						shipHullSize,
 						shipBodyDefn,
 						shipPosInCells,
 						faction,
@@ -663,6 +564,124 @@ class ShipBuilder
 
 		return returnValue;
 	}
+
+	// Effects.
+
+	effectLeaveOrbit(planet: Planet, venuePrev: Venue): BuildableEffect
+	{
+		return new BuildableEffect
+		(
+			"Leave Orbit",
+			0, // order
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var universe = uwpe.universe;
+				var world = uwpe.world as WorldExtended;
+
+				var ship = uwpe.entity as Ship;
+				ship.planetOrbitExit(world, planet);
+				universe.venueJumpTo(venuePrev);
+			}
+		);
+	}
+
+	effectCreateColony(sizeDialog: Coords): BuildableEffect
+	{
+		return new BuildableEffect
+		(
+			"Colonize Planet",
+			0, // order
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var universe = uwpe.universe;
+
+				var venueToReturnTo = universe.venueCurrent();
+				var planet = (uwpe.place as PlanetAsPlace).planet;
+				var ship = uwpe.entity as Ship;
+
+				var shipComponentEntities = ship.componentEntities;
+				var shipHasColonizer = shipComponentEntities.some
+				(
+					(x: Entity) => Buildable.ofEntity(x).defn.name == "Colonizer"
+				);
+				if (shipHasColonizer == false)
+				{
+					var message = "Ship has no colonizers on board."
+					var venue = VenueMessage.fromTextAcknowledgeAndSize
+					(
+						message,
+						() => universe.venueJumpTo(venueToReturnTo),
+						sizeDialog
+					);
+					universe.venueJumpTo(venue);
+				}
+				else if (planet.factionable().factionName != null)
+				{
+					var message = "Planet is already colonized."
+					var venue = VenueMessage.fromTextAcknowledgeAndSize
+					(
+						message,
+						() => universe.venueJumpTo(venueToReturnTo),
+						sizeDialog
+					);
+					universe.venueJumpTo(venue);
+				}
+				else
+				{
+					alert("todo - colonize planet");
+				}
+			}
+		);
+	}
+
+	effectConquerPlanet(sizeDialog: Coords): BuildableEffect
+	{
+		return new BuildableEffect
+		(
+			"Conquer Planet",
+			0, // order
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var universe = uwpe.universe;
+
+				var venueToReturnTo = universe.venueCurrent();
+				var planet = (uwpe.place as PlanetAsPlace).planet;
+				var ship = uwpe.entity as Ship;
+
+				var shipComponentEntities = ship.componentEntities;
+				var shipHasInvader = shipComponentEntities.some
+				(
+					(x: Entity) => Buildable.ofEntity(x).defn.name == "Invasion Module"
+				);
+				if (shipHasInvader == false)
+				{
+					var message = "Ship has no invasion modules on board."
+					var venue = VenueMessage.fromTextAcknowledgeAndSize
+					(
+						message,
+						() => universe.venueJumpTo(venueToReturnTo),
+						sizeDialog
+					);
+					universe.venueJumpTo(venue);
+				}
+				else if (planet.factionable().factionName == ship.factionable().factionName)
+				{
+					var message = "Planet is already owned by your faction."
+					var venue = VenueMessage.fromTextAcknowledgeAndSize
+					(
+						message,
+						() => universe.venueJumpTo(venueToReturnTo),
+						sizeDialog
+					);
+					universe.venueJumpTo(venue);
+				}
+				else
+				{
+					alert("todo - conquer planet");
+				}
+			}
+		);
+	}
 }
 
 class ShipHullSize
@@ -670,19 +689,22 @@ class ShipHullSize
 	name: string;
 	industryToBuild: number;
 	componentCountMax: number;
+	integrityMax: number;
 
 	constructor
 	(
 		name: string,
 		industryToBuild: number,
-		componentCountMax: number
+		componentCountMax: number,
+		integrityMax: number
 	)
 	{
 		this.name = name;
 		this.industryToBuild = industryToBuild;
 		this.componentCountMax = componentCountMax;
+		this.integrityMax = integrityMax || 10;
 	}
-	
+
 	static _instances: ShipHullSize_Instances;
 	static Instances(): ShipHullSize_Instances
 	{
@@ -697,6 +719,11 @@ class ShipHullSize
 	{
 		return ShipHullSize.Instances().byName(name);
 	}
+
+	strategicValue(): number
+	{
+		return this.industryToBuild;
+	}
 }
 
 class ShipHullSize_Instances
@@ -710,10 +737,10 @@ class ShipHullSize_Instances
 
 	constructor()
 	{
-		this.Small 			= new ShipHullSize("Small", 0, 5);
-		this.Medium 		= new ShipHullSize("Medium", 0, 10);
-		this.Large 			= new ShipHullSize("Large", 0, 15);
-		this.Enormous 		= new ShipHullSize("Enormous", 0, 25);
+		this.Small 			= new ShipHullSize("Small", 0, 5, 5);
+		this.Medium 		= new ShipHullSize("Medium", 0, 10, 10);
+		this.Large 			= new ShipHullSize("Large", 0, 15, 15);
+		this.Enormous 		= new ShipHullSize("Enormous", 0, 25, 25);
 
 		this._All =
 		[

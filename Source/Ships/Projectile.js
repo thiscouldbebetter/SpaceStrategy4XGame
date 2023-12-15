@@ -1,17 +1,20 @@
 "use strict";
 class Projectile extends Entity {
-    constructor(name, projectileDefn, pos, shipFiredFrom, entityTarget) {
+    constructor(name, defn, pos, shipFiredFrom, entityTarget) {
         super(name, [
-            new Actor(Activity.fromDefnNameAndTargetEntity("MoveToTargetCollideAndEndMove", entityTarget)),
-            Projectile.bodyDefnBuild(projectileDefn),
-            //Drawable.fromVisual(projectileDefn.visual),
-            Locatable.fromPos(pos),
+            Projectile.actorBuild(entityTarget),
+            Projectile.bodyDefnBuild(defn),
             Projectile.collidableBuild(pos),
+            //Drawable.fromVisual(projectileDefn.visual),
             Killable.fromIntegrityMax(1),
             Locatable.fromPos(pos)
         ]);
+        this.defn = defn;
         this.shipFiredFrom = shipFiredFrom;
         this._displacement = Coords.create();
+    }
+    static actorBuild(entityTarget) {
+        return new Actor(Activity.fromDefnNameAndTargetEntity("MoveToTargetCollideAndEndMove", entityTarget));
     }
     static bodyDefnBuild(projectileDefn) {
         var scaleFactor = 1;
@@ -42,7 +45,16 @@ class Projectile extends Entity {
         else if (targetTypeName == Ship.name) {
             var ship = target;
             if (ship != projectile.shipFiredFrom) {
-                console.log("todo - projectile - collision - ship: " + ship.name);
+                var shipTargeted = ship;
+                projectile.killable().kill();
+                // var shipTargetedShields = shipTargeted.deviceUser().devicesShields();
+                var damageAbsorbedByShield = 0; // todo
+                var projectileDefn = projectile.defn;
+                var damageTakenByTarget = projectileDefn.damagePerHit - damageAbsorbedByShield;
+                if (damageTakenByTarget < 0) {
+                    damageTakenByTarget = 0;
+                }
+                shipTargeted.killable().integritySubtract(projectileDefn.damagePerHit);
                 didCollide = true;
             }
         }
@@ -87,10 +99,10 @@ class Projectile extends Entity {
     }
 }
 class ProjectileDefn {
-    constructor(name, range, damage, visual) {
+    constructor(name, range, damagePerHit, visual) {
         this.name = name;
         this.range = range;
-        this.damage = damage;
+        this.damagePerHit = damagePerHit;
         this.visual = visual;
     }
     static Instances() {
@@ -105,11 +117,14 @@ class ProjectileDefn_Instances {
         var colors = Color.Instances();
         var dimension = 3;
         var visualEllipse = VisualEllipse.fromSemiaxesAndColorFill(dimension, dimension / 2, colors.Yellow);
-        var frameCount = 16;
+        // Because it's a rotating ellipse, the second half of the animation
+        // looks exactly the same as the first, so just do half a rotation.
+        var halfRotation = 0.5;
+        var frameCount = 8;
         var visualsForFrames = [];
         for (let i = 0; i < frameCount; i++) // Must be let, not var.
          {
-            var visualFrame = new VisualRotate(visualEllipse, (uwpe) => i / frameCount);
+            var visualFrame = new VisualRotate(visualEllipse, (uwpe) => i * halfRotation / frameCount);
             visualsForFrames.push(visualFrame);
         }
         var visual = VisualAnimation.fromFramesRepeating(visualsForFrames);

@@ -1,13 +1,15 @@
 
 class DeviceUser implements EntityProperty<DeviceUser>
 {
+	_energyRemainingThisRound: number;
+
 	_deviceSelected: Device;
 	_devicesDrives: Device[];
 	_devicesUsable: Device[];
 
 	constructor()
 	{
-		// todo
+		this._energyRemainingThisRound = 0;
 	}
 
 	static ofEntity(entity: Entity): DeviceUser
@@ -23,6 +25,16 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	deviceSelected(): Device
 	{
 		return this._deviceSelected;
+	}
+
+	deviceSelectedCanBeUsedThisRound(): boolean
+	{
+		var deviceSelected = this.deviceSelected();
+		var canBeUsed =
+			deviceSelected == null
+			? false
+			: deviceSelected.canBeUsedThisRoundByDeviceUser(this);
+		return canBeUsed;
 	}
 
 	devices(ship: Ship): Device[]
@@ -63,6 +75,31 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		}
 
 		return this._devicesUsable;
+	}
+
+	energyRemainingThisRound(): number
+	{
+		return this._energyRemainingThisRound;
+	}
+
+	energyRemainingThisRoundAdd(energyToAdd: number): void
+	{
+		this._energyRemainingThisRound += energyToAdd;
+	}
+
+	energyRemainingThisRoundClear(): void
+	{
+		this._energyRemainingThisRound = 0;
+	}
+
+	energyRemainingThisRoundSubtract(energyToSubtract: number): void
+	{
+		this._energyRemainingThisRound -= energyToSubtract;
+	}
+
+	energyRemainsThisRound(energyToCheck: number): boolean
+	{
+		return (this._energyRemainingThisRound >= energyToCheck);
 	}
 
 	// Clonable.

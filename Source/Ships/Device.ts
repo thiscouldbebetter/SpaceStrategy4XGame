@@ -3,10 +3,8 @@ class Device implements EntityProperty<Device>
 {
 	_defn: DeviceDefn;
 
-	energyThisTurn: number;
 	isActive: boolean;
-	shieldingThisTurn: number;
-	usesThisTurn: number;
+	usesRemainingThisRound: number;
 
 	projectile: Projectile;
 
@@ -20,6 +18,17 @@ class Device implements EntityProperty<Device>
 	static ofEntity(entity: Entity): Device
 	{
 		return entity.propertyByName(Device.name) as Device;
+	}
+
+	canBeUsedThisRoundByDeviceUser(deviceUser: DeviceUser): boolean
+	{
+		var defn = this.defn();
+
+		var returnValue =
+			this.usesRemainingThisRound > 0
+			&& deviceUser.energyRemainsThisRound(defn.energyPerUse);
+
+		return returnValue;
 	}
 
 	defn(): DeviceDefn
@@ -41,9 +50,18 @@ class Device implements EntityProperty<Device>
 
 	use(uwpe: UniverseWorldPlaceEntities): void
 	{
-		uwpe.entity2 = this.toEntity();
-		var defn = this.defn();
-		defn.use(uwpe);
+		var deviceUser = DeviceUser.ofEntity(uwpe.entity);
+
+		if (this.canBeUsedThisRoundByDeviceUser(deviceUser) )
+		{
+			this.usesRemainingThisRound--;
+
+			var defn = this.defn();
+			deviceUser.energyRemainingThisRoundSubtract(defn.energyPerUse);
+
+			uwpe.entity2 = this.toEntity();
+			defn.use(uwpe);
+		}
 	}
 
 	// EntityProperty.

@@ -6,7 +6,9 @@ class DeviceDefns {
         [], // categoryNames
         (uwpe) => // init
          { }, (uwpe) => // updateForRound
-         { }, (uwpe) => // use
+         { }, 1, // usesPerRound
+        0, // energyPerUse
+        (uwpe) => // use
          {
             var ship = uwpe.entity;
             ship.planetColonize(uwpe.universe, uwpe.world);
@@ -18,7 +20,9 @@ class DeviceDefns {
          { }, (uwpe) => // updateForRound
          {
             // todo - var ship = uwpe.entity as Ship;
-        }, (uwpe) => // use
+        }, 0, // usesPerRound
+        1, // energyPerUse
+        (uwpe) => // use
          {
             // todo - var ship = uwpe.entity as Ship;
         });
@@ -29,7 +33,9 @@ class DeviceDefns {
          { }, (uwpe) => // updateForRound
          {
             // todo - var ship = uwpe.entity as Ship;
-        }, (uwpe) => // use
+        }, 0, // usesPerRound
+        1, // energyPerUse
+        (uwpe) => // use
          {
             // Do nothing.
         });
@@ -43,7 +49,9 @@ class DeviceDefns {
         }, (uwpe) => // updateForRound
          {
             // todo
-        }, (uwpe) => // use
+        }, 0, // usesPerRound
+        1, // energyPerUse
+        (uwpe) => // use
          {
             // todo
         });
@@ -72,9 +80,12 @@ class DeviceDefns {
             // todo
         }, (uwpe) => // updateForRound
          {
-            var device = Device.ofEntity(uwpe.entity2);
-            device.usesThisTurn = 3;
-        }, this.shipWeaponBasicUse);
+            // todo
+            //var device = Device.ofEntity(uwpe.entity2);
+            //device.usesThisTurn = 3;
+        }, 1, // usesPerRound
+        1, // energyPerUse
+        this.shipWeaponBasicUse);
     }
     shipWeaponBasicUse(uwpe) {
         /*

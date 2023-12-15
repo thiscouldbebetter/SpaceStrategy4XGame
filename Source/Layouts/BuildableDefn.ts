@@ -98,6 +98,11 @@ class BuildableDefn
 		return this.name + " (" + this.industryToBuild + ")";
 	}
 
+	strategicValue(): number
+	{
+		return this.industryToBuild;
+	}
+
 	visualWrapWithOverlay(visualToWrap: VisualBase): VisualBase
 	{
 		var visualOverlayShadedRectangle = VisualRectangle.fromSizeAndColorFill

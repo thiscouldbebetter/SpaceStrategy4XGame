@@ -217,7 +217,7 @@ class WorldExtendedCreator
 
 		if (this.isDebuggingMode)
 		{
-			this.create_FactionsAndShips_2_ShipEnemy
+			this.create_FactionsAndShips_2_ShipOther
 			(
 				worldDummy, factions, deviceDefnsByName
 			);
@@ -518,6 +518,8 @@ class WorldExtendedCreator
 	): Ship[]
 	{
 		var factionHomeStarsystemSize = factionHomeStarsystem.size();
+
+		var shipHullSize = ShipHullSize.Instances().Small;
 		var shipDefn = Ship.bodyDefnBuild(factionColor);
 		var shipCount = (this.isDebuggingMode ? 2 : 0);
 
@@ -529,7 +531,7 @@ class WorldExtendedCreator
 			buildableDefns.ShipShield1IonWrap,
 			buildableDefns.ShipWeapon01MassBarrageGun,
 		];
-		
+
 		var shipComponentsAsBuildables =
 			shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x) );
 
@@ -540,23 +542,26 @@ class WorldExtendedCreator
 
 		for (var s = 0; s < shipCount; s++)
 		{
+			var shipPos = Coords.create().randomize
+			(
+				randomizer
+			).multiply
+			(
+				factionHomeStarsystemSize
+			).multiplyScalar
+			(
+				2
+			).subtract
+			(
+				factionHomeStarsystemSize
+			);
+
 			var ship = new Ship
 			(
 				"Ship" + s,
+				shipHullSize,
 				shipDefn,
-				Coords.create().randomize
-				(
-					randomizer
-				).multiply
-				(
-					factionHomeStarsystemSize
-				).multiplyScalar
-				(
-					2
-				).subtract
-				(
-					factionHomeStarsystemSize
-				),
+				shipPos,
 				faction,
 				shipComponentsAsEntities
 			);
@@ -567,57 +572,53 @@ class WorldExtendedCreator
 		return factionShips;
 	}
 
-	create_FactionsAndShips_2_ShipEnemy
+	create_FactionsAndShips_2_ShipOther
 	(
 		worldDummy: WorldExtended,
 		factions: Faction[],
 		deviceDefnsByName: Map<string, DeviceDefn>
 	): void
 	{
+		var shipHullSize = ShipHullSize.Instances().Small;
+
 		var factionUser = factions[0];
 		var factionUserHomeStarsystem =
 			factionUser.starsystemHome(worldDummy);
 		var factionUserHomeStarsystemSize =
 			factionUserHomeStarsystem.size();
 
-		var factionEnemy = factions[1];
-		var factionEnemyColor = factionEnemy.color;
-		var factionEnemyShipDefn = Ship.bodyDefnBuild(factionEnemyColor);
+		var factionOther = factions[1];
+		var factionOtherColor = factionOther.color;
+		var factionOtherShipDefn = Ship.bodyDefnBuild(factionOtherColor);
 
-		var shipEnemy = new Ship
+		var shipPos = Coords.create().randomize
 		(
-			"ShipEnemy",
-			
-			factionEnemyShipDefn,
-			
-			Coords.create().randomize
-			(
-				this.universe.randomizer
-			).multiply
-			(
-				factionUserHomeStarsystemSize
-			).multiplyScalar
-			(
-				2
-			).subtract
-			(
-				factionUserHomeStarsystemSize
-			),
-			
-			factionEnemy,
-			
+			this.universe.randomizer
+		).multiply
+		(
+			factionUserHomeStarsystemSize
+		).multiplyScalar
+		(
+			2
+		).subtract
+		(
+			factionUserHomeStarsystemSize
+		);
+
+		var shipOther = new Ship
+		(
+			"ShipOther",
+			shipHullSize,
+			factionOtherShipDefn,
+			shipPos,
+			factionOther,
 			[
-				/*
-				new Device(deviceDefnsByName.get("Ship Generator, Basic") ),
-				new Device(deviceDefnsByName.get("Ship Drive, Basic") ),
-				new Device(deviceDefnsByName.get("Ship Shield, Basic") ),
-				new Device(deviceDefnsByName.get("Ship Weapon, Basic") ),
-				*/
+				// No devices.
 			]
 		);
 
-		factionEnemy.shipAdd(shipEnemy);
-		factionUserHomeStarsystem.shipAdd(shipEnemy, worldDummy);
+		factionOther.shipAdd(shipOther);
+		factionUserHomeStarsystem.shipAdd(shipOther, worldDummy);
 	}
 
 }

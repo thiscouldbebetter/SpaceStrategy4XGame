@@ -468,6 +468,8 @@ class BuildableDefnsLegacy
 			{
 				// todo
 			},
+			0, // usesPerRound
+			0, // energyPerUse
 			(uwpe: UniverseWorldPlaceEntities) => // use
 			{
 				// todo
@@ -523,49 +525,76 @@ class BuildableDefnsLegacy
 
 		var categoryShipGenerator = categories.ShipGenerator;
 
-		this.ShipGenerator1ProtonShaver = shipComponent
+		var deviceDefnGenerator =
+			(energyPerTurn: number) =>
+			{
+				return new DeviceDefn
+				(
+					"Generator",
+					false, // isActive
+					false, // needsTarget
+					[ categoryShipGenerator.name ],
+					null, // initialize
+					// updateForRound
+					(uwpe: UniverseWorldPlaceEntities) =>
+					{
+						var ship = uwpe.entity as Ship;
+						ship.deviceUser().energyRemainingThisRoundAdd(energyPerTurn);
+					},
+					0, // usesPerRound
+					0, // energyPerUse
+					null // use
+				);
+			};
+
+		var colorGenerator = colors.Yellow;
+
+		var shipGenerator =
+			(name: string, industryToBuild: number, energyPerTurn: number) =>
+			{
+				return shipComponent
+				(
+					name,
+					visualBuild(name, colorGenerator),
+					industryToBuild,
+					categoryShipGenerator,
+					deviceDefnGenerator(energyPerTurn)
+				);
+			}
+
+		this.ShipGenerator1ProtonShaver = shipGenerator
 		(
 			names.ShipGenerator1ProtonShaver,
-			visualBuild("Generator", colors.Gray),
 			20,
-			categoryShipGenerator,
-			null // deviceDefn
+			1
 		);
 
-		this.ShipGenerator2SubatomicScoop = shipComponent
+		this.ShipGenerator2SubatomicScoop = shipGenerator
 		(
 			names.ShipGenerator2SubatomicScoop,
-			visualBuild("Generator", colors.Red),
 			35,
-			categoryShipGenerator,
-			null // deviceDefn
+			2
 		);
 
-		this.ShipGenerator3QuarkExpress = shipComponent
+		this.ShipGenerator3QuarkExpress = shipGenerator
 		(
 			names.ShipGenerator3QuarkExpress,
-			visualBuild("Generator", colors.Green),
 			60,
-			categoryShipGenerator,
-			null // deviceDefn
+			3
 		);
 
-		this.ShipGenerator4VanKreegHypersplicer = shipComponent
+		this.ShipGenerator4VanKreegHypersplicer = shipGenerator
 		(
 			names.ShipGenerator4VanKreegHypersplicer,
-			visualBuild("Generator", colors.Blue),
 			80,
-			categoryShipGenerator,
-			null // deviceDefn
+			4
 		);
 
-		this.ShipGenerator5Nanotwirler = shipComponent
+		this.ShipGenerator5Nanotwirler = shipGenerator
 		(
 			names.ShipGenerator5Nanotwirler,
-			visualBuild("Generator", colors.Violet),
 			100,
-			categoryShipGenerator,
-			null // deviceDefn
+			5
 		);
 
 		// Hulls.
@@ -689,6 +718,8 @@ class BuildableDefnsLegacy
 				{
 					// todo
 				},
+				usesPerRound,
+				energyPerUse,
 				(uwpe: UniverseWorldPlaceEntities) => // use
 				{
 					var shipFiring = uwpe.entity as Ship;

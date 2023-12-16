@@ -1,21 +1,16 @@
 "use strict";
 class Factionable {
-    constructor(factionName) {
-        this.factionName = factionName;
+    constructor(faction) {
+        this._faction = faction;
     }
     static ofEntity(entity) {
         return entity.propertyByName(Factionable.name);
     }
-    faction(world) {
-        var factionName = this.factionName;
-        var faction = (factionName == null ? null : world.factionByName(factionName));
-        return faction;
+    faction() {
+        return this._faction;
     }
     factionSet(faction) {
-        this.factionName = faction.name;
-    }
-    factionSetByName(value) {
-        this.factionName = value;
+        this._faction = faction;
     }
     // EntityProperty.
     updateForTimerTick(uwpe) {
@@ -23,10 +18,10 @@ class Factionable {
     }
     // Clonable.
     clone() {
-        return new Factionable(this.factionName);
+        return new Factionable(this.faction());
     }
     overwriteWith(other) {
-        this.factionName = other.factionName;
+        this.faction = other.faction;
         return this;
     }
     // EntityProperty.
@@ -36,6 +31,6 @@ class Factionable {
     }
     // Equatable
     equals(other) {
-        return this.factionName == other.factionName;
+        return this.faction == other.faction;
     }
 }

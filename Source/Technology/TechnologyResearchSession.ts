@@ -42,7 +42,7 @@ class TechnologyResearchSession
 		var returnValue =
 			"" + this.researcher.researchAccumulated
 			+ "/"
-			+ (tech == null ? "-" : "" + tech.researchRequired);
+			+ (tech == null ? "-" : "" + tech.researchToLearn);
 		return returnValue;
 	}
 
@@ -53,7 +53,7 @@ class TechnologyResearchSession
 		(
 			technologyBeingResearched == null
 			? 0
-			: technologyBeingResearched.researchRequired
+			: technologyBeingResearched.researchToLearn
 		);
 		return returnValue;
 	}
@@ -96,7 +96,7 @@ class TechnologyResearchSession
 		(
 			Coords.fromXY(columnWidth * 1, margin), // pos,
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-			DataBinding.fromContext(this.researcher.name),
+			DataBinding.fromContext(this.researcher.name() ),
 			fontNameAndHeight
 		);
 

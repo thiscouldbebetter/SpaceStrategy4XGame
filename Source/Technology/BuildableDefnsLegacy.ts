@@ -187,7 +187,7 @@ class BuildableDefnsLegacy
 				(uwpe: UniverseWorldPlaceEntities) =>
 				{
 					var planet = (uwpe.place as PlanetAsPlace).planet;
-					planet.resourcesPerTurnAdd(resourcesToAdd);
+					planet.resourcesThisRoundAdd(resourcesToAdd);
 				}
 			);
 			return effect;
@@ -539,7 +539,7 @@ class BuildableDefnsLegacy
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
 						var ship = uwpe.entity as Ship;
-						ship.deviceUser().energyRemainingThisRoundAdd(energyPerTurn);
+						ship.deviceUser().energyPerRoundAdd(energyPerTurn);
 					},
 					0, // usesPerRound
 					0, // energyPerUse

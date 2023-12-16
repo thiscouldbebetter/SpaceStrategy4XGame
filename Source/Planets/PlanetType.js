@@ -37,10 +37,10 @@ class PlanetType {
             var visualLabel = new VisualDynamic // todo - VisualDynamic2?
             ((uwpe) => {
                 var planet = uwpe.entity;
-                var factionName = planet.factionable().factionName;
-                var returnValue = (factionName == null
+                var faction = planet.factionable().faction();
+                var returnValue = (faction == null
                     ? new VisualNone()
-                    : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColorsFillAndBorder("Owned by " + factionName, FontNameAndHeight.fromHeightInPixels(planetDimension * 1.5), colors.Black, colors.White)));
+                    : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColorsFillAndBorder("Owned by " + faction.name, FontNameAndHeight.fromHeightInPixels(planetDimension * 1.5), colors.Black, colors.White)));
                 return returnValue;
             });
             var visual = new VisualGroup([

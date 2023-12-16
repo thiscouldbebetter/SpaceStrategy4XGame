@@ -1,13 +1,18 @@
 
 class DiplomaticRelationship
 {
-	factionNameOther: string;
-	state: string;
+	_factionOther: Faction;
+	state: DiplomaticRelationshipState;
 
-	constructor(factionNameOther: string, state: string)
+	constructor(factionOther: Faction, state: DiplomaticRelationshipState)
 	{
-		this.factionNameOther = factionNameOther;
-		this.state = state;
+		this._factionOther = factionOther;
+		this.state = state || DiplomaticRelationship.States().Uncontacted;
+	}
+
+	static fromFactionOther(factionOther: Faction): DiplomaticRelationship
+	{
+		return new DiplomaticRelationship(factionOther, null);
 	}
 
 	// static methods
@@ -27,40 +32,99 @@ class DiplomaticRelationship
 
 	// instances
 
-	static _states: DiplomaticRelationship_States;
-	static States()
+	static _states: DiplomaticRelationshipState_Instances;
+	static States(): DiplomaticRelationshipState_Instances
 	{
-		if (DiplomaticRelationship._states == null)
-		{
-			DiplomaticRelationship._states = new DiplomaticRelationship_States();
-		}
-		return DiplomaticRelationship._states;
+		return DiplomaticRelationshipState.Instances();
 	}
 
 	// instance methods
 
-	factionOther(world: WorldExtended)
+	factionOther(): Faction
 	{
-		return world.factionByName(this.factionNameOther);
+		return this._factionOther;
+	}
+
+	stateSet(value: DiplomaticRelationshipState): void
+	{
+		this.state = value;
+	}
+
+	stateSetToAlliance(): void
+	{
+		this.state = DiplomaticRelationship.States().Alliance;
+	}
+
+	stateSetToPeace(): void
+	{
+		this.state = DiplomaticRelationship.States().Peace;
+	}
+
+	stateSetToWar(): void
+	{
+		this.state = DiplomaticRelationship.States().War;
 	}
 
 	toString()
 	{
-		var returnValue = this.factionNameOther + ":" + this.state;
+		var returnValue = this.factionOther().name + ":" + this.state;
 		return returnValue;
 	}
 }
 
-class DiplomaticRelationship_States
+class DiplomaticRelationshipState
 {
-	Alliance: string;
-	Peace: string;
-	War: string;
+	name: string;
+
+	constructor(name: string)
+	{
+		this.name = name;
+	}
+
+	static _instances: DiplomaticRelationshipState_Instances;
+	static Instances(): DiplomaticRelationshipState_Instances
+	{
+		if (DiplomaticRelationshipState._instances == null)
+		{
+			DiplomaticRelationshipState._instances =
+				new DiplomaticRelationshipState_Instances();
+		}
+		return DiplomaticRelationshipState._instances;
+	}
+
+	static byName(name: string): DiplomaticRelationshipState
+	{
+		return DiplomaticRelationshipState.Instances().byName(name);
+	}
+}
+
+class DiplomaticRelationshipState_Instances
+{
+	Alliance: DiplomaticRelationshipState;
+	Peace: DiplomaticRelationshipState;
+	Uncontacted: DiplomaticRelationshipState;
+	War: DiplomaticRelationshipState;
+
+	_All: DiplomaticRelationshipState[];
 
 	constructor()
 	{
-		this.Alliance = "Alliance";
-		this.Peace = "Peace";
-		this.War = "War";
+		this.Alliance = new DiplomaticRelationshipState("Alliance");
+		this.Peace = new DiplomaticRelationshipState("Peace");
+		this.Uncontacted = new DiplomaticRelationshipState("Uncontacted");
+		this.War = new DiplomaticRelationshipState("War");
+
+		this._All =
+		[
+			this.Alliance,
+			this.Peace,
+			this.Uncontacted,
+			this.War
+		];
+	}
+
+	byName(name: string): DiplomaticRelationshipState
+	{
+		return this._All.find(x => x.name == name);
 	}
 }

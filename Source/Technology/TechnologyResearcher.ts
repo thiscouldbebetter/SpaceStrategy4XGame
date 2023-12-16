@@ -1,34 +1,30 @@
 
 class TechnologyResearcher
 {
-	factionName: string;
+	_faction: Faction;
 	technologyBeingResearchedName: string;
 	researchAccumulated: number;
 	technologiesKnownNames: string[];
 
-	name: string;
-
 	constructor
 	(
-		factionName: string,
+		faction: Faction,
 		technologyBeingResearchedName: string,
 		researchAccumulated: number,
 		technologiesKnownNames: string[]
 	)
 	{
-		this.factionName = factionName;
+		this._faction = faction;
 		this.technologyBeingResearchedName = technologyBeingResearchedName;
 		this.researchAccumulated = researchAccumulated;
 		this.technologiesKnownNames = technologiesKnownNames;
-
-		this.name = this.factionName + " Research";
 	}
 
 	static default(): TechnologyResearcher
 	{
 		return new TechnologyResearcher
 		(
-			"[factionName]",
+			null, // faction
 			null, // technologyBeingResearchedName
 			0, // researchAccumulated
 			[], // technologiesKnownNames
@@ -52,9 +48,20 @@ class TechnologyResearcher
 		return returnValues;
 	}
 
-	faction(world: WorldExtended): Faction
+	faction(): Faction
 	{
-		return world.factionByName(this.factionName);
+		return this._faction;
+	}
+
+	factionSet(value: Faction): void
+	{
+		this._faction = value;
+	}
+
+	private _name: string;
+	name(): string
+	{
+		return this.faction().name + " Research";
 	}
 
 	notificationBuildNothingBeingResearched
@@ -64,7 +71,7 @@ class TechnologyResearcher
 	{
 		var technologyResearcher = this;
 
-		var faction = this.faction(world);
+		var faction = this.faction();
 		var notification = new Notification2
 		(
 			"The " + faction.name + " have research facilities, but nothing is being researched.",
@@ -127,8 +134,8 @@ class TechnologyResearcher
 		{
 			this.researchAccumulated += amountToIncrement;
 
-			var researchRequired = technologyBeingResearched.researchRequired;
-			if (this.researchAccumulated >= researchRequired)
+			var researchToLearn = technologyBeingResearched.researchToLearn;
+			if (this.researchAccumulated >= researchToLearn)
 			{
 				this.technologyBeingResearchedLearn();
 				
@@ -147,11 +154,11 @@ class TechnologyResearcher
 			}
 		}
 	}
-	
+
 	researchPerTurn(universe: Universe, world: WorldExtended): number
 	{
-		var faction = this.faction(world);
-		var returnValue = faction.researchPerTurn(universe, world);
+		var faction = this.faction();
+		var returnValue = faction.researchThisRound(universe, world);
 		return returnValue;
 	}
 
@@ -208,7 +215,7 @@ class TechnologyResearcher
 
 		return returnValue;
 	}
-	
+
 	technologyBeingResearchedLearn(): TechnologyResearcher
 	{
 		if (this.technologyBeingResearched != null)
@@ -216,7 +223,7 @@ class TechnologyResearcher
 			this.technologyLearnByName(this.technologyBeingResearched.name);
 			this.technologyBeingResearchedSet(null);
 		}
-		
+
 		return this;
 	}
 
@@ -227,7 +234,7 @@ class TechnologyResearcher
 		this.researchAccumulated = 0;
 		return this;
 	}
-	
+
 	technologyBeingResearcedSetToFirstAvailable(world: WorldExtended): Technology
 	{
 		var technologyToResearch =
@@ -235,7 +242,7 @@ class TechnologyResearcher
 		this.technologyBeingResearchedSet(technologyToResearch);
 		return technologyToResearch;
 	}
-		
+
 	technologyIsAvailableForResearch(technologyToCheck: Technology): boolean
 	{
 		var returnValue = false;
@@ -297,6 +304,11 @@ class TechnologyResearcher
 		}
 		
 		return this;
+	}
+
+	technologyLearn(technologyToLearn: Technology): TechnologyResearcher
+	{
+		return this.technologyLearnByName(technologyToLearn.name);
 	}
 
 	technologyResearch(technologyToResearch: Technology): void

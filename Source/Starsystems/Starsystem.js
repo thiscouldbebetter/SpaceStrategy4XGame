@@ -75,6 +75,9 @@ class Starsystem extends PlaceBase {
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
     }
+    factionSet(faction) {
+        this.factionName = faction.name;
+    }
     factionToMove(world) {
         if (this._factionToMoveIndex == null) {
             this._factionToMoveIndex = 0;
@@ -93,19 +96,21 @@ class Starsystem extends PlaceBase {
     factionsPresent(world) {
         var factionsPresentByName = new Map();
         this.planets.forEach(x => {
-            var factionName = x.factionable().factionName;
-            if (factionName != null) {
+            var faction = x.factionable().faction();
+            if (faction != null) // Is this necessary?
+             {
+                var factionName = faction.name;
                 if (factionsPresentByName.has(factionName) == false) {
-                    var faction = world.factionByName(factionName);
                     factionsPresentByName.set(factionName, faction);
                 }
             }
         });
         this.ships.forEach(x => {
-            var factionName = x.factionable().factionName;
-            if (factionName != null) {
+            var faction = x.factionable().faction();
+            if (faction != null) // Is this necessary?
+             {
+                var factionName = faction.name;
                 if (factionsPresentByName.has(factionName) == false) {
-                    var faction = world.factionByName(factionName);
                     factionsPresentByName.set(factionName, faction);
                 }
             }
@@ -167,12 +172,12 @@ class Starsystem extends PlaceBase {
     updateForRound(universe, world) {
         for (var i = 0; i < this.planets.length; i++) {
             var planet = this.planets[i];
-            var faction = planet.faction(world);
+            var faction = planet.faction();
             planet.updateForRound(universe, world, faction);
         }
         for (var i = 0; i < this.ships.length; i++) {
             var ship = this.ships[i];
-            var faction = ship.faction(world);
+            var faction = ship.faction();
             ship.updateForRound(universe, world, faction);
         }
     }

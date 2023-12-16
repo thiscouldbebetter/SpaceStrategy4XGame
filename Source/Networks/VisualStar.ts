@@ -133,7 +133,7 @@ class VisualStar implements Visual<VisualStar>
 		for (var i = 0; i < planets.length; i++)
 		{
 			var planet = planets[i];
-			var planetFaction = planet.faction(world);
+			var planetFaction = planet.faction();
 			if (planetFaction != null)
 			{
 				factionsPresent.push(planetFaction);
@@ -165,8 +165,8 @@ class VisualStar implements Visual<VisualStar>
 			{
 				var factions = world.factions;
 				var returnValue =
-					factions.indexOf(a.faction(world))
-					- factions.indexOf(a.faction(world));
+					factions.indexOf(a.faction())
+					- factions.indexOf(b.faction());
 				return returnValue;
 			}
 		);
@@ -181,7 +181,7 @@ class VisualStar implements Visual<VisualStar>
 		for (var i = 0; i < shipsSortedByFactionIndex.length; i++)
 		{
 			var ship = ships[i];
-			var shipFaction = ship.faction(world);
+			var shipFaction = ship.faction();
 			if (shipFaction != shipFactionPrev)
 			{
 				factionsSoFar++;

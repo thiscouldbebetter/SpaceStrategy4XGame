@@ -44,8 +44,8 @@ class Faction implements EntityProperty<Faction>
 		this.color = color;
 		this.diplomacy = diplomacy;
 		this.technologyResearcher = technologyResearcher;
-		this.planets = planets;
-		this.ships = ships;
+		this.planets = planets || [];
+		this.ships = ships || [];
 		this.knowledge = knowledge;
 		this.intelligence = intelligence;
 		this._visualsForShipsByHullSize = visualsForShipsByHullSize; // todo
@@ -62,21 +62,26 @@ class Faction implements EntityProperty<Faction>
 
 	static fromName(name: string): Faction
 	{
-		return new Faction
+		var faction = new Faction
 		(
 			name,
 			null,
 			null, // homeStarsystemName,
 			null, // homePlanetName,
 			Color.Instances().Red,
-			FactionDiplomacy.fromFactionSelfName(name),
+			null, // diplomacy
 			TechnologyResearcher.default(),
-			new Array<Planet>(),
-			new Array<Ship>(),
+			null, // planets
+			null, // ships
 			FactionKnowledge.fromFactionSelfName(name),
 			null, // intelligence
 			null // visuals
 		);
+
+		var diplomacy = FactionDiplomacy.fromFactionSelf(faction);
+		faction.diplomacy = diplomacy;
+
+		return faction;
 	}
 
 	static _colors: Color[];
@@ -126,17 +131,6 @@ class Faction implements EntityProperty<Faction>
 		return (this.intelligence == FactionIntelligence.Instances().Human);
 	}
 
-	researchSessionStart(universe: Universe): void
-	{
-		var researchSession = new TechnologyResearchSession
-		(
-			(universe.world as WorldExtended).technologyGraph,
-			this.technologyResearcher
-		);
-		var venueNext: Venue = new VenueTechnologyResearchSession(researchSession);
-		universe.venueTransitionTo(venueNext);
-	}
-
 	planetAdd(planet: Planet): void
 	{
 		this.planets.push(planet);
@@ -148,6 +142,17 @@ class Faction implements EntityProperty<Faction>
 		return this.starsystemHome(world).planets.find(x => x.name == this.homePlanetName);
 	}
 
+	researchSessionStart(universe: Universe): void
+	{
+		var researchSession = new TechnologyResearchSession
+		(
+			(universe.world as WorldExtended).technologyGraph,
+			this.technologyResearcher
+		);
+		var venueNext: Venue = new VenueTechnologyResearchSession(researchSession);
+		universe.venueTransitionTo(venueNext);
+	}
+
 	shipAdd(ship: Ship): void
 	{
 		this.ships.push(ship);
@@ -157,6 +162,19 @@ class Faction implements EntityProperty<Faction>
 	starsystemHome(world: WorldExtended): Starsystem
 	{
 		return world.network.nodeByName(this.homeStarsystemName).starsystem;
+	}
+
+	starsystems(world: WorldExtended): Starsystem[]
+	{
+		var planets = this.planets;
+		var starsystemsForPlanetsWithDuplicates =
+			planets.map(p => p.starsystem(world));
+		var starsystemsForPlanets =
+			starsystemsForPlanetsWithDuplicates.filter
+			(
+				(value, index, all) => all.indexOf(value) == index
+			);
+		return starsystemsForPlanets;
 	}
 
 	toEntity(): Entity
@@ -325,71 +343,69 @@ class Faction implements EntityProperty<Faction>
 			controlHeight
 		);
 
-		var labelFaction = new ControlLabel
+		var labelFaction = ControlLabel.from4Uncentered
 		(
-			"labelFaction",
 			Coords.fromXY(margin, margin),// pos
 			controlSize,
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext("Faction:"),
 			fontNameAndHeight
 		);
 
-		var textFaction = new ControlLabel
+		var textFaction = ControlLabel.from4Uncentered
 		(
-			"textFaction",
 			Coords.fromXY(margin * 8, margin), // pos
 			controlSize,
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext(faction.name),
 			fontNameAndHeight
 		);
 
-		var labelFactionType = new ControlLabel
+		var labelFactionType = ControlLabel.from4Uncentered
 		(
-			"labelFactionType",
 			Coords.fromXY(margin, margin * 2),// pos
 			controlSize,
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext("Type:"),
 			fontNameAndHeight
 		);
 
-		var textFactionType = new ControlLabel
+		var textFactionType = ControlLabel.from4Uncentered
 		(
-			"textFactionType",
 			Coords.fromXY(margin * 8, margin * 2), // pos
 			controlSize,
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext(faction.defnName),
 			fontNameAndHeight
 		);
 
-		var labelAbility = new ControlLabel
+		var labelAbility = ControlLabel.from4Uncentered
 		(
-			"labelAbility",
 			Coords.fromXY(margin, margin * 3),// pos
 			controlSize,
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext("Ability:"),
 			fontNameAndHeight
 		);
 
-		var textAbility = new ControlLabel
+		var textAbility = ControlLabel.from4Uncentered
 		(
-			"textAbility",
 			Coords.fromXY(margin * 8, margin * 3), // pos
 			controlSize,
-			false, // isTextCenteredHorizontally
-			false, // isTextCenteredVertically
 			DataBinding.fromContext(faction.defn().ability.toString(universe.world as WorldExtended)),
 			fontNameAndHeight
 		);
+
+		var abilityUse = () =>
+		{
+			var world = universe.world as WorldExtended;
+			var faction = world.factionCurrent();
+			if (faction.abilityCanBeUsed(world) )
+			{
+				var factionDefn = faction.defn();
+				var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+				factionDefn.ability.perform(uwpe);
+			}
+			else
+			{
+				VenueMessage.fromText("todo - Can't use ability yet.");
+			}
+		};
 
 		var buttonAbilityUse = ControlButton.from8
 		(
@@ -400,20 +416,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight,
 			true, // hasBorder
 			DataBinding.fromTrue(), // isEnabled
-			() =>
-			{
-				var world = universe.world as WorldExtended;
-				var faction = world.factionCurrent();
-				if (faction.abilityCanBeUsed(world) )
-				{
-					var factionDefn = faction.defn();
-					factionDefn.ability.perform(world);
-				}
-				else
-				{
-					VenueMessage.fromText("todo - Can't use ability yet.");
-				}
-			} // click
+			abilityUse // click
 		);
 
 		var containerStatus = ControlContainer.from4
@@ -505,6 +508,81 @@ class Faction implements EntityProperty<Faction>
 		var world = universe.world as WorldExtended;
 		var faction = this;
 
+		var labelPlanets = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin),// pos
+			Coords.fromXY
+			(
+				size.x - margin * 2,
+				controlHeight
+			), // size
+			DataBinding.fromContext("Planets:"),
+			fontNameAndHeight
+		);
+
+		var textPlanetCount = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin * 8, margin), // pos
+			Coords.fromXY
+			(
+				size.x - margin * 2,
+				controlHeight
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				faction,
+				(c: Faction) => "" + c.planets.length
+			),
+			fontNameAndHeight
+		);
+
+		var listPlanets = ControlList.from8
+		(
+			"listPlanets",
+			Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+			Coords.fromXY
+			(
+				size.x - margin * 2,
+				size.y - margin * 4 - controlHeight * 2
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				faction,
+				(c: Faction) => faction.planets
+			), // items
+			DataBinding.fromGet
+			(
+				(c: Planet) => c.toStringDescription(universe, world)
+			), // bindingForItemText
+			fontNameAndHeight,
+			// dataBindingForItemSelected
+			new DataBinding
+			(
+				faction,
+				(c: Faction) => c.planetSelected,
+				(c: Faction, v: Planet) =>
+				{
+					c.planetSelected = v;
+				}
+			),
+			null // bindingForItemValue
+		);
+
+		var buttonGoToSelected = ControlButton.from8
+		(
+			"buttonGoToSelected",
+			Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+			Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
+			"Go To",
+			fontNameAndHeight,
+			true, // hasBorder
+			DataBinding.fromContextAndGet
+			(
+				faction, (c: Faction) => (c.planetSelected != null)
+			), // isEnabled
+			() => faction.planetSelected.jumpTo(universe) // click
+		);
+
 		var containerPlanets = ControlContainer.from4
 		(
 			"Planets",
@@ -512,87 +590,10 @@ class Faction implements EntityProperty<Faction>
 			size,
 			// children
 			[
-				new ControlLabel
-				(
-					"labelPlanets",
-					Coords.fromXY(margin, margin),// pos
-					Coords.fromXY
-					(
-						size.x - margin * 2,
-						controlHeight
-					), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Planets:"),
-					fontNameAndHeight
-				),
-
-				new ControlLabel
-				(
-					"textPlanetCount",
-					Coords.fromXY(margin * 8, margin), // pos
-					Coords.fromXY
-					(
-						size.x - margin * 2,
-						controlHeight
-					), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						faction,
-						(c: Faction) => "" + c.planets.length
-					),
-					fontNameAndHeight
-				),
-
-				ControlList.from8
-				(
-					"listPlanets",
-					Coords.fromXY(margin, margin * 2 + controlHeight), // pos
-					Coords.fromXY
-					(
-						size.x - margin * 2,
-						size.y - margin * 4 - controlHeight * 2
-					), // size
-					DataBinding.fromContextAndGet
-					(
-						faction,
-						(c: Faction) => faction.planets
-					), // items
-					DataBinding.fromGet
-					(
-						(c: Planet) => c.toStringDescription(universe, world)
-					), // bindingForItemText
-					fontNameAndHeight,
-					// dataBindingForItemSelected
-					new DataBinding
-					(
-						faction,
-						(c: Faction) => c.planetSelected,
-						(c: Faction, v: Planet) =>
-						{
-							c.planetSelected = v;
-						}
-					),
-					null // bindingForItemValue
-				),
-
-				ControlButton.from8
-				(
-					"buttonGoToSelected",
-					Coords.fromXY(margin, size.y - margin - controlHeight), // pos
-					Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
-					"Go To",
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromContextAndGet
-					(
-						faction, (c: Faction) => (c.planetSelected != null)
-					), // isEnabled
-					() => faction.planetSelected.jumpTo(universe) // click
-				),
-
+				labelPlanets,
+				textPlanetCount,
+				listPlanets,
+				buttonGoToSelected
 			]
 		);
 
@@ -610,6 +611,81 @@ class Faction implements EntityProperty<Faction>
 	{
 		var faction = this;
 
+		var labelShips = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin),// pos
+			Coords.fromXY
+			(
+				size.x - margin * 2,
+				controlHeight
+			), // size
+			DataBinding.fromContext("Ships:"),
+			fontNameAndHeight
+		);
+
+		var textShipCount = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin * 8, margin), // pos
+			Coords.fromXY
+			(
+				size.x - margin * 2,
+				controlHeight
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				faction,
+				(c: Faction) => "" + c.ships.length
+			),
+			fontNameAndHeight
+		);
+
+		var listShips = ControlList.from8
+		(
+			"listShips",
+			Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+			Coords.fromXY
+			(
+				size.x - margin * 2,
+				size.y - margin * 4 - controlHeight * 2
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				faction,
+				(c: Faction) => faction.ships
+			), // items
+			DataBinding.fromGet
+			(
+				(c: Ship) => c.toStringDescription()
+			), // bindingForItemText
+			fontNameAndHeight,
+			// dataBindingForItemSelected
+			new DataBinding
+			(
+				faction,
+				(c: Faction) => c.shipSelected,
+				(c: Faction, v: Ship) =>
+				{
+					c.shipSelected = v;
+				}
+			),
+			null // bindingForItemValue
+		);
+
+		var buttonGoToSelected = ControlButton.from8
+		(
+			"buttonGoToSelected",
+			Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+			Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
+			"Go To",
+			fontNameAndHeight,
+			true, // hasBorder
+			DataBinding.fromContextAndGet
+			(
+				faction, (c: Faction) => (c.shipSelected != null)
+			), // isEnabled
+			() => faction.shipSelected.jumpTo(universe) // click
+		);
+
 		var containerShips = ControlContainer.from4
 		(
 			"Ships",
@@ -617,87 +693,10 @@ class Faction implements EntityProperty<Faction>
 			size,
 			// children
 			[
-				new ControlLabel
-				(
-					"labelShips",
-					Coords.fromXY(margin, margin),// pos
-					Coords.fromXY
-					(
-						size.x - margin * 2,
-						controlHeight
-					), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContext("Ships:"),
-					fontNameAndHeight
-				),
-
-				new ControlLabel
-				(
-					"textShipCount",
-					Coords.fromXY(margin * 8, margin), // pos
-					Coords.fromXY
-					(
-						size.x - margin * 2,
-						controlHeight
-					), // size
-					false, // isTextCenteredHorizontally
-					false, // isTextCenteredVertically
-					DataBinding.fromContextAndGet
-					(
-						faction,
-						(c: Faction) => "" + c.ships.length
-					),
-					fontNameAndHeight
-				),
-
-				ControlList.from8
-				(
-					"listShips",
-					Coords.fromXY(margin, margin * 2 + controlHeight), // pos
-					Coords.fromXY
-					(
-						size.x - margin * 2,
-						size.y - margin * 4 - controlHeight * 2
-					), // size
-					DataBinding.fromContextAndGet
-					(
-						faction,
-						(c: Faction) => faction.ships
-					), // items
-					DataBinding.fromGet
-					(
-						(c: Ship) => c.toStringDescription()
-					), // bindingForItemText
-					fontNameAndHeight,
-					// dataBindingForItemSelected
-					new DataBinding
-					(
-						faction,
-						(c: Faction) => c.shipSelected,
-						(c: Faction, v: Ship) =>
-						{
-							c.shipSelected = v;
-						}
-					),
-					null // bindingForItemValue
-				),
-
-				ControlButton.from8
-				(
-					"buttonGoToSelected",
-					Coords.fromXY(margin, size.y - margin - controlHeight), // pos
-					Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
-					"Go To",
-					fontNameAndHeight,
-					true, // hasBorder
-					DataBinding.fromContextAndGet
-					(
-						faction, (c: Faction) => (c.shipSelected != null)
-					), // isEnabled
-					() => faction.shipSelected.jumpTo(universe) // click
-				),
-
+				labelShips,
+				textShipCount,
+				listShips,
+				buttonGoToSelected
 			]
 		);
 
@@ -741,7 +740,7 @@ class Faction implements EntityProperty<Faction>
 
 	factionsMatchingRelationshipState
 	(
-		world: WorldExtended, stateToMatch: string
+		world: WorldExtended, stateToMatch: DiplomaticRelationshipState
 	): Faction[]
 	{
 		var relationships = this.diplomacy.relationships;
@@ -752,7 +751,7 @@ class Faction implements EntityProperty<Faction>
 		);
 
 		var returnValues =
-			relationshipsMatching.map(x => x.factionOther(world));
+			relationshipsMatching.map(x => x.factionOther() );
 
 		return returnValues;
 	}
@@ -771,7 +770,7 @@ class Faction implements EntityProperty<Faction>
 	{
 		var returnValue = this.diplomacy.relationships.find
 		(
-			x => x.factionNameOther == factionName
+			x => x.factionOther().name == factionName
 		);
 		return returnValue;
 	}
@@ -857,18 +856,18 @@ class Faction implements EntityProperty<Faction>
 
 	// rounds
 
-	researchPerTurn(universe: Universe, world: WorldExtended): number
+	researchThisRound(universe: Universe, world: WorldExtended): number
 	{
 		var returnValue = 0;
 
 		for (var i = 0; i < this.planets.length; i++)
 		{
 			var planet = this.planets[i];
-			var planetResearchThisTurn = planet.researchPerTurn
+			var planetResearchThisRound = planet.researchThisRound
 			(
 				universe, world, this
 			);
-			returnValue += planetResearchThisTurn;
+			returnValue += planetResearchThisRound;
 		}
 
 		return returnValue;

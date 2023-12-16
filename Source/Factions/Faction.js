@@ -8,8 +8,8 @@ class Faction {
         this.color = color;
         this.diplomacy = diplomacy;
         this.technologyResearcher = technologyResearcher;
-        this.planets = planets;
-        this.ships = ships;
+        this.planets = planets || [];
+        this.ships = ships || [];
         this.knowledge = knowledge;
         this.intelligence = intelligence;
         this._visualsForShipsByHullSize = visualsForShipsByHullSize; // todo
@@ -20,11 +20,17 @@ class Faction {
         return entity.propertyByName(Faction.name);
     }
     static fromName(name) {
-        return new Faction(name, null, null, // homeStarsystemName,
+        var faction = new Faction(name, null, null, // homeStarsystemName,
         null, // homePlanetName,
-        Color.Instances().Red, FactionDiplomacy.fromFactionSelfName(name), TechnologyResearcher.default(), new Array(), new Array(), FactionKnowledge.fromFactionSelfName(name), null, // intelligence
+        Color.Instances().Red, null, // diplomacy
+        TechnologyResearcher.default(), null, // planets
+        null, // ships
+        FactionKnowledge.fromFactionSelfName(name), null, // intelligence
         null // visuals
         );
+        var diplomacy = FactionDiplomacy.fromFactionSelf(faction);
+        faction.diplomacy = diplomacy;
+        return faction;
     }
     static colors() {
         if (Faction._colors == null) {
@@ -59,11 +65,6 @@ class Faction {
     isControlledByHuman() {
         return (this.intelligence == FactionIntelligence.Instances().Human);
     }
-    researchSessionStart(universe) {
-        var researchSession = new TechnologyResearchSession(universe.world.technologyGraph, this.technologyResearcher);
-        var venueNext = new VenueTechnologyResearchSession(researchSession);
-        universe.venueTransitionTo(venueNext);
-    }
     planetAdd(planet) {
         this.planets.push(planet);
         planet.factionable().factionSet(this);
@@ -71,12 +72,23 @@ class Faction {
     planetHome(world) {
         return this.starsystemHome(world).planets.find(x => x.name == this.homePlanetName);
     }
+    researchSessionStart(universe) {
+        var researchSession = new TechnologyResearchSession(universe.world.technologyGraph, this.technologyResearcher);
+        var venueNext = new VenueTechnologyResearchSession(researchSession);
+        universe.venueTransitionTo(venueNext);
+    }
     shipAdd(ship) {
         this.ships.push(ship);
         ship.factionable().factionSet(this);
     }
     starsystemHome(world) {
         return world.network.nodeByName(this.homeStarsystemName).starsystem;
+    }
+    starsystems(world) {
+        var planets = this.planets;
+        var starsystemsForPlanetsWithDuplicates = planets.map(p => p.starsystem(world));
+        var starsystemsForPlanets = starsystemsForPlanetsWithDuplicates.filter((value, index, all) => all.indexOf(value) == index);
+        return starsystemsForPlanets;
     }
     toEntity() {
         return new Entity(Faction.name + "_" + this.name, [this]);
@@ -138,44 +150,34 @@ class Faction {
         );
         var faction = this;
         var controlSize = Coords.fromXY(margin * 16, controlHeight);
-        var labelFaction = new ControlLabel("labelFaction", Coords.fromXY(margin, margin), // pos
-        controlSize, false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContext("Faction:"), fontNameAndHeight);
-        var textFaction = new ControlLabel("textFaction", Coords.fromXY(margin * 8, margin), // pos
-        controlSize, false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContext(faction.name), fontNameAndHeight);
-        var labelFactionType = new ControlLabel("labelFactionType", Coords.fromXY(margin, margin * 2), // pos
-        controlSize, false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContext("Type:"), fontNameAndHeight);
-        var textFactionType = new ControlLabel("textFactionType", Coords.fromXY(margin * 8, margin * 2), // pos
-        controlSize, false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContext(faction.defnName), fontNameAndHeight);
-        var labelAbility = new ControlLabel("labelAbility", Coords.fromXY(margin, margin * 3), // pos
-        controlSize, false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContext("Ability:"), fontNameAndHeight);
-        var textAbility = new ControlLabel("textAbility", Coords.fromXY(margin * 8, margin * 3), // pos
-        controlSize, false, // isTextCenteredHorizontally
-        false, // isTextCenteredVertically
-        DataBinding.fromContext(faction.defn().ability.toString(universe.world)), fontNameAndHeight);
-        var buttonAbilityUse = ControlButton.from8("buttonAbilityUse", Coords.fromXY(margin * 24, margin * 3), // pos
-        controlSize, "Use", fontNameAndHeight, true, // hasBorder
-        DataBinding.fromTrue(), // isEnabled
-        () => {
+        var labelFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        controlSize, DataBinding.fromContext("Faction:"), fontNameAndHeight);
+        var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin), // pos
+        controlSize, DataBinding.fromContext(faction.name), fontNameAndHeight);
+        var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2), // pos
+        controlSize, DataBinding.fromContext("Type:"), fontNameAndHeight);
+        var textFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin * 2), // pos
+        controlSize, DataBinding.fromContext(faction.defnName), fontNameAndHeight);
+        var labelAbility = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 3), // pos
+        controlSize, DataBinding.fromContext("Ability:"), fontNameAndHeight);
+        var textAbility = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin * 3), // pos
+        controlSize, DataBinding.fromContext(faction.defn().ability.toString(universe.world)), fontNameAndHeight);
+        var abilityUse = () => {
             var world = universe.world;
             var faction = world.factionCurrent();
             if (faction.abilityCanBeUsed(world)) {
                 var factionDefn = faction.defn();
-                factionDefn.ability.perform(world);
+                var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+                factionDefn.ability.perform(uwpe);
             }
             else {
                 VenueMessage.fromText("todo - Can't use ability yet.");
             }
-        } // click
+        };
+        var buttonAbilityUse = ControlButton.from8("buttonAbilityUse", Coords.fromXY(margin * 24, margin * 3), // pos
+        controlSize, "Use", fontNameAndHeight, true, // hasBorder
+        DataBinding.fromTrue(), // isEnabled
+        abilityUse // click
         );
         var containerStatus = ControlContainer.from4("Status", Coords.create(), tabbedControlSize, 
         // children
@@ -213,69 +215,69 @@ class Faction {
     toControl_Details_Planets(universe, size, margin, controlHeight, fontNameAndHeight) {
         var world = universe.world;
         var faction = this;
+        var labelPlanets = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        Coords.fromXY(size.x - margin * 2, controlHeight), // size
+        DataBinding.fromContext("Planets:"), fontNameAndHeight);
+        var textPlanetCount = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin), // pos
+        Coords.fromXY(size.x - margin * 2, controlHeight), // size
+        DataBinding.fromContextAndGet(faction, (c) => "" + c.planets.length), fontNameAndHeight);
+        var listPlanets = ControlList.from8("listPlanets", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+        Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
+        DataBinding.fromContextAndGet(faction, (c) => faction.planets), // items
+        DataBinding.fromGet((c) => c.toStringDescription(universe, world)), // bindingForItemText
+        fontNameAndHeight, 
+        // dataBindingForItemSelected
+        new DataBinding(faction, (c) => c.planetSelected, (c, v) => {
+            c.planetSelected = v;
+        }), null // bindingForItemValue
+        );
+        var buttonGoToSelected = ControlButton.from8("buttonGoToSelected", Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+        Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
+        "Go To", fontNameAndHeight, true, // hasBorder
+        DataBinding.fromContextAndGet(faction, (c) => (c.planetSelected != null)), // isEnabled
+        () => faction.planetSelected.jumpTo(universe) // click
+        );
         var containerPlanets = ControlContainer.from4("Planets", Coords.create(), size, 
         // children
         [
-            new ControlLabel("labelPlanets", Coords.fromXY(margin, margin), // pos
-            Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Planets:"), fontNameAndHeight),
-            new ControlLabel("textPlanetCount", Coords.fromXY(margin * 8, margin), // pos
-            Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(faction, (c) => "" + c.planets.length), fontNameAndHeight),
-            ControlList.from8("listPlanets", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
-            Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
-            DataBinding.fromContextAndGet(faction, (c) => faction.planets), // items
-            DataBinding.fromGet((c) => c.toStringDescription(universe, world)), // bindingForItemText
-            fontNameAndHeight, 
-            // dataBindingForItemSelected
-            new DataBinding(faction, (c) => c.planetSelected, (c, v) => {
-                c.planetSelected = v;
-            }), null // bindingForItemValue
-            ),
-            ControlButton.from8("buttonGoToSelected", Coords.fromXY(margin, size.y - margin - controlHeight), // pos
-            Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
-            "Go To", fontNameAndHeight, true, // hasBorder
-            DataBinding.fromContextAndGet(faction, (c) => (c.planetSelected != null)), // isEnabled
-            () => faction.planetSelected.jumpTo(universe) // click
-            ),
+            labelPlanets,
+            textPlanetCount,
+            listPlanets,
+            buttonGoToSelected
         ]);
         return containerPlanets;
     }
     toControl_Details_Ships(universe, size, margin, controlHeight, fontNameAndHeight) {
         var faction = this;
+        var labelShips = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        Coords.fromXY(size.x - margin * 2, controlHeight), // size
+        DataBinding.fromContext("Ships:"), fontNameAndHeight);
+        var textShipCount = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin), // pos
+        Coords.fromXY(size.x - margin * 2, controlHeight), // size
+        DataBinding.fromContextAndGet(faction, (c) => "" + c.ships.length), fontNameAndHeight);
+        var listShips = ControlList.from8("listShips", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+        Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
+        DataBinding.fromContextAndGet(faction, (c) => faction.ships), // items
+        DataBinding.fromGet((c) => c.toStringDescription()), // bindingForItemText
+        fontNameAndHeight, 
+        // dataBindingForItemSelected
+        new DataBinding(faction, (c) => c.shipSelected, (c, v) => {
+            c.shipSelected = v;
+        }), null // bindingForItemValue
+        );
+        var buttonGoToSelected = ControlButton.from8("buttonGoToSelected", Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+        Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
+        "Go To", fontNameAndHeight, true, // hasBorder
+        DataBinding.fromContextAndGet(faction, (c) => (c.shipSelected != null)), // isEnabled
+        () => faction.shipSelected.jumpTo(universe) // click
+        );
         var containerShips = ControlContainer.from4("Ships", Coords.create(), size, 
         // children
         [
-            new ControlLabel("labelShips", Coords.fromXY(margin, margin), // pos
-            Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContext("Ships:"), fontNameAndHeight),
-            new ControlLabel("textShipCount", Coords.fromXY(margin * 8, margin), // pos
-            Coords.fromXY(size.x - margin * 2, controlHeight), // size
-            false, // isTextCenteredHorizontally
-            false, // isTextCenteredVertically
-            DataBinding.fromContextAndGet(faction, (c) => "" + c.ships.length), fontNameAndHeight),
-            ControlList.from8("listShips", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
-            Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
-            DataBinding.fromContextAndGet(faction, (c) => faction.ships), // items
-            DataBinding.fromGet((c) => c.toStringDescription()), // bindingForItemText
-            fontNameAndHeight, 
-            // dataBindingForItemSelected
-            new DataBinding(faction, (c) => c.shipSelected, (c, v) => {
-                c.shipSelected = v;
-            }), null // bindingForItemValue
-            ),
-            ControlButton.from8("buttonGoToSelected", Coords.fromXY(margin, size.y - margin - controlHeight), // pos
-            Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
-            "Go To", fontNameAndHeight, true, // hasBorder
-            DataBinding.fromContextAndGet(faction, (c) => (c.shipSelected != null)), // isEnabled
-            () => faction.shipSelected.jumpTo(universe) // click
-            ),
+            labelShips,
+            textShipCount,
+            listShips,
+            buttonGoToSelected
         ]);
         return containerShips;
     }
@@ -294,7 +296,7 @@ class Faction {
     factionsMatchingRelationshipState(world, stateToMatch) {
         var relationships = this.diplomacy.relationships;
         var relationshipsMatching = relationships.filter(x => x.state == stateToMatch);
-        var returnValues = relationshipsMatching.map(x => x.factionOther(world));
+        var returnValues = relationshipsMatching.map(x => x.factionOther());
         return returnValues;
     }
     relationsInitialize(universe) {
@@ -303,7 +305,7 @@ class Faction {
         universe.venueTransitionTo(venueNext);
     }
     relationshipByFactionName(factionName) {
-        var returnValue = this.diplomacy.relationships.find(x => x.factionNameOther == factionName);
+        var returnValue = this.diplomacy.relationships.find(x => x.factionOther().name == factionName);
         return returnValue;
     }
     selfAndAllies(world) {
@@ -349,12 +351,12 @@ class Faction {
         return notificationsSoFar;
     }
     // rounds
-    researchPerTurn(universe, world) {
+    researchThisRound(universe, world) {
         var returnValue = 0;
         for (var i = 0; i < this.planets.length; i++) {
             var planet = this.planets[i];
-            var planetResearchThisTurn = planet.researchPerTurn(universe, world, this);
-            returnValue += planetResearchThisTurn;
+            var planetResearchThisRound = planet.researchThisRound(universe, world, this);
+            returnValue += planetResearchThisRound;
         }
         return returnValue;
     }

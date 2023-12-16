@@ -1,14 +1,14 @@
 "use strict";
 class TechnologyResearcher {
-    constructor(factionName, technologyBeingResearchedName, researchAccumulated, technologiesKnownNames) {
-        this.factionName = factionName;
+    constructor(faction, technologyBeingResearchedName, researchAccumulated, technologiesKnownNames) {
+        this._faction = faction;
         this.technologyBeingResearchedName = technologyBeingResearchedName;
         this.researchAccumulated = researchAccumulated;
         this.technologiesKnownNames = technologiesKnownNames;
-        this.name = this.factionName + " Research";
     }
     static default() {
-        return new TechnologyResearcher("[factionName]", null, // technologyBeingResearchedName
+        return new TechnologyResearcher(null, // faction
+        null, // technologyBeingResearchedName
         0, // researchAccumulated
         []);
     }
@@ -23,12 +23,18 @@ class TechnologyResearcher {
         }
         return returnValues;
     }
-    faction(world) {
-        return world.factionByName(this.factionName);
+    faction() {
+        return this._faction;
+    }
+    factionSet(value) {
+        this._faction = value;
+    }
+    name() {
+        return this.faction().name + " Research";
     }
     notificationBuildNothingBeingResearched(universe, world) {
         var technologyResearcher = this;
-        var faction = this.faction(world);
+        var faction = this.faction();
         var notification = new Notification2("The " + faction.name + " have research facilities, but nothing is being researched.", () => {
             var session = technologyResearcher.toSession(world.technologyGraph);
             var venueNext = session.toControl(universe, universe.display.sizeInPixels).toVenue();
@@ -58,8 +64,8 @@ class TechnologyResearcher {
         }
         else {
             this.researchAccumulated += amountToIncrement;
-            var researchRequired = technologyBeingResearched.researchRequired;
-            if (this.researchAccumulated >= researchRequired) {
+            var researchToLearn = technologyBeingResearched.researchToLearn;
+            if (this.researchAccumulated >= researchToLearn) {
                 this.technologyBeingResearchedLearn();
                 var technologyResearcher = this;
                 var notification = new Notification2("The " + faction.name + " have discovered the technology of " + technologyBeingResearched.name + ".", () => {
@@ -72,8 +78,8 @@ class TechnologyResearcher {
         }
     }
     researchPerTurn(universe, world) {
-        var faction = this.faction(world);
-        var returnValue = faction.researchPerTurn(universe, world);
+        var faction = this.faction();
+        var returnValue = faction.researchThisRound(universe, world);
         return returnValue;
     }
     strategicValue(world) {
@@ -154,6 +160,9 @@ class TechnologyResearcher {
             this.technologiesKnownNames.push(technologyToLearnName);
         }
         return this;
+    }
+    technologyLearn(technologyToLearn) {
+        return this.technologyLearnByName(technologyToLearn.name);
     }
     technologyResearch(technologyToResearch) {
         var isAvailable = this.technologyIsAvailableForResearch(technologyToResearch);

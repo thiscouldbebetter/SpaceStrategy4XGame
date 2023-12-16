@@ -199,7 +199,7 @@ class TechnologyGraph {
     }
     technologiesFree() {
         var returnValues = this.technologies.filter(x => x.namesOfPrerequisiteTechnologies.length == 0
-            && x.researchRequired == 0);
+            && x.researchToLearn == 0);
         return returnValues;
     }
     technologyByName(technologyName) {

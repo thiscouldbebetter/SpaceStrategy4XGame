@@ -2,14 +2,17 @@
 class DeviceUser implements EntityProperty<DeviceUser>
 {
 	_energyRemainingThisRound: number;
+	_energyPerRound: number;
 
 	_deviceSelected: Device;
 	_devicesDrives: Device[];
+	_devicesStarlaneDrives: Device[];
 	_devicesUsable: Device[];
 
 	constructor()
 	{
 		this._energyRemainingThisRound = 0;
+		this._energyPerRound = 0;
 	}
 
 	static ofEntity(entity: Entity): DeviceUser
@@ -62,6 +65,21 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesDrives;
 	}
 
+	devicesStarlaneDrives(ship: Ship): Device[]
+	{
+		if (this._devicesStarlaneDrives == null)
+		{
+			var devices = this.devices(ship);
+
+			this._devicesStarlaneDrives = devices.filter
+			(
+				(x: Device) => x.defn().categoryNames.indexOf("StarlaneDrive") >= 0
+			);
+		}
+
+		return this._devicesStarlaneDrives;
+	}
+
 	devicesUsable(ship: Ship): Device[]
 	{
 		if (this._devicesUsable == null)
@@ -77,6 +95,16 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesUsable;
 	}
 
+	energyPerRoundAdd(energyToAdd: number): void
+	{
+		this._energyPerRound += energyToAdd;
+	}
+
+	energyPerRoundClear(): void
+	{
+		this._energyPerRound = 0;
+	}
+
 	energyRemainingThisRound(): number
 	{
 		return this._energyRemainingThisRound;
@@ -90,6 +118,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	energyRemainingThisRoundClear(): void
 	{
 		this._energyRemainingThisRound = 0;
+	}
+
+	energyRemainingThisRoundReset(): void
+	{
+		this._energyRemainingThisRound = this._energyPerRound;
 	}
 
 	energyRemainingThisRoundSubtract(energyToSubtract: number): void

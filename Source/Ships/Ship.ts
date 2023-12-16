@@ -27,8 +27,8 @@ class Ship extends Entity
 				Ship.collidableBuild(pos),
 				new Controllable(Ship.toControl),
 				new DeviceUser(),
-				new Factionable(faction.name),
-				Ship.killableBuild(hullSize.integrityMax),
+				new Factionable(faction),
+				Ship.killableBuild(hullSize, faction),
 				Locatable.fromPos(pos),
 				Movable.default(),
 				new Orderable(),
@@ -108,8 +108,14 @@ class Ship extends Entity
 		}
 	}
 
-	static killableBuild(integrityMax: number): Killable
+	static killableBuild(hullSize: ShipHullSize, faction: Faction): Killable
 	{
+		var factionDefn = faction.defn();
+
+		var integrityMax =
+			hullSize.integrityMax
+			* factionDefn.shipHullIntegrityMultiplier;
+
 		return Killable.fromIntegrityMaxAndDie
 		(
 			integrityMax,
@@ -123,9 +129,9 @@ class Ship extends Entity
 		console.log("todo - Ship.die()");
 	}
 
-	faction(world: WorldExtended): Faction
+	faction(): Faction
 	{
-		return this.factionable().faction(world);
+		return this.factionable().faction();
 	}
 
 	factionable(): Factionable
@@ -167,7 +173,7 @@ class Ship extends Entity
 
 	nameWithFaction(): string
 	{
-		return this.factionable().factionName + this.name;
+		return this.factionable().faction().name + "_" + this.name;
 	}
 
 	notificationsForRoundAddToArray
@@ -215,7 +221,7 @@ class Ship extends Entity
 		var wasColonizationSuccessful = false;
 
 		var planetBeingOrbited = this.planet(world);
-		var planetBeingOrbitedFaction = planetBeingOrbited.factionable().faction(world);
+		var planetBeingOrbitedFaction = planetBeingOrbited.factionable().faction();
 
 		if
 		(
@@ -248,22 +254,21 @@ class Ship extends Entity
 
 				planetBeingOrbited.buildableEntityBuild(universe, entityForHub);
 
-				var shipFactionName = this.factionable().factionName;
+				var shipFaction = this.factionable().faction();
 
-				planetBeingOrbited.factionable().factionSetByName(shipFactionName);
-				var shipFaction = this.faction(world);
+				planetBeingOrbited.factionable().factionSet(shipFaction);
 				shipFaction.planetAdd(planetBeingOrbited);
 
 				wasColonizationSuccessful = true;
 
 				var planet = this.planet(world);
 				var starsystem = planet.starsystem(world);
-				var starsystemFactionName = starsystem.factionName;
-				if (starsystemFactionName == null)
+				var starsystemFaction = starsystem.faction(world);
+				if (starsystemFaction == null)
 				{
-					starsystem.factionName = shipFactionName;
+					starsystem.factionSet(shipFaction);
 				}
-				else if (starsystemFactionName != shipFactionName)
+				else if (starsystemFaction != shipFaction)
 				{
 					// todo - Diplomatic incident.
 				}
@@ -405,7 +410,7 @@ class Ship extends Entity
 
 		starsystemDestination.shipAdd(ship, world);
 
-		var shipFaction = ship.faction(world);
+		var shipFaction = ship.faction();
 		var factionKnowledge = shipFaction.knowledge;
 		factionKnowledge.starsystemAdd(starsystemDestination, world);
 	}
@@ -463,9 +468,42 @@ class Ship extends Entity
 		return distanceToTarget;
 	}
 
-	movementThroughLinkPerTurn(link: NetworkLink2): number
+	private _movementSpeedThroughLinkThisRound: number;
+
+	movementSpeedThroughLinkThisRound(link: NetworkLink2): number
 	{
-		return 8; // todo
+		var linkFrictionDivisor = link.frictionDivisor();
+
+		if (this._movementSpeedThroughLinkThisRound == null)
+		{
+			var deviceUser = this.deviceUser();
+			var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives(this);
+
+			var uwpe = UniverseWorldPlaceEntities.create().entitySet(this);
+
+			for (var i = 0; i < starlaneDrivesAsDevices.length; i++)
+			{
+				var starlaneDrive = starlaneDrivesAsDevices[i];
+				// uwpe.entity2Set(starlaneDrive);
+				starlaneDrive.use(uwpe);
+			}
+
+			var shipFaction = this.factionable().faction();
+			var shipFactionDefn = shipFaction.defn();
+
+			this._movementSpeedThroughLinkThisRound
+				*= shipFactionDefn.starlaneTravelSpeedMultiplier;
+
+			this._movementSpeedThroughLinkThisRound
+				/= linkFrictionDivisor;
+		}
+
+		return this._movementSpeedThroughLinkThisRound;
+	}
+
+	movementSpeedThroughLinkThisRoundReset(): void
+	{
+		this._movementSpeedThroughLinkThisRound = null;
 	}
 
 	planetOrbitEnter
@@ -583,7 +621,7 @@ class Ship extends Entity
 
 		var childControls = new Array<ControlBase>();
 
-		var shipFaction = ship.faction(world);
+		var shipFaction = ship.faction();
 		var factionCurrent = world.factionCurrent();
 		var shipBelongsToFactionCurrent = (shipFaction == factionCurrent);
 
@@ -783,7 +821,7 @@ class Ship extends Entity
 	{
 		var deviceUser = this.deviceUser();
 
-		deviceUser.energyRemainingThisRoundClear();
+		deviceUser.energyPerRoundClear();
 
 		var devices = deviceUser.devices(this);
 		var uwpe = new UniverseWorldPlaceEntities
@@ -797,6 +835,8 @@ class Ship extends Entity
 			uwpe.entity2Set(device.toEntity() );
 			device.updateForRound(uwpe);
 		}
+
+		deviceUser.energyRemainingThisRoundReset();
 	}
 
 	// drawable

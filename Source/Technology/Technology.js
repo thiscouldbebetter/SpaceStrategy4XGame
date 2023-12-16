@@ -1,8 +1,8 @@
 "use strict";
 class Technology {
-    constructor(name, researchRequired, namesOfPrerequisiteTechnologies, namesOfBuildablesEnabled) {
+    constructor(name, researchToLearn, namesOfPrerequisiteTechnologies, namesOfBuildablesEnabled) {
         this.name = name;
-        this.researchRequired = researchRequired;
+        this.researchToLearn = researchToLearn;
         this.namesOfPrerequisiteTechnologies = namesOfPrerequisiteTechnologies;
         this.namesOfBuildablesEnabled = namesOfBuildablesEnabled;
     }
@@ -16,7 +16,7 @@ class Technology {
         return returnValues;
     }
     strategicValue(world) {
-        var multiplier = 0; // todo
-        return this.researchRequired * multiplier;
+        var multiplier = 1; // todo
+        return this.researchToLearn * multiplier;
     }
 }

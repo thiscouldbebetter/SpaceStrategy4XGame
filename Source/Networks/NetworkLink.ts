@@ -1,20 +1,20 @@
 
 class NetworkLink2 implements EntityPropertyBase
 {
+	type: NetworkLink2Type;
 	namesOfNodesLinked: string[];
 
-	ships: Ship[];
 	name: string;
-	color: Color;
+	ships: Ship[];
 
-	constructor(namesOfNodesLinked: string[])
+	constructor(type: NetworkLink2Type, namesOfNodesLinked: string[])
 	{
+		this.type = type;
 		this.namesOfNodesLinked = namesOfNodesLinked;
-		this.ships = new Array<Ship>();
 
 		this.name = this.namesOfNodesLinked.join("-");
 
-		this.color = Color.fromSystemColor("rgba(128, 128, 128, .4)"); // hack
+		this.ships = new Array<Ship>();
 	}
 
 	direction(cluster: Network2): Coords
@@ -35,6 +35,11 @@ class NetworkLink2 implements EntityPropertyBase
 		);
 
 		return returnValue;
+	}
+
+	frictionDivisor(): number
+	{
+		return this.type.frictionDivisor;
 	}
 
 	length(cluster: Network2): number
@@ -93,7 +98,7 @@ class NetworkLink2 implements EntityPropertyBase
 				var shipLoc = ship.locatable().loc;
 				var shipPos = shipLoc.pos;
 				var shipVel = shipLoc.vel;
-				var shipSpeed = ship.movementThroughLinkPerTurn(this);
+				var shipSpeed = ship.movementSpeedThroughLinkThisRound(this);
 				shipPos.add
 				(
 					shipVel.clone().multiplyScalar(shipSpeed)
@@ -122,6 +127,11 @@ class NetworkLink2 implements EntityPropertyBase
 	}
 
 	// drawable
+
+	color(): Color
+	{
+		return this.type.color;
+	}
 
 	draw
 	(
@@ -179,7 +189,7 @@ class NetworkLink2 implements EntityPropertyBase
 				perpendicular.clone().multiplyScalar(radiusApparentTo).add(drawPosTo),
 				perpendicular.clone().multiplyScalar(radiusApparentFrom).add(drawPosFrom)
 			],
-			this.color, // hack
+			this.color(), // hack
 			null
 		);
 	}
@@ -188,7 +198,7 @@ class NetworkLink2 implements EntityPropertyBase
 
 	clone(): NetworkLink2
 	{
-		return new NetworkLink2(this.namesOfNodesLinked.slice());
+		return new NetworkLink2(this.type, this.namesOfNodesLinked.slice());
 	}
 
 	overwriteWith(other: NetworkLink2): NetworkLink2
@@ -204,4 +214,56 @@ class NetworkLink2 implements EntityPropertyBase
 
 	// Equatable
 	equals(other: EntityPropertyBase): boolean { return false; }
+}
+
+class NetworkLink2Type
+{
+	name: string;
+	frictionDivisor: number;
+	color: Color;
+
+	constructor(name: string, frictionDivisor: number, color: Color)
+	{
+		this.name = name;
+		this.frictionDivisor = frictionDivisor;
+		this.color = color;
+	}
+
+	static _instances: NetworkLink2Type_Instances;
+	static Instances(): NetworkLink2Type_Instances
+	{
+		if (NetworkLink2Type._instances == null)
+		{
+			NetworkLink2Type._instances = new NetworkLink2Type_Instances();
+		}
+		return NetworkLink2Type._instances;
+	}
+
+	static byName(name: string): NetworkLink2Type
+	{
+		return NetworkLink2Type.Instances().byName(name);
+	}
+}
+
+class NetworkLink2Type_Instances
+{
+	Normal: NetworkLink2Type;
+	Hard: NetworkLink2Type;
+
+	_All: NetworkLink2Type[];
+
+	constructor()
+	{
+		var colors = Color.Instances();
+
+		this.Normal 	= new NetworkLink2Type("Normal", 1, colors.Gray.clone().alphaSet(.4) );
+		this.Hard 		= new NetworkLink2Type("Hard", 5, colors.Red.clone().alphaSet(.4) );
+
+		this._All = [ this.Normal, this.Hard ];
+	}
+
+	byName(name: string): NetworkLink2Type
+	{
+		return this._All.find(x => x.name == name);
+	}
 }

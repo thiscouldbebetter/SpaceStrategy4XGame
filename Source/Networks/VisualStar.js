@@ -66,7 +66,7 @@ class VisualStar {
         var planets = starsystem.planets;
         for (var i = 0; i < planets.length; i++) {
             var planet = planets[i];
-            var planetFaction = planet.faction(world);
+            var planetFaction = planet.faction();
             if (planetFaction != null) {
                 factionsPresent.push(planetFaction);
             }
@@ -86,8 +86,8 @@ class VisualStar {
         var ships = starsystem.ships;
         var shipsSortedByFactionIndex = ships.sort((a, b) => {
             var factions = world.factions;
-            var returnValue = factions.indexOf(a.faction(world))
-                - factions.indexOf(a.faction(world));
+            var returnValue = factions.indexOf(a.faction())
+                - factions.indexOf(b.faction());
             return returnValue;
         });
         var shipFactionPrev = null;
@@ -95,7 +95,7 @@ class VisualStar {
         var factionsSoFar = 0;
         for (var i = 0; i < shipsSortedByFactionIndex.length; i++) {
             var ship = ships[i];
-            var shipFaction = ship.faction(world);
+            var shipFaction = ship.faction();
             if (shipFaction != shipFactionPrev) {
                 factionsSoFar++;
                 var shipColor = shipFaction.color;

@@ -51,7 +51,7 @@ class FactionIntelligence_Instances
 				var factionToMove = starsystem.factionToMove(world);
 				var shipsAll = starsystem.ships;
 				var factionToMoveShips =
-					shipsAll.filter(x => x.factionable().faction(world) == factionToMove);
+					shipsAll.filter(x => x.factionable().faction() == factionToMove);
 				if (factionToMoveShips.length == 0)
 				{
 					starsystem.factionToMoveAdvance(world);

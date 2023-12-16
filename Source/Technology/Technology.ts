@@ -2,20 +2,20 @@
 class Technology
 {
 	name: string;
-	researchRequired: number;
+	researchToLearn: number;
 	namesOfPrerequisiteTechnologies: string[];
 	namesOfBuildablesEnabled: string[];
 
 	constructor
 	(
 		name: string,
-		researchRequired: number,
+		researchToLearn: number,
 		namesOfPrerequisiteTechnologies: string[],
 		namesOfBuildablesEnabled: string[]
 	)
 	{
 		this.name = name;
-		this.researchRequired = researchRequired;
+		this.researchToLearn = researchToLearn;
 		this.namesOfPrerequisiteTechnologies = namesOfPrerequisiteTechnologies;
 		this.namesOfBuildablesEnabled = namesOfBuildablesEnabled;
 	}
@@ -36,7 +36,7 @@ class Technology
 
 	strategicValue(world: WorldExtended): number
 	{
-		var multiplier = 0; // todo
-		return this.researchRequired * multiplier;
+		var multiplier = 1; // todo
+		return this.researchToLearn * multiplier;
 	}
 }

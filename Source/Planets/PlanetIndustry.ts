@@ -88,7 +88,7 @@ class PlanetIndustry
 		if (buildableEntityInProgress != null)
 		{
 			var industryAccumulated = this.planetIndustryAccumulated(planet);
-			var industryProducedQuantity = planet.industryPerTurn(universe, world);
+			var industryProducedQuantity = planet.industryThisRound(universe, world);
 			industryAccumulated.addQuantity(industryProducedQuantity);
 
 			var buildableInProgress =
@@ -118,7 +118,7 @@ class PlanetIndustry
 				);
 				faction.notificationAdd(notification);
 
-				planet.resourcesPerTurnReset();
+				planet.resourcesThisRoundReset();
 			}
 		}
 	}

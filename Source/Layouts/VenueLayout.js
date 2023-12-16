@@ -130,7 +130,7 @@ class VenueLayout {
             var entityToDemolishFactionable = Factionable.ofEntity(entityToDemolish);
             var entityToDemolishFaction = entityToDemolishFactionable == null
                 ? null
-                : entityToDemolishFactionable.faction(world);
+                : entityToDemolishFactionable.faction();
             var factionCurrent = world.factionCurrent();
             var entityToDemolishBelongsToAnotherFaction = entityToDemolishFaction != null
                 && entityToDemolishFaction != factionCurrent;
@@ -250,7 +250,7 @@ class VenueLayout {
             controlPopulationAndProduction
         ]);
         var planet = this.modelParent;
-        var planetFactionName = planet.factionable().factionName;
+        var planetFactionName = planet.factionable().faction().name;
         if (planetFactionName != null) {
             var factionCurrent = world.factionCurrent();
             if (factionCurrent.name == planetFactionName) {
@@ -287,7 +287,7 @@ class VenueLayout {
         DataBinding.fromContext("Owned by:"), fontNameAndHeight);
         var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => c.factionable().factionName), fontNameAndHeight);
+        DataBinding.fromContextAndGet(planet, (c) => c.factionable().faction().name), fontNameAndHeight);
         var returnValue = ControlContainer.from4("containerTimeAndPlace", Coords.fromXY(margin, margin), size, 
         // children
         [
@@ -332,7 +332,7 @@ class VenueLayout {
         DataBinding.fromContext("Research:"), fontNameAndHeight);
         var textResearch = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => "" + c.researchPerTurn(universe, world, faction)), fontNameAndHeight);
+        DataBinding.fromContextAndGet(planet, (c) => "" + c.researchThisRound(universe, world, faction)), fontNameAndHeight);
         var returnValue = ControlContainer.from4("containerPopulationAndProduction", Coords.fromXY(margin, containerMainSize.y - margin - containerInnerSize.y), size, 
         // children
         [

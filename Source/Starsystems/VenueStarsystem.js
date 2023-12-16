@@ -35,7 +35,7 @@ class VenueStarsystem {
                 entitySelectedDetailsAreViewable = true;
             }
             else {
-                var entitySelectedFaction = factionable.faction(world);
+                var entitySelectedFaction = factionable.faction();
                 var factionCurrent = world.factionCurrent();
                 entitySelectedDetailsAreViewable = (entitySelectedFaction == factionCurrent);
             }

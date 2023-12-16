@@ -80,7 +80,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			}
 			else
 			{
-				var entitySelectedFaction = factionable.faction(world);
+				var entitySelectedFaction = factionable.faction();
 				var factionCurrent = world.factionCurrent();
 				entitySelectedDetailsAreViewable = (entitySelectedFaction == factionCurrent);
 			}

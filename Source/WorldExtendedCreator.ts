@@ -75,8 +75,6 @@ class WorldExtendedCreator
 		var factions = factionsAndShips[0];
 		var ships = factionsAndShips[1];
 
-		factions.forEach(x => x.diplomacy.initializeForFactions(factions));
-
 		var camera = new Camera
 		(
 			viewSize,
@@ -284,14 +282,12 @@ class WorldExtendedCreator
 		factionHomeStarsystem.factionSetByName(factionName);
 		var factionColor = colorsForFactions[i];
 
-		var factionDiplomacy = FactionDiplomacy.fromFactionSelfName(factionName);
-
 		var technologiesKnown = technologyGraph.technologiesFree();
 		var technologiesKnownNames = technologiesKnown.map((x: Technology) => x.name);
 
 		var factionTechnologyResearcher = new TechnologyResearcher
 		(
-			factionName,
+			null, // faction
 			null, // nameOfTechnologyBeingResearched,
 			0, // researchAccumulated
 			technologiesKnownNames
@@ -326,7 +322,6 @@ class WorldExtendedCreator
 			worldDummy,
 			buildableDefns,
 			factionHomeStarsystem,
-			factionName,
 			factionDefn
 		);
 
@@ -389,7 +384,7 @@ class WorldExtendedCreator
 			factionHomeStarsystem.name,
 			factionHomePlanet.name,
 			factionColor,
-			factionDiplomacy,
+			null, // factionDiplomacy,
 			factionTechnologyResearcher,
 			[ factionHomePlanet ],
 			factionShips,
@@ -397,6 +392,13 @@ class WorldExtendedCreator
 			factionIntelligence,
 			factionVisualsForHullSizesByName
 		);
+
+		factionHomePlanet.factionable().factionSet(faction);
+
+		var factionDiplomacy = FactionDiplomacy.fromFactionSelf(faction);
+		faction.diplomacy = factionDiplomacy;
+
+		factionTechnologyResearcher.factionSet(faction);
 
 		this.create_FactionsAndShips_1_2_Ships
 		(
@@ -423,7 +425,6 @@ class WorldExtendedCreator
 		worldDummy: WorldExtended,
 		buildableDefns: BuildableDefnsLegacy,
 		factionHomeStarsystem: Starsystem,
-		factionName: string,
 		factionDefn: FactionDefn
 	)
 	{
@@ -432,7 +433,6 @@ class WorldExtendedCreator
 		var planets = factionHomeStarsystem.planets;
 		var planetIndexRandom = Math.floor(planets.length * Math.random());
 		var factionHomePlanet = planets[planetIndexRandom];
-		factionHomePlanet.factionable().factionSetByName(factionName);
 
 		var factionHomePlanetType = PlanetType.byName(factionDefn.planetStartingTypeName);
 		factionHomePlanet.planetType = factionHomePlanetType;

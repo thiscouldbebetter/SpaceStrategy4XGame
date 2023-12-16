@@ -34,7 +34,6 @@ class WorldExtendedCreator {
         var factionsAndShips = this.create_FactionsAndShips(network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
         var factions = factionsAndShips[0];
         var ships = factionsAndShips[1];
-        factions.forEach(x => x.diplomacy.initializeForFactions(factions));
         var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
         );
         var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns._All, deviceDefns, technologyGraph, network, factions, ships, camera);
@@ -123,10 +122,10 @@ class WorldExtendedCreator {
         var factionName = factionHomeStarsystem.name + "ians";
         factionHomeStarsystem.factionSetByName(factionName);
         var factionColor = colorsForFactions[i];
-        var factionDiplomacy = FactionDiplomacy.fromFactionSelfName(factionName);
         var technologiesKnown = technologyGraph.technologiesFree();
         var technologiesKnownNames = technologiesKnown.map((x) => x.name);
-        var factionTechnologyResearcher = new TechnologyResearcher(factionName, null, // nameOfTechnologyBeingResearched,
+        var factionTechnologyResearcher = new TechnologyResearcher(null, // faction
+        null, // nameOfTechnologyBeingResearched,
         0, // researchAccumulated
         technologiesKnownNames);
         if (this.isDebuggingMode) {
@@ -144,7 +143,7 @@ class WorldExtendedCreator {
             factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
         }
         var factionDefn = factionDefns[i];
-        var factionHomePlanet = this.create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionName, factionDefn);
+        var factionHomePlanet = this.create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn);
         var factionShips = new Array();
         var factionKnowledge = new FactionKnowledge(factionName, // factionSelfName
         [factionName], // factionNames
@@ -175,18 +174,22 @@ class WorldExtendedCreator {
                 )
             ]
         ]);
-        var faction = new Faction(factionName, factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, factionDiplomacy, factionTechnologyResearcher, [factionHomePlanet], factionShips, factionKnowledge, factionIntelligence, factionVisualsForHullSizesByName);
+        var faction = new Faction(factionName, factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, null, // factionDiplomacy,
+        factionTechnologyResearcher, [factionHomePlanet], factionShips, factionKnowledge, factionIntelligence, factionVisualsForHullSizesByName);
+        factionHomePlanet.factionable().factionSet(faction);
+        var factionDiplomacy = FactionDiplomacy.fromFactionSelf(faction);
+        faction.diplomacy = factionDiplomacy;
+        factionTechnologyResearcher.factionSet(faction);
         this.create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy);
         ships.push(...factionShips);
         worldDummy.factionAdd(faction);
         factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, worldDummy));
     }
-    create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionName, factionDefn) {
+    create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn) {
         var universe = this.universe;
         var planets = factionHomeStarsystem.planets;
         var planetIndexRandom = Math.floor(planets.length * Math.random());
         var factionHomePlanet = planets[planetIndexRandom];
-        factionHomePlanet.factionable().factionSetByName(factionName);
         var factionHomePlanetType = PlanetType.byName(factionDefn.planetStartingTypeName);
         factionHomePlanet.planetType = factionHomePlanetType;
         factionHomePlanet.demographics.population = 1;

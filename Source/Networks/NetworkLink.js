@@ -1,10 +1,10 @@
 "use strict";
 class NetworkLink2 {
-    constructor(namesOfNodesLinked) {
+    constructor(type, namesOfNodesLinked) {
+        this.type = type;
         this.namesOfNodesLinked = namesOfNodesLinked;
-        this.ships = new Array();
         this.name = this.namesOfNodesLinked.join("-");
-        this.color = Color.fromSystemColor("rgba(128, 128, 128, .4)"); // hack
+        this.ships = new Array();
     }
     direction(cluster) {
         return this.displacement(cluster).normalize();
@@ -15,6 +15,9 @@ class NetworkLink2 {
         var node1Pos = nodesLinked[1].locatable().loc.pos;
         var returnValue = node1Pos.clone().subtract(node0Pos);
         return returnValue;
+    }
+    frictionDivisor() {
+        return this.type.frictionDivisor;
     }
     length(cluster) {
         return this.displacement(cluster).magnitude();
@@ -51,7 +54,7 @@ class NetworkLink2 {
                 var shipLoc = ship.locatable().loc;
                 var shipPos = shipLoc.pos;
                 var shipVel = shipLoc.vel;
-                var shipSpeed = ship.movementThroughLinkPerTurn(this);
+                var shipSpeed = ship.movementSpeedThroughLinkThisRound(this);
                 shipPos.add(shipVel.clone().multiplyScalar(shipSpeed));
                 var isShipMovingForward = (shipVel.dotProduct(direction) > 0);
                 var nodeIndexFrom = (isShipMovingForward ? 0 : 1);
@@ -68,6 +71,9 @@ class NetworkLink2 {
         }
     }
     // drawable
+    color() {
+        return this.type.color;
+    }
     draw(universe, camera, nodeRadiusActual, drawPosFrom, drawPosTo) {
         var cluster = universe.world.network;
         var nodesLinked = this.nodesLinked(cluster);
@@ -90,12 +96,12 @@ class NetworkLink2 {
             perpendicular.clone().multiplyScalar(0 - radiusApparentTo).add(drawPosTo),
             perpendicular.clone().multiplyScalar(radiusApparentTo).add(drawPosTo),
             perpendicular.clone().multiplyScalar(radiusApparentFrom).add(drawPosFrom)
-        ], this.color, // hack
+        ], this.color(), // hack
         null);
     }
     // Clonable.
     clone() {
-        return new NetworkLink2(this.namesOfNodesLinked.slice());
+        return new NetworkLink2(this.type, this.namesOfNodesLinked.slice());
     }
     overwriteWith(other) {
         return this;
@@ -106,4 +112,31 @@ class NetworkLink2 {
     updateForTimerTick(uwpe) { }
     // Equatable
     equals(other) { return false; }
+}
+class NetworkLink2Type {
+    constructor(name, frictionDivisor, color) {
+        this.name = name;
+        this.frictionDivisor = frictionDivisor;
+        this.color = color;
+    }
+    static Instances() {
+        if (NetworkLink2Type._instances == null) {
+            NetworkLink2Type._instances = new NetworkLink2Type_Instances();
+        }
+        return NetworkLink2Type._instances;
+    }
+    static byName(name) {
+        return NetworkLink2Type.Instances().byName(name);
+    }
+}
+class NetworkLink2Type_Instances {
+    constructor() {
+        var colors = Color.Instances();
+        this.Normal = new NetworkLink2Type("Normal", 1, colors.Gray.clone().alphaSet(.4));
+        this.Hard = new NetworkLink2Type("Hard", 5, colors.Red.clone().alphaSet(.4));
+        this._All = [this.Normal, this.Hard];
+    }
+    byName(name) {
+        return this._All.find(x => x.name == name);
+    }
 }

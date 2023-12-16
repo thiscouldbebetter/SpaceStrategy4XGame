@@ -40,7 +40,7 @@ class PlanetIndustry {
         var buildableEntityInProgress = planet.buildableEntityInProgress(universe);
         if (buildableEntityInProgress != null) {
             var industryAccumulated = this.planetIndustryAccumulated(planet);
-            var industryProducedQuantity = planet.industryPerTurn(universe, world);
+            var industryProducedQuantity = planet.industryThisRound(universe, world);
             industryAccumulated.addQuantity(industryProducedQuantity);
             var buildableInProgress = Buildable.ofEntity(buildableEntityInProgress);
             var buildableDefn = buildableInProgress.defn;
@@ -59,7 +59,7 @@ class PlanetIndustry {
                     + " has " + populationIdle + " free population.";
                 var notification = new Notification2(notificationText, () => planet.jumpTo(universe));
                 faction.notificationAdd(notification);
-                planet.resourcesPerTurnReset();
+                planet.resourcesThisRoundReset();
             }
         }
     }

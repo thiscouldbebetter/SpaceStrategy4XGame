@@ -174,7 +174,7 @@ class FactionKnowledge
 		if (this.shipIds.indexOf(shipId) == -1)
 		{
 			this.shipIds.push(shipId);
-			var shipFaction = ship.faction(world);
+			var shipFaction = ship.faction();
 			this.factionAdd(shipFaction);
 		}
 

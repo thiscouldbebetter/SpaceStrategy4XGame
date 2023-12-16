@@ -66,10 +66,10 @@ class PlanetType
 				(uwpe: UniverseWorldPlaceEntities) =>
 				{
 					var planet = uwpe.entity as Planet;
-					var factionName = planet.factionable().factionName;
+					var faction = planet.factionable().faction();
 					var returnValue: VisualBase = 
 					(
-						factionName == null
+						faction == null
 						? new VisualNone()
 						: new VisualOffset
 						(
@@ -80,7 +80,7 @@ class PlanetType
 							),
 							VisualText.fromTextImmediateFontAndColorsFillAndBorder
 							(
-								"Owned by " + factionName,
+								"Owned by " + faction.name,
 								FontNameAndHeight.fromHeightInPixels(planetDimension * 1.5),
 								colors.Black,
 								colors.White

@@ -1,11 +1,11 @@
 
 class Factionable implements EntityProperty<Factionable>
 {
-	factionName: string
+	_faction: Faction;
 
-	constructor(factionName: string)
+	constructor(faction: Faction)
 	{
-		this.factionName = factionName;
+		this._faction = faction;
 	}
 
 	static ofEntity(entity: Entity): Factionable
@@ -13,21 +13,14 @@ class Factionable implements EntityProperty<Factionable>
 		return entity.propertyByName(Factionable.name) as Factionable;
 	}
 
-	faction(world: WorldExtended): Faction
+	faction(): Faction
 	{
-		var factionName = this.factionName;
-		var faction = (factionName == null ? null : world.factionByName(factionName) );
-		return faction;
+		return this._faction;
 	}
 
 	factionSet(faction: Faction): void
 	{
-		this.factionName = faction.name;
-	}
-
-	factionSetByName(value: string): void
-	{
-		this.factionName = value;
+		this._faction = faction;
 	}
 
 	// EntityProperty.
@@ -41,12 +34,12 @@ class Factionable implements EntityProperty<Factionable>
 
 	clone(): Factionable
 	{
-		return new Factionable(this.factionName);
+		return new Factionable(this.faction() );
 	}
 
 	overwriteWith(other: Factionable): Factionable
 	{
-		this.factionName = other.factionName;
+		this.faction = other.faction;
 		return this;
 	}
 
@@ -62,7 +55,7 @@ class Factionable implements EntityProperty<Factionable>
 
 	equals(other: Factionable): boolean
 	{
-		return this.factionName == other.factionName;
+		return this.faction == other.faction;
 	}
 
 }

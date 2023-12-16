@@ -1,12 +1,12 @@
 "use strict";
 class Planet extends Entity {
-    constructor(name, planetType, pos, factionName, demographics, industry, layout) {
+    constructor(name, planetType, pos, faction, demographics, industry, layout) {
         super(name, [
             planetType.bodyDefn(),
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Planet.toControl),
             new DeviceUser(),
-            new Factionable(factionName),
+            new Factionable(faction),
             ItemHolder.create(),
             Locatable.fromPos(pos)
         ]);
@@ -22,7 +22,7 @@ class Planet extends Entity {
             ];
     }
     static fromNameTypeAndPos(name, planetType, pos) {
-        return new Planet(name, planetType, pos, null, // factionName
+        return new Planet(name, planetType, pos, null, // faction
         null, // demographics
         null, // industry
         null // layout
@@ -104,8 +104,8 @@ class Planet extends Entity {
         }
         return returnValues;
     }
-    faction(world) {
-        return this.factionable().faction(world);
+    faction() {
+        return this.factionable().faction();
     }
     factionable() {
         return this.propertyByName(Factionable.name);
@@ -156,10 +156,10 @@ class Planet extends Entity {
         return new PlanetAsPlace(this);
     }
     toStringDescription(universe, world) {
-        var resourcesPerTurnAsString = this.resourcesPerTurn(universe, world).join(", ");
+        var resourcesThisRoundAsString = this.resourcesThisRound(universe, world).join(", ");
         var returnValue = this.name
             + " - " + this.demographics.toStringDescription()
-            + " - " + resourcesPerTurnAsString
+            + " - " + resourcesThisRoundAsString
             + " - " + this.industry.toStringDescription(universe, world, this)
             + ".";
         return returnValue;
@@ -181,21 +181,14 @@ class Planet extends Entity {
         return returnValue;
     }
     // Demographics.
+    population() {
+        return this.demographics.population;
+    }
     populationAdd(universe, amountToAdd) {
         this.demographics.populationAdd(universe, this, amountToAdd);
     }
     populationIncrement(universe) {
         this.populationAdd(universe, 1);
-    }
-    prosperityAccumulated() {
-        return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
-    }
-    prosperityNetWithNeededToGrow(universe) {
-        var prosperityNet = this.prosperityPerTurn(universe, universe.world, null);
-        var prosperityAccumulated = this.prosperityAccumulated();
-        var prosperityNeededToGrow = this.demographics.prosperityNeededToGrow();
-        var returnValue = "+" + prosperityNet + "(" + prosperityAccumulated + "/" + prosperityNeededToGrow + " to grow)";
-        return returnValue;
     }
     populationIdle(universe) {
         return this.demographics.populationIdle(universe, this);
@@ -204,7 +197,13 @@ class Planet extends Entity {
         return this.populationIdle(universe) > 0;
     }
     populationMax() {
-        return this.planetType.size.populationMax();
+        if (this._populationMax == null) {
+            this._populationMax = this.planetType.size.populationMax();
+        }
+        return this._populationMax;
+    }
+    populationMaxAdd(populationToAdd) {
+        this._populationMax += populationToAdd;
     }
     populationOccupied(universe) {
         return this.demographics.populationOccupied(universe, this);
@@ -212,7 +211,18 @@ class Planet extends Entity {
     populationOverMaxPlusIdle(universe) {
         var populationCurrent = this.demographics.population;
         var populationIdle = this.populationIdle(universe);
-        var returnValue = "" + populationCurrent + "/" + this.populationMax() + " (Idle: " + populationIdle + ")";
+        var returnValue = "" + populationCurrent + "/" + this.populationMax()
+            + " (Idle: " + populationIdle + ")";
+        return returnValue;
+    }
+    prosperityAccumulated() {
+        return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
+    }
+    prosperityNetWithNeededToGrow(universe) {
+        var prosperityNet = this.prosperityThisRound(universe, universe.world, null);
+        var prosperityAccumulated = this.prosperityAccumulated();
+        var prosperityNeededToGrow = this.demographics.prosperityNeededToGrow();
+        var returnValue = "+" + prosperityNet + "(" + prosperityAccumulated + "/" + prosperityNeededToGrow + " to grow)";
         return returnValue;
     }
     // diplomacy
@@ -222,7 +232,7 @@ class Planet extends Entity {
     // turns
     updateForRound(universe, world, faction) {
         if (faction != null) {
-            this.resourcesPerTurnReset();
+            this.resourcesThisRoundReset();
             var layout = this.layout(universe);
             layout.updateForRound(universe, world, faction, null);
             this.demographics.updateForRound(universe, world, faction, this);
@@ -250,9 +260,9 @@ class Planet extends Entity {
         return this.industry.planetIndustryAccumulated(this).quantity;
     }
     industryAndBuildableInProgress(universe, world) {
-        var industryPerTurn = this.industryPerTurn(universe, world);
+        var industryThisRound = this.industryThisRound(universe, world);
         var buildableAndProgress = this.industryBuildableAndProgress(universe);
-        var returnValue = industryPerTurn
+        var returnValue = industryThisRound
             + " " + buildableAndProgress;
         return returnValue;
     }
@@ -288,12 +298,21 @@ class Planet extends Entity {
         }
         return buildableProgress;
     }
-    industryPerTurn(universe, world) {
-        var resource = this.resourcesPerTurnByName(universe, world).get("Industry");
-        return (resource == null ? 0 : resource.quantity);
+    industryThisRound(universe, world) {
+        if (this._industryThisRound != null) {
+            var resource = this.resourcesThisRoundByName(universe, world).get("Industry");
+            return (resource == null ? 0 : resource.quantity);
+        }
+        return this._industryThisRound;
     }
-    prosperityPerTurn(universe, world, faction) {
-        var prosperityGross = this.resourcesPerTurnByName(universe, world).get("Prosperity").quantity;
+    industryThisRoundClear() {
+        this._industryThisRound = 0;
+    }
+    industryThisRoundAdd(amount) {
+        this._industryThisRound += amount;
+    }
+    prosperityThisRound(universe, world, faction) {
+        var prosperityGross = this.resourcesThisRoundByName(universe, world).get("Prosperity").quantity;
         var prosperityConsumed = Math.floor(this.demographics.population / 4);
         var prosperityNet = prosperityGross - prosperityConsumed;
         var inefficiencyExponent = 0.85;
@@ -301,13 +320,13 @@ class Planet extends Entity {
         prosperityNet = Math.round(prosperityNet);
         return prosperityNet;
     }
-    researchPerTurn(universe, world, faction) {
-        var resource = this.resourcesPerTurnByName(universe, world).get("Research");
+    researchThisRound(universe, world, faction) {
+        var resource = this.resourcesThisRoundByName(universe, world).get("Research");
         return (resource == null ? 0 : resource.quantity);
     }
-    resourcesPerTurn(universe, world) {
-        if (this._resourcesPerTurn == null) {
-            this._resourcesPerTurn = new Array();
+    resourcesThisRound(universe, world) {
+        if (this._resourcesThisRound == null) {
+            this._resourcesThisRound = new Array();
             var thisAsPlace = this.toPlace();
             var uwpe = new UniverseWorldPlaceEntities(universe, world, thisAsPlace, null, null);
             var layout = this.layout(universe);
@@ -320,22 +339,22 @@ class Planet extends Entity {
                     facility.effectPerRoundApply(uwpe);
                 }
             }
-            this._resourcesPerTurnByName = null;
+            this._resourcesThisRoundByName = null;
         }
-        return this._resourcesPerTurn;
+        return this._resourcesThisRound;
     }
-    resourcesPerTurnByName(universe, world) {
-        if (this._resourcesPerTurnByName == null) {
-            var resourcesPerTurn = this.resourcesPerTurn(universe, world);
-            this._resourcesPerTurnByName = ArrayHelper.addLookups(resourcesPerTurn, (x) => x.defnName);
+    resourcesThisRoundByName(universe, world) {
+        if (this._resourcesThisRoundByName == null) {
+            var resourcesThisRound = this.resourcesThisRound(universe, world);
+            this._resourcesThisRoundByName = ArrayHelper.addLookups(resourcesThisRound, (x) => x.defnName);
         }
-        return this._resourcesPerTurnByName;
+        return this._resourcesThisRoundByName;
     }
-    resourcesPerTurnAdd(resourcesToAdd) {
-        Resource.addManyToMany(resourcesToAdd, this._resourcesPerTurn);
+    resourcesThisRoundAdd(resourcesToAdd) {
+        Resource.addManyToMany(resourcesToAdd, this._resourcesThisRound);
     }
-    resourcesPerTurnReset() {
-        this._resourcesPerTurn = null;
-        this._resourcesPerTurnByName = null;
+    resourcesThisRoundReset() {
+        this._resourcesThisRound = null;
+        this._resourcesThisRoundByName = null;
     }
 }

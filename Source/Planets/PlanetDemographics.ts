@@ -87,9 +87,9 @@ class PlanetDemographics
 	{
 		var prosperityAccumulated = this.prosperityAccumulated(planet);
 
-		var prosperityThisTurnNet = planet.prosperityPerTurn(universe, world, faction);
+		var prosperityThisRoundNet = planet.prosperityThisRound(universe, world, faction);
 
-		prosperityAccumulated.addQuantity(prosperityThisTurnNet);
+		prosperityAccumulated.addQuantity(prosperityThisRoundNet);
 
 		var quantityToGrow = this.prosperityNeededToGrow();
 

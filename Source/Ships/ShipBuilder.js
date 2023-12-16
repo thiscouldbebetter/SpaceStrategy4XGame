@@ -248,7 +248,7 @@ class ShipBuilder {
                 var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
                 universe.venueJumpTo(venue);
             }
-            else if (planet.factionable().factionName != null) {
+            else if (planet.factionable().faction != null) {
                 var message = "Planet is already colonized.";
                 var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
                 universe.venueJumpTo(venue);
@@ -272,7 +272,7 @@ class ShipBuilder {
                 var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
                 universe.venueJumpTo(venue);
             }
-            else if (planet.factionable().factionName == ship.factionable().factionName) {
+            else if (planet.factionable().faction == ship.factionable().faction) {
                 var message = "Planet is already owned by your faction.";
                 var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
                 universe.venueJumpTo(venue);

@@ -146,9 +146,9 @@ class Projectile extends Entity
 		collidable.collisionHandle(uwpe, collision);
 	}
 
-	faction(world: WorldExtended): Faction
+	faction(): Faction
 	{
-		return this.shipFiredFrom.faction(world);
+		return this.shipFiredFrom.faction();
 	}
 
 	moveTowardTargetAndReturnDistance

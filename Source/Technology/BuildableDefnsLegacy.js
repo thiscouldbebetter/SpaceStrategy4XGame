@@ -30,7 +30,7 @@ class BuildableDefnsLegacy {
             var effect = new BuildableEffect("ResourcesAdd", 0, // order
             (uwpe) => {
                 var planet = uwpe.place.planet;
-                planet.resourcesPerTurnAdd(resourcesToAdd);
+                planet.resourcesThisRoundAdd(resourcesToAdd);
             });
             return effect;
         };
@@ -148,7 +148,7 @@ class BuildableDefnsLegacy {
             // updateForRound
             (uwpe) => {
                 var ship = uwpe.entity;
-                ship.deviceUser().energyRemainingThisRoundAdd(energyPerTurn);
+                ship.deviceUser().energyPerRoundAdd(energyPerTurn);
             }, 0, // usesPerRound
             0, // energyPerUse
             null // use

@@ -38,6 +38,7 @@ class Network2 extends PlaceBase {
     }
     ;
     static generateRandom(universe, name, nodeDefns, numberOfNodes) {
+        var randomizer = universe.randomizer;
         var nodesNotYetLinked = [];
         var radiusMin = .25;
         var radiusMax = 1;
@@ -71,7 +72,7 @@ class Network2 extends PlaceBase {
         var nodePositions = nodesNotYetLinked.map(x => x.locatable().loc.pos);
         var boundsActual = Box.create().containPoints(nodePositions);
         var boundsDesired = new Box(Coords.create(), // center
-        new Coords(1, 1, 1).multiplyScalar(2 * radiusMax) // size
+        Coords.ones().multiplyScalar(2 * radiusMax) // size
         );
         var boundsActualSizeHalf = boundsActual.sizeHalf();
         var boundsDesiredSizeHalf = boundsDesired.sizeHalf();
@@ -102,10 +103,13 @@ class Network2 extends PlaceBase {
             }
             var nodeToLink = nodePairClosestSoFar[0];
             var nodeLinked = nodePairClosestSoFar[1];
-            var link = new NetworkLink2([
-                nodeToLink.name,
-                nodeLinked.name
-            ]);
+            var linkTypes = NetworkLink2Type.Instances();
+            var probabilityLinkTypeIsNormalNotHard = .9;
+            var randomFraction = randomizer.fraction();
+            var linkType = randomFraction <= probabilityLinkTypeIsNormalNotHard
+                ? linkTypes.Normal
+                : linkTypes.Hard;
+            var link = new NetworkLink2(linkType, [nodeToLink.name, nodeLinked.name]);
             links.push(link);
             nodesLinked.push(nodeToLink);
             ArrayHelper.remove(nodesNotYetLinked, nodeToLink);

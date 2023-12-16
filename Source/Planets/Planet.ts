@@ -11,15 +11,15 @@ class Planet extends Entity
 
 	deviceSelected: Device;
 
-	_resourcesPerTurn: Resource[];
-	_resourcesPerTurnByName: Map<string, Resource>;
+	_resourcesThisRound: Resource[];
+	_resourcesThisRoundByName: Map<string, Resource>;
 
 	constructor
 	(
 		name: string,
 		planetType: PlanetType,
 		pos: Coords,
-		factionName: string,
+		faction: Faction,
 		demographics: PlanetDemographics,
 		industry: PlanetIndustry,
 		layout: Layout
@@ -39,7 +39,7 @@ class Planet extends Entity
 				),
 				new Controllable(Planet.toControl),
 				new DeviceUser(),
-				new Factionable(factionName),
+				new Factionable(faction),
 				ItemHolder.create(),
 				Locatable.fromPos(pos)
 			]
@@ -66,7 +66,7 @@ class Planet extends Entity
 			name,
 			planetType,
 			pos,
-			null, // factionName
+			null, // faction
 			null, // demographics
 			null, // industry
 			null // layout
@@ -118,9 +118,9 @@ class Planet extends Entity
 			}
 		}
 
-		return returnValues;		
+		return returnValues;
 	}
-	
+
 	cellPositionsAvailableToBuildOnSurface(universe: Universe): Coords[]
 	{
 		var returnValues = new Array<Coords>();
@@ -202,9 +202,9 @@ class Planet extends Entity
 		return returnValues;
 	}
 
-	faction(world: WorldExtended): Faction
+	faction(): Faction
 	{
-		return this.factionable().faction(world);
+		return this.factionable().faction();
 	}
 
 	factionable(): Factionable
@@ -296,13 +296,13 @@ class Planet extends Entity
 	
 	toStringDescription(universe: Universe, world: WorldExtended): string
 	{
-		var resourcesPerTurnAsString =
-			this.resourcesPerTurn(universe, world).join(", ");
+		var resourcesThisRoundAsString =
+			this.resourcesThisRound(universe, world).join(", ");
 
 		var returnValue =
 			this.name
 			+ " - " + this.demographics.toStringDescription()
-			+ " - " + resourcesPerTurnAsString
+			+ " - " + resourcesThisRoundAsString
 			+ " - " + this.industry.toStringDescription(universe, world, this)
 			+ ".";
 
@@ -348,6 +348,11 @@ class Planet extends Entity
 
 	// Demographics.
 
+	population(): number
+	{
+		return this.demographics.population;
+	}
+
 	populationAdd(universe: Universe, amountToAdd: number): void
 	{
 		this.demographics.populationAdd(universe, this, amountToAdd);
@@ -356,25 +361,6 @@ class Planet extends Entity
 	populationIncrement(universe: Universe): void
 	{
 		this.populationAdd(universe, 1);
-	}
-	
-	prosperityAccumulated(): number
-	{
-		return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
-	}
-
-	prosperityNetWithNeededToGrow(universe: Universe): string
-	{
-		var prosperityNet = this.prosperityPerTurn
-		(
-			universe, universe.world as WorldExtended, null
-		);
-		var prosperityAccumulated = this.prosperityAccumulated();
-		var prosperityNeededToGrow =
-			this.demographics.prosperityNeededToGrow();
-		var returnValue =
-			"+" + prosperityNet + "(" + prosperityAccumulated + "/" + prosperityNeededToGrow + " to grow)";
-		return returnValue;
 	}
 
 	populationIdle(universe: Universe): number
@@ -387,9 +373,19 @@ class Planet extends Entity
 		return this.populationIdle(universe) > 0;
 	}
 
+	private _populationMax: number;
 	populationMax(): number
 	{
-		return this.planetType.size.populationMax();
+		if (this._populationMax == null)
+		{
+			this._populationMax = this.planetType.size.populationMax();
+		}
+		return this._populationMax;
+	}
+
+	populationMaxAdd(populationToAdd: number): void
+	{
+		this._populationMax += populationToAdd;
 	}
 
 	populationOccupied(universe: Universe): number
@@ -402,7 +398,28 @@ class Planet extends Entity
 		var populationCurrent = this.demographics.population;
 		var populationIdle = this.populationIdle(universe);
 		var returnValue =
-			"" + populationCurrent + "/" + this.populationMax() + " (Idle: " + populationIdle + ")";
+			"" + populationCurrent + "/" + this.populationMax()
+			+ " (Idle: " + populationIdle + ")";
+
+		return returnValue;
+	}
+
+	prosperityAccumulated(): number
+	{
+		return this.resourcesAccumulated.find(x => x.defnName == "Prosperity").quantity;
+	}
+
+	prosperityNetWithNeededToGrow(universe: Universe): string
+	{
+		var prosperityNet = this.prosperityThisRound
+		(
+			universe, universe.world as WorldExtended, null
+		);
+		var prosperityAccumulated = this.prosperityAccumulated();
+		var prosperityNeededToGrow =
+			this.demographics.prosperityNeededToGrow();
+		var returnValue =
+			"+" + prosperityNet + "(" + prosperityAccumulated + "/" + prosperityNeededToGrow + " to grow)";
 		return returnValue;
 	}
 
@@ -422,7 +439,7 @@ class Planet extends Entity
 	{
 		if (faction != null)
 		{
-			this.resourcesPerTurnReset();
+			this.resourcesThisRoundReset();
 
 			var layout = this.layout(universe);
 			layout.updateForRound(universe, world, faction, null);
@@ -469,13 +486,13 @@ class Planet extends Entity
 
 	industryAndBuildableInProgress(universe: Universe, world: WorldExtended): string
 	{
-		var industryPerTurn = this.industryPerTurn(universe, world);
+		var industryThisRound = this.industryThisRound(universe, world);
 
 		var buildableAndProgress =
 			this.industryBuildableAndProgress(universe);
 
 		var returnValue =
-			industryPerTurn
+			industryThisRound
 			+ " " + buildableAndProgress;
 
 		return returnValue;
@@ -527,24 +544,41 @@ class Planet extends Entity
 		return buildableProgress;
 	}
 
-	industryPerTurn
+	private _industryThisRound: number;
+
+	industryThisRound
 	(
 		universe: Universe, world: WorldExtended
 	): number
 	{
-		var resource = this.resourcesPerTurnByName
-		(
-			universe, world
-		).get("Industry");
-		return (resource == null ? 0: resource.quantity);
+		if (this._industryThisRound != null)
+		{
+			var resource = this.resourcesThisRoundByName
+			(
+				universe, world
+			).get("Industry");
+			return (resource == null ? 0: resource.quantity);
+		}
+
+		return this._industryThisRound;
 	}
-	
-	prosperityPerTurn
+
+	industryThisRoundClear(): void
+	{
+		this._industryThisRound = 0;
+	}
+
+	industryThisRoundAdd(amount: number): void
+	{
+		this._industryThisRound += amount;
+	}
+
+	prosperityThisRound
 	(
 		universe: Universe, world: WorldExtended, faction: Faction
 	): number
 	{
-		var prosperityGross = this.resourcesPerTurnByName
+		var prosperityGross = this.resourcesThisRoundByName
 		(
 			universe, world
 		).get("Prosperity").quantity;
@@ -561,23 +595,23 @@ class Planet extends Entity
 		return prosperityNet;
 	}
 
-	researchPerTurn
+	researchThisRound
 	(
 		universe: Universe, world: WorldExtended, faction: Faction
 	): number
 	{
-		var resource = this.resourcesPerTurnByName
+		var resource = this.resourcesThisRoundByName
 		(
 			universe, world
 		).get("Research");
 		return (resource == null ? 0: resource.quantity);
 	}
 
-	resourcesPerTurn(universe: Universe, world: WorldExtended): Resource[]
+	resourcesThisRound(universe: Universe, world: WorldExtended): Resource[]
 	{
-		if (this._resourcesPerTurn == null)
+		if (this._resourcesThisRound == null)
 		{
-			this._resourcesPerTurn = new Array<Resource>();
+			this._resourcesThisRound = new Array<Resource>();
 
 			var thisAsPlace = this.toPlace();
 			var uwpe = new UniverseWorldPlaceEntities(universe, world, thisAsPlace, null, null);
@@ -595,35 +629,35 @@ class Planet extends Entity
 				}
 			}
 
-			this._resourcesPerTurnByName = null;
+			this._resourcesThisRoundByName = null;
 		}
-		return this._resourcesPerTurn;
+		return this._resourcesThisRound;
 	}
 
-	resourcesPerTurnByName(universe: Universe, world: WorldExtended): Map<string,Resource>
+	resourcesThisRoundByName(universe: Universe, world: WorldExtended): Map<string,Resource>
 	{
-		if (this._resourcesPerTurnByName == null)
+		if (this._resourcesThisRoundByName == null)
 		{
-			var resourcesPerTurn =
-				this.resourcesPerTurn(universe, world);
+			var resourcesThisRound =
+				this.resourcesThisRound(universe, world);
 
-			this._resourcesPerTurnByName = ArrayHelper.addLookups
+			this._resourcesThisRoundByName = ArrayHelper.addLookups
 			(
-				resourcesPerTurn, (x: Resource) => x.defnName
+				resourcesThisRound, (x: Resource) => x.defnName
 			);
 		}
 
-		return this._resourcesPerTurnByName;
+		return this._resourcesThisRoundByName;
 	}
 
-	resourcesPerTurnAdd(resourcesToAdd: Resource[])
+	resourcesThisRoundAdd(resourcesToAdd: Resource[])
 	{
-		Resource.addManyToMany(resourcesToAdd, this._resourcesPerTurn);
+		Resource.addManyToMany(resourcesToAdd, this._resourcesThisRound);
 	}
 
-	resourcesPerTurnReset(): void
+	resourcesThisRoundReset(): void
 	{
-		this._resourcesPerTurn = null;
-		this._resourcesPerTurnByName = null;
+		this._resourcesThisRound = null;
+		this._resourcesThisRoundByName = null;
 	}
 }

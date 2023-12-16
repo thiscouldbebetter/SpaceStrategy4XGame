@@ -19,14 +19,14 @@ class TechnologyResearchSession {
         var tech = this.technologyBeingResearched();
         var returnValue = "" + this.researcher.researchAccumulated
             + "/"
-            + (tech == null ? "-" : "" + tech.researchRequired);
+            + (tech == null ? "-" : "" + tech.researchToLearn);
         return returnValue;
     }
     researchRequired() {
         var technologyBeingResearched = this.technologyBeingResearched();
         var returnValue = (technologyBeingResearched == null
             ? 0
-            : technologyBeingResearched.researchRequired);
+            : technologyBeingResearched.researchToLearn);
         return returnValue;
     }
     technologyBeingResearched() {
@@ -52,7 +52,7 @@ class TechnologyResearchSession {
         DataBinding.fromContext("Researcher:"), fontNameAndHeight);
         var textResearcher = ControlLabel.from4Uncentered(Coords.fromXY(columnWidth * 1, margin), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
-        DataBinding.fromContext(this.researcher.name), fontNameAndHeight);
+        DataBinding.fromContext(this.researcher.name()), fontNameAndHeight);
         var labelResearchPerDay = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + rowHeight), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Research per Turn:"), //text

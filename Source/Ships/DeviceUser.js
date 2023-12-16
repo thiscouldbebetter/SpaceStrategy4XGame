@@ -2,6 +2,7 @@
 class DeviceUser {
     constructor() {
         this._energyRemainingThisRound = 0;
+        this._energyPerRound = 0;
     }
     static ofEntity(entity) {
         return entity.propertyByName(DeviceUser.name);
@@ -31,12 +32,25 @@ class DeviceUser {
         }
         return this._devicesDrives;
     }
+    devicesStarlaneDrives(ship) {
+        if (this._devicesStarlaneDrives == null) {
+            var devices = this.devices(ship);
+            this._devicesStarlaneDrives = devices.filter((x) => x.defn().categoryNames.indexOf("StarlaneDrive") >= 0);
+        }
+        return this._devicesStarlaneDrives;
+    }
     devicesUsable(ship) {
         if (this._devicesUsable == null) {
             var devices = this.devices(ship);
             this._devicesUsable = devices.filter((x) => x.defn().isActive);
         }
         return this._devicesUsable;
+    }
+    energyPerRoundAdd(energyToAdd) {
+        this._energyPerRound += energyToAdd;
+    }
+    energyPerRoundClear() {
+        this._energyPerRound = 0;
     }
     energyRemainingThisRound() {
         return this._energyRemainingThisRound;
@@ -46,6 +60,9 @@ class DeviceUser {
     }
     energyRemainingThisRoundClear() {
         this._energyRemainingThisRound = 0;
+    }
+    energyRemainingThisRoundReset() {
+        this._energyRemainingThisRound = this._energyPerRound;
     }
     energyRemainingThisRoundSubtract(energyToSubtract) {
         this._energyRemainingThisRound -= energyToSubtract;

@@ -291,7 +291,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 				var entityToDemolishFaction =
 					entityToDemolishFactionable == null
 					? null
-					: entityToDemolishFactionable.faction(world);
+					: entityToDemolishFactionable.faction();
 				var factionCurrent = world.factionCurrent();
 				var entityToDemolishBelongsToAnotherFaction =
 					entityToDemolishFaction != null
@@ -566,7 +566,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		);
 
 		var planet = this.modelParent as Planet;
-		var planetFactionName = planet.factionable().factionName;
+		var planetFactionName = planet.factionable().faction().name;
 
 		if (planetFactionName != null)
 		{
@@ -667,7 +667,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 			DataBinding.fromContextAndGet
 			(
-				planet, (c: Planet) => c.factionable().factionName
+				planet, (c: Planet) => c.factionable().faction().name
 			),
 			fontNameAndHeight
 		);
@@ -787,7 +787,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			DataBinding.fromContextAndGet
 			(
 				planet,
-				(c: Planet) => "" + c.researchPerTurn(universe, world, faction)
+				(c: Planet) => "" + c.researchThisRound(universe, world, faction)
 			),
 			fontNameAndHeight
 		);

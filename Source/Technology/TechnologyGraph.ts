@@ -239,7 +239,7 @@ t(IllusoryMachinations,				[ AccelEnergyReplenishment, Nanofocusing ],					33000
 		(
 			x =>
 				x.namesOfPrerequisiteTechnologies.length == 0
-				&& x.researchRequired == 0 
+				&& x.researchToLearn == 0 
 		);
 		return returnValues;
 	}

@@ -47,8 +47,8 @@ class PlanetDemographics {
     }
     updateForRound(universe, world, faction, planet) {
         var prosperityAccumulated = this.prosperityAccumulated(planet);
-        var prosperityThisTurnNet = planet.prosperityPerTurn(universe, world, faction);
-        prosperityAccumulated.addQuantity(prosperityThisTurnNet);
+        var prosperityThisRoundNet = planet.prosperityThisRound(universe, world, faction);
+        prosperityAccumulated.addQuantity(prosperityThisRoundNet);
         var quantityToGrow = this.prosperityNeededToGrow();
         if (prosperityAccumulated.quantity >= quantityToGrow) {
             prosperityAccumulated.clear();

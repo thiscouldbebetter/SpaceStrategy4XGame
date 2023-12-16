@@ -76,8 +76,8 @@ class Projectile extends Entity {
         var collision = Collision.fromEntitiesColliding(this, target);
         collidable.collisionHandle(uwpe, collision);
     }
-    faction(world) {
-        return this.shipFiredFrom.faction(world);
+    faction() {
+        return this.shipFiredFrom.faction();
     }
     moveTowardTargetAndReturnDistance(target) {
         var projectilePos = this.locatable().loc.pos;

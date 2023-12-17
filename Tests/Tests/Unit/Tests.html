@@ -130,8 +130,11 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Items/ItemDefn.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Items/ItemHolder.js"></script>
 
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Boundable.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Collidable.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Constrainable.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Locatable.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Model/Physics/Movable.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Places/PlaceBase.js"></script>
 
@@ -177,16 +180,24 @@
 
 <script type="text/javascript" src="../../../Source/Controls/ControlDynamic.js"></script>
 
+<script type="text/javascript" src="../../../Source/Devices/DeviceDefns.js"></script>
+
 <script type="text/javascript" src="../../../Source/Extensions/ControlBuilderExtended.js"></script>
 <script type="text/javascript" src="../../../Source/Extensions/VenueFaderExtended.js"></script>
 
 <script type="text/javascript" src="../../../Source/Factions/Faction.js"></script>
+<script type="text/javascript" src="../../../Source/Factions/FactionAbility.js"></script>
+<script type="text/javascript" src="../../../Source/Factions/FactionDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Factions/FactionDiplomacy.js"></script>
 <script type="text/javascript" src="../../../Source/Factions/FactionIntelligence.js"></script>
 <script type="text/javascript" src="../../../Source/Factions/FactionKnowledge.js"></script>
+<script type="text/javascript" src="../../../Source/Factions/Factionable.js"></script>
 
 <script type="text/javascript" src="../../../Source/Layouts/Layout.js"></script>
 <script type="text/javascript" src="../../../Source/Layouts/Buildable.js"></script>
+<script type="text/javascript" src="../../../Source/Layouts/BuildableCategory.js"></script>
 <script type="text/javascript" src="../../../Source/Layouts/BuildableDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Layouts/BuildableEffect.js"></script>
 <script type="text/javascript" src="../../../Source/Layouts/MapLayout.js"></script>
 <script type="text/javascript" src="../../../Source/Layouts/MapCell.js"></script>
 <script type="text/javascript" src="../../../Source/Layouts/MapCursor.js"></script>
@@ -199,31 +210,44 @@
 <script type="text/javascript" src="../../../Source/Networks/NetworkLink.js"></script>
 <script type="text/javascript" src="../../../Source/Networks/NetworkNode.js"></script>
 <script type="text/javascript" src="../../../Source/Networks/NetworkNodeDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Networks/VisualStar.js"></script>
 
 <script type="text/javascript" src="../../../Source/Notifications/Notification.js"></script>
 <script type="text/javascript" src="../../../Source/Notifications/NotificationSession.js"></script>
 
 <script type="text/javascript" src="../../../Source/Planets/Planet.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/PlanetAsPlace.js"></script>
 <script type="text/javascript" src="../../../Source/Planets/PlanetDemographics.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/PlanetEnvironment.js"></script>
 <script type="text/javascript" src="../../../Source/Planets/PlanetIndustry.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/PlanetSize.js"></script>
+<script type="text/javascript" src="../../../Source/Planets/PlanetType.js"></script>
 
 <script type="text/javascript" src="../../../Source/Ships/Device.js"></script>
 <script type="text/javascript" src="../../../Source/Ships/DeviceDefn.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/DeviceUser.js"></script>
 <script type="text/javascript" src="../../../Source/Ships/Order.js"></script>
 <script type="text/javascript" src="../../../Source/Ships/OrderDefn.js"></script>
 <script type="text/javascript" src="../../../Source/Ships/Projectile.js"></script>
 <script type="text/javascript" src="../../../Source/Ships/Ship.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/ShipBuilder.js"></script>
+<script type="text/javascript" src="../../../Source/Ships/StarsystemTraverser.js"></script>
 
 <script type="text/javascript" src="../../../Source/Starsystems/Constraint_Cursor.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/Cursor.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/LinkPortal.js"></script>
+<script type="text/javascript" src="../../../Source/Starsystems/Star.js"></script>
+<script type="text/javascript" src="../../../Source/Starsystems/StarType.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/Starsystem.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/VenueStarsystem.js"></script>
+<script type="text/javascript" src="../../../Source/Starsystems/VisualElevationStem.js"></script>
+<script type="text/javascript" src="../../../Source/Starsystems/VisualGrid.js"></script>
 
 <script type="text/javascript" src="../../../Source/Talk/DiplomaticAction.js"></script>
 <script type="text/javascript" src="../../../Source/Talk/DiplomaticRelationship.js"></script>
 <script type="text/javascript" src="../../../Source/Talk/DiplomaticSession.js"></script>
 
+<script type="text/javascript" src="../../../Source/Technology/BuildableDefnsLegacy.js"></script>
 <script type="text/javascript" src="../../../Source/Technology/Technology.js"></script>
 <script type="text/javascript" src="../../../Source/Technology/TechnologyGraph.js"></script>
 <script type="text/javascript" src="../../../Source/Technology/TechnologyResearcher.js"></script>
@@ -237,9 +261,11 @@
 <script type="text/javascript" src="../../../Source/Utility/BodyDefn.js"></script>
 <script type="text/javascript" src="../../../Source/Utility/Collision.js"></script>
 <script type="text/javascript" src="../../../Source/Utility/NameGenerator.js"></script>
+<script type="text/javascript" src="../../../Source/Utility/WeightedDistribution.js"></script>
 
 <script type="text/javascript" src="../../../Source/VenueWorldExtended.js"></script>
 <script type="text/javascript" src="../../../Source/WorldExtended.js"></script>
+<script type="text/javascript" src="../../../Source/WorldExtendedCreator.js"></script>
 
 <!-- end Source -->
 
@@ -269,7 +295,6 @@
 <script type="text/javascript" src="Layouts/BuildableTests.js"></script>
 <script type="text/javascript" src="Layouts/LayoutTests.js"></script>
 <script type="text/javascript" src="Layouts/MapLayoutTests.js"></script>
-<script type="text/javascript" src="Layouts/ResourceGroupTests.js"></script>
 <script type="text/javascript" src="Layouts/ResourceTests.js"></script>
 <script type="text/javascript" src="Layouts/VenueLayoutTests.js"></script>
 
@@ -279,7 +304,6 @@
 <!-- Notifications. -->
 <script type="text/javascript" src="Notifications/NotificationTests.js"></script>
 <script type="text/javascript" src="Notifications/NotificationSessionTests.js"></script>
-<script type="text/javascript" src="Notifications/NotificationTypeTests.js"></script>
 
 <!-- Planets. -->
 <script type="text/javascript" src="Planets/PlanetTests.js"></script>
@@ -321,7 +345,6 @@
 			new BuildableTests(),
 			new LayoutTests(),
 			new MapLayoutTests(),
-			new ResourceGroupTests(),
 			new ResourceTests(),
 			new VenueLayoutTests(),
 
@@ -331,7 +354,6 @@
 			// Notifications.
 			new Notification2Tests(),
 			new NotificationSessionTests(),
-			new NotificationTypeTests(),
 
 			// Planets.
 			new PlanetTests(),

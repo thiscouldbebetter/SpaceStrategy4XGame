@@ -16,6 +16,7 @@ var ControlContainer = gf.ControlContainer;
 var ControlContainerTransparent = gf.ControlContainerTransparent;
 var ControlLabel = gf.ControlLabel;
 var ControlList = gf.ControlList;
+var ControlNumber = gf.ControlNumber;
 var ControlScrollbar = gf.ControlScrollbar;
 var ControlSelect = gf.ControlSelect;
 var ControlSelectOption = gf.ControlSelectOption;
@@ -39,6 +40,7 @@ var VisualCircle = gf.VisualCircle;
 var VisualCircleGradient = gf.VisualCircleGradient;
 var VisualDirectional = gf.VisualDirectional;
 var VisualDynamic = gf.VisualDynamic;
+var VisualEllipse = gf.VisualEllipse;
 var VisualGroup = gf.VisualGroup;
 var VisualImageFromLibrary = gf.VisualImageFromLibrary;
 var VisualImageImmediate = gf.VisualImageImmediate;
@@ -48,6 +50,7 @@ var VisualNone = gf.VisualNone;
 var VisualOffset = gf.VisualOffset;
 var VisualPolygon = gf.VisualPolygon;
 var VisualRectangle = gf.VisualRectangle;
+var VisualRotate = gf.VisualRotate;
 var VisualSelect = gf.VisualSelect;
 var VisualText = gf.VisualText;
 // Display - Visuals - Animation.
@@ -61,6 +64,8 @@ var Orientation = gf.Orientation;
 var Polar = gf.Polar;
 var RangeExtent = gf.RangeExtent;
 var Rotation = gf.Rotation;
+// Geometry - Collisions.
+var Collision = gf.Collision;
 // Geometry - Shapes.
 var Box = gf.Box;
 var BoxRotated = gf.BoxRotated;
@@ -91,6 +96,7 @@ var Input = gf.Input;
 var InputHelper = gf.InputHelper;
 // Media.
 var Font = gf.Font;
+var FontNameAndHeight = gf.FontNameAndHeight;
 var Image2 = gf.Image2;
 var MediaLibrary = gf.MediaLibrary;
 var SoundFromFile = gf.SoundFromFile;
@@ -104,6 +110,7 @@ var VisualSound = gf.VisualSound;
 var Entity = gf.Entity;
 var EntityBuilder = gf.EntityBuilder;
 var PlaceBase = gf.PlaceBase;
+var PlaceDefn = gf.PlaceDefn;
 var Universe = gf.Universe;
 var UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 var VenueWorld = gf.VenueWorld;
@@ -123,8 +130,10 @@ var ItemDefn = gf.ItemDefn;
 var ItemCategory = gf.ItemCategory;
 var ItemHolder = gf.ItemHolder;
 // Model - Physics.
+var Collidable = gf.Collidable;
 var Constrainable = gf.Constrainable;
 var Locatable = gf.Locatable;
+var Movable = gf.Movable;
 // Profiles.
 var Profile = gf.Profile;
 // Storage.
@@ -139,6 +148,8 @@ var CompressorLZW = gf.CompressorLZW;
 // Talk.
 var ConversationDefn = gf.ConversationDefn;
 var ConversationRun = gf.ConversationRun;
+var TalkNode = gf.TalkNode;
+var TalkNodeDefn = gf.TalkNodeDefn;
 // Tests.
 var Assert = gf.Assert;
 var TestFixture = gf.TestFixture;

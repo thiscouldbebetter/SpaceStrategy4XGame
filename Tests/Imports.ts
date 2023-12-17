@@ -27,6 +27,7 @@ import ControlContainer = gf.ControlContainer;
 import ControlContainerTransparent = gf.ControlContainerTransparent;
 import ControlLabel = gf.ControlLabel;
 import ControlList = gf.ControlList;
+import ControlNumber = gf.ControlNumber;
 import ControlScrollbar = gf.ControlScrollbar;
 import ControlSelect = gf.ControlSelect;
 import ControlSelectOption = gf.ControlSelectOption;
@@ -58,6 +59,7 @@ import VisualCircle = gf.VisualCircle;
 import VisualCircleGradient = gf.VisualCircleGradient;
 import VisualDirectional = gf.VisualDirectional;
 import VisualDynamic = gf.VisualDynamic;
+import VisualEllipse = gf.VisualEllipse;
 import VisualGroup = gf.VisualGroup;
 import VisualImageFromLibrary = gf.VisualImageFromLibrary;
 import VisualImageImmediate = gf.VisualImageImmediate;
@@ -67,6 +69,7 @@ import VisualNone = gf.VisualNone;
 import VisualOffset = gf.VisualOffset;
 import VisualPolygon = gf.VisualPolygon;
 import VisualRectangle = gf.VisualRectangle;
+import VisualRotate = gf.VisualRotate;
 import VisualSelect = gf.VisualSelect;
 import VisualText = gf.VisualText;
 
@@ -84,6 +87,9 @@ import Orientation = gf.Orientation;
 import Polar = gf.Polar;
 import RangeExtent = gf.RangeExtent;
 import Rotation = gf.Rotation;
+
+// Geometry - Collisions.
+import Collision = gf.Collision;
 
 // Geometry - Shapes.
 
@@ -129,6 +135,7 @@ import InputHelper = gf.InputHelper;
 // Media.
 
 import Font = gf.Font;
+import FontNameAndHeight = gf.FontNameAndHeight;
 import Image2 = gf.Image2;
 import MediaLibrary = gf.MediaLibrary;
 import Sound = gf.Sound;
@@ -148,9 +155,11 @@ import EntityBuilder = gf.EntityBuilder;
 import Namable = gf.Namable;
 import Place = gf.Place;
 import PlaceBase = gf.PlaceBase;
+import PlaceDefn = gf.PlaceDefn;
 import Universe = gf.Universe;
 import UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 import Venue = gf.Venue;
+import VenueDrawnOnlyWhenUpdated = gf.VenueDrawnOnlyWhenUpdated;
 import VenueWorld = gf.VenueWorld;
 import World = gf.World;
 import WorldCreator = gf.WorldCreator;
@@ -176,9 +185,11 @@ import ItemHolder = gf.ItemHolder;
 
 // Model - Physics.
 
+import Collidable = gf.Collidable;
 import Constrainable = gf.Constrainable;
 import Constraint = gf.Constraint;
 import Locatable = gf.Locatable;
+import Movable = gf.Movable;
 
 // Profiles.
 
@@ -201,6 +212,8 @@ import CompressorLZW = gf.CompressorLZW;
 
 import ConversationDefn = gf.ConversationDefn;
 import ConversationRun = gf.ConversationRun;
+import TalkNode = gf.TalkNode;
+import TalkNodeDefn = gf.TalkNodeDefn;
 
 // Tests.
 

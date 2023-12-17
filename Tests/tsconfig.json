@@ -60,6 +60,7 @@
   "include" : [ ".", "../Source/" ],
   "exclude":
   [
+	"../Source/Imports.ts",
     "../Source/Framework/Source/_BuildRecord.ts",
     "../Source/Framework/Source/Imports.ts",
     "../Source/Framework/Source/main.ts",

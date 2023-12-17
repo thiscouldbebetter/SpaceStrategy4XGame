@@ -1,18 +1,23 @@
 
 class DeviceUser implements EntityProperty<DeviceUser>
 {
-	_energyRemainingThisRound: number;
-	_energyPerRound: number;
-
 	_deviceSelected: Device;
 	_devicesDrives: Device[];
+	_devicesGenerators: Device[];
+	_devicesSensors: Device[];
+	_devicesShields: Device[];
 	_devicesStarlaneDrives: Device[];
 	_devicesUsable: Device[];
 
+	_distanceMaxPerMove: number;
+	_energyPerRound: number;
+	_energyRemainingThisRound: number;
+
 	constructor()
 	{
-		this._energyRemainingThisRound = 0;
-		this._energyPerRound = 0;
+		this._distanceMaxPerMove = null;
+		this._energyPerRound = null;
+		this._energyRemainingThisRound = null;
 	}
 
 	static ofEntity(entity: Entity): DeviceUser
@@ -67,6 +72,58 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesDrives;
 	}
 
+	devicesGenerators(ship: Ship): Device[]
+	{
+		if (this._devicesGenerators == null)
+		{
+			var devices = this.devices(ship);
+
+			var categoryShipGenerators =
+				BuildableCategory.Instances().ShipGenerator;
+
+			this._devicesGenerators = devices.filter
+			(
+				(x: Device) => x.defn().categories.indexOf(categoryShipGenerators) >= 0
+			);
+		}
+
+		return this._devicesGenerators;
+	}
+
+	devicesSensors(ship: Ship): Device[]
+	{
+		if (this._devicesSensors == null)
+		{
+			var devices = this.devices(ship);
+
+			var categoryShipSensor = BuildableCategory.Instances().ShipSensor;
+
+			this._devicesSensors = devices.filter
+			(
+				(x: Device) => x.defn().categories.indexOf(categoryShipSensor) >= 0
+			);
+		}
+
+		return this._devicesSensors;
+	}
+
+	devicesShields(ship: Ship): Device[]
+	{
+		if (this._devicesShields == null)
+		{
+			var devices = this.devices(ship);
+
+			var categoryShipShield = BuildableCategory.Instances().ShipShield;
+
+			this._devicesShields = devices.filter
+			(
+				(x: Device) => x.defn().categories.indexOf(categoryShipShield) >= 0
+			);
+		}
+
+		return this._devicesShields;
+	}
+
 	devicesStarlaneDrives(ship: Ship): Device[]
 	{
 		if (this._devicesStarlaneDrives == null)
@@ -99,6 +156,33 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesUsable;
 	}
 
+	distanceMaxPerMove(ship: Ship): number
+	{
+		if (this._distanceMaxPerMove == null)
+		{
+			this._distanceMaxPerMove = 0;
+			var devicesDrives = this.devicesDrives(ship);
+
+			var energyPerRoundBefore = this._energyPerRound;
+
+			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+			devicesDrives.forEach(x => x.updateForRound(uwpe) );
+
+			this._energyPerRound = energyPerRoundBefore;
+		}
+		return this._distanceMaxPerMove;
+	}
+
+	distanceMaxPerMoveAdd(distanceToAdd: number): void
+	{
+		this._distanceMaxPerMove += distanceToAdd;
+	}
+
+	distanceMaxPerMoveReset(): void
+	{
+		this._distanceMaxPerMove = null;
+	}
+
 	_energyPerMove: number
 	energyPerMove(ship: Ship): number
 	{
@@ -106,19 +190,37 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		{
 			var devicesDrives = this.devicesDrives(ship);
 			var energyPerMoveSoFar = 0;
+			var distanceMaxPerMoveBefore = this._distanceMaxPerMove;
 			devicesDrives.forEach(x => energyPerMoveSoFar += x.defn().energyPerUse);
+			this._distanceMaxPerMove = distanceMaxPerMoveBefore;
 			this._energyPerMove = energyPerMoveSoFar;
 		}
 		return this._energyPerMove;
 	}
 
-	energyPerMoveClear(): void
+	energyPerMoveAdd(energyToAdd: number): void
 	{
-		this._energyPerMove = 0;
+		this._energyPerMove += energyToAdd;
 	}
 
-	energyPerRound(): number
+	energyPerMoveReset(): void
 	{
+		this._energyPerMove = null;
+	}
+
+	energyPerRound(ship: Ship): number
+	{
+		if (this._energyPerRound == null)
+		{
+			var devicesGenerators = this.devicesGenerators(ship);
+
+			var distanceMaxPerMoveBefore = this._distanceMaxPerMove;
+
+			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+			devicesGenerators.forEach(x => x.updateForRound(uwpe) );
+
+			this._distanceMaxPerMove = distanceMaxPerMoveBefore;
+		}
 		return this._energyPerRound;
 	}
 
@@ -127,13 +229,25 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._energyPerRound += energyToAdd;
 	}
 
-	energyPerRoundClear(): void
+	energyPerRoundReset(): void
 	{
-		this._energyPerRound = 0;
+		this._energyPerRound = null;
 	}
 
-	energyRemainingThisRound(): number
+	energyRemainingOverMax(ship: Ship): string
 	{
+		var energyRemaining = this.energyRemainingThisRound(ship);
+		var energyPerRound = this.energyPerRound(ship);
+		var energyRemainingOverMax = energyRemaining + "/" + energyPerRound;
+		return energyRemainingOverMax;
+	}
+
+	energyRemainingThisRound(ship: Ship): number
+	{
+		if (this._energyRemainingThisRound == null)
+		{
+			this.energyRemainingThisRoundReset(ship);
+		}
 		return this._energyRemainingThisRound;
 	}
 
@@ -147,9 +261,9 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._energyRemainingThisRound = 0;
 	}
 
-	energyRemainingThisRoundReset(): void
+	energyRemainingThisRoundReset(ship: Ship): void
 	{
-		this._energyRemainingThisRound = this.energyPerRound();
+		this._energyRemainingThisRound = this.energyPerRound(ship);
 	}
 
 	energyRemainingThisRoundSubtract(energyToSubtract: number): void

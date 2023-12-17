@@ -74,8 +74,8 @@ class OrderDefn_Instances
 
 	go(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var entityMoving = uwpe.entity;
-		
+		var entityMoving = uwpe.entity as Ship;
+
 		var orderable = Orderable.fromEntity(entityMoving);
 		var order = orderable.order(entityMoving);
 
@@ -85,8 +85,8 @@ class OrderDefn_Instances
 		var displacementToTargetFinal =
 			targetFinalPos.clone().subtract(entityMovingPos);
 		var distanceToTargetFinal = displacementToTargetFinal.magnitude();
-		var starsystemTraverser = StarsystemTraverser.ofEntity(entityMoving);
-		var distanceMaxPerMove = starsystemTraverser.distanceMaxPerMove();
+		var deviceUser = DeviceUser.ofEntity(entityMoving);
+		var distanceMaxPerMove = deviceUser.distanceMaxPerMove(entityMoving);
 		var entityTargetImmediate: Entity; 
 		if (distanceToTargetFinal <= distanceMaxPerMove)
 		{
@@ -125,53 +125,10 @@ class OrderDefn_Instances
 		var orderable = Orderable.fromEntity(entity);
 		var order = orderable.order(entity);
 
-		var entityOrderable = uwpe.entity as Ship;
-
 		var device = order.deviceToUse;
 		if (device != null)
 		{
-			var universe = uwpe.universe;
-			var venue = universe.venueCurrent() as VenueStarsystem;
-			var starsystem = venue.starsystem;
-
-			var projectile = device.projectile;
-
-			if (projectile == null)
-			{
-				var projectileDefn = ProjectileDefn.Instances().Default;
-
-				projectile = new Projectile
-				(
-					entityOrderable.name + "_projectile",
-					projectileDefn,
-					entityOrderable.locatable().loc.pos.clone(),
-					entityOrderable, // shipFiredFrom
-					order.entityBeingTargeted
-				);
-
-				projectile.actor().activity = 
-					Activity.fromDefnNameAndTargetEntity
-					(
-						"MoveToTargetCollideAndEndMove", order.entityBeingTargeted
-					);
-
-				starsystem.entityToSpawnAdd(projectile);
-
-				device.projectile = projectile;
-			}
-			else
-			{
-				device.projectile = null;
-
-				var projectilePos = projectile.locatable().loc.pos;
-				var targetPos = order.entityBeingTargeted.locatable().loc.pos;
-
-				if (projectilePos.equals(targetPos))
-				{
-					order.complete();
-				}
-			}
-
+			device.use(uwpe);
 		}
 	}
 }

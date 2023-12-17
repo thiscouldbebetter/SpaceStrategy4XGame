@@ -1,5 +1,11 @@
 "use strict";
 class BuildableDefnsLegacy {
+    static Instance(mapCellSizeInPixels) {
+        if (BuildableDefnsLegacy._instance == null) {
+            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
+        }
+        return BuildableDefnsLegacy._instance;
+    }
     constructor(mapCellSizeInPixels) {
         var fontHeight = mapCellSizeInPixels.y / 3;
         var canBeBuiltNever = (m, p) => false;
@@ -115,24 +121,26 @@ class BuildableDefnsLegacy {
         var categories = BuildableCategory.Instances();
         // Drives.
         var categoryShipDrive = categories.ShipDrive;
-        var deviceDefnDrive = new DeviceDefn("Drive", false, // isActive
+        var deviceDefnDrive = (energyPerUse, distancePerMoveMultiple) => new DeviceDefn("Drive", false, // isActive
         false, // needsTarget
-        [categoryShipDrive], // categories
-        (uwpe) => // init
+        [categoryShipDrive], (uwpe) => // init
          { }, (uwpe) => // updateForRound
          {
-            // todo
+            var ship = uwpe.entity;
+            var shipDeviceUser = ship.deviceUser();
+            shipDeviceUser.energyPerMoveAdd(energyPerUse);
+            var distancePerMove = distancePerMoveMultiple * 50;
+            shipDeviceUser.distanceMaxPerMoveAdd(distancePerMove);
         }, 0, // usesPerRound
-        0, // energyPerUse
-        (uwpe) => // use
+        energyPerUse, (uwpe) => // use
          {
-            // todo
+            // Do nothing?
         });
-        this.ShipDrive1TonklinMotor = shipComponent(names.ShipDrive1TonklinMotor, visualBuild("Drive", colors.Gray), 10, categoryShipDrive, deviceDefnDrive);
-        this.ShipDrive2IonBanger = shipComponent(names.ShipDrive2IonBanger, visualBuild("Drive", colors.Red), 30, categoryShipDrive, deviceDefnDrive);
-        this.ShipDrive3GravitonProjector = shipComponent(names.ShipDrive3GravitonProjector, visualBuild("Drive", colors.Green), 40, categoryShipDrive, deviceDefnDrive);
-        this.ShipDrive4InertiaNegator = shipComponent(names.ShipDrive4InertiaNegator, visualBuild("Drive", colors.Red), 20, categoryShipDrive, deviceDefnDrive);
-        this.ShipDrive5NanowaveSpaceBender = shipComponent(names.ShipDrive5NanowaveSpaceBender, visualBuild("Drive", colors.Red), 80, categoryShipDrive, deviceDefnDrive);
+        this.ShipDrive1TonklinMotor = shipComponent(names.ShipDrive1TonklinMotor, visualBuild("Drive", colors.Gray), 10, categoryShipDrive, deviceDefnDrive(1, 1));
+        this.ShipDrive2IonBanger = shipComponent(names.ShipDrive2IonBanger, visualBuild("Drive", colors.Red), 30, categoryShipDrive, deviceDefnDrive(1, 2));
+        this.ShipDrive3GravitonProjector = shipComponent(names.ShipDrive3GravitonProjector, visualBuild("Drive", colors.Green), 40, categoryShipDrive, deviceDefnDrive(3, 3));
+        this.ShipDrive4InertiaNegator = shipComponent(names.ShipDrive4InertiaNegator, visualBuild("Drive", colors.Red), 20, categoryShipDrive, deviceDefnDrive(1, 3));
+        this.ShipDrive5NanowaveSpaceBender = shipComponent(names.ShipDrive5NanowaveSpaceBender, visualBuild("Drive", colors.Red), 80, categoryShipDrive, deviceDefnDrive(5, 5));
         // Generators.
         var categoryShipGenerator = categories.ShipGenerator;
         var deviceDefnGenerator = (energyPerTurn) => {
@@ -145,18 +153,21 @@ class BuildableDefnsLegacy {
                 ship.deviceUser().energyPerRoundAdd(energyPerTurn);
             }, 0, // usesPerRound
             0, // energyPerUse
-            null // use
-            );
+            (uwpe) => // use
+             {
+                var ship = uwpe.entity;
+                console.log("todo - ship - generator - " + ship.toString());
+            });
         };
         var colorGenerator = colors.Yellow;
         var shipGenerator = (name, industryToBuild, energyPerTurn) => {
             return shipComponent(name, visualBuild(name, colorGenerator), industryToBuild, categoryShipGenerator, deviceDefnGenerator(energyPerTurn));
         };
-        this.ShipGenerator1ProtonShaver = shipGenerator(names.ShipGenerator1ProtonShaver, 20, 1);
-        this.ShipGenerator2SubatomicScoop = shipGenerator(names.ShipGenerator2SubatomicScoop, 35, 2);
-        this.ShipGenerator3QuarkExpress = shipGenerator(names.ShipGenerator3QuarkExpress, 60, 3);
-        this.ShipGenerator4VanKreegHypersplicer = shipGenerator(names.ShipGenerator4VanKreegHypersplicer, 80, 4);
-        this.ShipGenerator5Nanotwirler = shipGenerator(names.ShipGenerator5Nanotwirler, 100, 5);
+        this.ShipGenerator1ProtonShaver = shipGenerator(names.ShipGenerator1ProtonShaver, 20, 2);
+        this.ShipGenerator2SubatomicScoop = shipGenerator(names.ShipGenerator2SubatomicScoop, 35, 4);
+        this.ShipGenerator3QuarkExpress = shipGenerator(names.ShipGenerator3QuarkExpress, 60, 6);
+        this.ShipGenerator4VanKreegHypersplicer = shipGenerator(names.ShipGenerator4VanKreegHypersplicer, 80, 8);
+        this.ShipGenerator5Nanotwirler = shipGenerator(names.ShipGenerator5Nanotwirler, 100, 10);
         // Hulls.
         var shipHull = (name, color, industryToBuild) => {
             return new BuildableDefn(name, false, // isItem
@@ -247,15 +258,31 @@ class BuildableDefnsLegacy {
             // todo
         }, usesPerRound, energyPerUse, (uwpe) => // use
          {
-            var shipFiring = uwpe.entity;
-            var entityTarget = uwpe.entity2;
-            var pos = shipFiring.locatable().loc.pos.clone();
-            var projectileDefn = ProjectileDefn.Instances().Default;
-            var projectile = new Projectile(shipFiring.name + "_" + Projectile.name, projectileDefn, pos, shipFiring, entityTarget);
             var universe = uwpe.universe;
             var venue = universe.venueCurrent();
             var starsystem = venue.starsystem;
-            starsystem.entityToSpawnAdd(projectile);
+            var entityFiring = uwpe.entity;
+            var entityFiringOrder = entityFiring.orderable().order(entityFiring);
+            var entityBeingTargeted = entityFiringOrder.entityBeingTargeted;
+            var device = entityFiring.deviceUser().deviceSelected();
+            var projectile = device.projectile;
+            if (projectile == null) {
+                var projectileDefn = ProjectileDefn.Instances().Default;
+                projectile = new Projectile(entityFiring.name + "_" + Projectile.name, projectileDefn, entityFiring.locatable().loc.pos.clone(), entityFiring, // entityFiredFrom
+                entityBeingTargeted);
+                projectile.actor().activity =
+                    Activity.fromDefnNameAndTargetEntity("MoveToTargetCollideAndEndMove", entityBeingTargeted);
+                starsystem.entityToSpawnAdd(projectile);
+                device.projectile = projectile;
+            }
+            else {
+                device.projectile = null;
+                var projectilePos = projectile.locatable().loc.pos;
+                var targetPos = entityBeingTargeted.locatable().loc.pos;
+                if (projectilePos.equals(targetPos)) {
+                    entityFiringOrder.complete();
+                }
+            }
         });
         this.ShipWeapon01MassBarrageGun = shipComponent(names.ShipWeapon01MassBarrageGun, visualBuild("Weapon", colors.Gray), 10, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon01MassBarrageGun, 1, 1, 100, 1));
         this.ShipWeapon02FourierMissiles = shipComponent(names.ShipWeapon02FourierMissiles, visualBuild("Weapon", colors.Gray), 20, categoryShipWeapon, deviceDefnWeapon(names.ShipWeapon02FourierMissiles, 1, 1, 100, 1));
@@ -425,12 +452,6 @@ class BuildableDefnsLegacy {
                 this.SurfaceLaboratory,
                 this.SurfaceTransportTubes
             ];
-    }
-    static Instance(mapCellSizeInPixels) {
-        if (BuildableDefnsLegacy._instance == null) {
-            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
-        }
-        return BuildableDefnsLegacy._instance;
     }
 }
 class BuildableDefnsLegacyNames {

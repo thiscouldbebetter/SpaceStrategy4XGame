@@ -92,7 +92,7 @@ function worldCreatorToControl(universe, worldCreator) {
     fontNameAndHeight, DataBinding.fromTrue() // isEnabled
     );
     var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
-    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Faction:"), fontNameAndHeight);
+    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Ability:"), fontNameAndHeight);
     var selectFactionType = new ControlSelect("selectFactionType", Coords.fromXY(margin * 8, margin * 4 + controlHeight * 3), // pos
     Coords.fromXY(controlHeight * 3, controlHeight), // size
     new DataBinding(worldCreator, (c) => c.settings.factionDefnName, (c, v) => c.settings.factionDefnName = v), // valueSelected

@@ -140,7 +140,7 @@ class FactionAbility_Instances {
         for (var i = 0; i < ships.length; i++) {
             var ship = ships[i];
             var shipDeviceUser = ship.deviceUser();
-            var energyRemainingThisRound = shipDeviceUser.energyRemainingThisRound();
+            var energyRemainingThisRound = shipDeviceUser.energyRemainingThisRound(ship);
             shipDeviceUser.energyRemainingThisRoundAdd(energyRemainingThisRound);
         }
     }

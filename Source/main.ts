@@ -179,7 +179,7 @@ function worldCreatorToControl
 	(
 		Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
-		DataBinding.fromContext("Player Faction:"),
+		DataBinding.fromContext("Player Ability:"),
 		fontNameAndHeight
 	);
 

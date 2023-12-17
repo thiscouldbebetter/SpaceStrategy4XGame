@@ -453,28 +453,33 @@ class BuildableDefnsLegacy
 		var categories = BuildableCategory.Instances();
 
 		// Drives.
-		
+
 		var categoryShipDrive = categories.ShipDrive;
 
-		var deviceDefnDrive = new DeviceDefn
-		(
-			"Drive",
-			false, // isActive
-			false, // needsTarget
-			[ categoryShipDrive ], // categories
-			(uwpe: UniverseWorldPlaceEntities) => // init
-			{},
-			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
-			{
-				// todo
-			},
-			0, // usesPerRound
-			0, // energyPerUse
-			(uwpe: UniverseWorldPlaceEntities) => // use
-			{
-				// todo
-			}
-		);
+		var deviceDefnDrive = (energyPerUse: number, distancePerMoveMultiple: number) =>
+			new DeviceDefn
+			(
+				"Drive",
+				false, // isActive
+				false, // needsTarget
+				[ categoryShipDrive ],
+				(uwpe: UniverseWorldPlaceEntities) => // init
+				{},
+				(uwpe: UniverseWorldPlaceEntities) => // updateForRound
+				{
+					var ship = uwpe.entity as Ship;
+					var shipDeviceUser = ship.deviceUser();
+					shipDeviceUser.energyPerMoveAdd(energyPerUse);
+					var distancePerMove = distancePerMoveMultiple * 50;
+					shipDeviceUser.distanceMaxPerMoveAdd(distancePerMove);
+				},
+				0, // usesPerRound
+				energyPerUse,
+				(uwpe: UniverseWorldPlaceEntities) => // use
+				{
+					// Do nothing?
+				}
+			);
 
 		this.ShipDrive1TonklinMotor = shipComponent
 		(
@@ -482,7 +487,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Gray),
 			10,
 			categoryShipDrive,
-			deviceDefnDrive
+			deviceDefnDrive(1, 1)
 		);
 
 		this.ShipDrive2IonBanger = shipComponent
@@ -491,7 +496,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Red),
 			30,
 			categoryShipDrive,
-			deviceDefnDrive
+			deviceDefnDrive(1, 2)
 		);
 
 		this.ShipDrive3GravitonProjector = shipComponent
@@ -500,7 +505,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Green),
 			40,
 			categoryShipDrive,
-			deviceDefnDrive
+			deviceDefnDrive(3, 3)
 		);
 
 		this.ShipDrive4InertiaNegator = shipComponent
@@ -509,7 +514,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Red),
 			20,
 			categoryShipDrive,
-			deviceDefnDrive
+			deviceDefnDrive(1, 3)
 		);
 
 		this.ShipDrive5NanowaveSpaceBender = shipComponent
@@ -518,7 +523,7 @@ class BuildableDefnsLegacy
 			visualBuild("Drive", colors.Red),
 			80,
 			categoryShipDrive,
-			deviceDefnDrive
+			deviceDefnDrive(5, 5)
 		);
 
 		// Generators.
@@ -543,7 +548,11 @@ class BuildableDefnsLegacy
 					},
 					0, // usesPerRound
 					0, // energyPerUse
-					null // use
+					(uwpe: UniverseWorldPlaceEntities) => // use
+					{
+						var ship = uwpe.entity as Ship;
+						console.log("todo - ship - generator - " + ship.toString() );
+					}
 				);
 			};
 
@@ -566,35 +575,35 @@ class BuildableDefnsLegacy
 		(
 			names.ShipGenerator1ProtonShaver,
 			20,
-			1
+			2
 		);
 
 		this.ShipGenerator2SubatomicScoop = shipGenerator
 		(
 			names.ShipGenerator2SubatomicScoop,
 			35,
-			2
+			4
 		);
 
 		this.ShipGenerator3QuarkExpress = shipGenerator
 		(
 			names.ShipGenerator3QuarkExpress,
 			60,
-			3
+			6
 		);
 
 		this.ShipGenerator4VanKreegHypersplicer = shipGenerator
 		(
 			names.ShipGenerator4VanKreegHypersplicer,
 			80,
-			4
+			8
 		);
 
 		this.ShipGenerator5Nanotwirler = shipGenerator
 		(
 			names.ShipGenerator5Nanotwirler,
 			100,
-			5
+			10
 		);
 
 		// Hulls.
@@ -722,22 +731,54 @@ class BuildableDefnsLegacy
 				energyPerUse,
 				(uwpe: UniverseWorldPlaceEntities) => // use
 				{
-					var shipFiring = uwpe.entity as Ship;
-					var entityTarget = uwpe.entity2;
-					var pos = shipFiring.locatable().loc.pos.clone();
-					var projectileDefn = ProjectileDefn.Instances().Default;
-					var projectile = new Projectile
-					(
-						shipFiring.name + "_" + Projectile.name,
-						projectileDefn,
-						pos,
-						shipFiring,
-						entityTarget
-					);
 					var universe = uwpe.universe;
+
 					var venue = universe.venueCurrent() as VenueStarsystem;
 					var starsystem = venue.starsystem;
-					starsystem.entityToSpawnAdd(projectile);
+
+					var entityFiring = uwpe.entity as Ship;
+					var entityFiringOrder = entityFiring.orderable().order(entityFiring);
+					var entityBeingTargeted = entityFiringOrder.entityBeingTargeted;
+
+					var device = entityFiring.deviceUser().deviceSelected();
+					var projectile = device.projectile;
+
+					if (projectile == null)
+					{
+						var projectileDefn = ProjectileDefn.Instances().Default;
+
+						projectile = new Projectile
+						(
+							entityFiring.name + "_" + Projectile.name,
+							projectileDefn,
+							entityFiring.locatable().loc.pos.clone(),
+							entityFiring, // entityFiredFrom
+							entityBeingTargeted
+						);
+
+						projectile.actor().activity = 
+							Activity.fromDefnNameAndTargetEntity
+							(
+								"MoveToTargetCollideAndEndMove",
+								entityBeingTargeted
+							);
+
+						starsystem.entityToSpawnAdd(projectile);
+
+						device.projectile = projectile;
+					}
+					else
+					{
+						device.projectile = null;
+
+						var projectilePos = projectile.locatable().loc.pos;
+						var targetPos = entityBeingTargeted.locatable().loc.pos;
+
+						if (projectilePos.equals(targetPos))
+						{
+							entityFiringOrder.complete();
+						}
+					}
 				}
 			);
 

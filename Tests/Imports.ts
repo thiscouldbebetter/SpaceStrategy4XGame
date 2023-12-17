@@ -147,6 +147,7 @@ import Entity = gf.Entity;
 import EntityBuilder = gf.EntityBuilder;
 import Namable = gf.Namable;
 import Place = gf.Place;
+import PlaceBase = gf.PlaceBase;
 import Universe = gf.Universe;
 import UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 import Venue = gf.Venue;

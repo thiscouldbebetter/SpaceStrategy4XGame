@@ -22,7 +22,7 @@ class PlanetTests extends TestFixture {
             this.prosperityPerTurn,
             this.researchPerTurn,
             this.resourcesPerTurn,
-            this.resourcesPerTurnByName
+            this.resourcesThisRoundByName
         ];
         return returnTests;
     }
@@ -35,7 +35,7 @@ class PlanetTests extends TestFixture {
         Assert.isTrue(this.planet.ships.indexOf(ship) == -1);
     }
     shipBuild() {
-        var ship = new Ship("Ship", Ship.bodyDefnBuild(Color.byName("Red")), new Coords(0, 0, 0), this.planet.factionable().faction(this.world), [] // devices
+        var ship = new Ship("Ship", ShipHullSize.Instances().Small, Ship.bodyDefnBuild(Color.byName("Red")), new Coords(0, 0, 0), this.planet.factionable().faction(), [] // devices
         );
         return ship;
     }
@@ -49,7 +49,7 @@ class PlanetTests extends TestFixture {
     }
     // instance methods
     faction() {
-        var faction = this.planet.faction(this.world);
+        var faction = this.planet.faction();
         Assert.isNotNull(faction);
     }
     toEntity() {
@@ -75,7 +75,7 @@ class PlanetTests extends TestFixture {
     }
     // turns
     updateForTurn() {
-        var faction = this.planet.faction(this.world);
+        var faction = this.planet.faction();
         this.planet.updateForRound(this.universe, this.world, faction);
     }
     // resources
@@ -84,25 +84,25 @@ class PlanetTests extends TestFixture {
         Assert.isNotNull(buildable);
     }
     industryPerTurn() {
-        var industryPerTurn = this.planet.industryPerTurn(this.universe, this.world);
+        var industryPerTurn = this.planet.industryThisRound(this.universe, this.world);
         Assert.isNotNull(industryPerTurn);
     }
     prosperityPerTurn() {
-        var faction = this.planet.faction(this.world);
-        var prosperityPerTurn = this.planet.prosperityPerTurn(this.universe, this.world, faction);
+        var faction = this.planet.faction();
+        var prosperityPerTurn = this.planet.prosperityThisRound(this.universe, this.world, faction);
         Assert.isNotNull(prosperityPerTurn);
     }
     researchPerTurn() {
-        var faction = this.planet.faction(this.world);
-        var researchPerTurn = this.planet.researchPerTurn(this.universe, this.world, faction);
+        var faction = this.planet.faction();
+        var researchPerTurn = this.planet.researchThisRound(this.universe, this.world, faction);
         Assert.isNotNull(researchPerTurn);
     }
     resourcesPerTurn() {
-        var resources = this.planet.resourcesPerTurn(this.universe, this.world);
+        var resources = this.planet.resourcesThisRound(this.universe, this.world);
         Assert.isNotNull(resources);
     }
-    resourcesPerTurnByName() {
-        var resourcesByName = this.planet.resourcesPerTurnByName(this.universe, this.world);
+    resourcesThisRoundByName() {
+        var resourcesByName = this.planet.resourcesThisRoundByName(this.universe, this.world);
         Assert.isNotNull(resourcesByName);
     }
 }

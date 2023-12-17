@@ -40,7 +40,7 @@ class ShipTests extends TestFixture {
         Assert.isNotNull(bodyDefn);
     }
     faction() {
-        var faction = this.ship.faction(this.world);
+        var faction = this.ship.faction();
         Assert.isNotNull(faction);
     }
     nameWithFaction() {
@@ -49,7 +49,7 @@ class ShipTests extends TestFixture {
     }
     // devices
     devicesUsable() {
-        var devicesUsable = this.ship.devicesUsable();
+        var devicesUsable = this.ship.deviceUser().devicesUsable(this.ship);
         Assert.isNotNull(devicesUsable);
     }
     // movement
@@ -66,7 +66,7 @@ class ShipTests extends TestFixture {
     }
     movementThroughLinkPerTurn() {
         var link = null;
-        var speed = this.ship.movementThroughLinkPerTurn(link);
+        var speed = this.ship.movementSpeedThroughLinkThisRound(link);
         Assert.isNotNull(speed);
     }
     planetOrbitEnter() {
@@ -87,7 +87,7 @@ class ShipTests extends TestFixture {
     }
     // turns
     updateForTurn() {
-        var faction = this.ship.faction(this.world);
+        var faction = this.ship.faction();
         this.ship.updateForRound(this.universe, this.world, faction);
     }
     // drawable

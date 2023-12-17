@@ -16,13 +16,14 @@ class SystemTests extends TestFixture {
         var factionUser = world.factions[0];
         var starsystemUser = factionUser.starsystemHome(world);
         var planetUser = factionUser.planetHome(world);
-        var positionsAvailableToBuildAt = planetUser.cellPositionsAvailableToBuildOnSurface();
+        var positionsAvailableToBuildAt = planetUser.cellPositionsAvailableToBuildOnSurface(universe);
         var posToBuildAt = positionsAvailableToBuildAt[0];
-        var buildableLaboratory = Buildable.fromDefnNameAndPos("Laboratory", posToBuildAt);
+        var buildableDefns = BuildableDefnsLegacy.Instance(Coords.ones());
+        var buildableLaboratory = Buildable.fromDefnAndPosIncomplete(buildableDefns.SurfaceLaboratory, posToBuildAt);
         var buildableLabAsEntity = buildableLaboratory.toEntity(world);
-        planetUser.buildableEntityBuild(buildableLabAsEntity);
+        planetUser.buildableEntityBuild(universe, buildableLabAsEntity);
         while (buildableLaboratory.isComplete == false) {
-            world.updateForTurn_IgnoringNotifications(universe);
+            world.updateForRound_IgnoringNotifications(uwpe);
         }
         Assert.isTrue(buildableLaboratory.isComplete);
         var researcher = factionUser.technologyResearcher;
@@ -41,45 +42,55 @@ class SystemTests extends TestFixture {
             researcher.technologyResearch(technologyToResearch);
             var hasTechnologyBeenDiscoveredYet = false;
             while (hasTechnologyBeenDiscoveredYet == false) {
-                world.updateForTurn_IgnoringNotifications(universe);
+                world.updateForRound_IgnoringNotifications(uwpe);
                 hasTechnologyBeenDiscoveredYet =
                     researcher.technologyIsKnown(technologyToResearch);
             }
         }
         positionsAvailableToBuildAt =
-            planetUser.cellPositionsAvailableToOccupyInOrbit();
+            planetUser.cellPositionsAvailableToOccupyInOrbit(universe);
         posToBuildAt = positionsAvailableToBuildAt[0];
-        var buildableShipyard = Buildable.fromDefnNameAndPos("Shipyard", posToBuildAt);
+        var buildableShipyard = Buildable.fromDefnAndPosIncomplete(buildableDefns.OrbitalShipyard, posToBuildAt);
         var shipyardEntity = buildableShipyard.toEntity(world);
-        planetUser.buildableEntityBuild(shipyardEntity);
+        planetUser.buildableEntityBuild(universe, shipyardEntity);
         while (buildableShipyard.isComplete == false) {
-            world.updateForTurn_IgnoringNotifications(universe);
+            world.updateForRound_IgnoringNotifications(uwpe);
         }
         positionsAvailableToBuildAt =
-            planetUser.cellPositionsAvailableToOccupyInOrbit();
+            planetUser.cellPositionsAvailableToOccupyInOrbit(universe);
         posToBuildAt = positionsAvailableToBuildAt[0];
-        var shipComponentNames = [
-            "Ship Hull, Small",
-            "Ship Drive, Basic",
-            "Ship Generator, Basic",
-            "Colony Hub",
-            "Colony Hub"
+        var shipComponentsAsBuildableDefns = [
+            buildableDefns.ShipDrive1TonklinMotor,
+            buildableDefns.ShipGenerator1ProtonShaver,
+            buildableDefns.ShipItemColonizer,
+            buildableDefns.ShipItemColonizer
         ];
-        for (var i = 0; i < shipComponentNames.length; i++) {
-            var shipComponentName = shipComponentNames[i];
-            var buildableShipComponent = Buildable.fromDefnName(shipComponentName);
+        for (var i = 0; i < shipComponentsAsBuildableDefns.length; i++) {
+            var shipComponentAsBuildableDefn = shipComponentsAsBuildableDefns[i];
+            var buildableShipComponent = Buildable.fromDefn(shipComponentAsBuildableDefn);
             var buildableShipComponentAsEntity = buildableShipComponent.toEntity(world);
-            planetUser.buildableEntityBuild(buildableShipComponentAsEntity);
+            planetUser.buildableEntityBuild(universe, buildableShipComponentAsEntity);
             Assert.isFalse(buildableShipComponent.isComplete);
             while (buildableShipComponent.isComplete == false) {
-                world.updateForTurn_IgnoringNotifications(universe);
+                world.updateForRound_IgnoringNotifications(uwpe);
             }
             Assert.isTrue(buildableShipComponent.isComplete);
         }
         var shipyard = new ShipBuilder();
-        var ship = shipyard.build(universe, world, factionUser, planetUser, shipyardEntity, shipComponentNames);
+        var ship = shipyard.build(
+        /*
+        universe,
+        world,
+        factionUser,
+        planetUser,
+        shipyardEntity,
+        shipComponentNames
+        */
+        universe, null, // todo - venuePrev,
+        factionUser, universe.display.sizeInPixels // sizeDialog
+        );
         Assert.isNotNull(ship);
-        ship.planetOrbitExit(universe, starsystemUser, planetUser);
+        ship.planetOrbitExit(world, planetUser);
         var linkPortalToGoTo = starsystemUser.linkPortals[0];
         Assert.isNotNull(linkPortalToGoTo);
         var starsystemBeyondLinkName = linkPortalToGoTo.name.split(" to ")[1];
@@ -94,14 +105,14 @@ class SystemTests extends TestFixture {
         universe.venueNextSet(starsystemUser.toVenue()); // Can this be avoided?
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
         while (shipOrder.isComplete == false) {
-            var shipTurnAndMove = ship.turnAndMove;
-            var shipEnergyBeforeMove = shipTurnAndMove.energyThisTurn;
-            if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove) {
+            var shipTurnAndMove = ship.deviceUser();
+            var shipEnergyBeforeMove = shipTurnAndMove.energyRemainingThisRound();
+            if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove(ship)) {
                 world.updateForRound_IgnoringNotifications(uwpe);
             }
             else {
                 while (shipOrder.isComplete == false
-                    && shipTurnAndMove.energyThisTurn == shipEnergyBeforeMove) {
+                    && shipTurnAndMove.energyRemainingThisRound() == shipEnergyBeforeMove) {
                     shipOrder.obey(uwpe);
                     universe.updateForTimerTick();
                 }
@@ -116,13 +127,13 @@ class SystemTests extends TestFixture {
             world.updateForRound_IgnoringNotifications(uwpe);
         }
         Assert.isTrue(shipLoc.placeName.startsWith(Starsystem.name));
-        Assert.isTrue(shipLoc.placeName.endsWith(starsystemBeyondLink));
+        Assert.isTrue(shipLoc.placeName.endsWith(starsystemBeyondLink.name));
         Assert.isTrue(starsystemsKnown.length == 2);
         Assert.isTrue(starsystemsKnown.indexOf(starsystemBeyondLink) >= 0);
         var starsystemArrivedAt = world.network.starsystemByName(starsystemBeyondLinkName);
         universe.venueNextSet(starsystemArrivedAt.toVenue()); // Can this be avoided?
         var planetsInStarsystemArrivedAt = starsystemArrivedAt.planets;
-        var planetToColonize = planetsInStarsystemArrivedAt.find(x => x.factionable().faction(world) == null);
+        var planetToColonize = planetsInStarsystemArrivedAt.find(x => x.factionable().faction() == null);
         if (planetToColonize != null) {
             shipOrder.defnSet(orderDefns.Go).entityBeingTargetedSet(planetToColonize);
             /*
@@ -134,7 +145,7 @@ class SystemTests extends TestFixture {
             while (shipOrder.isComplete == false) {
                 var shipDeviceUser = ship.deviceUser();
                 var shipEnergyBeforeMove = shipDeviceUser.energyRemainingThisRound();
-                if (shipEnergyBeforeMove < shipDeviceUser.energyPerMove()) {
+                if (shipEnergyBeforeMove < shipDeviceUser.energyPerMove(ship)) {
                     world.updateForRound_IgnoringNotifications(uwpe);
                 }
                 else {
@@ -147,11 +158,11 @@ class SystemTests extends TestFixture {
             }
             Assert.isTrue(shipLoc.placeName.startsWith(Planet.name));
             Assert.isTrue(shipLoc.placeName.endsWith(planetToColonize.name));
-            Assert.isNull(planetToColonize.factionable().faction(world));
+            Assert.isNull(planetToColonize.factionable().faction());
             var wasColonizationSuccessful = ship.planetColonize(universe, world);
             Assert.isTrue(wasColonizationSuccessful);
-            var shipFaction = ship.factionable().faction(world);
-            var planetToColonizeFaction = planetToColonize.factionable().faction(world);
+            var shipFaction = ship.factionable().faction();
+            var planetToColonizeFaction = planetToColonize.factionable().faction();
             var starsystemArrivedAtFaction = starsystemArrivedAt.faction(world);
             Assert.areEqual(shipFaction, planetToColonizeFaction);
             Assert.areEqual(shipFaction, starsystemArrivedAtFaction);

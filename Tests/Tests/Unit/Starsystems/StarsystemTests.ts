@@ -53,6 +53,7 @@ class StarsystemTests extends TestFixture
 		var ship = new Ship
 		(
 			"Ship",
+			ShipHullSize.Instances().Small,
 			Ship.bodyDefnBuild(Color.byName("Red")),
 			new Coords(0, 0, 0),
 			this.starsystem.faction(this.world),

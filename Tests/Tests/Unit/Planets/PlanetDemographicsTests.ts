@@ -34,7 +34,7 @@ class PlanetDemographicsTests extends TestFixture
 		(
 			this.universe,
 			this.world,
-			this.planet.faction(this.world),
+			this.planet.faction(),
 			this.planet
 		);
 	}

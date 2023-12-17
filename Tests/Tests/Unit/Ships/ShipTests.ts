@@ -58,7 +58,7 @@ class ShipTests extends TestFixture
 
 	faction(): void
 	{
-		var faction = this.ship.faction(this.world);
+		var faction = this.ship.faction();
 		Assert.isNotNull(faction);
 	}
 
@@ -72,7 +72,7 @@ class ShipTests extends TestFixture
 
 	devicesUsable(): void
 	{
-		var devicesUsable = this.ship.devicesUsable();
+		var devicesUsable = this.ship.deviceUser().devicesUsable(this.ship);
 		Assert.isNotNull(devicesUsable);
 	}
 
@@ -98,7 +98,7 @@ class ShipTests extends TestFixture
 	movementThroughLinkPerTurn(): void
 	{
 		var link = null;
-		var speed = this.ship.movementThroughLinkPerTurn(link);
+		var speed = this.ship.movementSpeedThroughLinkThisRound(link);
 		Assert.isNotNull(speed);
 	}
 
@@ -140,7 +140,7 @@ class ShipTests extends TestFixture
 
 	updateForTurn(): void
 	{
-		var faction = this.ship.faction(this.world);
+		var faction = this.ship.faction();
 		this.ship.updateForRound
 		(
 			this.universe, this.world, faction

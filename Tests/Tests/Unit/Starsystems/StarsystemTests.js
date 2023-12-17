@@ -34,7 +34,7 @@ class StarsystemTests extends TestFixture {
         Assert.isTrue(this.starsystem.ships.indexOf(ship) == -1);
     }
     shipBuild() {
-        var ship = new Ship("Ship", Ship.bodyDefnBuild(Color.byName("Red")), new Coords(0, 0, 0), this.starsystem.faction(this.world), [] // devices
+        var ship = new Ship("Ship", ShipHullSize.Instances().Small, Ship.bodyDefnBuild(Color.byName("Red")), new Coords(0, 0, 0), this.starsystem.faction(this.world), [] // devices
         );
         return ship;
     }

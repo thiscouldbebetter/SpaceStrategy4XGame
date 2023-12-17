@@ -103,6 +103,7 @@ var VisualSound = gf.VisualSound;
 // Model.
 var Entity = gf.Entity;
 var EntityBuilder = gf.EntityBuilder;
+var PlaceBase = gf.PlaceBase;
 var Universe = gf.Universe;
 var UniverseWorldPlaceEntities = gf.UniverseWorldPlaceEntities;
 var VenueWorld = gf.VenueWorld;

@@ -6,7 +6,7 @@ class DeviceTests extends TestFixture {
         this.world = this.universe.world;
         var starsystem = this.world.factions[0].starsystemHome(this.world);
         this.ship = starsystem.ships[0];
-        var devices = this.ship.devices();
+        var devices = this.ship.deviceUser().devices(this.ship);
         this.device = devices[0];
         this.uwpe = new UniverseWorldPlaceEntities(this.universe, this.world, null, this.ship, null);
     }

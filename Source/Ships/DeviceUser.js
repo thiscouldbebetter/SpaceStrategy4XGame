@@ -48,6 +48,21 @@ class DeviceUser {
         }
         return this._devicesUsable;
     }
+    energyPerMove(ship) {
+        if (this._energyPerMove == null) {
+            var devicesDrives = this.devicesDrives(ship);
+            var energyPerMoveSoFar = 0;
+            devicesDrives.forEach(x => energyPerMoveSoFar += x.defn().energyPerUse);
+            this._energyPerMove = energyPerMoveSoFar;
+        }
+        return this._energyPerMove;
+    }
+    energyPerMoveClear() {
+        this._energyPerMove = 0;
+    }
+    energyPerRound() {
+        return this._energyPerRound;
+    }
     energyPerRoundAdd(energyToAdd) {
         this._energyPerRound += energyToAdd;
     }
@@ -64,7 +79,7 @@ class DeviceUser {
         this._energyRemainingThisRound = 0;
     }
     energyRemainingThisRoundReset() {
-        this._energyRemainingThisRound = this._energyPerRound;
+        this._energyRemainingThisRound = this.energyPerRound();
     }
     energyRemainingThisRoundSubtract(energyToSubtract) {
         this._energyRemainingThisRound -= energyToSubtract;

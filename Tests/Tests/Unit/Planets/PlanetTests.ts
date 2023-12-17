@@ -32,7 +32,7 @@ class PlanetTests extends TestFixture
 			this.prosperityPerTurn,
 			this.researchPerTurn,
 			this.resourcesPerTurn,
-			this.resourcesPerTurnByName
+			this.resourcesThisRoundByName
 		];
 
 		return returnTests;
@@ -53,9 +53,10 @@ class PlanetTests extends TestFixture
 		var ship = new Ship
 		(
 			"Ship",
+			ShipHullSize.Instances().Small,
 			Ship.bodyDefnBuild(Color.byName("Red")),
 			new Coords(0, 0, 0),
-			this.planet.factionable().faction(this.world),
+			this.planet.factionable().faction(),
 			[] // devices
 		);
 
@@ -82,7 +83,7 @@ class PlanetTests extends TestFixture
 
 	faction(): void
 	{
-		var faction = this.planet.faction(this.world);
+		var faction = this.planet.faction();
 		Assert.isNotNull(faction);
 	}
 
@@ -129,7 +130,7 @@ class PlanetTests extends TestFixture
 
 	updateForTurn(): void
 	{
-		var faction = this.planet.faction(this.world);
+		var faction = this.planet.faction();
 		this.planet.updateForRound
 		(
 			this.universe, this.world, faction
@@ -146,7 +147,7 @@ class PlanetTests extends TestFixture
 
 	industryPerTurn(): void
 	{
-		var industryPerTurn = this.planet.industryPerTurn
+		var industryPerTurn = this.planet.industryThisRound
 		(
 			this.universe, this.world
 		);
@@ -155,8 +156,8 @@ class PlanetTests extends TestFixture
 
 	prosperityPerTurn(): void
 	{
-		var faction = this.planet.faction(this.world);
-		var prosperityPerTurn = this.planet.prosperityPerTurn
+		var faction = this.planet.faction();
+		var prosperityPerTurn = this.planet.prosperityThisRound
 		(
 			this.universe, this.world, faction
 		);
@@ -165,8 +166,8 @@ class PlanetTests extends TestFixture
 
 	researchPerTurn(): void
 	{
-		var faction = this.planet.faction(this.world);
-		var researchPerTurn = this.planet.researchPerTurn
+		var faction = this.planet.faction();
+		var researchPerTurn = this.planet.researchThisRound
 		(
 			this.universe, this.world, faction
 		);
@@ -175,7 +176,7 @@ class PlanetTests extends TestFixture
 
 	resourcesPerTurn(): void
 	{
-		var resources = this.planet.resourcesPerTurn
+		var resources = this.planet.resourcesThisRound
 		(
 			this.universe,
 			this.world
@@ -183,9 +184,9 @@ class PlanetTests extends TestFixture
 		Assert.isNotNull(resources);
 	}
 
-	resourcesPerTurnByName(): void
+	resourcesThisRoundByName(): void
 	{
-		var resourcesByName = this.planet.resourcesPerTurnByName
+		var resourcesByName = this.planet.resourcesThisRoundByName
 		(
 			this.universe,
 			this.world

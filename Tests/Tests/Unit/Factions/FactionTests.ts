@@ -33,7 +33,7 @@ class FactionTests extends TestFixture
 			this.selfAndAllies,
 			this.strategicValue,
 			this.notificationSessionStart,
-			this.researchPerTurn,
+			this.researchThisRound,
 			this.updateForTurn
 		];
 
@@ -106,7 +106,7 @@ class FactionTests extends TestFixture
 	{
 		var factions = this.faction.factionsMatchingRelationshipState
 		(
-			this.world, "todo" // stateToMatch
+			this.world, DiplomaticRelationshipState.Instances().Peace
 		)
 		Assert.isNotNull(factions);
 	}
@@ -144,11 +144,11 @@ class FactionTests extends TestFixture
 
 	// turns
 
-	researchPerTurn(): void
+	researchThisRound(): void
 	{
-		var researchPerTurn =
-			this.faction.researchPerTurn(this.universe, this.world);
-		Assert.isNotNull(researchPerTurn);
+		var researchThisRound =
+			this.faction.researchThisRound(this.universe, this.world);
+		Assert.isNotNull(researchThisRound);
 	}
 
 	updateForTurn(): void

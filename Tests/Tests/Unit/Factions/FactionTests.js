@@ -23,7 +23,7 @@ class FactionTests extends TestFixture {
             this.selfAndAllies,
             this.strategicValue,
             this.notificationSessionStart,
-            this.researchPerTurn,
+            this.researchThisRound,
             this.updateForTurn
         ];
         return returnTests;
@@ -69,8 +69,7 @@ class FactionTests extends TestFixture {
         Assert.isTrue(enemies.length == 0);
     }
     factionsMatchingRelationshipState() {
-        var factions = this.faction.factionsMatchingRelationshipState(this.world, "todo" // stateToMatch
-        );
+        var factions = this.faction.factionsMatchingRelationshipState(this.world, DiplomaticRelationshipState.Instances().Peace);
         Assert.isNotNull(factions);
     }
     relationsInitialize() {
@@ -93,9 +92,9 @@ class FactionTests extends TestFixture {
         this.faction.notificationSessionStart(this.universe);
     }
     // turns
-    researchPerTurn() {
-        var researchPerTurn = this.faction.researchPerTurn(this.universe, this.world);
-        Assert.isNotNull(researchPerTurn);
+    researchThisRound() {
+        var researchThisRound = this.faction.researchThisRound(this.universe, this.world);
+        Assert.isNotNull(researchThisRound);
     }
     updateForTurn() {
         this.faction.updateForRound(this.universe, this.world);

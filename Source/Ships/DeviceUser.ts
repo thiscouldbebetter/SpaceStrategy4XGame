@@ -99,6 +99,29 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesUsable;
 	}
 
+	_energyPerMove: number
+	energyPerMove(ship: Ship): number
+	{
+		if (this._energyPerMove == null)
+		{
+			var devicesDrives = this.devicesDrives(ship);
+			var energyPerMoveSoFar = 0;
+			devicesDrives.forEach(x => energyPerMoveSoFar += x.defn().energyPerUse);
+			this._energyPerMove = energyPerMoveSoFar;
+		}
+		return this._energyPerMove;
+	}
+
+	energyPerMoveClear(): void
+	{
+		this._energyPerMove = 0;
+	}
+
+	energyPerRound(): number
+	{
+		return this._energyPerRound;
+	}
+
 	energyPerRoundAdd(energyToAdd: number): void
 	{
 		this._energyPerRound += energyToAdd;
@@ -126,7 +149,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 	energyRemainingThisRoundReset(): void
 	{
-		this._energyRemainingThisRound = this._energyPerRound;
+		this._energyRemainingThisRound = this.energyPerRound();
 	}
 
 	energyRemainingThisRoundSubtract(energyToSubtract: number): void

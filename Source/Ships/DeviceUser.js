@@ -1,13 +1,17 @@
 "use strict";
 class DeviceUser {
-    constructor() {
-        this._distanceMaxPerMove = null;
-        this._energyPerRound = null;
-        this._energyRemainingThisRound = null;
-    }
     static ofEntity(entity) {
         return entity.propertyByName(DeviceUser.name);
     }
+    reset() {
+        this.distanceMaxPerMoveReset();
+        this.energyPerMoveReset();
+        this.energyPerRoundReset();
+        this.movementSpeedThroughLinkReset();
+        this.sensorRangeReset();
+        this.shieldingReset();
+    }
+    // Devices.
     deviceSelect(deviceToSelect) {
         this._deviceSelected = deviceToSelect;
     }
@@ -109,6 +113,7 @@ class DeviceUser {
     }
     energyPerRound(ship) {
         if (this._energyPerRound == null) {
+            this._energyPerRound = 0;
             var devicesGenerators = this.devicesGenerators(ship);
             var distanceMaxPerMoveBefore = this._distanceMaxPerMove;
             var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
@@ -149,6 +154,57 @@ class DeviceUser {
     }
     energyRemainsThisRound(energyToCheck) {
         return (this._energyRemainingThisRound >= energyToCheck);
+    }
+    movementSpeedThroughLink(ship) {
+        if (this._movementSpeedThroughLink == null) {
+            var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
+            var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+            for (var i = 0; i < starlaneDrivesAsDevices.length; i++) {
+                var starlaneDrive = starlaneDrivesAsDevices[i];
+                starlaneDrive.updateForRound(uwpe);
+            }
+            var shipFaction = ship.factionable().faction();
+            var shipFactionDefn = shipFaction.defn();
+            this._movementSpeedThroughLink
+                *= shipFactionDefn.starlaneTravelSpeedMultiplier;
+        }
+        return this._movementSpeedThroughLink;
+    }
+    movementSpeedThroughLinkAdd(speedToAdd) {
+        this._movementSpeedThroughLink += speedToAdd;
+    }
+    movementSpeedThroughLinkReset() {
+        this._movementSpeedThroughLink = null;
+    }
+    sensorRange(ship) {
+        if (this._sensorRange == null) {
+            this._sensorRange = 0;
+            var devicesSensors = this.devicesSensors(ship);
+            var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+            devicesSensors.forEach(x => x.updateForRound(uwpe));
+        }
+        return this._sensorRange;
+    }
+    sensorRangeAdd(rangeToAdd) {
+        this._sensorRange += rangeToAdd;
+    }
+    sensorRangeReset() {
+        this._sensorRange = null;
+    }
+    shielding(ship) {
+        if (this._shielding == null) {
+            this._shielding = 0;
+            var devicesShields = this.devicesShields(ship);
+            var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+            devicesShields.forEach(x => x.updateForRound(uwpe));
+        }
+        return this._shielding;
+    }
+    shieldingAdd(shieldingToAdd) {
+        this._shielding += shieldingToAdd;
+    }
+    shieldingReset() {
+        this._shielding = null;
     }
     // Clonable.
     clone() {

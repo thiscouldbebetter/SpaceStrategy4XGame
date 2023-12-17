@@ -143,8 +143,8 @@ class BuildableDefnsLegacy {
         this.ShipDrive5NanowaveSpaceBender = shipComponent(names.ShipDrive5NanowaveSpaceBender, visualBuild("Drive", colors.Red), 80, categoryShipDrive, deviceDefnDrive(5, 5));
         // Generators.
         var categoryShipGenerator = categories.ShipGenerator;
-        var deviceDefnGenerator = (energyPerTurn) => {
-            return new DeviceDefn("Generator", false, // isActive
+        var deviceDefnGenerator = (name, energyPerTurn) => {
+            return new DeviceDefn(name, false, // isActive
             false, // needsTarget
             [categoryShipGenerator], null, // initialize
             // updateForRound
@@ -161,7 +161,7 @@ class BuildableDefnsLegacy {
         };
         var colorGenerator = colors.Yellow;
         var shipGenerator = (name, industryToBuild, energyPerTurn) => {
-            return shipComponent(name, visualBuild(name, colorGenerator), industryToBuild, categoryShipGenerator, deviceDefnGenerator(energyPerTurn));
+            return shipComponent(name, visualBuild(name, colorGenerator), industryToBuild, categoryShipGenerator, deviceDefnGenerator(name, energyPerTurn));
         };
         this.ShipGenerator1ProtonShaver = shipGenerator(names.ShipGenerator1ProtonShaver, 20, 2);
         this.ShipGenerator2SubatomicScoop = shipGenerator(names.ShipGenerator2SubatomicScoop, 35, 4);
@@ -227,24 +227,77 @@ class BuildableDefnsLegacy {
         this.ShipItemXRayMegaglasses = sc(names.ShipItemXRayMegaglasses, 100);
         // Sensors.
         var categoryShipSensor = categories.ShipSensor;
-        this.ShipSensor1TonklinFrequencyAnalyzer = shipComponent(names.ShipSensor1TonklinFrequencyAnalyzer, visualBuild("Sensor1", colors.Gray), 20, categoryShipSensor, null);
-        this.ShipSensor2SubspacePhaseArray = shipComponent(names.ShipSensor2SubspacePhaseArray, visualBuild("Sensor2", colors.Gray), 40, categoryShipSensor, null);
-        this.ShipSensor3AuralCloudConstrictor = shipComponent(names.ShipSensor3AuralCloudConstrictor, visualBuild("Sensor3", colors.Gray), 60, categoryShipSensor, null);
-        this.ShipSensor4HyperwaveTympanum = shipComponent(names.ShipSensor4HyperwaveTympanum, visualBuild("Sensor4", colors.Gray), 80, categoryShipSensor, null);
-        this.ShipSensor5MurgatroydsKnower = shipComponent(names.ShipSensor5MurgatroydsKnower, visualBuild("Sensor5", colors.Gray), 100, categoryShipSensor, null);
-        this.ShipSensor6NanowaveDecouplingNet = shipComponent(names.ShipSensor6NanowaveDecouplingNet, visualBuild("Sensor6", colors.Gray), 200, categoryShipSensor, null);
+        var deviceDefnSensor = (name, sensorRange) => {
+            return new DeviceDefn(name, false, // isActive
+            false, // needsTarget
+            [categoryShipGenerator], null, // initialize
+            // updateForRound
+            (uwpe) => {
+                var ship = uwpe.entity;
+                ship.deviceUser().sensorRangeAdd(sensorRange);
+            }, 0, // usesPerRound
+            0, // energyPerUse
+            null // use
+            );
+        };
+        var colorSensor = colors.Violet;
+        var rangeMultiplier = 4; // hack
+        var shipSensor = (name, industryToBuild, range) => {
+            return shipComponent(name, visualBuild(name, colorSensor), industryToBuild, categoryShipSensor, deviceDefnSensor(name, range * rangeMultiplier));
+        };
+        this.ShipSensor1TonklinFrequencyAnalyzer = shipSensor(names.ShipSensor1TonklinFrequencyAnalyzer, 20, 25);
+        this.ShipSensor2SubspacePhaseArray = shipSensor(names.ShipSensor2SubspacePhaseArray, 40, 50);
+        this.ShipSensor3AuralCloudConstrictor = shipSensor(names.ShipSensor3AuralCloudConstrictor, 60, 75);
+        this.ShipSensor4HyperwaveTympanum = shipSensor(names.ShipSensor4HyperwaveTympanum, 80, 100);
+        this.ShipSensor5MurgatroydsKnower = shipSensor(names.ShipSensor5MurgatroydsKnower, 100, 200);
+        this.ShipSensor6NanowaveDecouplingNet = shipSensor(names.ShipSensor6NanowaveDecouplingNet, 200, 1000);
         // Shields.
         var categoryShipShield = categories.ShipShield;
-        this.ShipShield1IonWrap = shipComponent(names.ShipShield1IonWrap, visualBuild("Shield1", colors.Gray), 10, categoryShipShield, null);
-        this.ShipShield2ConcussionShield = shipComponent(names.ShipShield2ConcussionShield, visualBuild("Shield2", colors.Gray), 30, categoryShipShield, null);
-        this.ShipShield3WaveScatterer = shipComponent(names.ShipShield3WaveScatterer, visualBuild("Shield3", colors.Gray), 50, categoryShipShield, null);
-        this.ShipShield4Deactotron = shipComponent(names.ShipShield4Deactotron, visualBuild("Shield4", colors.Gray), 50, categoryShipShield, null);
-        this.ShipShield5HyperwaveNullifier = shipComponent(names.ShipShield5HyperwaveNullifier, visualBuild("Shield5", colors.Gray), 100, categoryShipShield, null);
-        this.ShipShield6Nanoshell = shipComponent(names.ShipShield6Nanoshell, visualBuild("Shield6", colors.Gray), 200, categoryShipShield, null);
+        var deviceDefnShield = (name, energyPerMove, damageAbsorbed) => {
+            return new DeviceDefn(name, false, // isActive
+            false, // needsTarget
+            [categoryShipShield], null, // initialize
+            // updateForRound
+            (uwpe) => {
+                var ship = uwpe.entity;
+                ship.deviceUser().shieldingAdd(damageAbsorbed);
+            }, 0, // usesPerRound
+            0, // energyPerUse
+            null // use
+            // todo - updateForMove
+            );
+        };
+        var colorShield = colors.Violet;
+        var shipShield = (name, industryToBuild, energyPerMove, damageAbsorbed) => {
+            return shipComponent(name, visualBuild(name, colorShield), industryToBuild, categoryShipShield, deviceDefnShield(name, energyPerMove, damageAbsorbed));
+        };
+        this.ShipShield1IonWrap = shipShield(names.ShipShield1IonWrap, 10, 2, 1);
+        this.ShipShield2ConcussionShield = shipShield(names.ShipShield2ConcussionShield, 30, 4, 2);
+        this.ShipShield3WaveScatterer = shipShield(names.ShipShield3WaveScatterer, 50, 0, 1);
+        this.ShipShield4Deactotron = shipShield(names.ShipShield4Deactotron, 50, 4, 3);
+        this.ShipShield5HyperwaveNullifier = shipShield(names.ShipShield5HyperwaveNullifier, 100, 8, 4);
+        this.ShipShield6Nanoshell = shipShield(names.ShipShield6Nanoshell, 200, 6, 5);
         // Starlane Drives.
         var categoryShipStarlaneDrive = categories.ShipStarlaneDrive;
-        this.ShipStarlaneDrive1StarLaneDrive = shipComponent(names.ShipStarlaneDrive1StarLaneDrive, visualBuild("StarDrive", colors.Gray), 30, categoryShipStarlaneDrive, null);
-        this.ShipStarlaneDrive2StarLaneHyperdrive = shipComponent(names.ShipStarlaneDrive2StarLaneHyperdrive, visualBuild("StarDrive2", colors.Gray), 30, categoryShipStarlaneDrive, null);
+        var deviceDefnStarlaneDrive = (name, speedIncrement) => {
+            return new DeviceDefn(name, false, // isActive
+            false, // needsTarget
+            [categoryShipShield], null, // initialize
+            // updateForRound
+            (uwpe) => {
+                var ship = uwpe.entity;
+                ship.deviceUser().movementSpeedThroughLinkAdd(speedIncrement);
+            }, 0, // usesPerRound
+            0, // energyPerUse
+            null // use
+            );
+        };
+        var colorStarlaneDrive = colors.Cyan;
+        var shipStarlaneDrive = (name, industryToBuild, speedIncrement) => {
+            return shipComponent(name, visualBuild(name, colorStarlaneDrive), industryToBuild, categoryShipStarlaneDrive, deviceDefnStarlaneDrive(name, speedIncrement));
+        };
+        this.ShipStarlaneDrive1StarLaneDrive = shipStarlaneDrive(names.ShipStarlaneDrive1StarLaneDrive, 25, 1);
+        this.ShipStarlaneDrive2StarLaneHyperdrive = shipStarlaneDrive(names.ShipStarlaneDrive2StarLaneHyperdrive, 50, 2);
         // Weapons.
         var categoryShipWeapon = categories.ShipWeapon;
         var deviceDefnWeapon = (name, usesPerRound, energyPerUse, range, damage) => new DeviceDefn(name, true, // isActive

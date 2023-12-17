@@ -467,44 +467,6 @@ class Ship extends Entity
 		return distanceToTarget;
 	}
 
-	private _movementSpeedThroughLinkThisRound: number;
-
-	movementSpeedThroughLinkThisRound(link: NetworkLink2): number
-	{
-		var linkFrictionDivisor = link.frictionDivisor();
-
-		if (this._movementSpeedThroughLinkThisRound == null)
-		{
-			var deviceUser = this.deviceUser();
-			var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives(this);
-
-			var uwpe = UniverseWorldPlaceEntities.create().entitySet(this);
-
-			for (var i = 0; i < starlaneDrivesAsDevices.length; i++)
-			{
-				var starlaneDrive = starlaneDrivesAsDevices[i];
-				// uwpe.entity2Set(starlaneDrive);
-				starlaneDrive.use(uwpe);
-			}
-
-			var shipFaction = this.factionable().faction();
-			var shipFactionDefn = shipFaction.defn();
-
-			this._movementSpeedThroughLinkThisRound
-				*= shipFactionDefn.starlaneTravelSpeedMultiplier;
-
-			this._movementSpeedThroughLinkThisRound
-				/= linkFrictionDivisor;
-		}
-
-		return this._movementSpeedThroughLinkThisRound;
-	}
-
-	movementSpeedThroughLinkThisRoundReset(): void
-	{
-		this._movementSpeedThroughLinkThisRound = null;
-	}
-
 	planetOrbitEnter
 	(
 		universe: Universe,
@@ -624,7 +586,41 @@ class Ship extends Entity
 		var factionCurrent = world.factionCurrent();
 		var shipBelongsToFactionCurrent = (shipFaction == factionCurrent);
 
-		if (shipBelongsToFactionCurrent)
+		var starsystem = this.starsystem(world);
+		var shipsInStarsystem = starsystem.ships;
+		var shipsBelongingToFactionCurrent = shipsInStarsystem.filter
+		(
+			x => x.factionable().faction() == factionCurrent
+		);
+		var displacement = this._displacement;
+		var shipIsWithinSensorRange = shipsBelongingToFactionCurrent.some
+		(
+			shipSensing =>
+			{
+				var sensorRange = shipSensing.deviceUser().sensorRange(shipSensing);
+
+				var shipSensingPos = shipSensing.locatable().loc.pos;
+				var shipBeingSensedPos = ship.locatable().loc.pos;
+
+				var distance = displacement.overwriteWith
+				(
+					shipBeingSensedPos
+				).subtract
+				(
+					shipSensingPos
+				).magnitude();
+
+				var isWithinRange = (distance <= sensorRange);
+
+				return isWithinRange;
+			}
+		);
+
+		var shipVitalsAreVisible =
+			shipBelongsToFactionCurrent
+			|| shipIsWithinSensorRange;
+
+		if (shipVitalsAreVisible)
 		{
 			var labelIntegrity = ControlLabel.from4Uncentered
 			(
@@ -665,6 +661,21 @@ class Ship extends Entity
 				fontNameAndHeight
 			);
 
+			var childControlsVitals: ControlBase[] =
+			[
+				labelIntegrity,
+				textIntegrity,
+				labelEnergy,
+				textEnergy
+			];
+
+			childControls.push(...childControlsVitals);
+		}
+
+		var shipIsCommandable = shipBelongsToFactionCurrent;
+
+		if (shipIsCommandable)
+		{
 			var buttonMove = ControlButton.from8
 			(
 				"buttonMove",
@@ -754,19 +765,15 @@ class Ship extends Entity
 				}
 			);
 
-			var childControlsDetailed: ControlBase[] =
+			var childControlsCommands: ControlBase[] =
 			[
-				labelIntegrity,
-				textIntegrity,
-				labelEnergy,
-				textEnergy,
 				buttonMove,
 				buttonRepeat,
 				listDevices,
 				buttonDeviceUse
 			];
 
-			childControls.push(...childControlsDetailed);
+			childControls.push(...childControlsCommands);
 		}
 
 		var returnValue = ControlContainer.from4
@@ -804,8 +811,7 @@ class Ship extends Entity
 	{
 		var deviceUser = this.deviceUser();
 
-		deviceUser.energyPerRoundReset();
-		deviceUser.distanceMaxPerMoveReset();
+		deviceUser.reset();
 
 		var devices = deviceUser.devices(this);
 		var uwpe = new UniverseWorldPlaceEntities

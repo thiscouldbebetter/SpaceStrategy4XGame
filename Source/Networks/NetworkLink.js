@@ -54,7 +54,10 @@ class NetworkLink2 {
                 var shipLoc = ship.locatable().loc;
                 var shipPos = shipLoc.pos;
                 var shipVel = shipLoc.vel;
-                var shipSpeed = ship.movementSpeedThroughLinkThisRound(this);
+                var shipAsDeviceUser = ship.deviceUser();
+                var shipSpeedBeforeFriction = shipAsDeviceUser.movementSpeedThroughLink(ship);
+                var frictionDivisor = this.type.frictionDivisor;
+                var shipSpeed = shipSpeedBeforeFriction / frictionDivisor;
                 shipPos.add(shipVel.clone().multiplyScalar(shipSpeed));
                 var isShipMovingForward = (shipVel.dotProduct(direction) > 0);
                 var nodeIndexFrom = (isShipMovingForward ? 0 : 1);

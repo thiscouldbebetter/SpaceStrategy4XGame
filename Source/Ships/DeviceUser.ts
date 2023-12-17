@@ -10,20 +10,29 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	_devicesUsable: Device[];
 
 	_distanceMaxPerMove: number;
+	_energyPerMove: number;
 	_energyPerRound: number;
 	_energyRemainingThisRound: number;
-
-	constructor()
-	{
-		this._distanceMaxPerMove = null;
-		this._energyPerRound = null;
-		this._energyRemainingThisRound = null;
-	}
+	_movementSpeedThroughLink: number;
+	_sensorRange: number;
+	_shielding: number;
 
 	static ofEntity(entity: Entity): DeviceUser
 	{
 		return entity.propertyByName(DeviceUser.name) as DeviceUser;
 	}
+
+	reset(): void
+	{
+		this.distanceMaxPerMoveReset();
+		this.energyPerMoveReset();
+		this.energyPerRoundReset();
+		this.movementSpeedThroughLinkReset();
+		this.sensorRangeReset();
+		this.shieldingReset();
+	}
+
+	// Devices.
 
 	deviceSelect(deviceToSelect: Device): void
 	{
@@ -183,7 +192,6 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._distanceMaxPerMove = null;
 	}
 
-	_energyPerMove: number
 	energyPerMove(ship: Ship): number
 	{
 		if (this._energyPerMove == null)
@@ -212,6 +220,8 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	{
 		if (this._energyPerRound == null)
 		{
+			this._energyPerRound = 0;
+
 			var devicesGenerators = this.devicesGenerators(ship);
 
 			var distanceMaxPerMoveBefore = this._distanceMaxPerMove;
@@ -274,6 +284,85 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	energyRemainsThisRound(energyToCheck: number): boolean
 	{
 		return (this._energyRemainingThisRound >= energyToCheck);
+	}
+
+	movementSpeedThroughLink(ship: Ship): number
+	{
+		if (this._movementSpeedThroughLink == null)
+		{
+			var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
+
+			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+
+			for (var i = 0; i < starlaneDrivesAsDevices.length; i++)
+			{
+				var starlaneDrive = starlaneDrivesAsDevices[i];
+				starlaneDrive.updateForRound(uwpe);
+			}
+
+			var shipFaction = ship.factionable().faction();
+			var shipFactionDefn = shipFaction.defn();
+
+			this._movementSpeedThroughLink
+				*= shipFactionDefn.starlaneTravelSpeedMultiplier;
+		}
+
+		return this._movementSpeedThroughLink;
+	}
+
+	movementSpeedThroughLinkAdd(speedToAdd: number): void
+	{
+		this._movementSpeedThroughLink += speedToAdd;
+	}
+
+	movementSpeedThroughLinkReset(): void
+	{
+		this._movementSpeedThroughLink = null;
+	}
+
+	sensorRange(ship: Ship): number
+	{
+		if (this._sensorRange == null)
+		{
+			this._sensorRange = 0;
+			var devicesSensors = this.devicesSensors(ship);
+			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+			devicesSensors.forEach(x => x.updateForRound(uwpe) );
+		}
+		return this._sensorRange;
+	}
+
+	sensorRangeAdd(rangeToAdd: number): void
+	{
+		this._sensorRange += rangeToAdd;
+	}
+
+	sensorRangeReset(): void
+	{
+		this._sensorRange = null;
+	}
+
+	shielding(ship: Ship): number
+	{
+		if (this._shielding == null)
+		{
+			this._shielding = 0;
+			var devicesShields = this.devicesShields(ship);
+			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+			devicesShields.forEach(x => x.updateForRound(uwpe) );
+		}
+
+		return this._shielding;
+	}
+
+	shieldingAdd(shieldingToAdd: number): void
+	{
+		this._shielding += shieldingToAdd;
+	}
+
+	shieldingReset(): void
+	{
+		this._shielding = null;
 	}
 
 	// Clonable.

@@ -5,6 +5,7 @@ class EnvironmentMock
 	{
 		var timerHelper = new TimerHelper(0);
 		var display = DisplayTest.default();
+		var soundHelper = new SoundHelperMock();
 		var mediaLibrary = MediaLibrary.default();
 		var controlBuilder = new ControlBuilderExtended();
 		var worldCreator = new WorldCreator
@@ -24,6 +25,7 @@ class EnvironmentMock
 			"[version]",
 			timerHelper,
 			display,
+			soundHelper,
 			mediaLibrary,
 			controlBuilder,
 			worldCreator

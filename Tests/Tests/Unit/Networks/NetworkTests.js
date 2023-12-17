@@ -4,6 +4,7 @@ class Network2Tests extends TestFixture {
         super(Network2Tests.name);
         this.universe = new EnvironmentMock().universeBuild();
         this.network = this.networkBuildRandom();
+        this.display = DisplayTest.default();
     }
     networkBuildRandom() {
         var nodeDefns = NetworkNodeDefn.Instances()._All;
@@ -54,13 +55,12 @@ class Network2Tests extends TestFixture {
     updateForTurn() {
         var universe = this.universe;
         var world = universe.world;
-        this.network.updateForTurn(universe, world);
+        this.network.updateForRound(universe, world);
     }
     // drawing
     draw() {
-        var camera = Camera.default();
         var world = this.universe.world;
         var networkFromUniverse = world.network; // hack - Not this.network.
-        networkFromUniverse.draw(this.universe, camera);
+        networkFromUniverse.draw(this.universe, world, this.display);
     }
 }

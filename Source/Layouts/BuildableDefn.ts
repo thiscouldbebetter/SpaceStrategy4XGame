@@ -41,6 +41,24 @@ class BuildableDefn
 		this._entityModifyOnBuild = entityModifyOnBuild;
 	}
 
+	static fromName(name: string): BuildableDefn
+	{
+		return new BuildableDefn
+		(
+			name,
+			false, // isItem
+			null, // canBeBuiltOnMapAtPosInCells
+			Coords.zeroes(), // sizeInPixels
+			new VisualNone(),
+			1, // industryToBuild
+			null, // effectPerRound
+			null, // effectsAvailableToUse
+			null, // categories
+			null, // entityProperties
+			null // entityModifyOnBuild
+		);
+	}
+
 	buildableToEntity(buildable: Buildable, world: WorldExtended): Entity
 	{
 		var properties = new Array<EntityPropertyBase>();

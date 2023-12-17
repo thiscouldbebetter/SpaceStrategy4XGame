@@ -11,6 +11,8 @@ class DeviceDefns
 
 	constructor()
 	{
+		var categories = BuildableCategory.Instances();
+
 		this.ColonyHub = new DeviceDefn
 		(
 			"Colony Hub",
@@ -35,7 +37,7 @@ class DeviceDefns
 			"Ship Drive, Basic",
 			false, // isActive
 			false, // needsTarget
-			[ "Drive" ], // categoryNames
+			[ categories.ShipDrive ], // categories
 			(uwpe: UniverseWorldPlaceEntities) => // init
 			{},
 			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
@@ -55,7 +57,7 @@ class DeviceDefns
 			"Ship Generator, Basic",
 			false, // isActive
 			false, // needsTarget
-			[ "Generator" ], // categoryNames
+			[ categories.ShipGenerator ], // categories
 			(uwpe: UniverseWorldPlaceEntities) =>  // init
 			{},
 			(uwpe: UniverseWorldPlaceEntities) =>  // updateForRound
@@ -75,7 +77,7 @@ class DeviceDefns
 			"Ship Shield, Basic",
 			true, // isActive
 			false, // needsTarget
-			[ "Shield" ], // categoryNames
+			[ categories.ShipShield ], // categories
 			(uwpe: UniverseWorldPlaceEntities) =>  // intialize
 			{
 				var device = Device.ofEntity(uwpe.entity2);
@@ -118,12 +120,14 @@ class DeviceDefns
 
 	shipWeaponBasic(): DeviceDefn
 	{
+		var categories = BuildableCategory.Instances();
+
 		return new DeviceDefn
 		(
 			"Ship Weapon, Basic",
 			true, // isActive
 			true, // needsTarget
-			[ "Weapon" ], // categoryNames
+			[ categories.ShipWeapon ], // categories
 			(uwpe: UniverseWorldPlaceEntities) =>  // initialize
 			{
 				// todo

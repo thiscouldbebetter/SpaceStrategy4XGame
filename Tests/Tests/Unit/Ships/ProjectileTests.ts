@@ -17,7 +17,8 @@ class ProjectileTests extends TestFixture
 
 	bodyDefnBuild(): void
 	{
-		var bodyDefn = Projectile.bodyDefnBuild();
+		var projectileDefn = ProjectileDefn.Instances().Default;
+		var bodyDefn = Projectile.bodyDefnBuild(projectileDefn);
 		Assert.isNotNull(bodyDefn);
 	}
 }

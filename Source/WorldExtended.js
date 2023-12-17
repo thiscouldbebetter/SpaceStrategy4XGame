@@ -120,6 +120,11 @@ class WorldExtended extends World {
             this.roundsSoFar++;
         }
     }
+    updateForRound_IgnoringNotifications(uwpe) {
+        // This seems to be for automated tests.
+        this.updateForRound(uwpe);
+        // todo - Ignore notifications.
+    }
     updateForTimerTick(uwpe) {
         var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
         if (isFastForwarding) {

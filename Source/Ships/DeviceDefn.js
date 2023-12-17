@@ -1,9 +1,10 @@
 "use strict";
 class DeviceDefn {
-    constructor(name, isActive, needsTarget, categoryNames, initialize, updateForRound, usesPerRound, energyPerUse, use) {
+    constructor(name, isActive, needsTarget, categories, initialize, updateForRound, usesPerRound, energyPerUse, use) {
         this.name = name;
         this.isActive = isActive;
         this.needsTarget = needsTarget;
+        this.categories = categories;
         this._initialize = initialize;
         this.updateForRound = updateForRound;
         this.usesPerRound = usesPerRound || 1;

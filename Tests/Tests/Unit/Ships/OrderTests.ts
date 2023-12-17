@@ -15,12 +15,14 @@ class OrderTests extends TestFixture
 		this.world = this.universe.world as WorldExtended;
 		this.starsystem = this.world.factions[0].starsystemHome(this.world);
 		this.ship = this.starsystem.ships[0];
-		this.order = new Order
+		this.order = new Order().defnSet
 		(
-			OrderDefn.Instances().Go.name,
+			OrderDefn.Instances().Go
+		).entityBeingTargetedSet
+		(
 			this.starsystem.planets[0]
 		);
-		this.ship.orderable().order = this.order;
+		this.ship.orderable().orderSet(this.order);
 	}
 
 	tests(): ( () => void )[]
@@ -32,12 +34,13 @@ class OrderTests extends TestFixture
 
 	defn(): void
 	{
-		var defn = this.order.defn();
+		var defn = this.order.defn;
 		Assert.isNotNull(defn);
 	}
 
 	obey(): void
 	{
-		this.order.obey(this.universe, this.world, null, this.ship);
+		var uwpe = new UniverseWorldPlaceEntities(this.universe, this.world, null, this.ship, null);
+		this.order.obey(uwpe);
 	}
 }

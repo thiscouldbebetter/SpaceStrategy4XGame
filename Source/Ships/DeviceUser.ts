@@ -56,9 +56,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		{
 			var devices = this.devices(ship);
 
+			var categoryShipDrive = BuildableCategory.Instances().ShipDrive;
+
 			this._devicesDrives = devices.filter
 			(
-				(x: Device) => x.defn().categoryNames.indexOf("Drive") >= 0
+				(x: Device) => x.defn().categories.indexOf(categoryShipDrive) >= 0
 			);
 		}
 
@@ -71,9 +73,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		{
 			var devices = this.devices(ship);
 
+			var categories = BuildableCategory.Instances();
+
 			this._devicesStarlaneDrives = devices.filter
 			(
-				(x: Device) => x.defn().categoryNames.indexOf("StarlaneDrive") >= 0
+				(x: Device) => x.defn().categories.indexOf(categories.ShipStarlaneDrive) >= 0
 			);
 		}
 

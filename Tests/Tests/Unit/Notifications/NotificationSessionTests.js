@@ -5,10 +5,7 @@ class NotificationSessionTests extends TestFixture {
     }
     // Setup.
     notificationBuild(universe) {
-        var world = universe.world;
-        var locus = world.network.nodes[0].starsystem.planets[0];
-        return new Notification2(NotificationType.Instances()._All[0].name, 0, // turnCreated
-        "[messsage]", locus);
+        return new Notification2("[messsage]", () => { });
     }
     sessionBuild() {
         var factionName = "[factionName]";
@@ -24,7 +21,6 @@ class NotificationSessionTests extends TestFixture {
         var returnValues = [
             this.notificationAdd,
             this.notificationDismiss,
-            this.notificationGoTo,
             this.toControl
         ];
         return returnValues;
@@ -36,14 +32,9 @@ class NotificationSessionTests extends TestFixture {
     }
     notificationDismiss() {
         var session = this.sessionBuild();
-        var notification = session.notifications[0];
+        var notificationsAll = session.notifications();
+        var notification = notificationsAll[0];
         session.notificationDismiss(notification);
-    }
-    notificationGoTo() {
-        var universe = this.universeBuild();
-        var session = this.sessionBuild();
-        var notification = session.notifications[0];
-        session.notificationGoTo(universe, notification);
     }
     // Controls.
     toControl() {

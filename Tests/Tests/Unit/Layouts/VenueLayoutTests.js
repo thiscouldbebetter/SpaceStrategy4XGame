@@ -24,16 +24,18 @@ class VenueLayoutTests extends TestFixture {
         var world = universe.world;
         var faction = world.factions[0];
         var planet = faction.planetHome(world);
-        var layout = Layout.planet(universe, planet);
+        var layout = planet.layout(universe);
         var map = layout.map;
         var mapCursorPos = map.cursor.pos;
+        var buildableDefn = BuildableDefn.fromName("buildableDefn");
         var isBuildableComplete = true;
+        var isAutomatedFalse = false;
         var entity = new Entity("[entityName]", [
-            new Buildable("defnName", mapCursorPos, isBuildableComplete),
+            new Buildable(buildableDefn, mapCursorPos, isBuildableComplete, isAutomatedFalse),
             Drawable.fromVisual(new VisualNone()),
             Locatable.fromPos(mapCursorPos)
         ]);
-        map.bodies.push(entity);
+        map.bodies().push(entity);
         var venueParent = null; // todo
         var modelParent = planet;
         var returnValue = new VenueLayout(venueParent, modelParent, layout);

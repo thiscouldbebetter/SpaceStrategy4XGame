@@ -19,15 +19,13 @@ class PlanetTests extends TestFixture
 	{
 		var returnTests =
 		[
-			this.fromNameBodyDefnAndPos,
-			this.bodyDefnPlanet,
-			this.bodyDefnStar,
+			this.fromNameTypeAndPos,
 			this.faction,
 			this.toEntity,
 			this.shipAdd,
 			this.shipRemove,
 			this.toControl,
-			this.strength,
+			this.strategicValue,
 			this.updateForTurn,
 			this.buildableEntityInProgress,
 			this.industryPerTurn,
@@ -44,9 +42,9 @@ class PlanetTests extends TestFixture
 	{
 		var ship = this.shipBuild();
 		Assert.isTrue(this.planet.ships.indexOf(ship) == -1);
-		this.planet.shipAdd(ship);
+		this.planet.shipAddToOrbit(ship);
 		Assert.isTrue(this.planet.ships.indexOf(ship) >= 0);
-		this.planet.shipRemove(ship);
+		this.planet.shipLeaveOrbit(ship, this.world);
 		Assert.isTrue(this.planet.ships.indexOf(ship) == -1);
 	}
 
@@ -57,7 +55,7 @@ class PlanetTests extends TestFixture
 			"Ship",
 			Ship.bodyDefnBuild(Color.byName("Red")),
 			new Coords(0, 0, 0),
-			this.planet.factionName,
+			this.planet.factionable().faction(this.world),
 			[] // devices
 		);
 
@@ -66,30 +64,18 @@ class PlanetTests extends TestFixture
 
 	// Tests.
 
-	fromNameBodyDefnAndPos(): void
+	fromNameTypeAndPos(): void
 	{
-		var planet = Planet.fromNameBodyDefnAndPos
+		var planetType = PlanetType.Instances()._All[0];
+
+		var planet = Planet.fromNameTypeAndPos
 		(
 			"name",
-			Planet.bodyDefnPlanet(), // bodyDefn
-			new Coords(0, 0, 0) // pos
+			planetType, // type
+			Coords.zeroes() // pos
 		);
 
 		Assert.isNotNull(planet);
-	}
-
-	// constants
-
-	bodyDefnPlanet(): void
-	{
-		var bodyDefn = Planet.bodyDefnPlanet();
-		Assert.isNotNull(bodyDefn);
-	}
-
-	bodyDefnStar(): void
-	{
-		var bodyDefn = Planet.bodyDefnStar();
-		Assert.isNotNull(bodyDefn);
 	}
 
 	// instance methods
@@ -133,9 +119,9 @@ class PlanetTests extends TestFixture
 
 	// diplomacy
 
-	strength(): void
+	strategicValue(): void
 	{
-		var planetStrength = this.planet.strength(this.world);
+		var planetStrength = this.planet.strategicValue(this.world);
 		Assert.isNotNull(planetStrength);
 	}
 
@@ -144,7 +130,7 @@ class PlanetTests extends TestFixture
 	updateForTurn(): void
 	{
 		var faction = this.planet.faction(this.world);
-		this.planet.updateForTurn
+		this.planet.updateForRound
 		(
 			this.universe, this.world, faction
 		);
@@ -160,10 +146,9 @@ class PlanetTests extends TestFixture
 
 	industryPerTurn(): void
 	{
-		var faction = this.planet.faction(this.world);
 		var industryPerTurn = this.planet.industryPerTurn
 		(
-			this.universe, this.world, faction
+			this.universe, this.world
 		);
 		Assert.isNotNull(industryPerTurn)
 	}
@@ -192,6 +177,7 @@ class PlanetTests extends TestFixture
 	{
 		var resources = this.planet.resourcesPerTurn
 		(
+			this.universe,
 			this.world
 		);
 		Assert.isNotNull(resources);
@@ -201,6 +187,7 @@ class PlanetTests extends TestFixture
 	{
 		var resourcesByName = this.planet.resourcesPerTurnByName
 		(
+			this.universe,
 			this.world
 		);
 		Assert.isNotNull(resourcesByName);

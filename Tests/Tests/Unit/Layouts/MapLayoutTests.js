@@ -18,8 +18,7 @@ class MapLayoutTests extends TestFixture {
     // Setup.
     mapLayoutBuild() {
         var visual = new VisualNone();
-        var terrain = new MapTerrain("Surface", ".", visual, false // ?
-        );
+        var terrain = new MapTerrain("Surface", ".", visual);
         var terrains = [terrain];
         var cellsAsStrings = [
             "........",

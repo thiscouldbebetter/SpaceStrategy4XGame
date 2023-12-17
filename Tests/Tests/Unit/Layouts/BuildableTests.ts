@@ -10,7 +10,7 @@ class BuildableTests extends TestFixture
 	{
 		var returnValues =
 		[
-			this.fromEntity,
+			this.ofEntity,
 
 			this.defn,
 			this.locatable,
@@ -30,13 +30,13 @@ class BuildableTests extends TestFixture
 	{
 		var world = universe.world as WorldExtended;
 		var buildableDefn = world.buildableDefns[0];
-		var buildableDefnName = buildableDefn.name;
 
 		return new Buildable
 		(
-			buildableDefnName,
+			buildableDefn,
 			Coords.zeroes(), // pos?
-			false // isComplete
+			false, // isComplete
+			false // isAutomated
 		);
 	}
 
@@ -48,12 +48,12 @@ class BuildableTests extends TestFixture
 
 	// Tests.
 
-	fromEntity(): void
+	ofEntity(): void
 	{
 		var buildable = this.buildableBuild( this.universeBuild() );
 		var entity = new Entity("[name]", [ buildable ] );
 
-		var buildableFromEntity = Buildable.fromEntity(entity);
+		var buildableFromEntity = Buildable.ofEntity(entity);
 
 		Assert.isNotNull(buildableFromEntity);
 	}
@@ -61,9 +61,8 @@ class BuildableTests extends TestFixture
 	defn(): void
 	{
 		var universe = this.universeBuild();
-		var world = universe.world as WorldExtended;
 		var buildable = this.buildableBuild(universe);
-		var buildableDefn = buildable.defn(world);
+		var buildableDefn = buildable.defn;
 		Assert.isNotNull(buildableDefn);
 	}
 

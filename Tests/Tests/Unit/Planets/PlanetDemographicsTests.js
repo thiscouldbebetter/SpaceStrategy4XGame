@@ -16,6 +16,6 @@ class PlanetDemographicsTests extends TestFixture {
     // Tests.
     updateForTurn() {
         var planetDemographics = this.planet.demographics;
-        planetDemographics.updateForTurn(this.universe, this.world, this.planet.faction(this.world), this.planet);
+        planetDemographics.updateForRound(this.universe, this.world, this.planet.faction(this.world), this.planet);
     }
 }

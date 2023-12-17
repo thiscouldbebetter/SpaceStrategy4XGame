@@ -224,6 +224,13 @@ class WorldExtended extends World
 		}
 	}
 
+	updateForRound_IgnoringNotifications(uwpe: UniverseWorldPlaceEntities): void
+	{
+		// This seems to be for automated tests.
+		this.updateForRound(uwpe);
+		// todo - Ignore notifications.
+	}
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();

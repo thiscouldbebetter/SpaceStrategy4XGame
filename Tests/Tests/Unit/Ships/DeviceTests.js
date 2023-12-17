@@ -8,14 +8,14 @@ class DeviceTests extends TestFixture {
         this.ship = starsystem.ships[0];
         var devices = this.ship.devices();
         this.device = devices[0];
-        this.uwpe = new UniverseWorldPlaceEntities(this.universe, this.world, starsystem, this.ship, null);
+        this.uwpe = new UniverseWorldPlaceEntities(this.universe, this.world, null, this.ship, null);
     }
     tests() {
         return [this.updateForTurn, this.use];
     }
     // Tests.
     updateForTurn() {
-        this.device.updateForTurn(this.uwpe);
+        this.device.updateForRound(this.uwpe);
     }
     use() {
         this.device.use(this.uwpe);

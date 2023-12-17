@@ -5,7 +5,7 @@ class BuildableTests extends TestFixture {
     }
     tests() {
         var returnValues = [
-            this.fromEntity,
+            this.ofEntity,
             this.defn,
             this.locatable,
             this.toEntity,
@@ -19,9 +19,9 @@ class BuildableTests extends TestFixture {
     buildableBuild(universe) {
         var world = universe.world;
         var buildableDefn = world.buildableDefns[0];
-        var buildableDefnName = buildableDefn.name;
-        return new Buildable(buildableDefnName, Coords.zeroes(), // pos?
-        false // isComplete
+        return new Buildable(buildableDefn, Coords.zeroes(), // pos?
+        false, // isComplete
+        false // isAutomated
         );
     }
     universeBuild() {
@@ -29,17 +29,16 @@ class BuildableTests extends TestFixture {
         return returnValue;
     }
     // Tests.
-    fromEntity() {
+    ofEntity() {
         var buildable = this.buildableBuild(this.universeBuild());
         var entity = new Entity("[name]", [buildable]);
-        var buildableFromEntity = Buildable.fromEntity(entity);
+        var buildableFromEntity = Buildable.ofEntity(entity);
         Assert.isNotNull(buildableFromEntity);
     }
     defn() {
         var universe = this.universeBuild();
-        var world = universe.world;
         var buildable = this.buildableBuild(universe);
-        var buildableDefn = buildable.defn(world);
+        var buildableDefn = buildable.defn;
         Assert.isNotNull(buildableDefn);
     }
     locatable() {

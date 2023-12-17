@@ -13,6 +13,18 @@ class BuildableDefn {
         this.entityProperties = entityProperties;
         this._entityModifyOnBuild = entityModifyOnBuild;
     }
+    static fromName(name) {
+        return new BuildableDefn(name, false, // isItem
+        null, // canBeBuiltOnMapAtPosInCells
+        Coords.zeroes(), // sizeInPixels
+        new VisualNone(), 1, // industryToBuild
+        null, // effectPerRound
+        null, // effectsAvailableToUse
+        null, // categories
+        null, // entityProperties
+        null // entityModifyOnBuild
+        );
+    }
     buildableToEntity(buildable, world) {
         var properties = new Array();
         properties.push(buildable);

@@ -72,7 +72,7 @@ class ShipTests extends TestFixture
 
 	devicesUsable(): void
 	{
-		var devicesUsable = this.ship.devicesUsable(this.world);
+		var devicesUsable = this.ship.devicesUsable();
 		Assert.isNotNull(devicesUsable);
 	}
 
@@ -92,7 +92,7 @@ class ShipTests extends TestFixture
 	{
 		var starsystem = this.ship.starsystem(this.world);
 		var targetEntity = starsystem.star;
-		this.ship.moveTowardTarget(this.universe, targetEntity, this.ship);
+		this.ship.moveTowardTargetAndReturnDistance(targetEntity);
 	}
 
 	movementThroughLinkPerTurn(): void
@@ -132,8 +132,8 @@ class ShipTests extends TestFixture
 
 	strength(): void
 	{
-		var strength = this.ship.strength(this.world);
-		Assert.isNotNull(strength);
+		var strategicValue = this.ship.strategicValue(this.world);
+		Assert.isNotNull(strategicValue);
 	}
 
 	// turns
@@ -141,7 +141,7 @@ class ShipTests extends TestFixture
 	updateForTurn(): void
 	{
 		var faction = this.ship.faction(this.world);
-		this.ship.updateForTurn
+		this.ship.updateForRound
 		(
 			this.universe, this.world, faction
 		);

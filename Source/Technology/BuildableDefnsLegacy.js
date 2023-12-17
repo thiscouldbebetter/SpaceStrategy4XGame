@@ -1,11 +1,5 @@
 "use strict";
 class BuildableDefnsLegacy {
-    static Instance(mapCellSizeInPixels) {
-        if (BuildableDefnsLegacy._instance == null) {
-            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
-        }
-        return BuildableDefnsLegacy._instance;
-    }
     constructor(mapCellSizeInPixels) {
         var fontHeight = mapCellSizeInPixels.y / 3;
         var canBeBuiltNever = (m, p) => false;
@@ -123,7 +117,7 @@ class BuildableDefnsLegacy {
         var categoryShipDrive = categories.ShipDrive;
         var deviceDefnDrive = new DeviceDefn("Drive", false, // isActive
         false, // needsTarget
-        ["Drive"], // categoryNames
+        [categoryShipDrive], // categories
         (uwpe) => // init
          { }, (uwpe) => // updateForRound
          {
@@ -144,7 +138,7 @@ class BuildableDefnsLegacy {
         var deviceDefnGenerator = (energyPerTurn) => {
             return new DeviceDefn("Generator", false, // isActive
             false, // needsTarget
-            [categoryShipGenerator.name], null, // initialize
+            [categoryShipGenerator], null, // initialize
             // updateForRound
             (uwpe) => {
                 var ship = uwpe.entity;
@@ -244,7 +238,7 @@ class BuildableDefnsLegacy {
         var categoryShipWeapon = categories.ShipWeapon;
         var deviceDefnWeapon = (name, usesPerRound, energyPerUse, range, damage) => new DeviceDefn(name, true, // isActive
         true, // needsTarget
-        [categoryShipWeapon.name], // categoryNames
+        [categoryShipWeapon], // categoryNames
         (uwpe) => // init
          {
             // todo
@@ -431,6 +425,12 @@ class BuildableDefnsLegacy {
                 this.SurfaceLaboratory,
                 this.SurfaceTransportTubes
             ];
+    }
+    static Instance(mapCellSizeInPixels) {
+        if (BuildableDefnsLegacy._instance == null) {
+            BuildableDefnsLegacy._instance = new BuildableDefnsLegacy(mapCellSizeInPixels);
+        }
+        return BuildableDefnsLegacy._instance;
     }
 }
 class BuildableDefnsLegacyNames {

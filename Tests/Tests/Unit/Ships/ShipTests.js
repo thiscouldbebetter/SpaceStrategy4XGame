@@ -49,7 +49,7 @@ class ShipTests extends TestFixture {
     }
     // devices
     devicesUsable() {
-        var devicesUsable = this.ship.devicesUsable(this.world);
+        var devicesUsable = this.ship.devicesUsable();
         Assert.isNotNull(devicesUsable);
     }
     // movement
@@ -62,7 +62,7 @@ class ShipTests extends TestFixture {
     moveTowardTarget() {
         var starsystem = this.ship.starsystem(this.world);
         var targetEntity = starsystem.star;
-        this.ship.moveTowardTarget(this.universe, targetEntity, this.ship);
+        this.ship.moveTowardTargetAndReturnDistance(targetEntity);
     }
     movementThroughLinkPerTurn() {
         var link = null;
@@ -82,13 +82,13 @@ class ShipTests extends TestFixture {
     }
     // diplomacy
     strength() {
-        var strength = this.ship.strength(this.world);
-        Assert.isNotNull(strength);
+        var strategicValue = this.ship.strategicValue(this.world);
+        Assert.isNotNull(strategicValue);
     }
     // turns
     updateForTurn() {
         var faction = this.ship.faction(this.world);
-        this.ship.updateForTurn(this.universe, this.world, faction);
+        this.ship.updateForRound(this.universe, this.world, faction);
     }
     // drawable
     draw() {

@@ -3,6 +3,7 @@ class EnvironmentMock {
     universeBuild() {
         var timerHelper = new TimerHelper(0);
         var display = DisplayTest.default();
+        var soundHelper = new SoundHelperMock();
         var mediaLibrary = MediaLibrary.default();
         var controlBuilder = new ControlBuilderExtended();
         var worldCreator = new WorldCreator((u, wc) => WorldExtended.create(u, wc), null, {
@@ -10,7 +11,7 @@ class EnvironmentMock {
             "factionCountAsString": "2"
         } // settings
         );
-        var universe = new Universe("TestUniverse", "[version]", timerHelper, display, mediaLibrary, controlBuilder, worldCreator);
+        var universe = new Universe("TestUniverse", "[version]", timerHelper, display, soundHelper, mediaLibrary, controlBuilder, worldCreator);
         universe.initialize(() => { });
         universe.soundHelper = new SoundHelperMock();
         var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);

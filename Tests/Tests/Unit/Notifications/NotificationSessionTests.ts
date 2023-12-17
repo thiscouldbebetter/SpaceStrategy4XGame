@@ -10,15 +10,10 @@ class NotificationSessionTests extends TestFixture
 
 	notificationBuild(universe: Universe): Notification2
 	{
-		var world = universe.world as WorldExtended;
-		var locus = world.network.nodes[0].starsystem.planets[0];
-
 		return new Notification2
 		(
-			NotificationType.Instances()._All[0].name,
-			0, // turnCreated
 			"[messsage]",
-			locus
+			() => {}
 		);
 	}
 
@@ -43,7 +38,6 @@ class NotificationSessionTests extends TestFixture
 		[
 			this.notificationAdd,
 			this.notificationDismiss,
-			this.notificationGoTo,
 			this.toControl
 		];
 
@@ -60,18 +54,10 @@ class NotificationSessionTests extends TestFixture
 	notificationDismiss(): void
 	{
 		var session = this.sessionBuild();
-		var notification = session.notifications[0];
+		var notificationsAll = session.notifications();
+		var notification = notificationsAll[0];
 
 		session.notificationDismiss(notification);
-	}
-
-	notificationGoTo(): void
-	{
-		var universe = this.universeBuild();
-
-		var session = this.sessionBuild();
-		var notification = session.notifications[0];
-		session.notificationGoTo(universe, notification);
 	}
 
 	// Controls.

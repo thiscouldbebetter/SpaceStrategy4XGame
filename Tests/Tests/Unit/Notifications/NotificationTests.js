@@ -5,20 +5,19 @@ class Notification2Tests extends TestFixture {
     }
     tests() {
         var returnValues = [
-            this.defn,
+            this.jumpTo,
             this.toString
         ];
         return returnValues;
     }
     notificationBuild() {
-        return new Notification2(NotificationType.Instances()._All[0].name, 0, // turnCreated
-        "[messsage]", "[locus]");
+        return new Notification2("[messsage]", () => { } // jumpTo
+        );
     }
     // Tests.
-    defn() {
+    jumpTo() {
         var notification = this.notificationBuild();
-        var notificationDefn = notification.defn();
-        Assert.isNotNull(notificationDefn);
+        notification.jumpTo();
     }
     toString() {
         var notification = this.notificationBuild();

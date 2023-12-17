@@ -19,7 +19,7 @@ class DeviceTests extends TestFixture
 		this.device = devices[0];
 		this.uwpe = new UniverseWorldPlaceEntities
 		(
-			this.universe, this.world, starsystem, this.ship, null
+			this.universe, this.world, null, this.ship, null
 		);
 	}
 
@@ -32,7 +32,7 @@ class DeviceTests extends TestFixture
 
 	updateForTurn(): void
 	{
-		this.device.updateForTurn(this.uwpe);
+		this.device.updateForRound(this.uwpe);
 	}
 
 	use(): void

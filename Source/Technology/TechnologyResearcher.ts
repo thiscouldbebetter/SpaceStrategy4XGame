@@ -58,7 +58,6 @@ class TechnologyResearcher
 		this._faction = value;
 	}
 
-	private _name: string;
 	name(): string
 	{
 		return this.faction().name + " Research";

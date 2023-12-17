@@ -1,6 +1,7 @@
 "use strict";
 class DeviceDefns {
     constructor() {
+        var categories = BuildableCategory.Instances();
         this.ColonyHub = new DeviceDefn("Colony Hub", false, // isActive
         false, // needsTarget
         [], // categoryNames
@@ -15,7 +16,7 @@ class DeviceDefns {
         });
         this.ShipDriveBasic = new DeviceDefn("Ship Drive, Basic", false, // isActive
         false, // needsTarget
-        ["Drive"], // categoryNames
+        [categories.ShipDrive], // categories
         (uwpe) => // init
          { }, (uwpe) => // updateForRound
          {
@@ -28,7 +29,7 @@ class DeviceDefns {
         });
         this.ShipGeneratorBasic = new DeviceDefn("Ship Generator, Basic", false, // isActive
         false, // needsTarget
-        ["Generator"], // categoryNames
+        [categories.ShipGenerator], // categories
         (uwpe) => // init
          { }, (uwpe) => // updateForRound
          {
@@ -41,7 +42,7 @@ class DeviceDefns {
         });
         this.ShipShieldBasic = new DeviceDefn("Ship Shield, Basic", true, // isActive
         false, // needsTarget
-        ["Shield"], // categoryNames
+        [categories.ShipShield], // categories
         (uwpe) => // intialize
          {
             var device = Device.ofEntity(uwpe.entity2);
@@ -72,9 +73,10 @@ class DeviceDefns {
         return DeviceDefns._instance;
     }
     shipWeaponBasic() {
+        var categories = BuildableCategory.Instances();
         return new DeviceDefn("Ship Weapon, Basic", true, // isActive
         true, // needsTarget
-        ["Weapon"], // categoryNames
+        [categories.ShipWeapon], // categories
         (uwpe) => // initialize
          {
             // todo

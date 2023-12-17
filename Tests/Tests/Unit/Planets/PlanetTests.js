@@ -9,15 +9,13 @@ class PlanetTests extends TestFixture {
     }
     tests() {
         var returnTests = [
-            this.fromNameBodyDefnAndPos,
-            this.bodyDefnPlanet,
-            this.bodyDefnStar,
+            this.fromNameTypeAndPos,
             this.faction,
             this.toEntity,
             this.shipAdd,
             this.shipRemove,
             this.toControl,
-            this.strength,
+            this.strategicValue,
             this.updateForTurn,
             this.buildableEntityInProgress,
             this.industryPerTurn,
@@ -31,31 +29,23 @@ class PlanetTests extends TestFixture {
     shipAddOrRemove() {
         var ship = this.shipBuild();
         Assert.isTrue(this.planet.ships.indexOf(ship) == -1);
-        this.planet.shipAdd(ship);
+        this.planet.shipAddToOrbit(ship);
         Assert.isTrue(this.planet.ships.indexOf(ship) >= 0);
-        this.planet.shipRemove(ship);
+        this.planet.shipLeaveOrbit(ship, this.world);
         Assert.isTrue(this.planet.ships.indexOf(ship) == -1);
     }
     shipBuild() {
-        var ship = new Ship("Ship", Ship.bodyDefnBuild(Color.byName("Red")), new Coords(0, 0, 0), this.planet.factionName, [] // devices
+        var ship = new Ship("Ship", Ship.bodyDefnBuild(Color.byName("Red")), new Coords(0, 0, 0), this.planet.factionable().faction(this.world), [] // devices
         );
         return ship;
     }
     // Tests.
-    fromNameBodyDefnAndPos() {
-        var planet = Planet.fromNameBodyDefnAndPos("name", Planet.bodyDefnPlanet(), // bodyDefn
-        new Coords(0, 0, 0) // pos
+    fromNameTypeAndPos() {
+        var planetType = PlanetType.Instances()._All[0];
+        var planet = Planet.fromNameTypeAndPos("name", planetType, // type
+        Coords.zeroes() // pos
         );
         Assert.isNotNull(planet);
-    }
-    // constants
-    bodyDefnPlanet() {
-        var bodyDefn = Planet.bodyDefnPlanet();
-        Assert.isNotNull(bodyDefn);
-    }
-    bodyDefnStar() {
-        var bodyDefn = Planet.bodyDefnStar();
-        Assert.isNotNull(bodyDefn);
     }
     // instance methods
     faction() {
@@ -79,14 +69,14 @@ class PlanetTests extends TestFixture {
         Assert.isNotNull(planetAsControl);
     }
     // diplomacy
-    strength() {
-        var planetStrength = this.planet.strength(this.world);
+    strategicValue() {
+        var planetStrength = this.planet.strategicValue(this.world);
         Assert.isNotNull(planetStrength);
     }
     // turns
     updateForTurn() {
         var faction = this.planet.faction(this.world);
-        this.planet.updateForTurn(this.universe, this.world, faction);
+        this.planet.updateForRound(this.universe, this.world, faction);
     }
     // resources
     buildableEntityInProgress() {
@@ -94,8 +84,7 @@ class PlanetTests extends TestFixture {
         Assert.isNotNull(buildable);
     }
     industryPerTurn() {
-        var faction = this.planet.faction(this.world);
-        var industryPerTurn = this.planet.industryPerTurn(this.universe, this.world, faction);
+        var industryPerTurn = this.planet.industryPerTurn(this.universe, this.world);
         Assert.isNotNull(industryPerTurn);
     }
     prosperityPerTurn() {
@@ -109,11 +98,11 @@ class PlanetTests extends TestFixture {
         Assert.isNotNull(researchPerTurn);
     }
     resourcesPerTurn() {
-        var resources = this.planet.resourcesPerTurn(this.world);
+        var resources = this.planet.resourcesPerTurn(this.universe, this.world);
         Assert.isNotNull(resources);
     }
     resourcesPerTurnByName() {
-        var resourcesByName = this.planet.resourcesPerTurnByName(this.world);
+        var resourcesByName = this.planet.resourcesPerTurnByName(this.universe, this.world);
         Assert.isNotNull(resourcesByName);
     }
 }

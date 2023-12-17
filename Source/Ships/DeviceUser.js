@@ -28,14 +28,16 @@ class DeviceUser {
     devicesDrives(ship) {
         if (this._devicesDrives == null) {
             var devices = this.devices(ship);
-            this._devicesDrives = devices.filter((x) => x.defn().categoryNames.indexOf("Drive") >= 0);
+            var categoryShipDrive = BuildableCategory.Instances().ShipDrive;
+            this._devicesDrives = devices.filter((x) => x.defn().categories.indexOf(categoryShipDrive) >= 0);
         }
         return this._devicesDrives;
     }
     devicesStarlaneDrives(ship) {
         if (this._devicesStarlaneDrives == null) {
             var devices = this.devices(ship);
-            this._devicesStarlaneDrives = devices.filter((x) => x.defn().categoryNames.indexOf("StarlaneDrive") >= 0);
+            var categories = BuildableCategory.Instances();
+            this._devicesStarlaneDrives = devices.filter((x) => x.defn().categories.indexOf(categories.ShipStarlaneDrive) >= 0);
         }
         return this._devicesStarlaneDrives;
     }

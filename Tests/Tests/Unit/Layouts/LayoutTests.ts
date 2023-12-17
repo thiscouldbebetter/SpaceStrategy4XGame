@@ -28,7 +28,7 @@ class LayoutTests extends TestFixture
 	{
 		var world = universe.world as WorldExtended;
 		var planet = world.network.nodes[0].starsystem.planets[0];
-		var layout = Layout.planet(universe, planet);
+		var layout = planet.layout(universe);
 		return layout;
 	}
 
@@ -47,7 +47,7 @@ class LayoutTests extends TestFixture
 		var world = universe.world as WorldExtended;
 		var planet = world.network.nodes[0].starsystem.planets[0];
 
-		var layout = Layout.planet(universe, planet);
+		var layout = planet.layout(universe);
 
 		Assert.isNotNull(layout);
 	}
@@ -77,7 +77,7 @@ class LayoutTests extends TestFixture
 		var layout = this.layoutBuild(universe);
 		var faction = Faction.fromName("[name]");
 		var parentModel = new Entity("[name]", []); // todo
-		layout.updateForTurn(universe, world, faction, parentModel);
+		layout.updateForRound(universe, world, faction, parentModel);
 	}
 
 	// drawable

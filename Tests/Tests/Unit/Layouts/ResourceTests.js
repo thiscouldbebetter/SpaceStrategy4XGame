@@ -4,7 +4,12 @@ class ResourceTests extends TestFixture {
         super(ResourceTests.name);
     }
     tests() {
-        return [this.add, this.isSupersetOf, this.subtract, this.toString];
+        var returnTests = [
+            this.isSupersetOf,
+            this.subtract,
+            this.toString
+        ];
+        return returnTests;
     }
     // Setup.
     resourceBuild() {
@@ -15,16 +20,6 @@ class ResourceTests extends TestFixture {
         return resource;
     }
     // Tests.
-    add() {
-        var resource0 = this.resourceBuild();
-        var resource1 = this.resourceBuild();
-        var resource0QuantityBefore = resource0.quantity;
-        var resources0 = [resource0];
-        var resources1 = [resource1];
-        Resource.add(resources0, resources1);
-        var resource0QuantityAfterExpected = resource0QuantityBefore + resource1.quantity;
-        Assert.areNumbersEqual(resource0QuantityAfterExpected, resource0.quantity);
-    }
     isSupersetOf() {
         var resource = this.resourceBuild();
         var resources = [resource];

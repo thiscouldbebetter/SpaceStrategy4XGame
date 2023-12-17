@@ -25,16 +25,13 @@ class FactionTests extends TestFixture
 			this.starsystemHome,
 			this.toString,
 			this.toControl_ClusterOverlay,
-			this.allianceProposalAcceptFrom,
 			this.allies,
 			this.enemies,
 			this.factionsMatchingRelationshipState,
-			this.peaceOfferAcceptFrom,
 			this.relationsInitialize,
 			this.relationshipByFactionName,
 			this.selfAndAllies,
-			this.strength,
-			this.warThreatOfferConcessionsTo,
+			this.strategicValue,
 			this.notificationSessionStart,
 			this.researchPerTurn,
 			this.updateForTurn
@@ -91,32 +88,7 @@ class FactionTests extends TestFixture
 		Assert.isNotNull(factionAsControl);
 	}
 
-	toControl_Intelligence(): void
-	{
-		var diplomaticSession = DiplomaticSession.demo
-		(
-			this.faction,
-			[ this.faction, this.factionOther ],
-			null // venueParent
-		);
-
-		var factionAsControl = Faction.toControl_Intelligence
-		(
-			diplomaticSession,
-			new Coords(0, 0, 0), // pos,
-			this.universe.display.sizeInPixels // containerSize
-		);
-		Assert.isNotNull(factionAsControl);
-	}
-
 	// diplomacy
-
-	allianceProposalAcceptFrom(): void
-	{
-		var result =
-			this.faction.allianceProposalAcceptFrom(this.factionOther);
-		Assert.isTrue(result);
-	}
 
 	allies(): void
 	{
@@ -139,12 +111,6 @@ class FactionTests extends TestFixture
 		Assert.isNotNull(factions);
 	}
 
-	peaceOfferAcceptFrom(): void
-	{
-		var result = this.faction.peaceOfferAcceptFrom(this.factionOther);
-		Assert.isTrue(result);
-	}
-
 	relationsInitialize(): void
 	{
 		this.faction.relationsInitialize(this.universe);
@@ -163,16 +129,10 @@ class FactionTests extends TestFixture
 		Assert.isNotNull(selfAndAllies);
 	}
 
-	strength(): void
+	strategicValue(): void
 	{
-		var strength = this.faction.strength(this.world);
-		Assert.isNotNull(strength);
-	}
-
-	warThreatOfferConcessionsTo(): void
-	{
-		var result = this.faction.warThreatOfferConcessionsTo(this.factionOther);
-		Assert.isTrue(result);
+		var strategicValue = this.faction.strategicValue(this.world);
+		Assert.isNotNull(strategicValue);
 	}
 
 	// notifications
@@ -193,6 +153,6 @@ class FactionTests extends TestFixture
 
 	updateForTurn(): void
 	{
-		this.faction.updateForTurn(this.universe, this.world);
+		this.faction.updateForRound(this.universe, this.world);
 	}
 }

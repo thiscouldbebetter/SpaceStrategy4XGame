@@ -461,7 +461,7 @@ class BuildableDefnsLegacy
 			"Drive",
 			false, // isActive
 			false, // needsTarget
-			[ "Drive" ], // categoryNames
+			[ categoryShipDrive ], // categories
 			(uwpe: UniverseWorldPlaceEntities) => // init
 			{},
 			(uwpe: UniverseWorldPlaceEntities) => // updateForRound
@@ -533,7 +533,7 @@ class BuildableDefnsLegacy
 					"Generator",
 					false, // isActive
 					false, // needsTarget
-					[ categoryShipGenerator.name ],
+					[ categoryShipGenerator ],
 					null, // initialize
 					// updateForRound
 					(uwpe: UniverseWorldPlaceEntities) =>
@@ -709,7 +709,7 @@ class BuildableDefnsLegacy
 				name,
 				true, // isActive
 				true, // needsTarget
-				[ categoryShipWeapon.name ], // categoryNames
+				[ categoryShipWeapon ], // categoryNames
 				(uwpe: UniverseWorldPlaceEntities) => // init
 				{
 					// todo

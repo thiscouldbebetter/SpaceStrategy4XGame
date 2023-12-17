@@ -4,7 +4,7 @@ class DeviceDefn
 	name: string;
 	isActive: boolean;
 	needsTarget: boolean;
-	categoryNames: string[];
+	categories: BuildableCategory[];
 	_initialize: (uwpe: UniverseWorldPlaceEntities) => void;
 	updateForRound: (uwpe: UniverseWorldPlaceEntities) => void;
 	usesPerRound: number;
@@ -16,7 +16,7 @@ class DeviceDefn
 		name: string,
 		isActive: boolean,
 		needsTarget: boolean,
-		categoryNames: string[],
+		categories: BuildableCategory[],
 		initialize: (uwpe: UniverseWorldPlaceEntities) => void,
 		updateForRound: (uwpe: UniverseWorldPlaceEntities) => void,
 		usesPerRound: number,
@@ -27,6 +27,7 @@ class DeviceDefn
 		this.name = name;
 		this.isActive = isActive;
 		this.needsTarget = needsTarget;
+		this.categories = categories;
 		this._initialize = initialize;
 		this.updateForRound = updateForRound;
 		this.usesPerRound = usesPerRound || 1;

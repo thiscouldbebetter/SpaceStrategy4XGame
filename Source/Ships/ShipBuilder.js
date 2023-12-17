@@ -9,6 +9,118 @@ class ShipBuilder {
         this.shipHullSizeSelected = null;
         this.statusMessage = "Select available components and click Add to add them to the ship plans.";
     }
+    build(universe, venuePrev, faction, sizeDialog) {
+        var returnValue = null;
+        var world = universe.world;
+        var categories = BuildableCategory.Instances();
+        var doesShipHaveAGenerator = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipGenerator));
+        var doesShipHaveADrive = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipDrive));
+        var doesShipHaveAGeneratorAndDrive = doesShipHaveAGenerator
+            && doesShipHaveADrive;
+        var canShipBeBuilt = doesShipHaveAGeneratorAndDrive;
+        if (canShipBeBuilt == false) {
+            var messageLines = [
+                "Ships must have generators and drives.",
+                "Also, a starlane drive is needed",
+                "to leave the home starsystem."
+            ];
+            var message = messageLines.join("\n");
+            var venueToReturnTo = universe.venueCurrent();
+            var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+            universe.venueJumpTo(venue);
+        }
+        else {
+            var planet = venuePrev.modelParent;
+            var shipPosInCells = planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
+            var industryToBuild = this.industryToBuildTotal();
+            var shipHullSize = this.shipHullSizeSelected;
+            var visual = faction.visualForShipWithHullSize(shipHullSize);
+            var effects = BuildableEffect.Instances();
+            var effectNone = effects.None;
+            var effectLeaveOrbit = new BuildableEffect("Leave Orbit", 0, // order
+            (uwpe) => {
+                var ship = uwpe.entity;
+                ship.planetOrbitExit(world, planet);
+                universe.venueJumpTo(venuePrev);
+            });
+            var effectCreateColony = new BuildableEffect("Colonize Planet", 0, // order
+            (uwpe) => {
+                var venueToReturnTo = universe.venueCurrent();
+                var planet = uwpe.place.planet;
+                var ship = uwpe.entity;
+                var shipComponentEntities = ship.componentEntities;
+                var shipHasColonizer = shipComponentEntities.some((x) => Buildable.ofEntity(x).defn.name == "Colonizer");
+                if (shipHasColonizer == false) {
+                    var message = "Ship has no colonizers on board.";
+                    var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+                    universe.venueJumpTo(venue);
+                }
+                else if (planet.factionable().faction() != null) {
+                    var message = "Planet is already colonized.";
+                    var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+                    universe.venueJumpTo(venue);
+                }
+                else {
+                    alert("todo - colonize planet");
+                }
+            });
+            var effectConquerPlanet = new BuildableEffect("Conquer Planet", 0, // order
+            (uwpe) => {
+                var venueToReturnTo = universe.venueCurrent();
+                var planet = uwpe.place.planet;
+                var ship = uwpe.entity;
+                var shipComponentEntities = ship.componentEntities;
+                var shipHasInvader = shipComponentEntities.some((x) => Buildable.ofEntity(x).defn.name == "Invasion Module");
+                if (shipHasInvader == false) {
+                    var message = "Ship has no invasion modules on board.";
+                    var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+                    universe.venueJumpTo(venue);
+                }
+                else if (planet.factionable().faction() == ship.factionable().faction()) {
+                    var message = "Planet is already owned by your faction.";
+                    var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+                    universe.venueJumpTo(venue);
+                }
+                else {
+                    alert("todo - conquer planet");
+                }
+            });
+            var effectsAvailableForUse = [
+                effectLeaveOrbit,
+                effectCreateColony,
+                effectConquerPlanet
+            ];
+            var shipAsBuildableDefn = new BuildableDefn(this.shipName, false, // isItem
+            (m, p) => true, // hack - Should be orbit only.
+            Coords.zeroes(), // sizeInPixels
+            visual, industryToBuild, // industryToBuild
+            effectNone, // effectPerRound
+            effectsAvailableForUse, null, // categories
+            null, // entityProperties
+            null // modifyOnBuild
+            );
+            var shipAsBuildable = new Buildable(shipAsBuildableDefn, shipPosInCells, false, // isComplete,
+            false // isAutomated
+            );
+            var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
+            var shipComponentEntities = this.buildableDefnsToBuild.map((x) => {
+                var buildable = Buildable.fromDefn(x);
+                var entity = new Entity(x.name, [buildable]);
+                return entity;
+            });
+            var shipEntity = new Ship(this.shipName, this.shipHullSizeSelected, shipBodyDefn, shipPosInCells, faction, shipComponentEntities);
+            shipEntity.propertyAdd(shipAsBuildable);
+            returnValue = shipEntity;
+            // hack
+            var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual);
+            shipEntity.propertyAdd(shipDrawable);
+            var venuePrevAsVenueLayout = venuePrev;
+            var layout = venuePrevAsVenueLayout.layout;
+            layout.buildableEntityBuild(shipEntity);
+            universe.venueTransitionTo(venuePrevAsVenueLayout);
+        }
+        return returnValue;
+    }
     industryToBuildTotal() {
         var sumSoFar = this.shipHullSizeSelected.industryToBuild;
         this.buildableDefnsToBuild.forEach(x => sumSoFar += x.industryToBuild);
@@ -50,68 +162,6 @@ class ShipBuilder {
         var listSize = Coords.fromXY((size.x - margin * 3) / 2, size.y - margin * 7 - buttonSize.y - labelHeight * 4);
         var back = () => {
             universe.venueTransitionTo(venuePrev);
-        };
-        var build = () => {
-            var categories = BuildableCategory.Instances();
-            var doesShipHaveAGenerator = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipGenerator));
-            var doesShipHaveADrive = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipDrive));
-            var doesShipHaveAGeneratorAndDrive = doesShipHaveAGenerator
-                && doesShipHaveADrive;
-            var canShipBeBuilt = doesShipHaveAGeneratorAndDrive;
-            if (canShipBeBuilt == false) {
-                var messageLines = [
-                    "Ships must have generators and drives.",
-                    "Also, a starlane drive is needed",
-                    "to leave the home starsystem."
-                ];
-                var message = messageLines.join("\n");
-                var venueToReturnTo = universe.venueCurrent();
-                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
-                universe.venueJumpTo(venue);
-            }
-            else {
-                var planet = venuePrev.modelParent;
-                var shipPosInCells = planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
-                var industryToBuild = shipBuilder.industryToBuildTotal();
-                var shipHullSize = shipBuilder.shipHullSizeSelected;
-                var visual = faction.visualForShipWithHullSize(shipHullSize);
-                var effects = BuildableEffect.Instances();
-                var effectNone = effects.None;
-                var effectsAvailableForUse = [
-                    this.effectLeaveOrbit(planet, venuePrev),
-                    this.effectCreateColony(sizeDialog),
-                    this.effectConquerPlanet(sizeDialog)
-                ];
-                var shipAsBuildableDefn = new BuildableDefn(this.shipName, false, // isItem
-                (m, p) => true, // hack - Should be orbit only.
-                Coords.zeroes(), // sizeInPixels
-                visual, industryToBuild, // industryToBuild
-                effectNone, // effectPerRound
-                effectsAvailableForUse, null, // categories
-                null, // entityProperties
-                null // modifyOnBuild
-                );
-                var shipAsBuildable = new Buildable(shipAsBuildableDefn, shipPosInCells, false, // isComplete,
-                false // isAutomated
-                );
-                var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
-                var shipComponentEntities = this.buildableDefnsToBuild.map((x) => {
-                    var buildable = Buildable.fromDefn(x);
-                    var entity = new Entity(x.name, [buildable]);
-                    return entity;
-                });
-                var shipEntity = 
-                // shipAsBuildable.toEntity(world);
-                new Ship(this.shipName, shipHullSize, shipBodyDefn, shipPosInCells, faction, shipComponentEntities);
-                shipEntity.propertyAdd(shipAsBuildable);
-                // hack
-                var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual);
-                shipEntity.propertyAdd(shipDrawable);
-                var venuePrevAsVenueLayout = venuePrev;
-                var layout = venuePrevAsVenueLayout.layout;
-                layout.buildableEntityBuild(shipEntity);
-                universe.venueTransitionTo(venuePrevAsVenueLayout);
-            }
         };
         var add = () => {
             var componentsToBuildCount = this.componentCount();
@@ -198,7 +248,7 @@ class ShipBuilder {
         buttonSize.clone(), "Cancel", font, back // click
         );
         var buttonBuild = ControlButton.from5(Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), // pos
-        buttonSize.clone(), "Build", font, build // click
+        buttonSize.clone(), "Build", font, () => this.build(universe, venuePrev, faction, sizeDialog) // click
         );
         var returnValue = new ControlContainer("containerShipBuilder", Coords.create(), // pos
         size.clone(), 

@@ -15,16 +15,13 @@ class FactionTests extends TestFixture {
             this.starsystemHome,
             this.toString,
             this.toControl_ClusterOverlay,
-            this.allianceProposalAcceptFrom,
             this.allies,
             this.enemies,
             this.factionsMatchingRelationshipState,
-            this.peaceOfferAcceptFrom,
             this.relationsInitialize,
             this.relationshipByFactionName,
             this.selfAndAllies,
-            this.strength,
-            this.warThreatOfferConcessionsTo,
+            this.strategicValue,
             this.notificationSessionStart,
             this.researchPerTurn,
             this.updateForTurn
@@ -62,19 +59,7 @@ class FactionTests extends TestFixture {
         );
         Assert.isNotNull(factionAsControl);
     }
-    toControl_Intelligence() {
-        var diplomaticSession = DiplomaticSession.demo(this.faction, [this.faction, this.factionOther], null // venueParent
-        );
-        var factionAsControl = Faction.toControl_Intelligence(diplomaticSession, new Coords(0, 0, 0), // pos,
-        this.universe.display.sizeInPixels // containerSize
-        );
-        Assert.isNotNull(factionAsControl);
-    }
     // diplomacy
-    allianceProposalAcceptFrom() {
-        var result = this.faction.allianceProposalAcceptFrom(this.factionOther);
-        Assert.isTrue(result);
-    }
     allies() {
         var allies = this.faction.allies(this.world);
         Assert.isTrue(allies.length == 0);
@@ -88,10 +73,6 @@ class FactionTests extends TestFixture {
         );
         Assert.isNotNull(factions);
     }
-    peaceOfferAcceptFrom() {
-        var result = this.faction.peaceOfferAcceptFrom(this.factionOther);
-        Assert.isTrue(result);
-    }
     relationsInitialize() {
         this.faction.relationsInitialize(this.universe);
     }
@@ -103,13 +84,9 @@ class FactionTests extends TestFixture {
         var selfAndAllies = this.faction.selfAndAllies(this.world);
         Assert.isNotNull(selfAndAllies);
     }
-    strength() {
-        var strength = this.faction.strength(this.world);
-        Assert.isNotNull(strength);
-    }
-    warThreatOfferConcessionsTo() {
-        var result = this.faction.warThreatOfferConcessionsTo(this.factionOther);
-        Assert.isTrue(result);
+    strategicValue() {
+        var strategicValue = this.faction.strategicValue(this.world);
+        Assert.isNotNull(strategicValue);
     }
     // notifications
     notificationSessionStart() {
@@ -121,6 +98,6 @@ class FactionTests extends TestFixture {
         Assert.isNotNull(researchPerTurn);
     }
     updateForTurn() {
-        this.faction.updateForTurn(this.universe, this.world);
+        this.faction.updateForRound(this.universe, this.world);
     }
 }

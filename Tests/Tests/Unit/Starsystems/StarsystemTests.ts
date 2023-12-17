@@ -13,8 +13,9 @@ class StarsystemTests extends TestFixture
 		this.starsystem = this.world.factions[0].starsystemHome(this.world);
 
 		this.universe.soundHelper = new SoundHelperMock();
-		this.universe.venueCurrent = new VenueStarsystem(null, this.starsystem);
-		this.universe.venueCurrent.initialize(this.universe);
+		var venue = new VenueStarsystem(null, this.starsystem);
+		this.universe.venueNextSet(venue);
+		venue.initialize(this.universe);
 	}
 
 	tests(): ( () => void )[]
@@ -41,7 +42,7 @@ class StarsystemTests extends TestFixture
 	{
 		var ship = this.shipBuild();
 		Assert.isTrue(this.starsystem.ships.indexOf(ship) == -1);
-		this.starsystem.shipAdd(ship);
+		this.starsystem.shipAdd(ship, this.world);
 		Assert.isTrue(this.starsystem.ships.indexOf(ship) >= 0);
 		this.starsystem.shipRemove(ship);
 		Assert.isTrue(this.starsystem.ships.indexOf(ship) == -1);
@@ -54,7 +55,7 @@ class StarsystemTests extends TestFixture
 			"Ship",
 			Ship.bodyDefnBuild(Color.byName("Red")),
 			new Coords(0, 0, 0),
-			this.starsystem.factionName,
+			this.starsystem.faction(this.world),
 			[] // devices
 		);
 
@@ -124,7 +125,7 @@ class StarsystemTests extends TestFixture
 
 	updateForTurn(): void
 	{
-		this.starsystem.updateForTurn(this.universe, this.world);
+		this.starsystem.updateForRound(this.universe, this.world);
 	}
 
 	draw(): void

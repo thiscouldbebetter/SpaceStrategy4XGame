@@ -30,10 +30,11 @@ class PlanetIndustryTests extends TestFixture
 	updateForTurn(): void
 	{
 		var planetIndustry = this.planet.industry;
-		planetIndustry.updateForTurn
+		planetIndustry.updateForRound
 		(
 			this.universe, this.world,
-			this.planet.faction(this.world), this.planet
+			this.planet.faction(this.world),
+			this.planet
 		);
 	}
 }

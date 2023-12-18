@@ -16,6 +16,7 @@ class TechnologyGraph {
             [
                 bds.SurfaceFactory,
                 bds.SurfaceLaboratory,
+                bds.SurfaceOutpost,
                 bds.SurfacePlantation,
                 bds.SurfaceTransportTubes
             ]),
@@ -127,7 +128,7 @@ class TechnologyGraph {
         var returnValue = new TechnologyGraph("All Technologies", 
         // technologies
         [
-            t("Basic Technology", [], 0, [bds.SurfaceAgriplot, bds.SurfaceFactory, bds.SurfaceLaboratory, bds.SurfaceTransportTubes]),
+            t("Basic Technology", [], 0, [bds.SurfaceAgriplot, bds.SurfaceFactory, bds.SurfaceLaboratory, bds.SurfaceOutpost, bds.SurfaceTransportTubes]),
             t(OrbitalStructures, [], 50, [bds.OrbitalShipyard, bds.OrbitalShield1OrbitalShield]),
             t(InterplanetaryExploration, [OrbitalStructures], 50, [bds.ShipHull1Small, bds.ShipHull2Medium, bds.ShipGenerator1ProtonShaver]),
             t(TonklinDiary, [], 50, [bds.ShipDrive1TonklinMotor, bds.ShipSensor1TonklinFrequencyAnalyzer]),

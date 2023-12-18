@@ -354,6 +354,17 @@ class VenueLayout {
             || this.hasBeenUpdatedSinceDrawn;
         if (shouldDraw) {
             this.hasBeenUpdatedSinceDrawn = false;
+            var display = universe.display;
+            display.drawBackground(null, null);
+            var planetRadius = display.sizeInPixels.x / 6;
+            var colors = Color.Instances();
+            var planetColor = colors.Cyan.clone().darken();
+            var planetPos = display.sizeInPixels.clone().half();
+            planetPos.addXY(0, planetRadius / 2);
+            var visualBackground = VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor); // todo
+            var visualBackgroundAsEntity = Entity.fromProperty(Locatable.fromPos(planetPos));
+            var uwpe = UniverseWorldPlaceEntities.create().entitySet(visualBackgroundAsEntity);
+            visualBackground.draw(uwpe, universe.display);
             this.layout.draw(universe, universe.display);
             if (this.venueControls != null) {
                 this.venueControls.draw(universe);

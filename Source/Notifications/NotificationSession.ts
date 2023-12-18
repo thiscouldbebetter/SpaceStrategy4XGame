@@ -82,9 +82,14 @@ class NotificationSession
 
 	// controls
 
-	toControl
+	toControl(universe: Universe, containerSize: Coords, fontHeightInPixels: number): ControlBase
+	{
+		return this.toControl_Single(universe, containerSize, fontHeightInPixels);
+	}
+
+	toControl_Multiple
 	(
-		universe: Universe, containerSize: Coords
+		universe: Universe, containerSize: Coords, fontHeightInPixels: number
 	): ControlBase
 	{
 		var notificationSession = this;
@@ -94,7 +99,6 @@ class NotificationSession
 		var columnWidth = containerSize.x - margin * 2;
 		var buttonCount = 3;
 		var buttonWidth = (containerSize.x - margin * 4) / buttonCount;
-		var fontHeightInPixels = controlHeight / 2;
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var listHeight = controlHeight * 8;
@@ -237,7 +241,7 @@ class NotificationSession
 
 	toControl_Single
 	(
-		universe: Universe, containerSize: Coords
+		universe: Universe, containerSize: Coords, fontHeightInPixels: number
 	): ControlBase
 	{
 		var notificationSession = this;
@@ -245,21 +249,29 @@ class NotificationSession
 		var notifications = notificationSession.notifications();
 		this.notificationSelected = notifications[0];
 
-		var controlHeight = containerSize.y / 16;
-		var margin = 10;
-		var columnWidth = containerSize.x - margin * 2;
-		var buttonCount = 3;
-		var buttonWidth = (containerSize.x - margin * 4) / buttonCount;
-		var fontHeightInPixels = controlHeight / 2;
+		var margin = fontHeightInPixels;
+		var marginAsCoords = Coords.fromXY(1, 1).multiplyScalar(margin);
+		var containerSizeMinusMargins =
+			containerSize.clone().subtract(marginAsCoords).subtract(marginAsCoords);
+		var buttonCount = 2;
+		var buttonWidth = (containerSizeMinusMargins.x - margin) / buttonCount;
+		var buttonHeight = margin * 2;
+		var buttonSize = Coords.fromXY(buttonWidth, buttonHeight);
+
+		var textNotificationSingleSize = Coords.fromXY
+		(
+			containerSizeMinusMargins.x,
+			containerSizeMinusMargins.y - margin - buttonHeight
+		);
+
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-		var listHeight = controlHeight * 8;
-		var buttonPosY = containerSize.y - margin * 2 - controlHeight * 2;
+		var buttonPosY = containerSize.y - margin - buttonHeight;
 
-		var textNotificationSingle = ControlLabel.from4Uncentered
+		var textNotificationSingle = ControlLabel.from4Centered
 		(
-			Coords.fromXY(margin, margin * 2 + controlHeight * 2 + listHeight), // pos
-			Coords.fromXY(columnWidth, controlHeight), // size
+			Coords.fromXY(margin, margin), // pos
+			textNotificationSingleSize,
 			DataBinding.fromContextAndGet
 			(
 				this,
@@ -268,39 +280,24 @@ class NotificationSession
 			fontNameAndHeight
 		);
 
-		var dataBindingIsEnabled = DataBinding.fromContextAndGet
+		var buttonGoTo = ControlButton.from5
 		(
-			this,
-			(c: NotificationSession) => (c.notificationSelected != null)
-		);
-
-		var buttonGoTo = ControlButton.from8
-		(
-			"buttonGoTo",
-			Coords.fromXY
-			(
-				margin, buttonPosY
-			), // pos
-			Coords.fromXY(buttonWidth, controlHeight), // size
+			Coords.fromXY(margin, buttonPosY), // pos
+			buttonSize,
 			"Go To",
 			fontNameAndHeight,
-			true, // hasBorder
-			dataBindingIsEnabled,
 			() => notificationSession.notificationSelectedGoTo(universe) // click
 		);
 
-		var buttonDismiss = ControlButton.from8
+		var buttonDismiss = ControlButton.from5
 		(
-			"buttonDismiss",
 			Coords.fromXY
 			(
 				margin * 2 + buttonWidth * 1, buttonPosY
 			), // pos
-			Coords.fromXY(buttonWidth, controlHeight), // size
-			"Dismiss Selected",
+			buttonSize,
+			"Dismiss",
 			fontNameAndHeight,
-			true, // hasBorder
-			dataBindingIsEnabled,
 			() => notificationSession.notificationSelectedDismiss(universe) // click
 		);
 

@@ -1,6 +1,6 @@
 "use strict";
 class BuildableDefn {
-    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effectPerRound, effectsAvailableToUse, categories, entityProperties, entityModifyOnBuild) {
+    constructor(name, isItem, canBeBuiltOnMapAtPosInCells, sizeInPixels, visual, industryToBuild, effectPerRound, effectsAvailableToUse, categories, entityProperties, entityModifyOnBuild, description) {
         this.name = name;
         this.isItem = isItem;
         this._canBeBuiltOnMapAtPosInCells = canBeBuiltOnMapAtPosInCells;
@@ -12,6 +12,7 @@ class BuildableDefn {
         this.categories = categories || new Array();
         this.entityProperties = entityProperties;
         this._entityModifyOnBuild = entityModifyOnBuild;
+        this.description = description || "";
     }
     static fromName(name) {
         return new BuildableDefn(name, false, // isItem
@@ -22,7 +23,8 @@ class BuildableDefn {
         null, // effectsAvailableToUse
         null, // categories
         null, // entityProperties
-        null // entityModifyOnBuild
+        null, // entityModifyOnBuild
+        null // description
         );
     }
     buildableToEntity(buildable, world) {

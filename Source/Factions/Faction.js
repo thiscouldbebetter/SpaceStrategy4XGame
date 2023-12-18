@@ -332,10 +332,11 @@ class Faction {
     notificationAdd(notification) {
         this.notificationSession.notificationAdd(notification);
     }
-    notificationSessionStart(universe) {
-        var notificationSessionAsControl = this.notificationSession.toControl(universe, universe.display.sizeInPixels);
+    notificationSessionStart(universe, size) {
+        size = size || universe.display.sizeInPixels;
+        var notificationSessionAsControl = this.notificationSession.toControl(universe, size);
         var venueNext = notificationSessionAsControl.toVenue();
-        universe.venueTransitionTo(venueNext);
+        universe.venueJumpTo(venueNext);
     }
     notificationsAdd(notificationsToAdd) {
         notificationsToAdd.forEach(x => this.notificationAdd(x));

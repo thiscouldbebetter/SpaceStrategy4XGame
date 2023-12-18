@@ -818,14 +818,16 @@ class Faction implements EntityProperty<Faction>
 		this.notificationSession.notificationAdd(notification);
 	}
 
-	notificationSessionStart(universe: Universe): void
+	notificationSessionStart(universe: Universe, size: Coords): void
 	{
+		size = size || universe.display.sizeInPixels;
+
 		var notificationSessionAsControl = this.notificationSession.toControl
 		(
-			universe, universe.display.sizeInPixels
+			universe, size
 		);
 		var venueNext: Venue = notificationSessionAsControl.toVenue();
-		universe.venueTransitionTo(venueNext);
+		universe.venueJumpTo(venueNext);
 	}
 
 	notificationsAdd(notificationsToAdd: Notification2[]): void

@@ -324,6 +324,9 @@ class Planet extends Entity {
         var resource = this.resourcesThisRoundByName(universe, world).get("Research");
         return (resource == null ? 0 : resource.quantity);
     }
+    resourceThisRoundByName(universe, world, resourceDefnName) {
+        return this.resourcesThisRoundByName(universe, world).get(resourceDefnName);
+    }
     resourcesThisRound(universe, world) {
         if (this._resourcesThisRound == null) {
             this._resourcesThisRound = new Array();

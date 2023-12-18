@@ -2114,6 +2114,12 @@ class BuildableDefnsLegacyNames
 
 	constructor()
 	{
+		this.assignLegacyNames();
+		// this.assignAlternateNames();
+	}
+
+	assignLegacyNames()
+	{
 		this.OrbitalCloaker = "Orbital Cloaker";
 		this.OrbitalDocks = "Orbital Docks";
 		this.OrbitalShield1OrbitalShield = "Orbital Shield";
@@ -2224,7 +2230,7 @@ class BuildableDefnsLegacyNames
 		this.SurfaceShield1SurfaceShield = "Surface Shield";
 		this.SurfaceShield2SurfaceMegaShield = "Surface Megashield";
 		this.SurfaceTerraforming = "Terraforming";
-		this.SurfaceXenoArchaeologicalDig = "Achaeological Dig";
+		this.SurfaceXenoArchaeologicalDig = "Archaeological Dig";
 
 		this.SurfaceAgriplot = "Agriplot";
 		this.SurfaceColonyHub = "Colony Hub";
@@ -2233,5 +2239,126 @@ class BuildableDefnsLegacyNames
 		this.SurfaceOutpost = "Outpost";
 		this.SurfaceTransportTubes = "Transport Tubes";
 	}
-}
 
+	assignAlternateNames()
+	{
+		this.OrbitalCloaker = "Orbital Scanner Jammer";
+		this.OrbitalDocks = "Skydocks";
+		this.OrbitalShield1OrbitalShield = "Exospheric Particle Cascade";
+		this.OrbitalShield2OrbitalMegaShield = "Orbital Aegis";
+		this.OrbitalShipyard = "Shipyard";
+		this.OrbitalWeapon1OrbitalMissileBase = "Orbital Missilary";
+		this.OrbitalWeapon2ShortRangeOrbitalWhopper = "Short-Range Orbital Blaster";
+		this.OrbitalWeapon3LongRangeOrbitalWhopper = "Long-Range Orbital Blaster";
+		this.PlanetwideFocusAlienHospitality = "Planetwide Diplomacy Focus";
+		this.PlanetwideFocusEndlessParty = "Planetwide Growth Focus";
+		this.PlanetwideFocusScientistTakeover = "Planetwide Research Focus";
+		this.PlanetwideLushGrowthBomb = "Nanohabitation Matrix";
+		this.ShipDrive1TonklinMotor = "Chemical Thruster";
+		this.ShipDrive2IonBanger = "Ion Engine";
+		this.ShipDrive3GravitonProjector = "Gravitic Polarizer";
+		this.ShipDrive4InertiaNegator = "Inertial Fractionator";
+		this.ShipDrive5NanowaveSpaceBender = "Spatiofolder";
+		this.ShipGenerator1ProtonShaver = "Nucleonic Powerplant";
+		this.ShipGenerator2SubatomicScoop = "Ion Harvester";
+		this.ShipGenerator3QuarkExpress = "Strongforce Forge";
+		this.ShipGenerator4VanKreegHypersplicer = "Superstring Knotter";
+		this.ShipGenerator5Nanotwirler = "Zero-Point Plenum";
+		this.ShipHull1Small = "Small Ship Hull";
+		this.ShipHull2Medium = "Medium Ship Hull";
+		this.ShipHull3Large = "Large Ship Hull";
+		this.ShipHull4Enormous = "Enormous Ship Hull";
+		this.ShipItemAccutron = "Weapons Range Extender";
+		this.ShipItemBackfirer = "Attacker Hacker";
+		this.ShipItemBrunswikDissipator = "Enervatrix Zero";
+		this.ShipItemCannibalizer = "Hullplate Fuzor";
+		this.ShipItemCloaker = "Scanner Skipper";
+		this.ShipItemColonizer = "Capsule Colonizer";
+		this.ShipItemContainmentDevice = "Neuterizer";
+		this.ShipItemDisarmer = "Harmlessizer";
+		this.ShipItemDisintegrator = "Disintegrator";
+		this.ShipItemFleetDisperser = "Antigraviton Gun";
+		this.ShipItemGizmogrifier = "Decomponentizer";
+		this.ShipItemGravimetricCatapult = "Solar Swapper";
+		this.ShipItemGravimetricCondensor = "Graviton Field Projector";
+		this.ShipItemGravityDistorter = "Antigraviton Field Projector";
+		this.ShipItemGyroInductor = "Gravitic Regenerator";
+		this.ShipItemHyperfuel = "Exacapacitance Discharge Array";
+		this.ShipItemHyperswapper = "Switcheroo";
+		this.ShipItemIntellectScrambler = "Amnesianator";
+		this.ShipItemInvasionModule = "Military Dropship";
+		this.ShipItemInvulnerablizer = "Magic Shell";
+		this.ShipItemLaneBlocker = "Link Hinker";
+		this.ShipItemLaneDestabilizer = "Hypertopology Collapser";
+		this.ShipItemLaneEndoscope = "Quantum Keyholer";
+		this.ShipItemLaneMagnetron = "Hypertsunami Waverider";
+		this.ShipItemMassCondensor = "Graviton Gun";
+		this.ShipItemMolecularTieDown = "Immobilizer";
+		this.ShipItemMovingPartExploiter = "Entropy Cannon";
+		this.ShipItemMyrmidonicCarbonizer = "Volumetric Hyperfutzer";
+		this.ShipItemPhaseBomb = "Transdimensional Nuke";
+		this.ShipItemPlasmaCoupler = "Power Projector";
+		this.ShipItemPositronBouncer = "Backoff Beam";
+		this.ShipItemRecaller = "Homer";
+		this.ShipItemRemoteRepairFacility = "Repair Drone Swarm";
+		this.ShipItemReplenisher = "Quick Loader";
+		this.ShipItemSacrificialOrb = "Entropy Exchange";
+		this.ShipItemSelfDestructotron = "Explosive Self-Destruct System";
+		this.ShipItemShieldBlaster = "Defenselessizer";
+		this.ShipItemSmartBomb = "Systemwide Attack Vector";
+		this.ShipItemSpecialtyBlaster = "Pinpoint Rad-Blaster";
+		this.ShipItemToroidalBlaster = "Hyper-Turboizer";
+		this.ShipItemTractorBeam = "Attractor Ray";
+		this.ShipItemXRayMegaglasses = "Scanalyzer";
+		this.ShipSensor1TonklinFrequencyAnalyzer = "Deep-Radar Dish";
+		this.ShipSensor2SubspacePhaseArray = "Quantum Disturbance Web";
+		this.ShipSensor3AuralCloudConstrictor = "Gravity Wave Detector";
+		this.ShipSensor4HyperwaveTympanum = "Superstring Tug Noticer";
+		this.ShipSensor5MurgatroydsKnower = "Transdimensional Lookit";
+		this.ShipSensor6NanowaveDecouplingNet = "Far-Seeing Eye";
+		this.ShipShield1IonWrap = "Ionic Deflector";
+		this.ShipShield2ConcussionShield = "Forcefield";
+		this.ShipShield3WaveScatterer = "Spatial Passthrough";
+		this.ShipShield4Deactotron = "Interaction Dampener";
+		this.ShipShield5HyperwaveNullifier = "Superstring Safety Net";
+		this.ShipShield6Nanoshell = "Transdimensional Spreader";
+		this.ShipStarlaneDrive1StarLaneDrive = "Link Drive";
+		this.ShipStarlaneDrive2StarLaneHyperdrive = "Improved Link Drive";
+		this.ShipWeapon01MassBarrageGun = "Bullet Stormer";
+		this.ShipWeapon02FourierMissiles = "Missile Barrage";
+		this.ShipWeapon03QuantumSingularityLauncher = "Black Hole Gun";
+		this.ShipWeapon04MolecularDisassociator = "Matter Decoherer";
+		this.ShipWeapon05ElectromagneticPulser = "Rapid Zapper";
+		this.ShipWeapon06Plasmatron = "Protean Chaos Projector";
+		this.ShipWeapon07Ueberlaser = "Exawatt Laser";
+		this.ShipWeapon08FergnatzLens = "Entropy Focuser";
+		this.ShipWeapon09HypersphereDriver = "Tesseract Flinger";
+		this.ShipWeapon10Nanomanipulator = "Reality Canceller";
+		this.SurfaceArtificialHydroponifier = "Hydroponicarium";
+		this.SurfaceAutomation = "Automation";
+		this.SurfaceCloaker = "Surface Scanner Jammer";
+		this.SurfaceCloningPlant = "Mass Gestatational Array";
+		this.SurfaceEngineeringRetreat = "Experimental Fabricary";
+		this.SurfaceFertilizationPlant = "Fertility Promotion Center";
+		this.SurfaceHabitat = "Intensive Habitation Dome";
+		this.SurfaceHyperpowerPlant = "Industrial Interchange Integrator";
+		this.SurfaceIndustrialMegafacility = "Industrial Megafacility";
+		this.SurfaceInternet = "Scientific Collaboration Network";
+		this.SurfaceLogicFactory = "Experimental Biofarm";
+		this.SurfaceMetroplex = "Arcology";
+		this.SurfaceObservationInstallation = "Deep-Space Monitoring Station";
+		this.SurfacePlanetaryTractorBeam = "Planetary Tractor Beam";
+		this.SurfaceResearchCampus = "Research Collegium";
+		this.SurfaceShield1SurfaceShield = "Surface-to-Air Missile Battery";
+		this.SurfaceShield2SurfaceMegaShield = "Surface-to-Air Beam Projector";
+		this.SurfaceTerraforming = "Terraforming";
+		this.SurfaceXenoArchaeologicalDig = "Archaeological Dig";
+
+		this.SurfaceAgriplot = "Plantation";
+		this.SurfaceColonyHub = "Colony Hub";
+		this.SurfaceFactory = "Factory";
+		this.SurfaceLaboratory = "Laboratory";
+		this.SurfaceOutpost = "Habitation Cells";
+		this.SurfaceTransportTubes = "Transit Network";
+	}
+}

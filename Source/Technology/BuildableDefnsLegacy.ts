@@ -1984,7 +1984,6 @@ class BuildableDefnsLegacy
 			this.SurfaceLaboratory,
 			this.SurfaceOutpost,
 			this.SurfaceTransportTubes
-
 		];
 	}
 }
@@ -2010,7 +2009,7 @@ class BuildableDefnsLegacyNames
 	ShipDrive3GravitonProjector: string;
 	ShipDrive4InertiaNegator: string;
 	ShipDrive5NanowaveSpaceBender: string;
-	ShipGenerator1ProtonShaver
+	ShipGenerator1ProtonShaver: string;
 	ShipGenerator2SubatomicScoop: string;
 	ShipGenerator3QuarkExpress: string;
 	ShipGenerator4VanKreegHypersplicer: string;

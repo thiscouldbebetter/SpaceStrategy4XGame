@@ -103,6 +103,10 @@ class Network2 extends PlaceBase
 		var displacementOfNodeNewFromOther = Coords.create();
 		var minusOnes = new Coords(-1, -1, -1);
 
+		var starNames = StarNames.Instance()._All;
+		var starsystemNames =
+			randomizer.chooseNElementsFromArray(numberOfNodes, starNames);
+
 		for (var i = 0; i < numberOfNodes; i++)
 		{
 			var distanceOfNodeNewFromExisting = 0;
@@ -145,7 +149,8 @@ class Network2 extends PlaceBase
 
 			var nodeDefnIndexRandom = Math.floor(nodeDefns.length * Math.random());
 			var nodeDefn = nodeDefns[nodeDefnIndexRandom];
-			var nodeStarsystem = Starsystem.generateRandom(universe);
+			var starsystemName = starsystemNames[i];
+			var nodeStarsystem = Starsystem.generateRandom(universe, starsystemName);
 
 			var node = new NetworkNode2
 			(

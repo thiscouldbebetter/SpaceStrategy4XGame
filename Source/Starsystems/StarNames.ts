@@ -1,6 +1,16 @@
 
 class StarNames
 {
+	static _instance: StarNames;
+	static Instance(): StarNames
+	{
+		if (StarNames._instance == null)
+		{
+			StarNames._instance = new StarNames();
+		}
+		return StarNames._instance;
+	}
+
 	_All: string[];
 
 	constructor()
@@ -56,7 +66,7 @@ class StarNames
 			"Longreach",
 			"Lulueh",
 			"Marvant",
-			"Melliflua"
+			"Melliflua",
 			"Minfak",
 			"Mobin",
 			"Nantiar",
@@ -87,7 +97,7 @@ class StarNames
 			"Tessera",
 			"Torrine",
 			"Tyrax",
-			"Ua'uala"
+			"Ua'uala",
 			"Undine",
 			"Ur-Van",
 			"Utmo",

@@ -73,9 +73,9 @@ class Starsystem extends PlaceBase
 
 	// static methods
 
-	static generateRandom(universe: Universe)
+	static generateRandom(universe: Universe, name: string): Starsystem
 	{
-		var name = NameGenerator.generateName();
+		name = name || NameGenerator.generateName();
 		var size = Starsystem.SizeStandard();
 		var starType = StarType.random();
 

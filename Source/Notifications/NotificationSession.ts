@@ -94,8 +94,10 @@ class NotificationSession
 	{
 		var notificationSession = this;
 
+		fontHeightInPixels = fontHeightInPixels || 10;
+
 		var controlHeight = containerSize.y / 16;
-		var margin = 10;
+		var margin = fontHeightInPixels;
 		var columnWidth = containerSize.x - margin * 2;
 		var buttonCount = 3;
 		var buttonWidth = (containerSize.x - margin * 4) / buttonCount;
@@ -244,6 +246,8 @@ class NotificationSession
 		universe: Universe, containerSize: Coords, fontHeightInPixels: number
 	): ControlBase
 	{
+		fontHeightInPixels = fontHeightInPixels || 10;
+
 		var notificationSession = this;
 
 		var notifications = notificationSession.notifications();

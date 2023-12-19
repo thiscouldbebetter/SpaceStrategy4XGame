@@ -37,14 +37,14 @@ class FactionAbility {
 class FactionAbility_Instances {
     constructor() {
         var fa = (name, rtc, perform, descr) => new FactionAbility(name, rtc, perform, descr);
-        this.Adapt = fa("Adapt", null, null, "Can use black planet surface cells.");
+        this.Adapt = fa("Adapt", null, null, "Can build on all planet surface terrains.");
         this.Charm = fa("Charm", 100, this.charm, "Force other factions to make peace.");
-        this.Clairvoyize = fa("Clairvoyize", null, this.clairvoyize, "Discover all other factions' home starsystems.");
+        this.Clairvoyize = fa("Clairvoyize", null, this.clairvoyize, "All other factions' home starsystems are known.");
         this.Cram = fa("Cram", 68, this.cram, "Double industry on all planets for one round.");
         this.Disrupt = fa("Disrupt", 70, this.disrupt, "Bump all ships in starlanes back to start.");
         this.Energize = fa("Energize", 62, this.energize, "Double power of all ships for one round.");
         this.Enervate = fa("Enervate", 90, this.enervate, "Drain power of all others' ships for one round.");
-        this.Farsee = fa("Farsee", null, this.farsee, "Discover all starlanes.");
+        this.Farsee = fa("Farsee", null, this.farsee, "All starlanes are known.");
         this.Hermitize = fa("Hermitize", 100, this.hermitize, "Block all starlanes into occupied starsystems.");
         this.Inspire = fa("Inspire", 89, this.inspire, "Discover the currently researched technology.");
         this.Intractablize = fa("Intractablize", 66, this.intractablize, "Make all planets invincible for one round.");
@@ -55,7 +55,7 @@ class FactionAbility_Instances {
         this.Prolificate = fa("Prolificate", 72, this.prolificate, "Increase the max population of all planets.");
         this.Regenerate = fa("Regenerate", 60, this.regenerate, "Repair all damage to all ships.");
         this.Speed = fa("Speed", null, null, "Move through starlanes twice as fast.");
-        this.Telepathicize = fa("Telepathicize", null, this.telepathicize, "Establish diplomacy with all other factions.");
+        this.Telepathicize = fa("Telepathicize", null, this.telepathicize, "Diplomatic relations established with all factions.");
         this.Toughen = fa("Toughen", null, null, "Ship hulls can withstand twice as much damage.");
         this.Xenophobicize = fa("Xenophobicize ", 77, this.xenophobicize, "Warp others' ships out of occupied starsystems.");
         this._All =

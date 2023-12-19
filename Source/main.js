@@ -67,6 +67,8 @@ function main() {
 function worldCreatorToControl(universe, worldCreator) {
     var size = universe.display.sizeInPixels;
     var margin = size.x / 40;
+    var marginAsCoords = Coords.fromXY(1, 1).multiplyScalar(margin);
+    var sizeMinusMargins = size.clone().subtract(marginAsCoords).subtract(marginAsCoords);
     var fontHeightInPixels = margin;
     var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
     var controlHeight = fontHeightInPixels + margin;
@@ -92,7 +94,7 @@ function worldCreatorToControl(universe, worldCreator) {
     fontNameAndHeight, DataBinding.fromTrue() // isEnabled
     );
     var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
-    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Ability:"), fontNameAndHeight);
+    Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Faction:"), fontNameAndHeight);
     var selectFactionType = new ControlSelect("selectFactionType", Coords.fromXY(margin * 8, margin * 4 + controlHeight * 3), // pos
     Coords.fromXY(controlHeight * 3, controlHeight), // size
     new DataBinding(worldCreator, (c) => c.settings.factionDefnName, (c, v) => c.settings.factionDefnName = v), // valueSelected
@@ -100,9 +102,27 @@ function worldCreatorToControl(universe, worldCreator) {
     DataBinding.fromGet((c) => c.name), // bindingForOptionValues,
     DataBinding.fromGet((c) => c.name), // bindingForOptionText
     fontNameAndHeight);
-    var labelFactionColor = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 5 + controlHeight * 4), // pos
+    var textSpecialAbility = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 5 + controlHeight * 4), // pos
+    Coords.fromXY(sizeMinusMargins.x, controlHeight), // size
+    DataBinding.fromContextAndGet(worldCreator, (c) => {
+        var factionDefn = FactionDefn.byName(c.settings.factionDefnName);
+        var abilityDescription = "";
+        if (factionDefn == null) {
+            abilityDescription = "-";
+        }
+        else {
+            var ability = factionDefn.ability;
+            var roundsToCharge = ability.roundsToCharge;
+            var frequencyPrefix = roundsToCharge == null
+                ? ""
+                : "Every " + roundsToCharge + " rounds: ";
+            abilityDescription = frequencyPrefix + ability.description;
+        }
+        return "Special Ability: " + abilityDescription;
+    }), fontNameAndHeight);
+    var labelFactionColor = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 6 + controlHeight * 5), // pos
     Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Color:"), fontNameAndHeight);
-    var selectFactionColor = new ControlSelect("selectFactionColor", Coords.fromXY(margin * 8, margin * 5 + controlHeight * 4), // pos
+    var selectFactionColor = new ControlSelect("selectFactionColor", Coords.fromXY(margin * 8, margin * 6 + controlHeight * 5), // pos
     Coords.fromXY(controlHeight * 3, controlHeight), // size
     new DataBinding(worldCreator, (c) => c.settings.factionColor, (c, v) => c.settings.factionColor = v), // valueSelected
     DataBinding.fromContextAndGet(worldCreator, (c) => Faction.colors()), // options
@@ -122,6 +142,7 @@ function worldCreatorToControl(universe, worldCreator) {
         numberFactionCount,
         labelFactionType,
         selectFactionType,
+        textSpecialAbility,
         labelFactionColor,
         selectFactionColor,
         buttonCreate

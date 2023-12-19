@@ -52,17 +52,17 @@ class NotificationSession {
         return this._notifications.length > 0;
     }
     // controls
-    toControl(universe, containerSize) {
-        return this.toControl_Single(universe, containerSize);
+    toControl(universe, containerSize, fontHeightInPixels) {
+        return this.toControl_Single(universe, containerSize, fontHeightInPixels);
     }
-    toControl_Multiple(universe, containerSize) {
+    toControl_Multiple(universe, containerSize, fontHeightInPixels) {
         var notificationSession = this;
+        fontHeightInPixels = fontHeightInPixels || 10;
         var controlHeight = containerSize.y / 16;
-        var margin = 10;
+        var margin = fontHeightInPixels;
         var columnWidth = containerSize.x - margin * 2;
         var buttonCount = 3;
         var buttonWidth = (containerSize.x - margin * 4) / buttonCount;
-        var fontHeightInPixels = controlHeight / 2;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var listHeight = controlHeight * 8;
         var buttonPosY = containerSize.y - margin * 2 - controlHeight * 2;
@@ -116,12 +116,12 @@ class NotificationSession {
         ]);
         return returnValue;
     }
-    toControl_Single(universe, containerSize) {
+    toControl_Single(universe, containerSize, fontHeightInPixels) {
+        fontHeightInPixels = fontHeightInPixels || 10;
         var notificationSession = this;
         var notifications = notificationSession.notifications();
         this.notificationSelected = notifications[0];
-        var margin = 10;
-        var fontHeightInPixels = margin;
+        var margin = fontHeightInPixels;
         var marginAsCoords = Coords.fromXY(1, 1).multiplyScalar(margin);
         var containerSizeMinusMargins = containerSize.clone().subtract(marginAsCoords).subtract(marginAsCoords);
         var buttonCount = 2;

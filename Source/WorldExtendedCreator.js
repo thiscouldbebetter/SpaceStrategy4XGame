@@ -119,7 +119,8 @@ class WorldExtendedCreator {
                 throw "There are more factions than starsystems with planets.";
             }
         }
-        var factionName = factionHomeStarsystem.name + "ians";
+        var factionDefn = factionDefns[i];
+        var factionName = factionDefn.name;
         factionHomeStarsystem.factionSetByName(factionName);
         var factionColor = colorsForFactions[i];
         var technologiesKnown = technologyGraph.technologiesFree();
@@ -142,7 +143,6 @@ class WorldExtendedCreator {
             technologiesToLearnNames.forEach(x => factionTechnologyResearcher.technologyLearnByName(x));
             factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
         }
-        var factionDefn = factionDefns[i];
         var factionHomePlanet = this.create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn);
         var factionShips = new Array();
         var factionKnowledge = new FactionKnowledge(factionName, // factionSelfName
@@ -174,7 +174,7 @@ class WorldExtendedCreator {
                 )
             ]
         ]);
-        var faction = new Faction(factionName, factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, null, // factionDiplomacy,
+        var faction = new Faction(factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, null, // factionDiplomacy,
         factionTechnologyResearcher, [factionHomePlanet], factionShips, factionKnowledge, factionIntelligence, factionVisualsForHullSizesByName);
         factionHomePlanet.factionable().factionSet(faction);
         var factionDiplomacy = FactionDiplomacy.fromFactionSelf(faction);

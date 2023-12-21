@@ -37,7 +37,6 @@ class Layout {
     }
     // drawable
     draw(universe, display) {
-        display.drawBackground(null, null);
         this.map.draw(universe, display);
     }
 }

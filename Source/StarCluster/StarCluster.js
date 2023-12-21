@@ -47,6 +47,8 @@ class StarCluster extends PlaceBase {
         var nodePos = Coords.create();
         var displacementOfNodeNewFromOther = Coords.create();
         var minusOnes = new Coords(-1, -1, -1);
+        var starNames = StarNames.Instance()._All;
+        var starsystemNames = randomizer.chooseNElementsFromArray(numberOfNodes, starNames);
         for (var i = 0; i < numberOfNodes; i++) {
             var distanceOfNodeNewFromExisting = 0;
             while (distanceOfNodeNewFromExisting < distanceBetweenNodesMin) {
@@ -65,7 +67,8 @@ class StarCluster extends PlaceBase {
             }
             var nodeDefnIndexRandom = Math.floor(nodeDefns.length * Math.random());
             var nodeDefn = nodeDefns[nodeDefnIndexRandom];
-            var nodeStarsystem = Starsystem.generateRandom(universe);
+            var starsystemName = starsystemNames[i];
+            var nodeStarsystem = Starsystem.generateRandom(universe, starsystemName);
             var node = new StarClusterNode(nodeStarsystem.name, nodeDefn, nodePos.clone(), nodeStarsystem.star, nodeStarsystem);
             nodesNotYetLinked.push(node);
         }

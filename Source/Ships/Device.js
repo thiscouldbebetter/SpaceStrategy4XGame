@@ -2,6 +2,7 @@
 class Device {
     constructor(defn) {
         this._defn = defn;
+        this.usesRemainingThisRoundReset();
     }
     static ofEntity(entity) {
         return entity.propertyByName(Device.name);
@@ -15,6 +16,11 @@ class Device {
     defn() {
         return this._defn;
     }
+    nameAndUsesRemainingThisRound() {
+        var name = this.defn().name;
+        var returnValue = name + " (" + this.usesRemainingThisRound + ")";
+        return returnValue;
+    }
     toEntity() {
         var defn = this.defn();
         return new Entity(Device.name + defn.name, [this]);
@@ -22,6 +28,7 @@ class Device {
     updateForRound(uwpe) {
         var defn = this.defn();
         defn.updateForRound(uwpe);
+        this.usesRemainingThisRoundReset();
     }
     use(uwpe) {
         var deviceUser = DeviceUser.ofEntity(uwpe.entity);
@@ -32,6 +39,10 @@ class Device {
             uwpe.entity2 = this.toEntity();
             defn.use(uwpe);
         }
+    }
+    usesRemainingThisRoundReset() {
+        var defn = this.defn();
+        this.usesRemainingThisRound = defn.usesPerRound;
     }
     // EntityProperty.
     finalize(uwpe) { }

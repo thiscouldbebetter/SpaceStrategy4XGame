@@ -107,7 +107,8 @@ class ControlBuilderExtended extends ControlBuilder {
         Coords.fromXY(margin * 2 + buttonSize.x, size.y - margin - buttonSize.y), // pos
         buttonSize, "Target", // text,
         fontNameAndHeight, true, // hasBorder
-        DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.entitySelected != null)), // isEnabled
+        DataBinding.fromContextAndGet(venueStarsystem, (c) => c.entitySelected != null
+            && c.entitySelected != c.entityHighlighted), // isEnabled
         () => alert("todo - target") // click
         );
         var returnValue = new ControlContainer("containerSelected", pos.clone(), size.clone(), 

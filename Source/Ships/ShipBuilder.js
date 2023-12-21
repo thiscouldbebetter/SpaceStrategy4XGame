@@ -97,7 +97,8 @@ class ShipBuilder {
             effectNone, // effectPerRound
             effectsAvailableForUse, null, // categories
             null, // entityProperties
-            null // modifyOnBuild
+            null, // modifyOnBuild
+            null // description
             );
             var shipAsBuildable = new Buildable(shipAsBuildableDefn, shipPosInCells, false, // isComplete,
             false // isAutomated
@@ -120,6 +121,14 @@ class ShipBuilder {
             universe.venueTransitionTo(venuePrevAsVenueLayout);
         }
         return returnValue;
+    }
+    buildableDefnAvailableSelectedSet(value) {
+        this.buildableDefnAvailableSelected = value;
+        this.statusMessage = value.description;
+    }
+    buildableDefnToBuildSelectedSet(value) {
+        this.buildableDefnToBuildSelected = value;
+        this.statusMessage = value.description;
     }
     industryToBuildTotal() {
         var sumSoFar = this.shipHullSizeSelected.industryToBuild;
@@ -206,7 +215,7 @@ class ShipBuilder {
         var listComponentsAvailable = ControlList.from10("listComponentsAvailable", Coords.fromXY(margin, margin * 4 + labelHeight * 3), // pos
         listSize.clone(), DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsAvailable), // items
         DataBinding.fromGet((c) => c.nameAndCost()), // bindingForItemText
-        font, new DataBinding(this, (c) => c.buildableDefnAvailableSelected, (c, v) => c.buildableDefnAvailableSelected = v), // bindingForItemSelected
+        font, new DataBinding(this, (c) => c.buildableDefnAvailableSelected, (c, v) => c.buildableDefnAvailableSelectedSet(v)), // bindingForItemSelected
         DataBinding.fromGet((c) => c), // bindingForItemValue
         DataBinding.fromTrue(), // isEnabled
         add // confirm
@@ -231,7 +240,7 @@ class ShipBuilder {
         var listShipComponents = ControlList.from10("listShipComponents", Coords.fromXY(size.x - margin - listSize.x, margin * 4 + labelHeight * 3), // pos
         listSize.clone(), DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsToBuild), // items
         DataBinding.fromGet((c) => c.name), // bindingForItemText
-        font, new DataBinding(this, (c) => c.buildableDefnToBuildSelected, (c, v) => c.buildableDefnToBuildSelected = v), // bindingForItemSelected
+        font, new DataBinding(this, (c) => c.buildableDefnToBuildSelected, (c, v) => c.buildableDefnToBuildSelectedSet(v)), // bindingForItemSelected
         DataBinding.fromGet((c) => c), // bindingForItemValue
         DataBinding.fromTrue(), // isEnabled
         remove // confirm

@@ -56,6 +56,7 @@ class BuildableDefnsBasic
 	SurfaceLaboratory: BuildableDefn;
 	SurfaceLaboratoryAdvanced: BuildableDefn;
 	SurfaceLaboratoryMultiplier: BuildableDefn;
+	SurfaceOutpost: BuildableDefn;
 	SurfacePlantation: BuildableDefn;
 	SurfacePlantationAdvanced: BuildableDefn;
 	SurfaceShield: BuildableDefn;
@@ -111,7 +112,13 @@ class BuildableDefnsBasic
 		var effectNone = effects.None;
 		var effectTodo = effects.ThrowError;
 
-		var facilityOrbital = (name: string, visual: VisualBase, industryToBuildAmount: number) =>
+		var facilityOrbital =
+		(
+			name: string,
+			visual: VisualBase,
+			industryToBuildAmount: number,
+			description: string
+		) =>
 			new BuildableDefn
 			(
 				name,
@@ -124,12 +131,17 @@ class BuildableDefnsBasic
 				null, // // effectsAvailableToUse
 				null, // categories
 				null, // entityProperties
-				null // entityModifyOnBuild
+				null, // entityModifyOnBuild
+				description
 			);
 
 		var facilitySurfaceUsable =
 		(
-			name: string, visual: VisualBase, industryToBuildAmount: number, effectPerRound: BuildableEffect
+			name: string,
+			visual: VisualBase,
+			industryToBuildAmount: number,
+			effectPerRound: BuildableEffect,
+			description: string
 		) =>
 			new BuildableDefn
 			(
@@ -143,10 +155,17 @@ class BuildableDefnsBasic
 				null, // effectsAvailableToUse
 				null, // categories
 				null, // entityProperties
-				null // entityModifyOnBuild
+				null, // entityModifyOnBuild
+				description
 			);
 
-		var facilitySurfaceAnywhere = (name: string, visual: VisualBase, industryToBuildAmount: number) =>
+		var facilitySurfaceAnywhere =
+		(
+			name: string,
+			visual: VisualBase,
+			industryToBuildAmount: number,
+			description: string
+		) =>
 			new BuildableDefn
 			(
 				name,
@@ -159,10 +178,16 @@ class BuildableDefnsBasic
 				null, // // effectsAvailableToUse
 				null, // categories
 				null, // entityProperties
-				null // entityModifyOnBuild
+				null, // entityModifyOnBuild
+				description
 			);
 
-		var planetwideFocus = (name: string, visual: VisualBase) =>
+		var planetwideFocus =
+		(
+			name: string,
+			visual: VisualBase,
+			description: string
+		) =>
 			new BuildableDefn
 			(
 				name,
@@ -175,7 +200,8 @@ class BuildableDefnsBasic
 				null, // // effectsAvailableToUse
 				null, // categories
 				null, // entityProperties
-				null // entityModifyOnBuild
+				null, // entityModifyOnBuild
+				description
 			);
 
 		var shipComponent =
@@ -183,7 +209,8 @@ class BuildableDefnsBasic
 			name: string,
 			visual: VisualBase,
 			industryToBuildAmount: number,
-			deviceDefn: DeviceDefn
+			deviceDefn: DeviceDefn,
+			description: string
 		) =>
 			new BuildableDefn
 			(
@@ -205,68 +232,78 @@ class BuildableDefnsBasic
 						var device = new Device(deviceDefn);
 						uwpe.entity.propertyAdd(device);
 					}
-				}
+				},
+				description
 			);
 
 		this.OrbitalCloak = facilityOrbital
 		(
 			"Orbital Cloak",
 			visualBuild("C", colors.Gray),
-			120
+			120,
+			"Hides orbital structures from sensors."
 		);
 
 		this.OrbitalDocks = facilityOrbital
 		(
 			"Orbital Docks",
 			visualBuild("D", colors.Gray),
-			120
+			120,
+			"Allows ships to be repaired and refitted."
 		);
 
 		this.OrbitalShield = facilityOrbital
 		(
 			"Orbital Shield",
 			visualBuild("S", colors.Red),
-			60
+			60,
+			"Protects orbital structures and excludes others' ships from orbit."
 		);
 
 		this.OrbitalShieldAdvanced = facilityOrbital
 		(
 			"Orbital Shield, Advanced",
 			visualBuild("S", colors.Blue),
-			120
+			120,
+			"A stronger version of the orbital shield."
 		);
 
 		this.OrbitalWeaponBasic = facilityOrbital
 		(
 			"Orbital Weapon, Basic",
 			visualBuild("W", colors.Gray),
-			60
+			60,
+			"Allows planet to attack ships in the starystem."
 		);
 
 		this.OrbitalWeaponIntermediate = facilityOrbital
 		(
 			"Orbital Weapon, Intermediate",
 			visualBuild("W", colors.Red),
-			120
+			120,
+			"A more powerful orbital weapon."
 		);
 
 		this.OrbitalWeaponAdvanced = facilityOrbital
 		(
 			"Orbital Weapon, Advanced",
 			visualBuild("W", colors.Green),
-			240
+			240,
+			"An even more powerful orbital weapon."
 		);
 
 		this.PlanetwideFocusDiplomacy = planetwideFocus
 		(
 			"Planetwide Diplomacy Focus",
-			visualBuild("Focus", colors.Orange)
+			visualBuild("Focus", colors.Orange),
+			"Planet's industry is directed toward improving diplomatic relations."
 		);
 
 		this.PlanetwideFocusResearch = planetwideFocus
 		(
 			"Planetwide Research Focus",
-			visualBuild("Focus", colors.Blue)
+			visualBuild("Focus", colors.Blue),
+			"Planet's industry is redirected to research."
 		);
 
 		this.ShipDriveBasic = shipComponent
@@ -274,7 +311,8 @@ class BuildableDefnsBasic
 			"Ship Drive, Basic",
 			visualBuild("Drive", colors.Gray),
 			30,
-			null // deviceDefn
+			null, // deviceDefn
+			"Consumes power to allow a ship to move."
 		);
 
 		this.ShipDriveIntermediate = shipComponent
@@ -282,7 +320,8 @@ class BuildableDefnsBasic
 			"Ship Drive, Intermediate",
 			visualBuild("Drive", colors.Red),
 			60,
-			null // deviceDefn
+			null, // deviceDefn
+			"A more powerful ship drive."
 		);
 
 		this.ShipDriveAdvanced = shipComponent
@@ -290,7 +329,8 @@ class BuildableDefnsBasic
 			"Ship Drive, Advanced",
 			visualBuild("Drive", colors.Green),
 			120,
-			null // deviceDefn
+			null, // deviceDefn
+			"A still more powerful ship drive."
 		);
 
 		this.ShipDriveSupreme = shipComponent
@@ -298,7 +338,8 @@ class BuildableDefnsBasic
 			"Ship Drive, Supreme",
 			visualBuild("Drive", colors.Red),
 			240,
-			null // deviceDefn
+			null, // deviceDefn
+			"The most powerful ship drive."
 		);
 
 		this.ShipGeneratorBasic = shipComponent
@@ -306,7 +347,8 @@ class BuildableDefnsBasic
 			"Ship Generator, Basic",
 			visualBuild("Generator", colors.Gray),
 			30,
-			null // deviceDefn
+			null, // deviceDefn
+			"Generates energy to power other components."
 		);
 
 		this.ShipGeneratorIntermediate = shipComponent
@@ -314,7 +356,8 @@ class BuildableDefnsBasic
 			"Ship Generator, Intermediate",
 			visualBuild("Generator", colors.Red),
 			60,
-			null // deviceDefn
+			null, // deviceDefn
+			"A more powerful ship generator."
 		);
 
 		this.ShipGeneratorAdvanced = shipComponent
@@ -322,7 +365,8 @@ class BuildableDefnsBasic
 			"Ship Generator, Advanced",
 			visualBuild("Generator", colors.Green),
 			120,
-			null // deviceDefn
+			null, // deviceDefn
+			"A still more powerful ship generator."
 		);
 
 		this.ShipGeneratorSupreme = shipComponent
@@ -330,7 +374,8 @@ class BuildableDefnsBasic
 			"Ship Generator, Supreme",
 			visualBuild("Generator", colors.Blue),
 			240,
-			null // deviceDefn
+			null, // deviceDefn
+			"The most powerful ship generator."
 		);
 
 		this.ShipHullEnormous = new BuildableDefn
@@ -345,7 +390,8 @@ class BuildableDefnsBasic
 			null, // effectsAvailableToUse
 			null, // categories
 			null, // entityProperties
-			null // entityModifyOnBuild
+			null, // entityModifyOnBuild
+			"The largest ship hull."
 		);
 
 		this.ShipHullLarge = new BuildableDefn
@@ -360,7 +406,8 @@ class BuildableDefnsBasic
 			null, // effectsAvailableToUse
 			null, // categories
 			null, // entityProperties
-			null // entityModifyOnBuild
+			null, // entityModifyOnBuild
+			"A still larger ship hull."
 		);
 
 		this.ShipHullMedium = new BuildableDefn
@@ -375,7 +422,8 @@ class BuildableDefnsBasic
 			null, // effectsAvailableToUse
 			null, // categories
 			null, // entityProperties
-			null // entityModifyOnBuild
+			null, // entityModifyOnBuild
+			"A larger ship hull."
 		);
 
 		this.ShipHullSmall = new BuildableDefn
@@ -390,7 +438,8 @@ class BuildableDefnsBasic
 			null, // effectsAvailableToUse
 			null, // categories
 			null, // entityProperties
-			null // entityModifyOnBuild
+			null, // entityModifyOnBuild
+			"A small ship hull."
 		);
 
 		this.ShipItemCloak = shipComponent
@@ -398,7 +447,8 @@ class BuildableDefnsBasic
 			"Cloak",
 			visualBuild("Cloak", colors.Gray),
 			100,
-			null // deviceDefn
+			null, // deviceDefn
+			"Conceals ship components from sensors."
 		);
 
 		this.ShipItemColonyBuilder = shipComponent
@@ -406,7 +456,8 @@ class BuildableDefnsBasic
 			"Colony Builder",
 			visualBuild("Col", colors.Gray),
 			100,
-			null // deviceDefn
+			null, // deviceDefn
+			"Creates a new colony on an uninhabited planet."
 		);
 
 		this.ShipItemDropShip = shipComponent
@@ -414,7 +465,8 @@ class BuildableDefnsBasic
 			"Drop Ship",
 			visualBuild("Drop Ship", colors.Gray),
 			100,
-			null // deviceDefn
+			null, // deviceDefn
+			"Allows invasion and takeover of hostile colonies."
 		);
 
 		this.ShipSensorsBasic = shipComponent
@@ -422,7 +474,8 @@ class BuildableDefnsBasic
 			"Ship Sensors, Basic",
 			visualBuild("Sensors", colors.Gray),
 			30,
-			null // deviceDefn
+			null, // deviceDefn
+			"A short-range ship sensor."
 		);
 
 		this.ShipSensorsIntermediate = shipComponent
@@ -430,7 +483,8 @@ class BuildableDefnsBasic
 			"Ship Sensors, Intermediate",
 			visualBuild("Sensors", colors.Red),
 			60,
-			null // deviceDefn
+			null, // deviceDefn
+			"A ship sensor with longer range."
 		);
 
 		this.ShipSensorsAdvanced = shipComponent
@@ -438,7 +492,8 @@ class BuildableDefnsBasic
 			"Ship Sensors, Advanced",
 			visualBuild("Sensors", colors.Green),
 			120,
-			null // deviceDefn
+			null, // deviceDefn
+			"A ship sensor with still longer range."
 		);
 
 		this.ShipSensorsSupreme = shipComponent
@@ -446,7 +501,8 @@ class BuildableDefnsBasic
 			"Ship Sensors, Supreme",
 			visualBuild("Sensors", colors.Blue),
 			240,
-			null // deviceDefn
+			null, // deviceDefn
+			"The ship sensor with the longest range."
 		);
 
 		this.ShipShieldBasic = shipComponent
@@ -454,7 +510,8 @@ class BuildableDefnsBasic
 			"Ship Shield, Basic",
 			visualBuild("Shield", colors.Gray),
 			30,
-			null // deviceDefn
+			null, // deviceDefn
+			"When active, consumes power to protect the host ship from attack."
 		);
 
 		this.ShipShieldIntermediate = shipComponent
@@ -462,7 +519,8 @@ class BuildableDefnsBasic
 			"Ship Shield, Intermediate",
 			visualBuild("Shield", colors.Red),
 			60,
-			null // deviceDefn
+			null, // deviceDefn
+			"A stronger ship shield."
 		);
 
 		this.ShipShieldAdvanced = shipComponent
@@ -470,7 +528,8 @@ class BuildableDefnsBasic
 			"Ship Shield, Advanced",
 			visualBuild("Shield", colors.Green),
 			120,
-			null // deviceDefn
+			null, // deviceDefn
+			"A still stronger ship shield."
 		);
 
 		this.ShipShieldSupreme = shipComponent
@@ -478,7 +537,8 @@ class BuildableDefnsBasic
 			"Ship Shield, Supreme",
 			visualBuild("Shield", colors.Blue),
 			240,
-			null // deviceDefn
+			null, // deviceDefn
+			"The strongest ship shield."
 		);
 
 		this.ShipWeaponBasic = shipComponent
@@ -486,7 +546,8 @@ class BuildableDefnsBasic
 			"Ship Weapon, Basic",
 			visualBuild("Weapon", colors.Gray),
 			30,
-			null // deviceDefn
+			null, // deviceDefn
+			"Allows a ship to attack other ships and orbital structures."
 		);
 
 		this.ShipWeaponIntermediate = shipComponent
@@ -494,7 +555,8 @@ class BuildableDefnsBasic
 			"Ship Weapon, Intermediate",
 			visualBuild("Weapon", colors.Red),
 			60,
-			null // deviceDefn
+			null, // deviceDefn
+			"A more powerful ship weapon."
 		);
 
 		this.ShipWeaponAdvanced = shipComponent
@@ -502,7 +564,8 @@ class BuildableDefnsBasic
 			"Ship Weapon, Advanced",
 			visualBuild("Weapon", colors.Green),
 			120,
-			null // deviceDefn
+			null, // deviceDefn
+			"A still more powerful ship weapon."
 		);
 
 		this.ShipWeaponSupreme = shipComponent
@@ -510,7 +573,8 @@ class BuildableDefnsBasic
 			"Ship Weapon, Supreme",
 			visualBuild("Weapon", colors.Blue),
 			240,
-			null // deviceDefn
+			null, // deviceDefn
+			"The most powerful ship weapon."
 		);
 
 		this.Shipyard = new BuildableDefn
@@ -531,7 +595,8 @@ class BuildableDefnsBasic
 			null, // effectsAvailableToUse
 			null, // categories
 			null, // entityProperties
-			null // entityModifyOnBuild
+			null, // entityModifyOnBuild
+			"Allows new ships to be built."
 		);
 
 		this.SurfaceCloak = facilitySurfaceUsable
@@ -539,7 +604,8 @@ class BuildableDefnsBasic
 			"Surface Cloak",
 			visualBuild("Cloak", colors.Gray),
 			120,
-			effectNone
+			effectNone,
+			"Conceals surface structures from sensors."
 		);
 
 		this.SurfaceColonyHub = new BuildableDefn
@@ -554,7 +620,8 @@ class BuildableDefnsBasic
 			null, // effectsAvailableToUse
 			null, // categories
 			null, // entityProperties
-			null // entityModifyOnBuild
+			null, // entityModifyOnBuild
+			"Provides basic resources for a planetary colony."
 		);
 
 		this.SurfaceFactory = facilitySurfaceUsable
@@ -562,7 +629,8 @@ class BuildableDefnsBasic
 			"Factory",
 			visualBuild("Factory", colors.Red),
 			30,
-			effectTodo // [ new Resource("Industry", 1) ] // resourcesPerTurn
+			effectTodo, // [ new Resource("Industry", 1) ] // resourcesPerTurn
+			"Increases the host planet's industrial output."
 		);
 
 		this.SurfaceFactoryAdvanced = facilitySurfaceUsable
@@ -570,7 +638,8 @@ class BuildableDefnsBasic
 			"Factory, Advanced",
 			visualBuild("Factory2", colors.Pink),
 			60,
-			effectTodo // [ new Resource("Industry", 2) ] // resourcesPerTurn
+			effectTodo, // [ new Resource("Industry", 2) ] // resourcesPerTurn
+			"A more productive factory."
 		);
 
 		this.SurfaceFactoryMultiplier = facilitySurfaceUsable
@@ -578,7 +647,8 @@ class BuildableDefnsBasic
 			"Factory Multiplier",
 			visualBuild("FacX", colors.Pink),
 			120,
-			effectTodo // resourcesPerTurn
+			effectTodo, // resourcesPerTurn
+			"Doubles the effect of all industry-producing structures."
 		);
 
 		this.SurfaceLaboratory = facilitySurfaceUsable
@@ -586,7 +656,8 @@ class BuildableDefnsBasic
 			"Laboratory",
 			visualBuild("Lab", colors.Blue),
 			30,
-			effectNone // [ new Resource("Research", 1) ] // resourcesPerTurn
+			effectNone, // [ new Resource("Research", 1) ] // resourcesPerTurn
+			"Increase the host planet's research output."
 		);
 
 		this.SurfaceLaboratoryAdvanced = facilitySurfaceUsable
@@ -594,7 +665,8 @@ class BuildableDefnsBasic
 			"Laboratory, Advanced",
 			visualBuild("L", colors.BlueLight),
 			60,
-			effectNone // [ new Resource("Research", 2) ] // resourcesPerTurn
+			effectNone, // [ new Resource("Research", 2) ] // resourcesPerTurn
+			"A more productive laboratory."
 		);
 
 		this.SurfaceLaboratoryMultiplier = facilitySurfaceUsable
@@ -602,7 +674,17 @@ class BuildableDefnsBasic
 			"Laboratory Multiplier",
 			visualBuild("LM", colors.Pink),
 			120,
-			effectNone
+			effectNone,
+			"Doubles the effect of all research-producing structures."
+		);
+
+		this.SurfaceOutpost = facilitySurfaceUsable
+		(
+			"Outpost",
+			visualBuild("Outpost", colors.Pink),
+			120,
+			effectTodo,
+			"Adds 1 to max population."
 		);
 
 		this.SurfacePlantation = facilitySurfaceUsable
@@ -610,7 +692,8 @@ class BuildableDefnsBasic
 			"Plantation",
 			visualBuild("Plant", colors.Green),
 			30,
-			effectTodo // [ new Resource("Prosperity", 1) ] // resourcesPerTurn
+			effectTodo, // [ new Resource("Prosperity", 1) ] // resourcesPerTurn
+			"Produces prosperity to speed population growth."
 		);
 
 		this.SurfacePlantationAdvanced = facilitySurfaceUsable
@@ -618,7 +701,8 @@ class BuildableDefnsBasic
 			"Plantation, Advanced",
 			visualBuild("Plant2", colors.GreenLight),
 			60,
-			effectTodo // [ new Resource("Prosperity", 2) ] // resourcesPerTurn
+			effectTodo, // [ new Resource("Prosperity", 2) ] // resourcesPerTurn
+			"A more productive plantation."
 		);
 
 		this.SurfaceShield = facilitySurfaceUsable
@@ -626,7 +710,8 @@ class BuildableDefnsBasic
 			"Surface Shield",
 			visualBuild("Shield", colors.Red),
 			30,
-			null // resourcesPerTurn
+			null, // resourcesPerTurn
+			"Protects planet from enemy invasion and conquest."
 		);
 
 		this.SurfaceShieldAdvanced = facilitySurfaceUsable
@@ -634,14 +719,16 @@ class BuildableDefnsBasic
 			"Surface Shield, Advanced",
 			visualBuild("Shield2", colors.Blue),
 			60,
-			null // resourcesPerTurn
+			null, // resourcesPerTurn
+			"A more powerful surface shield."
 		);
 
 		this.SurfaceTransportTubes = facilitySurfaceAnywhere
 		(
 			"Transport Tubes",
 			visualBuild("Transp", colors.Red),
-			15
+			15,
+			"Allows traversal of otherwise unusable terrain."
 		);
 
 		this._All =
@@ -698,6 +785,8 @@ class BuildableDefnsBasic
 
 			this.SurfaceLaboratory,
 			this.SurfaceLaboratoryAdvanced,
+
+			this.SurfaceOutpost,
 
 			this.SurfacePlantation,
 			this.SurfacePlantationAdvanced,

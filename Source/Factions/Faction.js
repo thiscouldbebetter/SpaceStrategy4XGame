@@ -1,7 +1,6 @@
 "use strict";
 class Faction {
-    constructor(name, defnName, homeStarsystemName, homePlanetName, color, diplomacy, technologyResearcher, planets, ships, knowledge, intelligence, visualsForShipsByHullSize) {
-        this.name = name;
+    constructor(defnName, homeStarsystemName, homePlanetName, color, diplomacy, technologyResearcher, planets, ships, knowledge, intelligence, visualsForShipsByHullSize) {
         this.defnName = defnName;
         this.homeStarsystemName = homeStarsystemName;
         this.homePlanetName = homePlanetName;
@@ -13,19 +12,20 @@ class Faction {
         this.knowledge = knowledge;
         this.intelligence = intelligence;
         this._visualsForShipsByHullSize = visualsForShipsByHullSize; // todo
+        this.name = this.defnName;
         this.notificationSession = new NotificationSession(this.name, []);
         this.shipsBuiltSoFarCount = ships.length;
     }
     static fromEntity(entity) {
         return entity.propertyByName(Faction.name);
     }
-    static fromName(name) {
-        var faction = new Faction(name, null, null, // homeStarsystemName,
+    static fromDefnName(defnName) {
+        var faction = new Faction(defnName, null, // homeStarsystemName,
         null, // homePlanetName,
         Color.Instances().Red, null, // diplomacy
         TechnologyResearcher.default(), null, // planets
         null, // ships
-        FactionKnowledge.fromFactionSelfName(name), null, // intelligence
+        FactionKnowledge.fromFactionSelfName(defnName), null, // intelligence
         null // visuals
         );
         var diplomacy = FactionDiplomacy.fromFactionSelf(faction);
@@ -111,17 +111,9 @@ class Faction {
         var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
         DataBinding.fromContext(faction.name), fontNameAndHeight);
-        var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-        DataBinding.fromContext("Type:"), fontNameAndHeight);
-        var textFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin * 2), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext(faction.defn().name), fontNameAndHeight);
         var childControls = [
             labelFaction,
-            textFaction,
-            labelFactionType,
-            textFactionType
+            textFaction
         ];
         if (includeDetailsButton) {
             var buttonDetails = ControlButton.from8("buttonDetails", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
@@ -186,7 +178,8 @@ class Faction {
             labelFactionType, textFactionType,
             labelAbility, textAbility, buttonAbilityUse
         ]);
-        var containerNotifications = this.notificationSession.toControl(universe, tabbedControlSize);
+        var containerNotifications = this.notificationSession.toControl(universe, tabbedControlSize, null // fontHeightInPixels
+        );
         var containerDiplomacy = this.toControl_Details_Diplomacy(universe, tabbedControlSize);
         var containerTechnology = this.toControl_Details_Technology(universe, tabbedControlSize);
         var containerPlanets = this.toControl_Details_Planets(universe, tabbedControlSize, margin, controlHeight, fontNameAndHeight);
@@ -332,10 +325,12 @@ class Faction {
     notificationAdd(notification) {
         this.notificationSession.notificationAdd(notification);
     }
-    notificationSessionStart(universe) {
-        var notificationSessionAsControl = this.notificationSession.toControl(universe, universe.display.sizeInPixels);
+    notificationSessionStart(universe, size) {
+        size = size || universe.display.sizeInPixels;
+        var notificationSessionAsControl = this.notificationSession.toControl(universe, size, null // fontHeightInPixels
+        );
         var venueNext = notificationSessionAsControl.toVenue();
-        universe.venueTransitionTo(venueNext);
+        universe.venueJumpTo(venueNext);
     }
     notificationsAdd(notificationsToAdd) {
         notificationsToAdd.forEach(x => this.notificationAdd(x));

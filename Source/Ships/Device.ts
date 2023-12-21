@@ -13,6 +13,7 @@ class Device implements EntityProperty<Device>
 	constructor(defn: DeviceDefn)
 	{
 		this._defn = defn;
+		this.usesRemainingThisRoundReset();
 	}
 
 	static ofEntity(entity: Entity): Device
@@ -36,6 +37,13 @@ class Device implements EntityProperty<Device>
 		return this._defn;
 	}
 
+	nameAndUsesRemainingThisRound(): string
+	{
+		var name = this.defn().name;
+		var returnValue = name + " (" + this.usesRemainingThisRound + ")";
+		return returnValue;
+	}
+
 	toEntity(): Entity
 	{
 		var defn = this.defn();
@@ -46,6 +54,7 @@ class Device implements EntityProperty<Device>
 	{
 		var defn = this.defn();
 		defn.updateForRound(uwpe);
+		this.usesRemainingThisRoundReset();
 	}
 
 	use(uwpe: UniverseWorldPlaceEntities): void
@@ -62,6 +71,12 @@ class Device implements EntityProperty<Device>
 			uwpe.entity2 = this.toEntity();
 			defn.use(uwpe);
 		}
+	}
+
+	usesRemainingThisRoundReset(): void
+	{
+		var defn = this.defn();
+		this.usesRemainingThisRound = defn.usesPerRound;
 	}
 
 	// EntityProperty.

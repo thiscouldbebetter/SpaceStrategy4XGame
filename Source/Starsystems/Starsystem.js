@@ -26,8 +26,8 @@ class Starsystem extends PlaceBase {
         return Starsystem._sizeStandard;
     }
     // static methods
-    static generateRandom(universe) {
-        var name = NameGenerator.generateName();
+    static generateRandom(universe, name) {
+        name = name || NameGenerator.generateName();
         var size = Starsystem.SizeStandard();
         var starType = StarType.random();
         var star = Star.fromNameStarTypeAndPos(this.name, starType, new Coords(0, 0, -10) // todo - Why -10?

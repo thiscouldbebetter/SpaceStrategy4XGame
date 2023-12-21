@@ -551,13 +551,14 @@ class Planet extends Entity
 		universe: Universe, world: WorldExtended
 	): number
 	{
-		if (this._industryThisRound != null)
+		if (this._industryThisRound == null)
 		{
 			var resource = this.resourcesThisRoundByName
 			(
 				universe, world
 			).get("Industry");
-			return (resource == null ? 0: resource.quantity);
+
+			this._industryThisRound = (resource == null ? 0: resource.quantity);
 		}
 
 		return this._industryThisRound;
@@ -607,6 +608,14 @@ class Planet extends Entity
 		return (resource == null ? 0: resource.quantity);
 	}
 
+	resourceThisRoundByName
+	(
+		universe: Universe, world: WorldExtended, resourceDefnName: string
+	): Resource
+	{
+		return this.resourcesThisRoundByName(universe, world).get(resourceDefnName);
+	}
+
 	resourcesThisRound(universe: Universe, world: WorldExtended): Resource[]
 	{
 		if (this._resourcesThisRound == null)
@@ -634,7 +643,10 @@ class Planet extends Entity
 		return this._resourcesThisRound;
 	}
 
-	resourcesThisRoundByName(universe: Universe, world: WorldExtended): Map<string,Resource>
+	resourcesThisRoundByName
+	(
+		universe: Universe, world: WorldExtended
+	): Map<string,Resource>
 	{
 		if (this._resourcesThisRoundByName == null)
 		{

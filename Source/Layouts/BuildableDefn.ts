@@ -12,6 +12,7 @@ class BuildableDefn
 	categories: BuildableCategory[];
 	entityProperties: (uwpe: UniverseWorldPlaceEntities) => EntityPropertyBase[];
 	_entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void;
+	description: string;
 
 	constructor
 	(
@@ -25,7 +26,8 @@ class BuildableDefn
 		effectsAvailableToUse: BuildableEffect[],
 		categories: BuildableCategory[],
 		entityProperties: (uwpe: UniverseWorldPlaceEntities) => EntityPropertyBase[],
-		entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void
+		entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void,
+		description: string
 	)
 	{
 		this.name = name;
@@ -39,6 +41,7 @@ class BuildableDefn
 		this.categories = categories || new Array<BuildableCategory>();
 		this.entityProperties = entityProperties;
 		this._entityModifyOnBuild = entityModifyOnBuild;
+		this.description = description || "";
 	}
 
 	static fromName(name: string): BuildableDefn
@@ -55,7 +58,8 @@ class BuildableDefn
 			null, // effectsAvailableToUse
 			null, // categories
 			null, // entityProperties
-			null // entityModifyOnBuild
+			null, // entityModifyOnBuild
+			null // description
 		);
 	}
 

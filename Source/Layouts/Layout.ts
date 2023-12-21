@@ -71,8 +71,6 @@ class Layout
 
 	draw(universe: Universe, display: Display): void
 	{
-		display.drawBackground(null, null);
-
 		this.map.draw(universe, display);
 	}
 }

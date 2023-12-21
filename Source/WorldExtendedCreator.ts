@@ -279,7 +279,9 @@ class WorldExtendedCreator
 			}
 		}
 
-		var factionName = factionHomeStarsystem.name + "ians";
+		var factionDefn = factionDefns[i];
+
+		var factionName = factionDefn.name;
 		factionHomeStarsystem.factionSetByName(factionName);
 		var factionColor = colorsForFactions[i];
 
@@ -315,8 +317,6 @@ class WorldExtendedCreator
 			
 			factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
 		}
-
-		var factionDefn = factionDefns[i];
 
 		var factionHomePlanet = this.create_FactionsAndShips_1_1_HomePlanet
 		(
@@ -380,7 +380,6 @@ class WorldExtendedCreator
 
 		var faction = new Faction
 		(
-			factionName,
 			factionDefn.name,
 			factionHomeStarsystem.name,
 			factionHomePlanet.name,

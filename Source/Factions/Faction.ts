@@ -1,7 +1,6 @@
 
 class Faction implements EntityProperty<Faction>
 {
-	name: string;
 	defnName: string;
 	homeStarsystemName: string;
 	homePlanetName: string;
@@ -14,6 +13,8 @@ class Faction implements EntityProperty<Faction>
 	intelligence: FactionIntelligence;
 	_visualsForShipsByHullSize: Map<ShipHullSize, VisualBase>;
 
+	name: string;
+
 	notificationSession: NotificationSession;
 
 	planetSelected: Planet;
@@ -23,7 +24,6 @@ class Faction implements EntityProperty<Faction>
 
 	constructor
 	(
-		name: string,
 		defnName: string,
 		homeStarsystemName: string,
 		homePlanetName: string,
@@ -37,7 +37,6 @@ class Faction implements EntityProperty<Faction>
 		visualsForShipsByHullSize: Map<ShipHullSize, VisualBase>
 	)
 	{
-		this.name = name;
 		this.defnName = defnName;
 		this.homeStarsystemName = homeStarsystemName;
 		this.homePlanetName = homePlanetName;
@@ -50,6 +49,8 @@ class Faction implements EntityProperty<Faction>
 		this.intelligence = intelligence;
 		this._visualsForShipsByHullSize = visualsForShipsByHullSize; // todo
 
+		this.name = this.defnName;
+
 		this.notificationSession = new NotificationSession(this.name, []);
 
 		this.shipsBuiltSoFarCount = ships.length;
@@ -60,12 +61,11 @@ class Faction implements EntityProperty<Faction>
 		return entity.propertyByName(Faction.name) as Faction;
 	}
 
-	static fromName(name: string): Faction
+	static fromDefnName(defnName: string): Faction
 	{
 		var faction = new Faction
 		(
-			name,
-			null,
+			defnName,
 			null, // homeStarsystemName,
 			null, // homePlanetName,
 			Color.Instances().Red,
@@ -73,7 +73,7 @@ class Faction implements EntityProperty<Faction>
 			TechnologyResearcher.default(),
 			null, // planets
 			null, // ships
-			FactionKnowledge.fromFactionSelfName(name),
+			FactionKnowledge.fromFactionSelfName(defnName),
 			null, // intelligence
 			null // visuals
 		);
@@ -244,39 +244,10 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var labelFactionType = ControlLabel.from4Uncentered
-		(
-			Coords.fromXY(margin, margin * 2),// pos
-			Coords.fromXY
-			(
-				containerInnerSize.x - margin * 3,
-				controlHeight
-			), // size
-			DataBinding.fromContext("Type:"),
-			fontNameAndHeight
-		);
-
-		var textFactionType = ControlLabel.from4Uncentered
-		(
-			Coords.fromXY
-			(
-				margin * 2 + containerInnerSize.x * .3, margin * 2
-			), // pos
-			Coords.fromXY
-			(
-				containerInnerSize.x - margin * 2,
-				controlHeight
-			), // size
-			DataBinding.fromContext(faction.defn().name),
-			fontNameAndHeight
-		);
-
 		var childControls: Array<ControlBase> =
 		[
 			labelFaction,
-			textFaction,
-			labelFactionType,
-			textFactionType
+			textFaction
 		];
 
 		if (includeDetailsButton)
@@ -433,7 +404,10 @@ class Faction implements EntityProperty<Faction>
 		);
 
 		var containerNotifications =
-			this.notificationSession.toControl(universe, tabbedControlSize);
+			this.notificationSession.toControl
+			(
+				universe, tabbedControlSize, null // fontHeightInPixels
+			);
 
 		var containerDiplomacy =
 			this.toControl_Details_Diplomacy(universe, tabbedControlSize);
@@ -818,14 +792,16 @@ class Faction implements EntityProperty<Faction>
 		this.notificationSession.notificationAdd(notification);
 	}
 
-	notificationSessionStart(universe: Universe): void
+	notificationSessionStart(universe: Universe, size: Coords): void
 	{
+		size = size || universe.display.sizeInPixels;
+
 		var notificationSessionAsControl = this.notificationSession.toControl
 		(
-			universe, universe.display.sizeInPixels
+			universe, size, null // fontHeightInPixels
 		);
 		var venueNext: Venue = notificationSessionAsControl.toVenue();
-		universe.venueTransitionTo(venueNext);
+		universe.venueJumpTo(venueNext);
 	}
 
 	notificationsAdd(notificationsToAdd: Notification2[]): void

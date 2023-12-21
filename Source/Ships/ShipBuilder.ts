@@ -218,7 +218,8 @@ class ShipBuilder
 				effectsAvailableForUse,
 				null, // categories
 				null, // entityProperties
-				null // modifyOnBuild
+				null, // modifyOnBuild
+				null // description
 			);
 
 			var shipAsBuildable = new Buildable
@@ -270,6 +271,18 @@ class ShipBuilder
 		}
 
 		return returnValue;
+	}
+
+	buildableDefnAvailableSelectedSet(value: BuildableDefn): void
+	{
+		this.buildableDefnAvailableSelected = value;
+		this.statusMessage = value.description;
+	}
+
+	buildableDefnToBuildSelectedSet(value: BuildableDefn): void
+	{
+		this.buildableDefnToBuildSelected = value;
+		this.statusMessage = value.description;
 	}
 
 	industryToBuildTotal(): number
@@ -472,7 +485,7 @@ class ShipBuilder
 			(
 				this,
 				(c: ShipBuilder) => c.buildableDefnAvailableSelected,
-				(c: ShipBuilder, v: BuildableDefn) => c.buildableDefnAvailableSelected = v
+				(c: ShipBuilder, v: BuildableDefn) => c.buildableDefnAvailableSelectedSet(v)
 			), // bindingForItemSelected
 			DataBinding.fromGet( (c: BuildableDefn) => c ), // bindingForItemValue
 			DataBinding.fromTrue(), // isEnabled
@@ -574,7 +587,7 @@ class ShipBuilder
 			(
 				this,
 				(c: ShipBuilder) => c.buildableDefnToBuildSelected,
-				(c: ShipBuilder, v: BuildableDefn) => c.buildableDefnToBuildSelected = v
+				(c: ShipBuilder, v: BuildableDefn) => c.buildableDefnToBuildSelectedSet(v)
 			), // bindingForItemSelected
 			DataBinding.fromGet( (c: BuildableDefn) => c ), // bindingForItemValue
 			DataBinding.fromTrue(), // isEnabled

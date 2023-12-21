@@ -299,9 +299,9 @@ class Planet extends Entity {
         return buildableProgress;
     }
     industryThisRound(universe, world) {
-        if (this._industryThisRound != null) {
+        if (this._industryThisRound == null) {
             var resource = this.resourcesThisRoundByName(universe, world).get("Industry");
-            return (resource == null ? 0 : resource.quantity);
+            this._industryThisRound = (resource == null ? 0 : resource.quantity);
         }
         return this._industryThisRound;
     }
@@ -323,6 +323,9 @@ class Planet extends Entity {
     researchThisRound(universe, world, faction) {
         var resource = this.resourcesThisRoundByName(universe, world).get("Research");
         return (resource == null ? 0 : resource.quantity);
+    }
+    resourceThisRoundByName(universe, world, resourceDefnName) {
+        return this.resourcesThisRoundByName(universe, world).get(resourceDefnName);
     }
     resourcesThisRound(universe, world) {
         if (this._resourcesThisRound == null) {

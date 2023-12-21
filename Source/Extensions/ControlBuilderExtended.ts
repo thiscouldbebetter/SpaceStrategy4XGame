@@ -280,7 +280,9 @@ class ControlBuilderExtended extends ControlBuilder
 			DataBinding.fromContextAndGet
 			(
 				venueStarsystem,
-				(c: VenueStarsystem) => (c.entitySelected != null)
+				(c: VenueStarsystem) =>
+					c.entitySelected != null
+					&& c.entitySelected != c.entityHighlighted
 			), // isEnabled
 			() => alert("todo - target")// click
 		);

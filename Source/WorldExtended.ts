@@ -210,7 +210,10 @@ class WorldExtended extends World
 			this.roundAdvanceUntilNotificationDisable();
 
 			factionCurrent.notificationsAdd(notificationsBlocking);
-			factionCurrent.notificationSessionStart(universe);
+			factionCurrent.notificationSessionStart
+			(
+				universe, universe.display.sizeInPixels.clone().half()
+			);
 		}
 		else
 		{
@@ -245,7 +248,11 @@ class WorldExtended extends World
 			if (areThereAnyNotifications)
 			{
 				this.roundAdvanceUntilNotificationToggle(uwpe);
-				factionCurrent.notificationSessionStart(uwpe.universe);
+				factionCurrent.notificationSessionStart
+				(
+					uwpe.universe,
+					uwpe.universe.display.sizeInPixels.clone().half()
+				);
 			}
 			else
 			{

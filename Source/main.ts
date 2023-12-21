@@ -111,6 +111,8 @@ function worldCreatorToControl
 {
 	var size = universe.display.sizeInPixels;
 	var margin = size.x / 40;
+	var marginAsCoords = Coords.fromXY(1, 1).multiplyScalar(margin);
+	var sizeMinusMargins = size.clone().subtract(marginAsCoords).subtract(marginAsCoords);
 	var fontHeightInPixels = margin;
 	var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 	var controlHeight = fontHeightInPixels + margin;
@@ -210,9 +212,41 @@ function worldCreatorToControl
 		fontNameAndHeight
 	);
 
-	var labelFactionColor = ControlLabel.from4Uncentered
+	var textSpecialAbility = ControlLabel.from4Uncentered
 	(
 		Coords.fromXY(margin, margin * 5 + controlHeight * 4), // pos
+		Coords.fromXY(sizeMinusMargins.x, controlHeight), // size
+		DataBinding.fromContextAndGet
+		(
+			worldCreator,
+			(c: WorldCreator) =>
+			{
+				var factionDefn = FactionDefn.byName(c.settings.factionDefnName);
+				var abilityDescription = "";
+				if (factionDefn == null)
+				{
+					abilityDescription = "-";
+				}
+				else
+				{
+					var ability = factionDefn.ability;
+					var roundsToCharge = ability.roundsToCharge;
+					var frequencyPrefix =
+						roundsToCharge == null
+						? ""
+						: "Every " + roundsToCharge + " rounds: ";
+					abilityDescription = frequencyPrefix + ability.description;
+				}
+
+				return "Special Ability: " + abilityDescription;
+			}
+		),
+		fontNameAndHeight
+	);
+
+	var labelFactionColor = ControlLabel.from4Uncentered
+	(
+		Coords.fromXY(margin, margin * 6 + controlHeight * 5), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
 		DataBinding.fromContext("Player Color:"),
 		fontNameAndHeight
@@ -221,7 +255,7 @@ function worldCreatorToControl
 	var selectFactionColor = new ControlSelect
 	(
 		"selectFactionColor",
-		Coords.fromXY(margin * 8, margin * 5 + controlHeight * 4), // pos
+		Coords.fromXY(margin * 8, margin * 6 + controlHeight * 5), // pos
 		Coords.fromXY(controlHeight * 3, controlHeight), // size
 		new DataBinding
 		(
@@ -283,6 +317,7 @@ function worldCreatorToControl
 			numberFactionCount,
 			labelFactionType,
 			selectFactionType,
+			textSpecialAbility,
 			labelFactionColor,
 			selectFactionColor,
 			buttonCreate

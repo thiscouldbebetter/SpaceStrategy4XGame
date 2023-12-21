@@ -45,7 +45,7 @@ class NotificationSession
 		if (areThereAnyMoreNotifications == false)
 		{
 			var venueNext: Venue = world.toVenue();
-			universe.venueTransitionTo(venueNext);
+			universe.venueJumpTo(venueNext);
 		}
 	}
 

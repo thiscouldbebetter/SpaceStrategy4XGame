@@ -26,7 +26,7 @@ class NotificationSession {
         var areThereAnyMoreNotifications = notificationSession.notificationsExist();
         if (areThereAnyMoreNotifications == false) {
             var venueNext = world.toVenue();
-            universe.venueTransitionTo(venueNext);
+            universe.venueJumpTo(venueNext);
         }
     }
     notificationSelectedGoTo(universe) {

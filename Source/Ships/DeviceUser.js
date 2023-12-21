@@ -152,6 +152,9 @@ class DeviceUser {
     energyRemainingThisRoundSubtract(energyToSubtract) {
         this._energyRemainingThisRound -= energyToSubtract;
     }
+    energyRemainsThisRoundAny() {
+        return (this._energyRemainingThisRound >= 0);
+    }
     energyRemainsThisRound(energyToCheck) {
         return (this._energyRemainingThisRound >= energyToCheck);
     }

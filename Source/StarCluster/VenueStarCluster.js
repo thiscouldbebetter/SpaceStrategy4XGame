@@ -99,8 +99,7 @@ class VenueStarCluster extends VenueWorld {
         var containerTimeAndPlace = world.starCluster.controlBuildTimeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight);
         var containerFaction = faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, true // includeDetailsButton
         );
-        var containerView = controlBuilder.view(universe, containerMainSize, containerInnerSize, margin //,
-        // 20 // cameraSpeed
+        var containerView = controlBuilder.view(universe, containerMainSize, containerInnerSize, margin, 20 // cameraSpeed
         );
         var containerSelection = controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, containerMainSize.y - margin - containerInnerSize.y), // pos
         containerInnerSize, margin);

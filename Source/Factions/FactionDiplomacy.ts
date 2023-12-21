@@ -22,6 +22,13 @@ class FactionDiplomacy
 		return new FactionDiplomacy(factionSelf, "Default", []);
 	}
 
+	isAtWarWithFaction(factionToCheck: Faction): boolean
+	{
+		var relationship = this.relationshipByFaction(factionToCheck);
+		var isWar = relationship.stateIsWar();
+		return isWar;
+	}
+
 	relationshipByFaction(factionOther: Faction): DiplomaticRelationship
 	{
 		var relationship = this.relationships.find

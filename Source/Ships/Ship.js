@@ -146,6 +146,19 @@ class Ship extends Entity {
         }
         return wasColonizationSuccessful;
     }
+    sleepCancel() {
+        var isSleeping = this.sleeping();
+        if (isSleeping) {
+            var order = this.order();
+            var orderDefnDoNothing = OrderDefn.Instances().DoNothing;
+            order.defnSet(orderDefnDoNothing);
+        }
+    }
+    sleeping() {
+        var order = this.order();
+        var isSleeping = (order.defn == OrderDefn.Instances().Sleep);
+        return isSleeping;
+    }
     starsystem(world) {
         var starClusterNodeFound = world.starCluster.nodes.find(x => (x.starsystem.ships.indexOf(this) >= 0));
         var starsystemFound = (starClusterNodeFound == null ? null : starClusterNodeFound.starsystem);
@@ -237,6 +250,14 @@ class Ship extends Entity {
             var uwpe = new UniverseWorldPlaceEntities(universe, null, null, this, null);
             order.obey(uwpe);
         }
+    }
+    moveSleepOrWake() {
+        var order = this.order();
+        order.clear();
+        var isSleeping = this.sleeping();
+        var orders = OrderDefn.Instances();
+        var orderDefnToSet = isSleeping ? orders.DoNothing : orders.Sleep;
+        order.defnSet(orderDefnToSet);
     }
     moveStart(universe) {
         var deviceUser = this.deviceUser();
@@ -381,11 +402,13 @@ class Ship extends Entity {
             buttonHalfSize, "Move", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
             () => ship.moveStart(universe));
-            var buttonRepeat = ControlButton.from8("buttonRepeat", Coords.fromXY(margin + buttonHalfSize.x, margin * 2 + labelHeight), // pos
-            buttonHalfSize, "Repeat", fontNameAndHeight, true, // hasBorder
+            var buttonSleep = ControlButton.from8("buttonSleep", Coords.fromXY(margin + buttonHalfSize.x, margin * 2 + labelHeight), // pos
+            buttonHalfSize, (ship.sleeping() ? "Wake" : "Sleep"), fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
-            () => ship.moveRepeat(universe) // click
+            () => ship.moveSleepOrWake() // click
             );
+            var labelDevices = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 3 + labelHeight + buttonHeight), // pos
+            labelSize, DataBinding.fromContext("Devices:"), fontNameAndHeight);
             var listSize = Coords.fromXY(containerSize.x - margin * 2, containerSize.y - margin * 4 - labelHeight - buttonHeight * 2); // size
             var listPos = Coords.fromXY(margin, margin * 3 + labelHeight + buttonHeight); // pos
             var listDevices = ControlList.from8("listDevices", listPos, listSize, 
@@ -405,7 +428,8 @@ class Ship extends Entity {
             });
             var childControlsCommands = [
                 buttonMove,
-                buttonRepeat,
+                buttonSleep,
+                labelDevices,
                 listDevices,
                 buttonDeviceUse
             ];

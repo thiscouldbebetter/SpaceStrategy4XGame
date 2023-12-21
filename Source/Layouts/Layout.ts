@@ -56,13 +56,23 @@ class Layout
 
 	notificationsForRoundAddToArray
 	(
-		universe: Universe, world: WorldExtended, faction: Faction, planet: Planet, notificationsSoFar: Notification2[]
+		universe: Universe,
+		world: WorldExtended,
+		faction: Faction,
+		planet: Planet,
+		notificationsSoFar: Notification2[]
 	): Notification2[]
 	{
 		return notificationsSoFar; // todo
 	}
 
-	updateForRound(universe: Universe, world: World, faction: Faction, parentModel: Entity): void
+	updateForRound
+	(
+		universe: Universe,
+		world: World,
+		faction: Faction,
+		parentModel: Entity
+	): void
 	{
 		// todo
 	}

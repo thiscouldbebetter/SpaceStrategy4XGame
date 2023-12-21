@@ -281,6 +281,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._energyRemainingThisRound -= energyToSubtract;
 	}
 
+	energyRemainsThisRoundAny(): boolean
+	{
+		return (this._energyRemainingThisRound >= 0);
+	}
+
 	energyRemainsThisRound(energyToCheck: number): boolean
 	{
 		return (this._energyRemainingThisRound >= energyToCheck);

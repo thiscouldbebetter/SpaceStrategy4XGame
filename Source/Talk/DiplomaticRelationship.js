@@ -23,6 +23,9 @@ class DiplomaticRelationship {
     factionOther() {
         return this._factionOther;
     }
+    stateIsWar() {
+        return (this.state == DiplomaticRelationship.States().War);
+    }
     stateSet(value) {
         this.state = value;
     }

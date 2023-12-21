@@ -8,6 +8,11 @@ class FactionDiplomacy {
     static fromFactionSelf(factionSelf) {
         return new FactionDiplomacy(factionSelf, "Default", []);
     }
+    isAtWarWithFaction(factionToCheck) {
+        var relationship = this.relationshipByFaction(factionToCheck);
+        var isWar = relationship.stateIsWar();
+        return isWar;
+    }
     relationshipByFaction(factionOther) {
         var relationship = this.relationships.find(x => x.factionOther() == factionOther);
         if (relationship == null) {

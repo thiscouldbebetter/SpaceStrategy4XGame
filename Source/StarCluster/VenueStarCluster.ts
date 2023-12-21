@@ -197,8 +197,8 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 			universe,
 			containerMainSize,
 			containerInnerSize,
-			margin //,
-			// 20 // cameraSpeed
+			margin,
+			20 // cameraSpeed
 		);
 
 		var containerSelection = controlBuilder.selection

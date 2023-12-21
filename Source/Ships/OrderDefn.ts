@@ -37,6 +37,7 @@ class OrderDefn_Instances
 {
 	DoNothing: OrderDefn;
 	Go: OrderDefn;
+	Sleep: OrderDefn;
 	UseDevice: OrderDefn;
 
 	_All: OrderDefn[];
@@ -54,6 +55,13 @@ class OrderDefn_Instances
 		this.Go = new OrderDefn
 		(
 			"Go", "moving to", this.go
+		);
+
+		this.Sleep = new OrderDefn
+		(
+			"Sleep",
+			"sleeping",
+			(uwpe: UniverseWorldPlaceEntities) => {}
 		);
 
 		this.UseDevice = new OrderDefn

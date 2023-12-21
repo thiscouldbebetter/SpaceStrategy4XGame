@@ -652,11 +652,6 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		var controlHeight = margin * 1.5;
 		var containerInnerSize =
 			containerMainSize.clone().divide(Coords.fromXY(6, 10) );
-		var containerPlanetsLinksAndShipsSize = Coords.fromXY
-		(
-			containerInnerSize.x,
-			(containerMainSize.y - margin * 3) / 2
-		);
 		var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
 
 		var fontHeightInPixels = margin;
@@ -691,7 +686,53 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			controlHeight
 		);
 
-		var containerPlanetsLinksAndShips = controlBuilder.starsystemPlanetsLinksAndShips
+		var containerViewSize = containerMainSize.clone().divideScalar(6);
+
+		var containerView = controlBuilder.view
+		(
+			universe,
+			containerMainSize,
+			containerViewSize,
+			margin,
+			10 // cameraSpeed
+		);
+
+		var containerSelectionSize = Coords.fromXY
+		(
+			containerInnerSize.x * 1.5,
+			containerMainSize.y / 2
+		);
+
+		var containerMoveRepeatOrPassSize = Coords.fromXY
+		(
+			containerInnerSize.x,
+			margin * 3
+		);
+
+		var containerPlanetsLinksAndShipsSize = Coords.fromXY
+		(
+			containerInnerSize.x,
+			containerMainSize.y
+				- margin * 4
+				- containerSelectionSize.y
+				- containerMoveRepeatOrPassSize.y
+		);
+
+		var containerMoveRepeatOrPass = this.starsystem.controlBuildMoveRepeatOrPass
+		(
+			universe,
+			Coords.fromXY
+			(
+				containerMainSize.x - margin - containerMoveRepeatOrPassSize.x,
+				margin * 2 + containerPlanetsLinksAndShipsSize.y
+			),
+			containerMoveRepeatOrPassSize,
+			margin,
+			controlHeight,
+			this
+		);
+
+		var containerPlanetsLinksAndShips = this.starsystem.controlBuildPlanetsLinksAndShips
 		(
 			universe,
 			Coords.fromXY
@@ -705,29 +746,15 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			this
 		);
 
-		var containerViewSize = containerMainSize.clone().divideScalar(6);
-
-		var containerView = controlBuilder.view
-		(
-			universe,
-			containerMainSize,
-			containerViewSize,
-			margin
-		);
-
-		var containerSelectionSize = Coords.fromXY
-		(
-			containerInnerSize.x * 1.5,
-			(containerMainSize.y - margin * 3) / 2
-		);
-
 		var containerSelection = controlBuilder.selection
 		(
 			universe,
 			Coords.fromXY
 			(
 				containerMainSize.x - margin - containerSelectionSize.x,
-				containerMainSize.y - margin - containerSelectionSize.y
+				margin * 3
+					+ containerPlanetsLinksAndShipsSize.y
+					+ containerMoveRepeatOrPassSize.y
 			), // pos
 			containerSelectionSize,
 			margin
@@ -742,9 +769,10 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			[
 				buttonBack,
 				containerTimeAndPlace,
-				containerPlanetsLinksAndShips,
 				containerView,
-				containerSelection
+				containerPlanetsLinksAndShips,
+				containerSelection,
+				containerMoveRepeatOrPass,
 			]
 		);
 

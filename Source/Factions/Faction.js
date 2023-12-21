@@ -342,6 +342,8 @@ class Faction {
         var world = universe.world;
         this.planets.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar));
         this.ships.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar));
+        var starsystems = this.starsystems(world);
+        starsystems.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar));
         this.technologyResearcher.notificationsForRoundAddToArray(universe, notificationsSoFar);
         return notificationsSoFar;
     }

@@ -18,7 +18,7 @@ class ControlBuilderExtended extends ControlBuilder {
             var returnValue = null;
             var venue = c.venueCurrent();
             var venueTypeName = venue.constructor.name;
-            if (venueTypeName == VenueWorldExtended.name) {
+            if (venueTypeName == VenueStarCluster.name) {
                 returnValue = venue.selectionName();
             }
             else if (venueTypeName == VenueStarsystem.name) {
@@ -123,8 +123,7 @@ class ControlBuilderExtended extends ControlBuilder {
         );
         return returnValue;
     }
-    view(universe, containerMainSize, containerInnerSize, margin) {
-        var cameraSpeed = 10;
+    view(universe, containerMainSize, containerInnerSize, margin, cameraSpeed) {
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var labelHeight = fontHeightInPixels;

@@ -101,7 +101,7 @@ class WorldExtended extends World {
         return this.roundsSoFar + 1;
     }
     toVenue() {
-        return new VenueWorldExtended(this);
+        return new VenueStarCluster(this);
     }
     updateForRound(uwpe) {
         var universe = uwpe.universe;

@@ -19,6 +19,7 @@ class OrderDefn_Instances {
     constructor() {
         this.DoNothing = new OrderDefn("DoNothing", "doing nothing", (uwpe) => { });
         this.Go = new OrderDefn("Go", "moving to", this.go);
+        this.Sleep = new OrderDefn("Sleep", "sleeping", (uwpe) => { });
         this.UseDevice = new OrderDefn("UseDevice", "using", this.useDevice);
         this._All =
             [

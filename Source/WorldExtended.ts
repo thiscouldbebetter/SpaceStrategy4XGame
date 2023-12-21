@@ -195,7 +195,7 @@ class WorldExtended extends World
 
 	toVenue(): VenueWorld
 	{
-		return new VenueWorldExtended(this);
+		return new VenueStarCluster(this);
 	}
 
 	updateForRound(uwpe: UniverseWorldPlaceEntities): void
@@ -203,7 +203,8 @@ class WorldExtended extends World
 		var universe = uwpe.universe;
 
 		var factionCurrent = this.factionCurrent();
-		var notificationsBlocking = factionCurrent.notificationsForRoundAddToArray(universe, []);
+		var notificationsBlocking =
+			factionCurrent.notificationsForRoundAddToArray(universe, []);
 
 		if (notificationsBlocking.length > 0)
 		{

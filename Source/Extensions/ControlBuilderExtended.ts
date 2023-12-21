@@ -42,9 +42,9 @@ class ControlBuilderExtended extends ControlBuilder
 					var returnValue = null;
 					var venue = c.venueCurrent();
 					var venueTypeName = venue.constructor.name;
-					if (venueTypeName == VenueWorldExtended.name)
+					if (venueTypeName == VenueStarCluster.name)
 					{
-						returnValue = (venue as VenueWorldExtended).selectionName();
+						returnValue = (venue as VenueStarCluster).selectionName();
 					}
 					else if (venueTypeName == VenueStarsystem.name)
 					{
@@ -312,9 +312,9 @@ class ControlBuilderExtended extends ControlBuilder
 		containerMainSize: Coords,
 		containerInnerSize: Coords,
 		margin: number,
+		cameraSpeed: number
 	)
 	{
-		var cameraSpeed = 10;
 		var fontHeightInPixels = margin;
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);

@@ -277,6 +277,24 @@ class Ship extends Entity
 		return wasColonizationSuccessful;
 	}
 
+	sleepCancel(): void
+	{
+		var isSleeping = this.sleeping();
+		if (isSleeping)
+		{
+			var order = this.order();
+			var orderDefnDoNothing = OrderDefn.Instances().DoNothing;
+			order.defnSet(orderDefnDoNothing);
+		}
+	}
+
+	sleeping(): boolean
+	{
+		var order = this.order();
+		var isSleeping = (order.defn == OrderDefn.Instances().Sleep);
+		return isSleeping;
+	}
+
 	starsystem(world: WorldExtended): Starsystem
 	{
 		var starClusterNodeFound = world.starCluster.nodes.find
@@ -422,6 +440,16 @@ class Ship extends Entity
 			var uwpe = new UniverseWorldPlaceEntities(universe, null, null, this, null);
 			order.obey(uwpe);
 		}
+	}
+
+	moveSleepOrWake(): void
+	{
+		var order = this.order();
+		order.clear();
+		var isSleeping = this.sleeping();
+		var orders = OrderDefn.Instances();
+		var orderDefnToSet = isSleeping ? orders.DoNothing : orders.Sleep;
+		order.defnSet(orderDefnToSet);
 	}
 
 	moveStart(universe: Universe): void
@@ -613,7 +641,7 @@ class Ship extends Entity
 		);
 		var buttonHalfSize =
 			buttonSize.clone().multiply(Coords.fromXY(.5, 1));
-		
+
 		var labelHeight = fontHeightInPixels;
 
 		var labelSize = Coords.fromXY(containerSize.x - margin * 2, fontHeightInPixels);
@@ -730,20 +758,32 @@ class Ship extends Entity
 				() => ship.moveStart(universe)
 			);
 
-			var buttonRepeat = ControlButton.from8
+			var buttonSleep = ControlButton.from8
 			(
-				"buttonRepeat",
+				"buttonSleep",
 				Coords.fromXY
 				(
 					margin + buttonHalfSize.x,
 					margin * 2 + labelHeight
 				), // pos
 				buttonHalfSize,
-				"Repeat",
+				(ship.sleeping() ? "Wake" : "Sleep"),
 				fontNameAndHeight,
 				true, // hasBorder
 				DataBinding.fromTrue(), // isEnabled
-				() => ship.moveRepeat(universe) // click
+				() => ship.moveSleepOrWake() // click
+			);
+
+			var labelDevices = ControlLabel.from4Uncentered
+			(
+				Coords.fromXY
+				(
+					margin,
+					margin * 3 + labelHeight + buttonHeight
+				), // pos
+				labelSize,
+				DataBinding.fromContext("Devices:"),
+				fontNameAndHeight
 			);
 
 			var listSize = Coords.fromXY
@@ -806,7 +846,8 @@ class Ship extends Entity
 			var childControlsCommands: ControlBase[] =
 			[
 				buttonMove,
-				buttonRepeat,
+				buttonSleep,
+				labelDevices,
 				listDevices,
 				buttonDeviceUse
 			];

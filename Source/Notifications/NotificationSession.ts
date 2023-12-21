@@ -40,7 +40,8 @@ class NotificationSession
 		var notification = notificationSession.notificationSelected;
 		notificationSession.notificationDismiss(notification);
 
-		var areThereAnyMoreNotifications = notificationSession.notificationsExist();
+		var areThereAnyMoreNotifications =
+			notificationSession.notificationsExist();
 		if (areThereAnyMoreNotifications == false)
 		{
 			var venueNext: Venue = world.toVenue();
@@ -89,12 +90,17 @@ class NotificationSession
 		fontHeightInPixels: number
 	): ControlBase
 	{
-		return this.toControl_Single(universe, containerSize, fontHeightInPixels);
+		return this.toControl_Single
+		(
+			universe, containerSize, fontHeightInPixels
+		);
 	}
 
 	toControl_Multiple
 	(
-		universe: Universe, containerSize: Coords, fontHeightInPixels: number
+		universe: Universe,
+		containerSize: Coords,
+		fontHeightInPixels: number
 	): ControlBase
 	{
 		var notificationSession = this;

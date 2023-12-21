@@ -821,11 +821,26 @@ class Faction implements EntityProperty<Faction>
 	{
 		var world = universe.world as WorldExtended;
 
-		this.planets.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar) );
+		this.planets.forEach
+		(
+			x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar)
+		);
 
-		this.ships.forEach(x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar) );
+		this.ships.forEach
+		(
+			x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar)
+		);
 
-		this.technologyResearcher.notificationsForRoundAddToArray(universe, notificationsSoFar);
+		var starsystems = this.starsystems(world);
+		starsystems.forEach
+		(
+			x => x.notificationsForRoundAddToArray(universe, world, this, notificationsSoFar)
+		);
+
+		this.technologyResearcher.notificationsForRoundAddToArray
+		(
+			universe, notificationsSoFar
+		);
 
 		return notificationsSoFar;
 	}

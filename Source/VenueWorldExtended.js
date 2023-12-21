@@ -7,7 +7,7 @@ class VenueWorldExtended extends VenueWorld {
         this.hasBeenUpdatedSinceDrawn = true;
     }
     model() {
-        return this.world.network;
+        return this.world.starCluster;
     }
     // camera
     cameraCenterOnSelection() {
@@ -96,8 +96,7 @@ class VenueWorldExtended extends VenueWorld {
             var venueNext = universe.controlBuilder.gameAndSettings1(universe).toVenue();
             universe.venueTransitionTo(venueNext);
         });
-        var containerTimeAndPlace = controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, true // includeRoundAdvanceButtons
-        );
+        var containerTimeAndPlace = world.starCluster.controlBuildTimeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight);
         var containerFaction = faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, true // includeDetailsButton
         );
         var containerView = controlBuilder.view(universe, containerMainSize, containerInnerSize, margin);
@@ -123,11 +122,10 @@ class VenueWorldExtended extends VenueWorld {
         if (shouldDraw) {
             this.hasBeenUpdatedSinceDrawn = false;
             universe.display.drawBackground(null, null);
-            //this.world.network.draw(universe, this.world.camera);
             var playerFaction = this.world.factions[0];
             var playerKnowledge = playerFaction.knowledge;
             var worldKnown = playerKnowledge.world(universe, this.world);
-            worldKnown.network.draw2(universe, worldKnown.camera);
+            worldKnown.starCluster.draw2(universe, worldKnown.camera);
             this.venueControls.draw(universe);
         }
     }
@@ -182,7 +180,7 @@ class VenueWorldExtended extends VenueWorld {
             ).subtract(cameraPos).normalize());
             var playerFaction = world.factions[0];
             var worldKnown = playerFaction.knowledge.world(universe, world);
-            var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, worldKnown.network.nodes, [] // listToAddTo
+            var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, worldKnown.starCluster.nodes, [] // listToAddTo
             );
             if (bodiesClickedAsCollisions.length > 0) {
                 var collisionNearest = bodiesClickedAsCollisions[0];
@@ -197,8 +195,8 @@ class VenueWorldExtended extends VenueWorld {
                     var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
                     if (isFastForwarding == false) {
                         var venueCurrent = universe.venueCurrent();
-                        var bodyClickedNetworkNode = bodyClicked;
-                        var starsystem = bodyClickedNetworkNode.starsystem;
+                        var bodyClickedStarClusterNode = bodyClicked;
+                        var starsystem = bodyClickedStarClusterNode.starsystem;
                         if (starsystem != null) {
                             var venueNext = new VenueStarsystem(venueCurrent, starsystem);
                             universe.venueTransitionTo(venueNext);
@@ -263,7 +261,7 @@ class VenueWorldExtended extends VenueWorld {
         if (selectedEntity != null) {
             var venueNext;
             var selectionTypeName = selectedEntity.constructor.name;
-            if (selectionTypeName == NetworkNode2.name) {
+            if (selectionTypeName == StarClusterNode.name) {
                 var selectionAsNetworkNode = selectedEntity;
                 var starsystem = selectionAsNetworkNode.starsystem;
                 if (starsystem != null) {

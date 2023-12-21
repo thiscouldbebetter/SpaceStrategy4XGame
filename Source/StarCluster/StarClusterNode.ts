@@ -1,7 +1,7 @@
 
-class NetworkNode2 extends Entity
+class StarClusterNode extends Entity
 {
-	defn: NetworkNodeDefn;
+	defn: StarClusterNodeDefn;
 	starsystem: Starsystem;
 
 	drawPos: Coords;
@@ -10,7 +10,7 @@ class NetworkNode2 extends Entity
 	constructor
 	(
 		name: string,
-		defn: NetworkNodeDefn,
+		defn: StarClusterNodeDefn,
 		pos: Coords,
 		star: Star,
 		starsystem: Starsystem
@@ -27,7 +27,7 @@ class NetworkNode2 extends Entity
 						VisualStar.radiusActual(), pos
 					)
 				),
-				new Controllable(NetworkNode2.toControl),
+				new Controllable(StarClusterNode.toControl),
 				Drawable.fromVisual(star.starType.visualFromOutside() ),
 				Locatable.fromPos(pos)
 			]
@@ -51,7 +51,7 @@ class NetworkNode2 extends Entity
 	{
 		var universe = uwpe.universe;
 		var world = universe.world as WorldExtended;
-		var networkNode = uwpe.entity as NetworkNode2;
+		var networkNode = uwpe.entity as StarClusterNode;
 
 		var viewSize = universe.display.sizeInPixels;
 		var containerSize = size;
@@ -97,7 +97,7 @@ class NetworkNode2 extends Entity
 				var venueCurrent =
 					universe.venueCurrent() as VenueWorldExtended;
 				var starsystemToView =
-					(venueCurrent.entitySelected as NetworkNode2).starsystem;
+					(venueCurrent.entitySelected as StarClusterNode).starsystem;
 				if (starsystemToView != null)
 				{
 					universe.venueTransitionTo

@@ -145,8 +145,8 @@ class Planet extends Entity {
         starsystem.shipAdd(shipToLeaveOrbit, world);
     }
     starsystem(world) {
-        var networkNodeFound = world.network.nodes.find(x => (x.starsystem.planets.indexOf(this) >= 0));
-        var starsystemFound = (networkNodeFound == null ? null : networkNodeFound.starsystem);
+        var starClusterNodeFound = world.starCluster.nodes.find(x => (x.starsystem.planets.indexOf(this) >= 0));
+        var starsystemFound = (starClusterNodeFound == null ? null : starClusterNodeFound.starsystem);
         return starsystemFound;
     }
     toEntity() {

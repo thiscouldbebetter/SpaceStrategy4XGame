@@ -1,17 +1,17 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, dateCreated, activityDefns, buildableDefns, deviceDefns, technologyGraph, network, factions, ships, camera) {
+    constructor(name, dateCreated, activityDefns, buildableDefns, deviceDefns, technologyGraph, starCluster, factions, ships, camera) {
         super(name, dateCreated, new WorldDefn([
             activityDefns
         ]), // worldDefn
         (placeName) => {
             return this.places.find(x => x.name == placeName);
         }, // placeGetByName
-        (network == null ? "dummy" : network.name));
+        (starCluster == null ? "dummy" : starCluster.name));
         this.buildableDefns = buildableDefns;
         this.deviceDefns = deviceDefns;
         this.technologyGraph = technologyGraph;
-        this.network = network;
+        this.starCluster = starCluster;
         this.factions = factions;
         this.ships = ships;
         this.camera = camera;
@@ -30,8 +30,8 @@ class WorldExtended extends World {
         this._isAdvancingThroughRoundsUntilNotification = false;
         this.factionIndexCurrent = 0;
         this.places = [];
-        this.places.push(this.network);
-        this.places.push(...this.network.nodes.map(x => x.starsystem));
+        this.places.push(this.starCluster);
+        this.places.push(...this.starCluster.nodes.map(x => x.starsystem));
         this.shouldDrawOnlyWhenUpdated = true;
     }
     // instance methods
@@ -88,7 +88,7 @@ class WorldExtended extends World {
         return areThereAnyNotifications;
     }
     placeForEntityLocatable(entityLocatable) {
-        return this.network.placeForEntityLocatable(entityLocatable);
+        return this.starCluster.placeForEntityLocatable(entityLocatable);
     }
     roundAdvanceUntilNotificationDisable() {
         this._isAdvancingThroughRoundsUntilNotification = false;
@@ -115,7 +115,7 @@ class WorldExtended extends World {
         else {
             uwpe.world = this;
             var world = universe.world;
-            this.network.updateForRound(universe, world);
+            this.starCluster.updateForRound(universe, world);
             this.factions.forEach(x => x.updateForRound(universe, world));
             this.roundsSoFar++;
         }

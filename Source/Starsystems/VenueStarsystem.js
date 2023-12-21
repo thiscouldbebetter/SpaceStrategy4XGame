@@ -357,8 +357,7 @@ class VenueStarsystem {
             var venueNext = venue.venueParent;
             universe.venueTransitionTo(venueNext);
         });
-        var containerTimeAndPlace = controlBuilder.timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, false // includeRoundAdvanceButtons
-        );
+        var containerTimeAndPlace = this.starsystem.controlBuildTimeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight);
         var containerPlanetsLinksAndShips = controlBuilder.starsystemPlanetsLinksAndShips(universe, Coords.fromXY(containerMainSize.x - margin - containerPlanetsLinksAndShipsSize.x, margin), // pos
         containerPlanetsLinksAndShipsSize, margin, controlHeight, this);
         var containerViewSize = containerMainSize.clone().divideScalar(6);

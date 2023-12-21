@@ -161,7 +161,7 @@ class Faction implements EntityProperty<Faction>
 
 	starsystemHome(world: WorldExtended): Starsystem
 	{
-		return world.network.nodeByName(this.homeStarsystemName).starsystem;
+		return world.starCluster.nodeByName(this.homeStarsystemName).starsystem;
 	}
 
 	starsystems(world: WorldExtended): Starsystem[]

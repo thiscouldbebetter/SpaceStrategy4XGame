@@ -41,18 +41,18 @@ class FactionKnowledge {
     }
     links(world) {
         if (this._links == null) {
-            this._links = world.network.links.filter(x => this.linkNames.indexOf(x.name) >= 0);
+            this._links = world.starCluster.links.filter(x => this.linkNames.indexOf(x.name) >= 0);
         }
         return this._links;
     }
     linksCacheClear() {
         this._links = null;
-        this.networkCacheClear();
+        this.starClusterCacheClear();
     }
-    network(world) {
-        if (this._network == null) {
-            var networkActual = world.network;
-            var nodesActual = networkActual.nodes;
+    starCluster(world) {
+        if (this._starCluster == null) {
+            var starClusterActual = world.starCluster;
+            var nodesActual = starClusterActual.nodes;
             var linksKnown = this.links(world);
             var nodesKnown = nodesActual.map(nodeActual => {
                 var returnValue;
@@ -72,18 +72,18 @@ class FactionKnowledge {
                     nodeActual.collidable().colliderResetToRestPosition();
                 }
                 else {
-                    returnValue = new NetworkNode2("?", // name
+                    returnValue = new StarClusterNode("?", // name
                     nodeActual.defn, nodeActual.locatable().loc.pos, nodeActual.starsystem.star, null // starsystem
                     );
                 }
                 return returnValue;
             });
-            this._network = new Network2(networkActual.name, nodesKnown, linksKnown);
+            this._starCluster = new StarCluster(starClusterActual.name, nodesKnown, linksKnown);
         }
-        return this._network;
+        return this._starCluster;
     }
-    networkCacheClear() {
-        this._network = null;
+    starClusterCacheClear() {
+        this._starCluster = null;
         this.worldCacheClear();
     }
     shipAdd(ship, world) {
@@ -114,11 +114,11 @@ class FactionKnowledge {
             this.starsystemNames.push(starsystemName);
             var starsystemFaction = starsystem.faction(world);
             this.factionAdd(starsystemFaction);
-            var network = world.network;
+            var starCluster = world.starCluster;
             var linkPortals = starsystem.linkPortals;
             for (var i = 0; i < linkPortals.length; i++) {
                 var linkPortal = linkPortals[i];
-                var link = linkPortal.link(network);
+                var link = linkPortal.link(starCluster);
                 this.linkAdd(link);
             }
         }
@@ -126,14 +126,14 @@ class FactionKnowledge {
     }
     starsystems(world) {
         if (this._starsystems == null) {
-            var nodesKnown = world.network.nodes.filter(x => this.starsystemNames.indexOf(x.starsystem.name) >= 0);
+            var nodesKnown = world.starCluster.nodes.filter(x => this.starsystemNames.indexOf(x.starsystem.name) >= 0);
             this._starsystems = nodesKnown.map(x => x.starsystem);
         }
         return this._starsystems;
     }
     starsystemsCacheClear() {
         this._starsystems = null;
-        this.networkCacheClear();
+        this.starClusterCacheClear();
     }
     tradeLinksWith(factionOther, world) {
         var factionSelf = this.factionSelf(world);
@@ -179,10 +179,10 @@ class FactionKnowledge {
     }
     world(universe, worldActual) {
         if (this._world == null) {
-            var networkKnown = this.network(worldActual);
+            var starClusterKnown = this.starCluster(worldActual);
             var factionsKnown = this.factions(worldActual);
             var shipsKnown = this.ships(worldActual);
-            this._world = new WorldExtended(worldActual.name, worldActual.dateCreated, worldActual.defn.activityDefns, worldActual.buildableDefns, worldActual.deviceDefns, worldActual.technologyGraph, networkKnown, factionsKnown, shipsKnown, // todo
+            this._world = new WorldExtended(worldActual.name, worldActual.dateCreated, worldActual.defn.activityDefns, worldActual.buildableDefns, worldActual.deviceDefns, worldActual.technologyGraph, starClusterKnown, factionsKnown, shipsKnown, // todo
             worldActual.camera);
         }
         return this._world;

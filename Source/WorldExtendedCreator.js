@@ -25,24 +25,24 @@ class WorldExtendedCreator {
         // TechnologyGraph.demo(mapCellSizeInPixels);
         TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
         var viewDimension = viewSize.y;
-        var networkRadius = viewDimension * .25;
-        var network = Network2.generateRandom(this.universe, worldName, NetworkNodeDefn.Instances()._All, starsystemCount).scale(networkRadius);
+        var starClusterRadius = viewDimension * .25;
+        var starCluster = StarCluster.generateRandom(this.universe, worldName, StarClusterNodeDefn.Instances()._All, starsystemCount).scale(starClusterRadius);
         var focalLength = viewDimension;
         viewSize.z = focalLength;
         var deviceDefns = this.create_DeviceDefns();
         var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
-        var factionsAndShips = this.create_FactionsAndShips(network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
+        var factionsAndShips = this.create_FactionsAndShips(starCluster, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
         var factions = factionsAndShips[0];
         var ships = factionsAndShips[1];
         var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
         );
-        var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns._All, deviceDefns, technologyGraph, network, factions, ships, camera);
+        var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns._All, deviceDefns, technologyGraph, starCluster, factions, ships, camera);
         return returnValue;
     }
     create_DeviceDefns() {
         return DeviceDefns.Instance()._All;
     }
-    create_FactionsAndShips(network, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {
+    create_FactionsAndShips(starCluster, technologyGraph, buildableDefns, deviceDefnsByName, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {
         var factions = new Array();
         var ships = new Array();
         // hack
@@ -50,8 +50,7 @@ class WorldExtendedCreator {
         DateTime.now(), // dateCreated
         [], // activityDefns
         buildableDefns._All, [], // deviceDefns
-        technologyGraph, network, // network
-        factions, ships, // ships
+        technologyGraph, starCluster, factions, ships, // ships
         null // camera
         );
         this.universe.world = worldDummy;
@@ -68,7 +67,7 @@ class WorldExtendedCreator {
             factionDefns.splice(0, 0, factionDefnForPlayer);
         }
         for (var i = 0; i < factionCount; i++) {
-            this.create_FactionsAndShips_1(worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships);
+            this.create_FactionsAndShips_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships);
         }
         if (factionDefnNameForPlayer != null) {
             factions[0].defnName = factionDefnNameForPlayer;
@@ -96,14 +95,15 @@ class WorldExtendedCreator {
         var factionsAndShips = [factions, ships];
         return factionsAndShips;
     }
-    create_FactionsAndShips_1(worldDummy, network, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships) {
+    create_FactionsAndShips_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, deviceDefnsByName, i, ships) {
         var factionHomeStarsystem = null;
-        var numberOfNetworkNodes = network.nodes.length;
+        var nodes = starCluster.nodes;
+        var numberOfStarsystems = nodes.length;
         var random = Math.random();
-        var starsystemIndexStart = Math.floor(random * numberOfNetworkNodes);
+        var starsystemIndexStart = Math.floor(random * numberOfStarsystems);
         var starsystemIndex = starsystemIndexStart;
         while (factionHomeStarsystem == null) {
-            var node = network.nodes[starsystemIndex];
+            var node = nodes[starsystemIndex];
             factionHomeStarsystem = node.starsystem;
             if (factionHomeStarsystem.planets.length == 0) {
                 factionHomeStarsystem = null;
@@ -112,7 +112,7 @@ class WorldExtendedCreator {
                 factionHomeStarsystem = null;
             }
             starsystemIndex++;
-            if (starsystemIndex >= numberOfNetworkNodes) {
+            if (starsystemIndex >= numberOfStarsystems) {
                 starsystemIndex = 0;
             }
             if (starsystemIndex == starsystemIndexStart) {
@@ -148,7 +148,7 @@ class WorldExtendedCreator {
         var factionKnowledge = new FactionKnowledge(factionName, // factionSelfName
         [factionName], // factionNames
         ships.map(x => x.id), // shipIds
-        [factionHomeStarsystem.name], factionHomeStarsystem.links(network).map((x) => x.name));
+        [factionHomeStarsystem.name], factionHomeStarsystem.links(starCluster).map((x) => x.name));
         var factionIntelligences = FactionIntelligence.Instances();
         var factionIntelligence = (i == 0 ? factionIntelligences.Human : factionIntelligences.Computer);
         var shipHullSizes = ShipHullSize.Instances();

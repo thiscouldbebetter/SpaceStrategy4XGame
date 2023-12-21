@@ -11,14 +11,15 @@ class LinkPortal extends Entity {
         this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
     }
     static bodyDefn() {
+        var colors = Color.Instances();
         var bodyDefnLinkPortal = new BodyDefn("LinkPortal", Coords.fromXY(10, 10), // size
         new VisualGroup([
             new VisualCircleGradient(10, // radius
             new ValueBreakGroup([
-                new ValueBreak(0, Color.byName("Black")),
-                new ValueBreak(.5, Color.byName("Black")),
-                new ValueBreak(.75, Color.byName("Violet")),
-                new ValueBreak(1, Color.byName("Blue"))
+                new ValueBreak(0, colors.Black),
+                new ValueBreak(.5, colors.Black),
+                new ValueBreak(.75, colors.Violet),
+                new ValueBreak(1, colors.Blue)
             ], null // interpolationMode
             ), null // colorBorder
             )

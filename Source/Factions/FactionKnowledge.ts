@@ -9,9 +9,9 @@ class FactionKnowledge
 
 	private _factions: Faction[];
 	private _factionsOther: Faction[];
-	private _network: Network2;
-	private _links: NetworkLink2[];
+	private _links: StarClusterLink[];
 	private _ships: Ship[];
+	private _starCluster: StarCluster;
 	private _starsystems: Starsystem[];
 	private _world: WorldExtended;
 
@@ -78,17 +78,17 @@ class FactionKnowledge
 		return this._factionsOther;
 	}
 
-	linkAdd(link: NetworkLink2): void
+	linkAdd(link: StarClusterLink): void
 	{
 		this.linkNames.push(link.name);
 		this.linksCacheClear();
 	}
 
-	links(world: WorldExtended): NetworkLink2[]
+	links(world: WorldExtended): StarClusterLink[]
 	{
 		if (this._links == null)
 		{
-			this._links = world.network.links.filter
+			this._links = world.starCluster.links.filter
 			(
 				x => this.linkNames.indexOf(x.name) >= 0
 			);
@@ -100,15 +100,15 @@ class FactionKnowledge
 	linksCacheClear(): void
 	{
 		this._links = null;
-		this.networkCacheClear();
+		this.starClusterCacheClear();
 	}
 
-	network(world: WorldExtended): Network2
+	starCluster(world: WorldExtended): StarCluster
 	{
-		if (this._network == null)
+		if (this._starCluster == null)
 		{
-			var networkActual = world.network;
-			var nodesActual = networkActual.nodes;
+			var starClusterActual = world.starCluster;
+			var nodesActual = starClusterActual.nodes;
 
 			var linksKnown = this.links(world);
 
@@ -138,7 +138,7 @@ class FactionKnowledge
 					}
 					else
 					{
-						returnValue = new NetworkNode2
+						returnValue = new StarClusterNode
 						(
 							"?", // name
 							nodeActual.defn,
@@ -152,18 +152,18 @@ class FactionKnowledge
 				}
 			);
 
-			this._network = new Network2
+			this._starCluster = new StarCluster
 			(
-				networkActual.name, nodesKnown, linksKnown
+				starClusterActual.name, nodesKnown, linksKnown
 			);
 		}
 
-		return this._network;
+		return this._starCluster;
 	}
 
-	networkCacheClear(): void
+	starClusterCacheClear(): void
 	{
-		this._network = null;
+		this._starCluster = null;
 		this.worldCacheClear();
 	}
 
@@ -216,13 +216,13 @@ class FactionKnowledge
 			var starsystemFaction = starsystem.faction(world);
 			this.factionAdd(starsystemFaction);
 
-			var network = world.network;
+			var starCluster = world.starCluster;
 			var linkPortals = starsystem.linkPortals;
 
 			for (var i = 0; i < linkPortals.length; i++)
 			{
 				var linkPortal = linkPortals[i];
-				var link = linkPortal.link(network);
+				var link = linkPortal.link(starCluster);
 				this.linkAdd(link);
 			}
 		}
@@ -234,7 +234,7 @@ class FactionKnowledge
 	{
 		if (this._starsystems == null)
 		{
-			var nodesKnown = world.network.nodes.filter
+			var nodesKnown = world.starCluster.nodes.filter
 			(
 				x => this.starsystemNames.indexOf(x.starsystem.name) >= 0
 			);
@@ -247,7 +247,7 @@ class FactionKnowledge
 	starsystemsCacheClear(): void
 	{
 		this._starsystems = null;
-		this.networkCacheClear();
+		this.starClusterCacheClear();
 	}
 
 	tradeLinksWith
@@ -373,7 +373,7 @@ class FactionKnowledge
 	{
 		if (this._world == null)
 		{
-			var networkKnown = this.network(worldActual);
+			var starClusterKnown = this.starCluster(worldActual);
 			var factionsKnown = this.factions(worldActual);
 			var shipsKnown = this.ships(worldActual);
 
@@ -385,7 +385,7 @@ class FactionKnowledge
 				worldActual.buildableDefns,
 				worldActual.deviceDefns,
 				worldActual.technologyGraph,
-				networkKnown,
+				starClusterKnown,
 				factionsKnown,
 				shipsKnown, // todo
 				worldActual.camera

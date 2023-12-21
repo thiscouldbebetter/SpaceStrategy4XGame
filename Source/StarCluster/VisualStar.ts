@@ -52,10 +52,10 @@ class VisualStar implements Visual<VisualStar>
 	{
 		var universe = uwpe.universe;
 		var world = universe.world as WorldExtended;
-		var networkNode = uwpe.entity as NetworkNode2;
+		var starClusterNode = uwpe.entity as StarClusterNode;
 
 		var display = universe.display;
-		var nodePos = networkNode.locatable().loc.pos;
+		var nodePos = starClusterNode.locatable().loc.pos;
 
 		var drawPos = this._drawPos.overwriteWith(nodePos);
 		var camera = world.camera;
@@ -103,7 +103,7 @@ class VisualStar implements Visual<VisualStar>
 			display
 		);
 
-		var starsystem = networkNode.starsystem;
+		var starsystem = starClusterNode.starsystem;
 
 		if (starsystem != null)
 		{

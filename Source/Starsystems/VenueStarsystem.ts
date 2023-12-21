@@ -682,14 +682,13 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			}
 		);
 
-		var containerTimeAndPlace = controlBuilder.timeAndPlace
+		var containerTimeAndPlace = this.starsystem.controlBuildTimeAndPlace
 		(
 			universe,
 			containerMainSize,
 			containerInnerSize,
 			margin,
-			controlHeight,
-			false // includeRoundAdvanceButtons
+			controlHeight
 		);
 
 		var containerPlanetsLinksAndShips = controlBuilder.starsystemPlanetsLinksAndShips

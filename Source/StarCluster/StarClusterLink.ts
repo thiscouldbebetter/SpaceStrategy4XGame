@@ -1,13 +1,13 @@
 
-class NetworkLink2 implements EntityPropertyBase
+class StarClusterLink implements EntityPropertyBase
 {
-	type: NetworkLink2Type;
+	type: StarClusterLinkType;
 	namesOfNodesLinked: string[];
 
 	name: string;
 	ships: Ship[];
 
-	constructor(type: NetworkLink2Type, namesOfNodesLinked: string[])
+	constructor(type: StarClusterLinkType, namesOfNodesLinked: string[])
 	{
 		this.type = type;
 		this.namesOfNodesLinked = namesOfNodesLinked;
@@ -17,12 +17,12 @@ class NetworkLink2 implements EntityPropertyBase
 		this.ships = new Array<Ship>();
 	}
 
-	direction(cluster: Network2): Coords
+	direction(cluster: StarCluster): Coords
 	{
 		return this.displacement(cluster).normalize();
 	}
 
-	displacement(cluster: Network2): Coords
+	displacement(cluster: StarCluster): Coords
 	{
 		var nodesLinked = this.nodesLinked(cluster);
 
@@ -42,12 +42,12 @@ class NetworkLink2 implements EntityPropertyBase
 		return this.type.frictionDivisor;
 	}
 
-	length(cluster: Network2): number
+	length(cluster: StarCluster): number
 	{
 		return this.displacement(cluster).magnitude();
 	}
 
-	nodesLinked(cluster: Network2): NetworkNode2[]
+	nodesLinked(cluster: StarCluster): StarClusterNode[]
 	{
 		var returnValue =
 		[
@@ -84,7 +84,7 @@ class NetworkLink2 implements EntityPropertyBase
 	{
 		if (this.ships.length > 0)
 		{
-			var cluster = world.network;
+			var cluster = world.starCluster;
 
 			var nodesLinked = this.nodesLinked(cluster);
 			var length = this.length(cluster);
@@ -142,7 +142,7 @@ class NetworkLink2 implements EntityPropertyBase
 		drawPosTo: Coords
 	): void
 	{
-		var cluster = (universe.world as WorldExtended).network;
+		var cluster = (universe.world as WorldExtended).starCluster;
 		var nodesLinked = this.nodesLinked(cluster);
 		var nodeFromPos = nodesLinked[0].locatable().loc.pos;
 		var nodeToPos = nodesLinked[1].locatable().loc.pos;
@@ -196,12 +196,12 @@ class NetworkLink2 implements EntityPropertyBase
 
 	// Clonable.
 
-	clone(): NetworkLink2
+	clone(): StarClusterLink
 	{
-		return new NetworkLink2(this.type, this.namesOfNodesLinked.slice());
+		return new StarClusterLink(this.type, this.namesOfNodesLinked.slice());
 	}
 
-	overwriteWith(other: NetworkLink2): NetworkLink2
+	overwriteWith(other: StarClusterLink): StarClusterLink
 	{
 		return this;
 	}
@@ -216,7 +216,7 @@ class NetworkLink2 implements EntityPropertyBase
 	equals(other: EntityPropertyBase): boolean { return false; }
 }
 
-class NetworkLink2Type
+class StarClusterLinkType
 {
 	name: string;
 	frictionDivisor: number;
@@ -229,40 +229,40 @@ class NetworkLink2Type
 		this.color = color;
 	}
 
-	static _instances: NetworkLink2Type_Instances;
-	static Instances(): NetworkLink2Type_Instances
+	static _instances: StarClusterLinkType_Instances;
+	static Instances(): StarClusterLinkType_Instances
 	{
-		if (NetworkLink2Type._instances == null)
+		if (StarClusterLinkType._instances == null)
 		{
-			NetworkLink2Type._instances = new NetworkLink2Type_Instances();
+			StarClusterLinkType._instances = new StarClusterLinkType_Instances();
 		}
-		return NetworkLink2Type._instances;
+		return StarClusterLinkType._instances;
 	}
 
-	static byName(name: string): NetworkLink2Type
+	static byName(name: string): StarClusterLinkType
 	{
-		return NetworkLink2Type.Instances().byName(name);
+		return StarClusterLinkType.Instances().byName(name);
 	}
 }
 
-class NetworkLink2Type_Instances
+class StarClusterLinkType_Instances
 {
-	Normal: NetworkLink2Type;
-	Hard: NetworkLink2Type;
+	Normal: StarClusterLinkType;
+	Hard: StarClusterLinkType;
 
-	_All: NetworkLink2Type[];
+	_All: StarClusterLinkType[];
 
 	constructor()
 	{
 		var colors = Color.Instances();
 
-		this.Normal 	= new NetworkLink2Type("Normal", 1, colors.Gray.clone().alphaSet(.4) );
-		this.Hard 		= new NetworkLink2Type("Hard", 5, colors.Red.clone().alphaSet(.4) );
+		this.Normal 	= new StarClusterLinkType("Normal", 1, colors.Gray.clone().alphaSet(.4) );
+		this.Hard 		= new StarClusterLinkType("Hard", 5, colors.Red.clone().alphaSet(.4) );
 
 		this._All = [ this.Normal, this.Hard ];
 	}
 
-	byName(name: string): NetworkLink2Type
+	byName(name: string): StarClusterLinkType
 	{
 		return this._All.find(x => x.name == name);
 	}

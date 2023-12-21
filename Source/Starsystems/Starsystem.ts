@@ -279,7 +279,7 @@ class Starsystem extends PlaceBase
 		return this._linkPortalsByStarsystemName.get(starsystemName);
 	}
 
-	links(cluster: Network2) // todo
+	links(cluster: StarCluster): StarClusterLink[]
 	{
 		var returnValues = [];
 
@@ -336,6 +336,95 @@ class Starsystem extends PlaceBase
 	toVenue(): VenueStarsystem
 	{
 		return new VenueStarsystem(null, this);
+	}
+
+	// Controls.
+
+	controlBuildTimeAndPlace
+	(
+		universe: Universe,
+		containerMainSize: Coords,
+		containerInnerSize: Coords,
+		margin: number,
+		controlHeight: number
+	): ControlBase
+	{
+		var fontHeightInPixels = margin;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+
+		var textPlace = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin,  margin), // pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 2,
+				controlHeight
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				universe,
+				(c: Universe) =>
+				{
+					// hack
+					var venue = c.venueCurrent() as VenueStarsystem;
+					return (venue.model == null ? "" : venue.model().name);
+				}
+			),
+			fontNameAndHeight
+		);
+
+		var textRoundColonSpace = "Round:";
+		var labelRound = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin + controlHeight), // pos
+			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+			DataBinding.fromContext(textRoundColonSpace),
+			fontNameAndHeight
+		);
+
+		var textRound = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY
+			(
+				margin + textRoundColonSpace.length * fontHeightInPixels * 0.45,
+				margin + controlHeight
+			), // pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 3,
+				controlHeight
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				universe,
+				(c: Universe) => "" + ( (c.world as WorldExtended).roundsSoFar + 1)
+			),
+			fontNameAndHeight
+		);
+
+		var childControls =
+		[
+			textPlace,
+			labelRound,
+			textRound
+		];
+
+		var size = Coords.fromXY
+		(
+			containerInnerSize.x,
+			margin * 3 + controlHeight * 2
+		);
+
+		var returnValue = ControlContainer.from4
+		(
+			"containerTimeAndPlace",
+			Coords.fromXY(margin, margin),
+			size,
+			childControls
+		);
+
+		return returnValue;
 	}
 
 	// moves

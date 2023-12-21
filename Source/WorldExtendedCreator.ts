@@ -43,16 +43,16 @@ class WorldExtendedCreator
 
 		var viewDimension = viewSize.y;
 
-		var networkRadius = viewDimension * .25;
-		var network = Network2.generateRandom
+		var starClusterRadius = viewDimension * .25;
+		var starCluster = StarCluster.generateRandom
 		(
 			this.universe,
 			worldName,
-			NetworkNodeDefn.Instances()._All,
+			StarClusterNodeDefn.Instances()._All,
 			starsystemCount
 		).scale
 		(
-			networkRadius
+			starClusterRadius
 		);
 
 		var focalLength = viewDimension;
@@ -63,7 +63,7 @@ class WorldExtendedCreator
 
 		var factionsAndShips = this.create_FactionsAndShips
 		(
-			network, 
+			starCluster, 
 			technologyGraph,
 			buildableDefns,
 			deviceDefnsByName,
@@ -94,7 +94,7 @@ class WorldExtendedCreator
 			buildableDefns._All,
 			deviceDefns,
 			technologyGraph,
-			network,
+			starCluster,
 			factions,
 			ships,
 			camera
@@ -110,7 +110,7 @@ class WorldExtendedCreator
 
 	create_FactionsAndShips
 	(
-		network: Network2,
+		starCluster: StarCluster,
 		technologyGraph: TechnologyGraph,
 		buildableDefns: BuildableDefnsLegacy,
 		deviceDefnsByName: Map<string, DeviceDefn>,
@@ -131,7 +131,7 @@ class WorldExtendedCreator
 			buildableDefns._All,
 			[], // deviceDefns
 			technologyGraph,
-			network, // network
+			starCluster,
 			factions,
 			ships, // ships
 			null // camera
@@ -170,7 +170,7 @@ class WorldExtendedCreator
 			this.create_FactionsAndShips_1
 			(
 				worldDummy,
-				network,
+				starCluster,
 				colorsForFactions,
 				factionDefns,
 				technologyGraph,
@@ -230,7 +230,7 @@ class WorldExtendedCreator
 	create_FactionsAndShips_1
 	(
 		worldDummy: WorldExtended,
-		network: Network2,
+		starCluster: StarCluster,
 		colorsForFactions: Color[],
 		factionDefns: FactionDefn[],
 		technologyGraph: TechnologyGraph,
@@ -242,19 +242,20 @@ class WorldExtendedCreator
 	{
 		var factionHomeStarsystem: Starsystem = null;
 
-		var numberOfNetworkNodes = network.nodes.length;
+		var nodes = starCluster.nodes;
+		var numberOfStarsystems = nodes.length;
 
 		var random = Math.random();
 		var starsystemIndexStart = Math.floor
 		(
-			random * numberOfNetworkNodes
+			random * numberOfStarsystems
 		);
 
 		var starsystemIndex = starsystemIndexStart;
 
 		while (factionHomeStarsystem == null)
 		{
-			var node = network.nodes[starsystemIndex];
+			var node = nodes[starsystemIndex];
 			factionHomeStarsystem = node.starsystem;
 
 			if (factionHomeStarsystem.planets.length == 0)
@@ -267,7 +268,7 @@ class WorldExtendedCreator
 			}
 
 			starsystemIndex++;
-			if (starsystemIndex >= numberOfNetworkNodes)
+			if (starsystemIndex >= numberOfStarsystems)
 			{
 				starsystemIndex = 0;
 			}
@@ -333,9 +334,9 @@ class WorldExtendedCreator
 			[ factionName ], // factionNames
 			ships.map(x => x.id), // shipIds
 			[ factionHomeStarsystem.name ],
-			factionHomeStarsystem.links(network).map
+			factionHomeStarsystem.links(starCluster).map
 			(
-				(x: NetworkLink2) => x.name
+				(x: StarClusterLink) => x.name
 			)
 		);
 

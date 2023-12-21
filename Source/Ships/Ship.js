@@ -38,7 +38,7 @@ class Ship extends Entity {
         var targetTypeName = target.constructor.name;
         if (targetTypeName == LinkPortal.name) {
             var portal = target;
-            ship.linkPortalEnter(universe.world.network, portal, ship);
+            ship.linkPortalEnter(universe.world.starCluster, portal, ship);
         }
         else if (targetTypeName == Planet.name) {
             var planet = target;
@@ -85,7 +85,7 @@ class Ship extends Entity {
         universe.venueTransitionTo(venueStarsystem);
     }
     link(world) {
-        var linkFound = world.network.links.find(x => (x.ships.indexOf(this) >= 0));
+        var linkFound = world.starCluster.links.find(x => (x.ships.indexOf(this) >= 0));
         return linkFound;
     }
     nameWithFaction() {
@@ -107,7 +107,7 @@ class Ship extends Entity {
     planet(world) {
         var planetName = this.locatable().loc.placeName.split(":")[1];
         var starsystemName = planetName.split(" ")[0];
-        var starsystem = world.network.starsystemByName(starsystemName);
+        var starsystem = world.starCluster.starsystemByName(starsystemName);
         var planet = starsystem.planets.find(x => x.ships.indexOf(this) >= 0);
         return planet;
     }
@@ -148,8 +148,8 @@ class Ship extends Entity {
         return wasColonizationSuccessful;
     }
     starsystem(world) {
-        var networkNodeFound = world.network.nodes.find(x => (x.starsystem.ships.indexOf(this) >= 0));
-        var starsystemFound = (networkNodeFound == null ? null : networkNodeFound.starsystem);
+        var starClusterNodeFound = world.starCluster.nodes.find(x => (x.starsystem.ships.indexOf(this) >= 0));
+        var starsystemFound = (starClusterNodeFound == null ? null : starClusterNodeFound.starsystem);
         return starsystemFound;
     }
     toStringDescription() {
@@ -198,7 +198,7 @@ class Ship extends Entity {
         var linkStarsystem1 = linkNode1.starsystem;
         var isLinkForward = (starsystemTo == linkStarsystem1);
         var shipLoc = this.locatable().loc;
-        shipLoc.placeName = NetworkLink2.name + ":" + link.name;
+        shipLoc.placeName = StarClusterLink.name + ":" + link.name;
         var nodeFrom = (isLinkForward ? linkNode0 : linkNode1);
         shipLoc.pos.overwriteWith(nodeFrom.locatable().loc.pos);
         var linkDirection = link.displacement(cluster).normalize();
@@ -210,7 +210,7 @@ class Ship extends Entity {
     linkExit(world, link) {
         var ship = this;
         link.shipRemove(ship); // todo
-        var cluster = world.network;
+        var cluster = world.starCluster;
         var shipLoc = ship.locatable().loc;
         var shipPos = shipLoc.pos;
         var shipVel = shipLoc.vel;

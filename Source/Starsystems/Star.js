@@ -13,8 +13,8 @@ class Star extends Entity {
     }
     // instance methods
     starsystem(world) {
-        var networkNodeFound = world.network.nodes.find(x => (x.starsystem.star == this));
-        var starsystemFound = (networkNodeFound == null ? null : networkNodeFound.starsystem);
+        var starClusterNodeFound = world.starCluster.nodes.find(x => (x.starsystem.star == this));
+        var starsystemFound = (starClusterNodeFound == null ? null : starClusterNodeFound.starsystem);
         return starsystemFound;
     }
     toEntity() {

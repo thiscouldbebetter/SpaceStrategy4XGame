@@ -123,8 +123,8 @@ class FactionAbility_Instances {
     }
     disrupt(uwpe) {
         var world = uwpe.world;
-        var network = world.network;
-        var links = network.links;
+        var starCluster = world.starCluster;
+        var links = starCluster.links;
         for (var i = 0; i < links.length; i++) {
             var link = links[i];
             var shipsInLink = link.ships;
@@ -162,8 +162,8 @@ class FactionAbility_Instances {
         var world = uwpe.world;
         var factionSelf = world.factionCurrent();
         var factionSelfKnowledge = factionSelf.knowledge;
-        var network = world.network;
-        var links = network.links;
+        var starCluster = world.starCluster;
+        var links = starCluster.links;
         for (var i = 0; i < links.length; i++) {
             var link = links[i];
             factionSelfKnowledge.linkAdd(link);
@@ -314,7 +314,7 @@ class FactionAbility_Instances {
             for (var s = 0; s < shipsInStarsystemBelongingToOthers.length; s++) {
                 var shipToExpel = shipsInStarsystemBelongingToOthers[s];
                 var linkPortalToExpelThrough = randomizer.chooseRandomElementFromArray(linkPortalsInStarsystem);
-                shipToExpel.linkPortalEnter(world.network, linkPortalToExpelThrough, shipToExpel);
+                shipToExpel.linkPortalEnter(world.starCluster, linkPortalToExpelThrough, shipToExpel);
                 // todo - Notify victims?
             }
         }

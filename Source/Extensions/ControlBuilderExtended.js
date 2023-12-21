@@ -122,51 +122,6 @@ class ControlBuilderExtended extends ControlBuilder {
         );
         return returnValue;
     }
-    timeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight, includeRoundAdvanceButtons) {
-        var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
-        var fontHeightInPixels = margin;
-        var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var textPlace = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(universe, (c) => {
-            // hack
-            var venue = c.venueCurrent();
-            return (venue.model == null ? "" : venue.model().name);
-        }), fontNameAndHeight);
-        var textRoundColonSpace = "Round:";
-        var labelRound = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext(textRoundColonSpace), fontNameAndHeight);
-        var textRound = ControlLabel.from4Uncentered(Coords.fromXY(margin + textRoundColonSpace.length * fontHeightInPixels * 0.45, margin + controlHeight), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-        DataBinding.fromContextAndGet(universe, (c) => "" + (c.world.roundsSoFar + 1)), fontNameAndHeight);
-        var childControls = new Array();
-        var childControlsGuaranteed = [
-            textPlace,
-            labelRound,
-            textRound
-        ];
-        childControls.push(...childControlsGuaranteed);
-        if (includeRoundAdvanceButtons) {
-            var buttonSize = Coords.fromXY(controlHeight, controlHeight);
-            var world = universe.world;
-            var buttonRoundNext = ControlButton.from5(Coords.fromXY(containerInnerSize.x - margin - buttonSize.x * 2, margin + controlHeight), // pos
-            buttonSize, ">", // text,
-            fontNameAndHeight, () => world.updateForRound(uwpe));
-            var buttonRoundFastForward = ControlButton.from5(Coords.fromXY(containerInnerSize.x - margin - buttonSize.x, margin + controlHeight), // pos
-            Coords.fromXY(controlHeight, controlHeight), // size,
-            ">>", // text,
-            fontNameAndHeight, () => world.roundAdvanceUntilNotificationToggle(uwpe));
-            var roundAdvanceButtons = [
-                buttonRoundNext,
-                buttonRoundFastForward
-            ];
-            childControls.push(...roundAdvanceButtons);
-        }
-        var size = Coords.fromXY(containerInnerSize.x, margin * 3 + controlHeight * 2);
-        var returnValue = ControlContainer.from4("containerTimeAndPlace", Coords.fromXY(margin, margin), size, childControls);
-        return returnValue;
-    }
     view(universe, containerMainSize, containerInnerSize, margin) {
         var cameraSpeed = 10;
         var fontHeightInPixels = margin;

@@ -1,13 +1,13 @@
 
-class Network2 extends PlaceBase
+class StarCluster extends PlaceBase
 {
 	name: string;
-	nodes: NetworkNode2[];
-	links: NetworkLink2[];
+	nodes: StarClusterNode[];
+	links: StarClusterLink[];
 
-	linksByName: Map<string, NetworkLink2>;
-	linksByStarsystemNamesFromTo: Map<string, Map<string, NetworkLink2> >
-	nodesByName: Map<string, NetworkNode2>;
+	linksByName: Map<string, StarClusterLink>;
+	linksByStarsystemNamesFromTo: Map<string, Map<string, StarClusterLink> >
+	nodesByName: Map<string, StarClusterNode>;
 	_nodesAsEntities: Entity[];
 
 	drawPos: Coords;
@@ -18,14 +18,14 @@ class Network2 extends PlaceBase
 	constructor
 	(
 		name: string,
-		nodes: NetworkNode2[],
-		links: NetworkLink2[]
+		nodes: StarClusterNode[],
+		links: StarClusterLink[]
 	)
 	{
 		super
 		(
 			name,
-			Network2.name, // defnName
+			StarCluster.name, // defnName
 			null, // parentName
 			null, // size
 			nodes // entities
@@ -39,7 +39,7 @@ class Network2 extends PlaceBase
 
 		this.linksByName = ArrayHelper.addLookupsByName(this.links);
 
-		this.linksByStarsystemNamesFromTo = new Map<string,Map<string,NetworkLink2>>();
+		this.linksByStarsystemNamesFromTo = new Map<string,Map<string,StarClusterLink>>();
 		for (var i = 0; i < this.links.length; i++)
 		{
 			var link = this.links[i];
@@ -52,7 +52,7 @@ class Network2 extends PlaceBase
 
 				if (this.linksByStarsystemNamesFromTo.has(nameOfNodeFrom) == false)
 				{
-					var linksOriginatingAtNodeFrom = new Map<string,NetworkLink2>();
+					var linksOriginatingAtNodeFrom = new Map<string,StarClusterLink>();
 					this.linksByStarsystemNamesFromTo.set
 					(
 						nameOfNodeFrom, linksOriginatingAtNodeFrom
@@ -72,9 +72,9 @@ class Network2 extends PlaceBase
 		this.drawPosTo = Coords.create();
 	}
 
-	static empty(): Network2
+	static empty(): StarCluster
 	{
-		return new Network2
+		return new StarCluster
 		(
 			"dummy",
 			[], // nodes
@@ -86,9 +86,9 @@ class Network2 extends PlaceBase
 	(
 		universe: Universe,
 		name: string,
-		nodeDefns: NetworkNodeDefn[],
+		nodeDefns: StarClusterNodeDefn[],
 		numberOfNodes: number
-	): Network2
+	): StarCluster
 	{
 		var randomizer = universe.randomizer;
 
@@ -147,7 +147,7 @@ class Network2 extends PlaceBase
 			var nodeDefn = nodeDefns[nodeDefnIndexRandom];
 			var nodeStarsystem = Starsystem.generateRandom(universe);
 
-			var node = new NetworkNode2
+			var node = new StarClusterNode
 			(
 				nodeStarsystem.name,
 				nodeDefn,
@@ -220,7 +220,7 @@ class Network2 extends PlaceBase
 			var nodeToLink = nodePairClosestSoFar[0];
 			var nodeLinked = nodePairClosestSoFar[1];
 
-			var linkTypes = NetworkLink2Type.Instances();
+			var linkTypes = StarClusterLinkType.Instances();
 			var probabilityLinkTypeIsNormalNotHard = .9;
 			var randomFraction = randomizer.fraction();
 			var linkType =
@@ -228,7 +228,7 @@ class Network2 extends PlaceBase
 				? linkTypes.Normal
 				: linkTypes.Hard;
 
-			var link = new NetworkLink2
+			var link = new StarClusterLink
 			(
 				linkType,
 				[ nodeToLink.name, nodeLinked.name ]
@@ -271,12 +271,12 @@ class Network2 extends PlaceBase
 			}
 		}
 
-		var returnValue = new Network2(name, nodesLinked, links);
+		var returnValue = new StarCluster(name, nodesLinked, links);
 
 		return returnValue;
 	}
 
-	linkByName(linkName: string): NetworkLink2
+	linkByName(linkName: string): StarClusterLink
 	{
 		return this.linksByName.get(linkName);
 	}
@@ -284,12 +284,12 @@ class Network2 extends PlaceBase
 	linkByStarsystemNamesFromTo
 	(
 		starsystemFromName: string, starsystemToName: string
-	): NetworkLink2
+	): StarClusterLink
 	{
 		return this.linksByStarsystemNamesFromTo.get(starsystemFromName).get(starsystemToName);
 	}
 
-	nodeByName(nodeName: string): NetworkNode2
+	nodeByName(nodeName: string): StarClusterNode
 	{
 		return this.nodesByName.get(nodeName);
 	}
@@ -317,7 +317,7 @@ class Network2 extends PlaceBase
 		var placeType = placeTypeAndName[0];
 		var placeName = placeTypeAndName[1];
 
-		if (placeType == NetworkLink2.name)
+		if (placeType == StarClusterLink.name)
 		{
 			returnPlace = this.linkByName(placeName);
 		}
@@ -335,7 +335,7 @@ class Network2 extends PlaceBase
 		return returnPlace;
 	}
 
-	scale(scaleFactor: number): Network2
+	scale(scaleFactor: number): StarCluster
 	{
 		for (var i = 0; i < this.nodes.length; i++)
 		{
@@ -434,9 +434,9 @@ class Network2 extends PlaceBase
 			uwpe.entity = entity;
 
 			var entityTypeName = entity.constructor.name;
-			if (entityTypeName == NetworkNode2.name)
+			if (entityTypeName == StarClusterNode.name)
 			{
-				var node = entity as NetworkNode2;
+				var node = entity as StarClusterNode;
 				node.draw(uwpe);
 			}
 			else if (entityTypeName == Ship.name)
@@ -452,11 +452,141 @@ class Network2 extends PlaceBase
 
 	// Clonable.
 
-	clone(): Network2
+	clone(): StarCluster
 	{
-		var nodesCloned = this.nodes.map(x => x.clone()) as NetworkNode2[];
+		var nodesCloned = this.nodes.map(x => x.clone()) as StarClusterNode[];
 		var linksCloned = ArrayHelper.clone(this.links);
-		var returnValue = new Network2(this.name, nodesCloned, linksCloned);
+		var returnValue = new StarCluster(this.name, nodesCloned, linksCloned);
 		return returnValue;
 	}
+
+	// Controls.
+
+	controlBuildTimeAndPlace
+	(
+		universe: Universe,
+		containerMainSize: Coords,
+		containerInnerSize: Coords,
+		margin: number,
+		controlHeight: number
+	): ControlBase
+	{
+		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
+
+		var fontHeightInPixels = margin;
+		var fontNameAndHeight =
+			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
+
+		var textPlace = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin,  margin), // pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 2,
+				controlHeight
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				universe,
+				(c: Universe) =>
+				{
+					// hack
+					var venue = c.venueCurrent() as VenueStarsystem;
+					return (venue.model == null ? "" : venue.model().name);
+				}
+			),
+			fontNameAndHeight
+		);
+
+		var textRoundColonSpace = "Round:";
+		var labelRound = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin, margin + controlHeight), // pos
+			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
+			DataBinding.fromContext(textRoundColonSpace),
+			fontNameAndHeight
+		);
+
+		var textRound = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY
+			(
+				margin + textRoundColonSpace.length * fontHeightInPixels * 0.45,
+				margin + controlHeight
+			), // pos
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin * 3,
+				controlHeight
+			), // size
+			DataBinding.fromContextAndGet
+			(
+				universe,
+				(c: Universe) => "" + ( (c.world as WorldExtended).roundsSoFar + 1)
+			),
+			fontNameAndHeight
+		);
+
+		var childControls: ControlBase[] =
+		[
+			textPlace,
+			labelRound,
+			textRound
+		];
+
+		var buttonSize = Coords.fromXY(controlHeight, controlHeight);
+
+		var world = universe.world as WorldExtended;
+
+		var buttonRoundNext = ControlButton.from5
+		(
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin - buttonSize.x * 2,
+				margin + controlHeight
+			), // pos
+			buttonSize,
+			">", // text,
+			fontNameAndHeight,
+			() => world.updateForRound(uwpe)
+		);
+
+		var buttonRoundFastForward = ControlButton.from5
+		(
+			Coords.fromXY
+			(
+				containerInnerSize.x - margin - buttonSize.x,
+				margin + controlHeight
+			), // pos
+			Coords.fromXY(controlHeight, controlHeight), // size,
+			">>", // text,
+			fontNameAndHeight,
+			() => world.roundAdvanceUntilNotificationToggle(uwpe)
+		);
+
+		var roundAdvanceButtons: ControlBase[] = 
+		[
+			buttonRoundNext,
+			buttonRoundFastForward
+		];
+
+		childControls.push(...roundAdvanceButtons);
+
+		var size = Coords.fromXY
+		(
+			containerInnerSize.x,
+			margin * 3 + controlHeight * 2
+		);
+
+		var returnValue = ControlContainer.from4
+		(
+			"containerTimeAndPlace",
+			Coords.fromXY(margin, margin),
+			size,
+			childControls
+		);
+
+		return returnValue;
+	}
+
 }

@@ -19,9 +19,9 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
-	model(): Network2
+	model(): StarCluster
 	{
-		return this.world.network;
+		return this.world.starCluster;
 	}
 
 	// camera
@@ -172,14 +172,13 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 			}
 		);
 
-		var containerTimeAndPlace = controlBuilder.timeAndPlace
+		var containerTimeAndPlace = world.starCluster.controlBuildTimeAndPlace
 		(
 			universe,
 			containerMainSize,
 			containerInnerSize,
 			margin,
-			controlHeight,
-			true // includeRoundAdvanceButtons
+			controlHeight
 		);
 
 		var containerFaction = faction.toControl_ClusterOverlay
@@ -246,11 +245,10 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 			this.hasBeenUpdatedSinceDrawn = false;
 
 			universe.display.drawBackground(null, null);
-			//this.world.network.draw(universe, this.world.camera);
 			var playerFaction = this.world.factions[0];
 			var playerKnowledge = playerFaction.knowledge;
 			var worldKnown = playerKnowledge.world(universe, this.world);
-			worldKnown.network.draw2(universe, worldKnown.camera);
+			worldKnown.starCluster.draw2(universe, worldKnown.camera);
 			this.venueControls.draw(universe);
 		}
 	}
@@ -363,7 +361,7 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 			var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable
 			(
 				rayFromCameraThroughClick,
-				worldKnown.network.nodes,
+				worldKnown.starCluster.nodes,
 				[] // listToAddTo
 			);
 
@@ -389,8 +387,8 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 					if (isFastForwarding == false)
 					{
 						var venueCurrent = universe.venueCurrent();
-						var bodyClickedNetworkNode = bodyClicked as NetworkNode2;
-						var starsystem = bodyClickedNetworkNode.starsystem;
+						var bodyClickedStarClusterNode = bodyClicked as StarClusterNode;
+						var starsystem = bodyClickedStarClusterNode.starsystem;
 						if (starsystem != null)
 						{
 							var venueNext: Venue
@@ -485,9 +483,9 @@ class VenueWorldExtended extends VenueWorld implements VenueDrawnOnlyWhenUpdated
 			var venueNext: Venue;
 			var selectionTypeName = selectedEntity.constructor.name;
 
-			if (selectionTypeName == NetworkNode2.name)
+			if (selectionTypeName == StarClusterNode.name)
 			{
-				var selectionAsNetworkNode = selectedEntity as NetworkNode2;
+				var selectionAsNetworkNode = selectedEntity as StarClusterNode;
 				var starsystem = selectionAsNetworkNode.starsystem;
 				if (starsystem != null)
 				{

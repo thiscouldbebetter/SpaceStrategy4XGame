@@ -9,12 +9,12 @@ interface FactionKnowledgeTrade
 class FactionKnowledgeTrade_Links
 {
 	factions: Faction[];
-	linksToTradeByFaction: NetworkLink2[];
+	linksToTradeByFaction: StarClusterLink[];
 
 	constructor
 	(
 		factions: Faction[],
-		linksToTradeByFaction: NetworkLink2[]
+		linksToTradeByFaction: StarClusterLink[]
 	)
 	{
 		this.factions = factions;

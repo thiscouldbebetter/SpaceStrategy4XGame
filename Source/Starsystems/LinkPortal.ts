@@ -37,6 +37,8 @@ class LinkPortal extends Entity
 
 	static bodyDefn(): BodyDefn
 	{
+		var colors = Color.Instances();
+
 		var bodyDefnLinkPortal = new BodyDefn
 		(
 			"LinkPortal",
@@ -49,10 +51,10 @@ class LinkPortal extends Entity
 					new ValueBreakGroup
 					(
 						[
-							new ValueBreak(0, Color.byName("Black") ),
-							new ValueBreak(.5, Color.byName("Black") ),
-							new ValueBreak(.75, Color.byName("Violet") ),
-							new ValueBreak(1, Color.byName("Blue") )
+							new ValueBreak(0, colors.Black),
+							new ValueBreak(.5, colors.Black),
+							new ValueBreak(.75, colors.Violet),
+							new ValueBreak(1, colors.Blue)
 						],
 						null // interpolationMode
 					),
@@ -64,7 +66,7 @@ class LinkPortal extends Entity
 		return bodyDefnLinkPortal;
 	}
 
-	link(cluster: Network2): NetworkLink2
+	link(cluster: StarCluster): StarClusterLink
 	{
 		var returnValue = cluster.linkByStarsystemNamesFromTo
 		(
@@ -73,7 +75,7 @@ class LinkPortal extends Entity
 		return returnValue;
 	}
 
-	starsystemFrom(cluster: Network2): Starsystem
+	starsystemFrom(cluster: StarCluster): Starsystem
 	{
 		var starsystemName = this.starsystemNameFrom();
 		var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
@@ -90,7 +92,7 @@ class LinkPortal extends Entity
 		return this.starsystemNamesFromAndTo[1];
 	}
 
-	starsystemTo(cluster: Network2): Starsystem
+	starsystemTo(cluster: StarCluster): Starsystem
 	{
 		var starsystemName = this.starsystemNameTo();
 		var returnValue = cluster.nodesByName.get(starsystemName).starsystem;

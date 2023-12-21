@@ -203,8 +203,8 @@ class FactionAbility_Instances
 	disrupt(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var world = uwpe.world as WorldExtended;
-		var network = world.network;
-		var links = network.links;
+		var starCluster = world.starCluster;
+		var links = starCluster.links;
 		for (var i = 0; i < links.length; i++)
 		{
 			var link = links[i];
@@ -255,8 +255,8 @@ class FactionAbility_Instances
 		var factionSelf = world.factionCurrent();
 		var factionSelfKnowledge = factionSelf.knowledge;
 
-		var network = world.network;
-		var links = network.links;
+		var starCluster = world.starCluster;
+		var links = starCluster.links;
 		for (var i = 0; i < links.length; i++)
 		{
 			var link = links[i];
@@ -482,7 +482,7 @@ class FactionAbility_Instances
 					randomizer.chooseRandomElementFromArray(linkPortalsInStarsystem);
 				shipToExpel.linkPortalEnter
 				(
-					world.network,
+					world.starCluster,
 					linkPortalToExpelThrough,
 					shipToExpel
 				);

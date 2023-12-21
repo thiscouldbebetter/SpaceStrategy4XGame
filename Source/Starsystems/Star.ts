@@ -33,14 +33,14 @@ class Star extends Entity
 
 	starsystem(world: WorldExtended): Starsystem
 	{
-		var networkNodeFound = world.network.nodes.find
+		var starClusterNodeFound = world.starCluster.nodes.find
 		(
 			x => (x.starsystem.star == this)
 		);
 
 		var starsystemFound =
 		(
-			networkNodeFound == null ? null : networkNodeFound.starsystem
+			starClusterNodeFound == null ? null : starClusterNodeFound.starsystem
 		);
 		return starsystemFound;
 	}

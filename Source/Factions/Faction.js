@@ -82,7 +82,7 @@ class Faction {
         ship.factionable().factionSet(this);
     }
     starsystemHome(world) {
-        return world.network.nodeByName(this.homeStarsystemName).starsystem;
+        return world.starCluster.nodeByName(this.homeStarsystemName).starsystem;
     }
     starsystems(world) {
         var planets = this.planets;

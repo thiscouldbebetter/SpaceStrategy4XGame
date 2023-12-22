@@ -564,7 +564,11 @@ class BuildableDefnsLegacy
 
 		var categoryShipDrive = categories.ShipDrive;
 
-		var deviceDefnDrive = (energyPerUse: number, distanceMaxPerMoveMultiple: number) =>
+		var deviceDefnDrive =
+		(
+			energyPerUse: number,
+			distanceMaxPerMoveMultiple: number
+		) =>
 			new DeviceDefn
 			(
 				"Drive",

@@ -249,7 +249,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 			var playerFaction = this.world.factions[0];
 			var playerKnowledge = playerFaction.knowledge;
 			var worldKnown = playerKnowledge.world(universe, this.world);
-			worldKnown.starCluster.draw2(universe, worldKnown.camera);
+			worldKnown.starCluster.drawForCamera(universe, worldKnown.camera);
 			this.venueControls.draw(universe);
 		}
 	}
@@ -261,6 +261,9 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	initialize(universe: Universe): void
 	{
+		var world = universe.world;
+		world.placeCurrent = this.model();
+
 		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
 
 		this.world.initialize(uwpe);

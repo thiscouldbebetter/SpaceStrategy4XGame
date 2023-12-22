@@ -371,10 +371,13 @@ class StarCluster extends PlaceBase
 
 	draw(universe: Universe, world: World, display: Display): void
 	{
-		throw new Error("Not yet implemented!");
+		// todo - worldKnown?
+		var worldAsWorldExtended = world as WorldExtended;
+		var camera = worldAsWorldExtended.camera;
+		this.drawForCamera(universe, camera);
 	}
 
-	draw2(universe: Universe, camera: Camera): void
+	drawForCamera(universe: Universe, camera: Camera): void
 	{
 		var drawPos = this.drawPos;
 		var drawPosFrom = this.drawPosFrom;

@@ -146,6 +146,11 @@ class DeviceUser {
     energyRemainingThisRoundClear() {
         this._energyRemainingThisRound = 0;
     }
+    energyRemainingThisRoundIsEnoughToMove(ship) {
+        var energyPerMove = this.energyPerMove(ship);
+        var isEnough = (this._energyRemainingThisRound > energyPerMove);
+        return isEnough;
+    }
     energyRemainingThisRoundReset(ship) {
         this._energyRemainingThisRound = this.energyPerRound(ship);
     }

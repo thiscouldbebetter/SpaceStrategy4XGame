@@ -137,11 +137,14 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	initialize(universe: Universe): void
 	{
+		var starsystem = this.starsystem;
+
+		var world = universe.world;
+		world.placeCurrent = this.starsystem;
+
 		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
 
 		this.venueControls = this.toControl(universe).toVenue();
-
-		var starsystem = this.starsystem;
 
 		var soundHelper = universe.soundHelper;
 		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");

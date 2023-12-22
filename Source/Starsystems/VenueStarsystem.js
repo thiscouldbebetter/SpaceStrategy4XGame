@@ -71,9 +71,11 @@ class VenueStarsystem {
         universe.soundHelper.soundForMusic.pause(universe);
     }
     initialize(universe) {
+        var starsystem = this.starsystem;
+        var world = universe.world;
+        world.placeCurrent = this.starsystem;
         var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
         this.venueControls = this.toControl(universe).toVenue();
-        var starsystem = this.starsystem;
         var soundHelper = universe.soundHelper;
         soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
         var viewSize = universe.display.sizeInPixels.clone();

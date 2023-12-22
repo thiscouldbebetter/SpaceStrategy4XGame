@@ -271,6 +271,14 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._energyRemainingThisRound = 0;
 	}
 
+	energyRemainingThisRoundIsEnoughToMove(ship: Ship): boolean
+	{
+		var energyPerMove = this.energyPerMove(ship);
+		var isEnough =
+			(this._energyRemainingThisRound > energyPerMove);
+		return isEnough;
+	}
+
 	energyRemainingThisRoundReset(ship: Ship): void
 	{
 		this._energyRemainingThisRound = this.energyPerRound(ship);

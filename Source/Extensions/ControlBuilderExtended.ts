@@ -1,9 +1,9 @@
 
 class ControlBuilderExtended extends ControlBuilder
 {
-	constructor()
+	constructor(controlBuilderInner: ControlBuilder)
 	{
-		super(null, null);
+		super(controlBuilderInner.styles, controlBuilderInner.venueTransitionalFromTo);
 	}
 
 	selection

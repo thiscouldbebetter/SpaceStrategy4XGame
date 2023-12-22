@@ -1,7 +1,7 @@
 "use strict";
 class ControlBuilderExtended extends ControlBuilder {
-    constructor() {
-        super(null, null);
+    constructor(controlBuilderInner) {
+        super(controlBuilderInner.styles, controlBuilderInner.venueTransitionalFromTo);
     }
     selection(universe, pos, size, margin) {
         var fontHeightInPixels = margin;

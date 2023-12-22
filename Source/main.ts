@@ -59,7 +59,14 @@ function main()
 		]
 	);
 
-	var controlBuilder = new ControlBuilderExtended();
+	var controlStyles = ControlStyle.Instances();
+
+	var controlBuilderInner = ControlBuilder.fromStyle
+	(
+		controlStyles.DarkAndRounded
+	);
+
+	var controlBuilder = new ControlBuilderExtended(controlBuilderInner);
 
 	var worldCreatorSettings =
 	{

@@ -44,7 +44,9 @@ function main() {
         new TextString("Diplomacy_Others_Unhinged", contentPathTextStrings + "Diplomacy/Others/Unhinged.json"),
         new TextString("Diplomacy_Player_Default", contentPathTextStrings + "Diplomacy/Player/Default.json"),
     ]);
-    var controlBuilder = new ControlBuilderExtended();
+    var controlStyles = ControlStyle.Instances();
+    var controlBuilderInner = ControlBuilder.fromStyle(controlStyles.DarkAndRounded);
+    var controlBuilder = new ControlBuilderExtended(controlBuilderInner);
     var worldCreatorSettings = {
         "starsystemCount": 12,
         "factionCount": 2,

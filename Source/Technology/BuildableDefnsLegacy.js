@@ -145,7 +145,7 @@ class BuildableDefnsLegacy {
         var categories = BuildableCategory.Instances();
         // Drives.
         var categoryShipDrive = categories.ShipDrive;
-        var deviceDefnDrive = (energyPerUse, distancePerMoveMultiple) => new DeviceDefn("Drive", false, // isActive
+        var deviceDefnDrive = (energyPerUse, distanceMaxPerMoveMultiple) => new DeviceDefn("Drive", false, // isActive
         false, // needsTarget
         [categoryShipDrive], (uwpe) => // init
          { }, (uwpe) => // updateForRound
@@ -153,8 +153,9 @@ class BuildableDefnsLegacy {
             var ship = uwpe.entity;
             var shipDeviceUser = ship.deviceUser();
             shipDeviceUser.energyPerMoveAdd(energyPerUse);
-            var distancePerMove = distancePerMoveMultiple * 50;
-            shipDeviceUser.distanceMaxPerMoveAdd(distancePerMove);
+            var distanceMaxPerMoveBase = 50;
+            var distanceMaxPerMove = distanceMaxPerMoveMultiple * distanceMaxPerMoveBase;
+            shipDeviceUser.distanceMaxPerMoveAdd(distanceMaxPerMove);
         }, 0, // usesPerRound
         energyPerUse, (uwpe) => // use
          {

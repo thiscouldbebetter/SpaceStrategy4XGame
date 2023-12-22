@@ -195,6 +195,7 @@ class Starsystem extends PlaceBase {
     }
     // Controls.
     controlBuildMoveRepeatOrPass(universe, pos, size, margin, controlHeight, venueStarsystem) {
+        var world = universe.world;
         var margin = universe.display.sizeInPixels.x / 60; // hack
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
@@ -205,14 +206,33 @@ class Starsystem extends PlaceBase {
         buttonHalfSize, "Repeat", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         () => {
-            "todo - repeat";
-        } // todo - faction.moveLastRepeat(universe) // click
-        );
+            var venueCurrent = universe.venueCurrent();
+            var shipSelected = venueCurrent.entitySelected;
+            if (shipSelected != null) {
+                var shipFaction = shipSelected.factionable().faction();
+                var factionForPlayer = world.factions[0];
+                var doesShipBelongToPlayer = (shipFaction == factionForPlayer);
+                if (doesShipBelongToPlayer) {
+                    shipSelected.moveRepeat(universe);
+                }
+            }
+        });
         var buttonPass = ControlButton.from8("buttonPass", Coords.fromXY(margin * 2 + buttonHalfSize.x, margin), // pos
         buttonHalfSize, "Pass", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
-        () => { alert("todo - pass"); } // todo - faction.movePass(universe) // click
-        );
+        () => {
+            var venueCurrent = universe.venueCurrent();
+            var shipSelected = venueCurrent.entitySelected;
+            if (shipSelected != null) {
+                var shipFaction = shipSelected.factionable().faction();
+                var factionForPlayer = world.factions[0];
+                var doesShipBelongToPlayer = (shipFaction == factionForPlayer);
+                if (doesShipBelongToPlayer) {
+                    var shipAsDeviceUser = shipSelected.deviceUser();
+                    shipAsDeviceUser.energyRemainingThisRoundClear();
+                }
+            }
+        });
         var returnValue = ControlContainer.from3("containerMoveRepeatOrPass", pos.clone(), size.clone(), 
         // children
         [

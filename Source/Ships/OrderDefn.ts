@@ -94,6 +94,8 @@ class OrderDefn_Instances
 			targetFinalPos.clone().subtract(entityMovingPos);
 		var distanceToTargetFinal = displacementToTargetFinal.magnitude();
 		var deviceUser = DeviceUser.ofEntity(entityMoving);
+		var energyPerMove = deviceUser.energyPerMove(entityMoving);
+		deviceUser.energyRemainingThisRoundSubtract(energyPerMove);
 		var distanceMaxPerMove = deviceUser.distanceMaxPerMove(entityMoving);
 		var entityTargetImmediate: Entity; 
 		if (distanceToTargetFinal <= distanceMaxPerMove)

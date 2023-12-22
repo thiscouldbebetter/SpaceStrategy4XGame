@@ -421,6 +421,8 @@ class Starsystem extends PlaceBase
 		venueStarsystem: VenueStarsystem
 	)
 	{
+		var world = universe.world as WorldExtended;
+
 		var margin = universe.display.sizeInPixels.x / 60; // hack
 		var fontHeightInPixels = margin;
 		var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
@@ -446,7 +448,22 @@ class Starsystem extends PlaceBase
 			fontNameAndHeight,
 			true, // hasBorder
 			DataBinding.fromTrue(), // isEnabled
-			() => { "todo - repeat" } // todo - faction.moveLastRepeat(universe) // click
+			() =>
+			{
+				var venueCurrent = universe.venueCurrent() as VenueStarsystem;
+				var shipSelected = venueCurrent.entitySelected as Ship;
+				if (shipSelected != null)
+				{
+					var shipFaction = shipSelected.factionable().faction();
+					var factionForPlayer = world.factions[0];
+					var doesShipBelongToPlayer =
+						(shipFaction == factionForPlayer);
+					if (doesShipBelongToPlayer)
+					{
+						shipSelected.moveRepeat(universe);
+					}
+				}
+			}
 		);
 
 		var buttonPass = ControlButton.from8
@@ -462,7 +479,23 @@ class Starsystem extends PlaceBase
 			fontNameAndHeight,
 			true, // hasBorder
 			DataBinding.fromTrue(), // isEnabled
-			() => { alert("todo - pass"); } // todo - faction.movePass(universe) // click
+			() =>
+			{
+				var venueCurrent = universe.venueCurrent() as VenueStarsystem;
+				var shipSelected = venueCurrent.entitySelected as Ship;
+				if (shipSelected != null)
+				{
+					var shipFaction = shipSelected.factionable().faction();
+					var factionForPlayer = world.factions[0];
+					var doesShipBelongToPlayer =
+						(shipFaction == factionForPlayer);
+					if (doesShipBelongToPlayer)
+					{
+						var shipAsDeviceUser = shipSelected.deviceUser();
+						shipAsDeviceUser.energyRemainingThisRoundClear();
+					}
+				}
+			}
 		);
 
 		var returnValue = ControlContainer.from3

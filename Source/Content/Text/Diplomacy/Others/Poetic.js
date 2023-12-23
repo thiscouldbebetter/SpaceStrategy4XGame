@@ -1,20 +1,25 @@
+"use strict";
+class ConversationStylePoetic {
+}
+ConversationStylePoetic.Content = `
+
 Greet.Alliance
-Touched on the shoulder / I turned to my companion / and touched them back.
+Touched on the shoulder, / I turned to my companion / and I touched them back.
 
 Greet.Peace
 Leaves fall in the wood / without my interference / or indeed my help.
 
 Greet.War
-I tighten my grasp / on the farming tool's handle / so far from its home.
+I tighten my grasp / on the farming tool's handle, / so far from its home.
 
 Quit
-Nothing's forever / although nothing's forgotten / a wheel has no ends.
+Nothing's forever, / although nothing's forgotten. / A wheel has no ends.
 
 StateChange.Alliance.ToPeace
-I open the door / and step out in the blizzard / remembering warmth.
+I open the door / and step out in the blizzard, / remembering warmth.
 
 StateChange.Peace.ToAlliance.Accept
-First two rivers / then one river, for a while / (but then two rivers).
+There were two rivers, / then one river, for a while / (but then two rivers).
 
 StateChange.Peace.ToAlliance.Reject
 If you see a branch / that grows into another, / are you right-side up?
@@ -32,7 +37,7 @@ StateCurrent.Prompt
 The whole arching sky / is reflected in my tea; / in a puddle too.
 
 StateCurrent.PromptAgain
-A tall wax candle / how long will it last? / as long as the flame.
+A tall wax candle: / you ask, how long will it last? / As long as the flame.
 
 TradeInformation.Cancel.Do
 Knowing, you speak not. / Listening, I hear breathing. / Quiet, you tell all.
@@ -42,3 +47,4 @@ The sage made a speech; / the whole time I was watching / a spider spin webs.
 
 TradeInformation.Prompt
 Lists of things to say, / and lists of thoughts to forget, / which of them is which?
+	`;

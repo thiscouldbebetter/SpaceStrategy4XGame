@@ -1,3 +1,8 @@
+
+class ConversationStyleRobotic
+{
+	static Content = `
+
 Greet.Alliance
 Trusted node acknowledged.
 
@@ -42,3 +47,5 @@ Duplex data transfer initiated.
 
 TradeInformation.Prompt
 Duplex data transfer initiated.
+	`;
+}

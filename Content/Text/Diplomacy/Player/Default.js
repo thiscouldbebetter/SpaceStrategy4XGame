@@ -1,3 +1,8 @@
+
+class ConversationStylePlayer
+{
+	static Content = `
+
 StateCurrent.Alliance.ToPeace
 My civilization is ending its alliance with yours.
 
@@ -30,3 +35,6 @@ Let's trade info on starsystems.
 
 TradeInformation.Technologies.Option
 Let's trade technologies.
+	`;
+
+}

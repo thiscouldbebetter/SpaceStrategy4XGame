@@ -1,3 +1,8 @@
+
+class ConversationStyleChivalrous
+{
+	static Content = `
+
 Greet.Alliance
 Hail, comrade!  May our shared road rise to meet you!
 
@@ -42,3 +47,5 @@ A knight's mind must be as sharp as his sword.
 
 TradeInformation.Prompt
 Speak your secret knowledge, and we will requite thee as we may.
+	`;
+}

@@ -1,3 +1,8 @@
+"use strict";
+class ConversationStyleEnthusiastic {
+}
+ConversationStyleEnthusiastic.Content = `
+
 Greet.Alliance
 Howdy, partner!  How's every little thing?
 
@@ -42,3 +47,4 @@ Any day is a good day when you learn something.
 
 TradeInformation.Prompt
 Okay, lay it on us, blow our minds.  What's your bag?
+	`;

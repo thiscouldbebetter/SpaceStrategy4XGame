@@ -10,7 +10,7 @@ function main() {
     var contentPathAudio = contentPath + "Audio/";
     var contentPathVideo = contentPath + "Video/";
     var contentPathFonts = contentPath + "Fonts/";
-    var contentPathTextStrings = contentPath + "Text/";
+    // var contentPathTextStrings = contentPath + "Text/";
     var mediaLibrary = new MediaLibrary("", // contentDirectoryPath - Already incorporated into item paths?
     // images
     [
@@ -34,15 +34,22 @@ function main() {
     ], 
     // textStrings
     [
-        new TextString("Diplomacy_Others_Default", contentPathTextStrings + "Diplomacy/Others/Default.json"),
-        new TextString("Diplomacy_Others_Chivalrous", contentPathTextStrings + "Diplomacy/Others/Chivalrous.json"),
-        new TextString("Diplomacy_Others_Enthusiastic", contentPathTextStrings + "Diplomacy/Others/Enthusiastic.json"),
-        new TextString("Diplomacy_Others_Haughty", contentPathTextStrings + "Diplomacy/Others/Haughty.json"),
-        new TextString("Diplomacy_Others_Poetic", contentPathTextStrings + "Diplomacy/Others/Poetic.json"),
-        new TextString("Diplomacy_Others_Robotic", contentPathTextStrings + "Diplomacy/Others/Robotic.json"),
-        new TextString("Diplomacy_Others_Unctuous", contentPathTextStrings + "Diplomacy/Others/Unctuous.json"),
-        new TextString("Diplomacy_Others_Unhinged", contentPathTextStrings + "Diplomacy/Others/Unhinged.json"),
-        new TextString("Diplomacy_Player_Default", contentPathTextStrings + "Diplomacy/Player/Default.json"),
+        TextString.fromString("Diplomacy_Others_Chivalrous", ConversationStyleChivalrous.Content),
+        TextString.fromString("Diplomacy_Others_Default", ConversationStyleDefault.Content),
+        TextString.fromString("Diplomacy_Others_Enthusiastic", ConversationStyleEnthusiastic.Content),
+        TextString.fromString("Diplomacy_Others_Formal", ConversationStyleFormal.Content),
+        TextString.fromString("Diplomacy_Others_Haughty", ConversationStyleHaughty.Content),
+        TextString.fromString("Diplomacy_Others_Mercantile", ConversationStyleMercantile.Content),
+        TextString.fromString("Diplomacy_Others_Mercenary", ConversationStyleMercenary.Content),
+        TextString.fromString("Diplomacy_Others_Monoverbal", ConversationStyleMonoverbal.Content),
+        TextString.fromString("Diplomacy_Others_Morose", ConversationStyleMorose.Content),
+        TextString.fromString("Diplomacy_Others_Poetic", ConversationStylePoetic.Content),
+        TextString.fromString("Diplomacy_Others_Prospector", ConversationStyleProspector.Content),
+        TextString.fromString("Diplomacy_Others_Robotic", ConversationStyleRobotic.Content),
+        TextString.fromString("Diplomacy_Others_Unctuous", ConversationStyleUnctuous.Content),
+        TextString.fromString("Diplomacy_Others_Unhinged", ConversationStyleUnhinged.Content),
+        TextString.fromString("Diplomacy_Others_Untranslatable", ConversationStyleUntranslatable.Content),
+        TextString.fromString("Diplomacy_Player_Default", ConversationStylePlayer.Content),
     ]);
     var controlStyles = ControlStyle.Instances();
     var controlBuilderInner = ControlBuilder.fromStyle(controlStyles.DarkAndRounded);

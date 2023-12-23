@@ -1,3 +1,8 @@
+
+class ConversationStyleUnctuous
+{
+	static Content = `
+
 Greet.Alliance
 Dearest bretheren, how may we meet your needs?
 
@@ -42,3 +47,6 @@ Ah, a glimmer of light in the dungeon of our ignorance!
 
 TradeInformation.Prompt
 What gem of your grand beneficience will you gift us today?
+	`;
+
+}

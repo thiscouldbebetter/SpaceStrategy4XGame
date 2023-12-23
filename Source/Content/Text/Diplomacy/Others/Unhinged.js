@@ -1,3 +1,8 @@
+"use strict";
+class ConversationStyleUnhinged {
+}
+ConversationStyleUnhinged.Content = `
+
 Greet.Alliance
 Ah, the kings of beasts!  Let's galmmph awhile.
 
@@ -42,3 +47,4 @@ Yes, we must know.  Tell us.  Why won't you TELL us already?!
 
 TradeInformation.Prompt
 Is this about the things, or the other things?
+	`;

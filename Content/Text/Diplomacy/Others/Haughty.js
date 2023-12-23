@@ -1,3 +1,8 @@
+
+class ConversationStyleHaughty
+{
+	static Content = `
+
 Greet.Alliance
 Let us discuss how you may serve us.
 
@@ -42,3 +47,5 @@ Yes, you do possess a certain low cunning.
 
 TradeInformation.Prompt
 How can your knowledge serve us?
+	`;
+}

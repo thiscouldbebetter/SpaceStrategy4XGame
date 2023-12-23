@@ -1,3 +1,8 @@
+"use strict";
+class ConversationStyleDefault {
+}
+ConversationStyleDefault.Content = `
+
 Greet.Alliance
 Welcome, friend.
 
@@ -42,3 +47,4 @@ Very well, let's trade.
 
 TradeInformation.Prompt
 What kind of info do you want to trade?
+	`;

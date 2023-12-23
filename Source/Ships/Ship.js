@@ -193,30 +193,33 @@ class Ship extends Entity {
         var deviceUser = this.deviceUser();
         var deviceSelected = deviceUser.deviceSelected();
         order.deviceToUseSet(deviceSelected);
-        console.log("todo - Ship.deviceUseStart()");
     }
     deviceUser() { return DeviceUser.ofEntity(this); }
     // movement
     linkPortalEnter(cluster, linkPortal, ship) {
-        var starsystemFrom = linkPortal.starsystemFrom(cluster);
-        var starsystemTo = linkPortal.starsystemTo(cluster);
-        var link = linkPortal.link(cluster);
-        starsystemFrom.shipRemove(ship);
-        link.shipAdd(ship);
-        var nodesLinked = link.nodesLinked(cluster);
-        var linkNode0 = nodesLinked[0];
-        var linkNode1 = nodesLinked[1];
-        var linkStarsystem1 = linkNode1.starsystem;
-        var isLinkForward = (starsystemTo == linkStarsystem1);
-        var shipLoc = this.locatable().loc;
-        shipLoc.placeName = StarClusterLink.name + ":" + link.name;
-        var nodeFrom = (isLinkForward ? linkNode0 : linkNode1);
-        shipLoc.pos.overwriteWith(nodeFrom.locatable().loc.pos);
-        var linkDirection = link.displacement(cluster).normalize();
-        if (isLinkForward == false) {
-            linkDirection.multiplyScalar(-1);
+        var deviceUser = ship.deviceUser();
+        var starlaneDrives = deviceUser.devicesStarlaneDrives(ship);
+        if (starlaneDrives.length > 0) {
+            var starsystemFrom = linkPortal.starsystemFrom(cluster);
+            var starsystemTo = linkPortal.starsystemTo(cluster);
+            var link = linkPortal.link(cluster);
+            starsystemFrom.shipRemove(ship);
+            link.shipAdd(ship);
+            var nodesLinked = link.nodesLinked(cluster);
+            var linkNode0 = nodesLinked[0];
+            var linkNode1 = nodesLinked[1];
+            var linkStarsystem1 = linkNode1.starsystem;
+            var isLinkForward = (starsystemTo == linkStarsystem1);
+            var shipLoc = this.locatable().loc;
+            shipLoc.placeName = StarClusterLink.name + ":" + link.name;
+            var nodeFrom = (isLinkForward ? linkNode0 : linkNode1);
+            shipLoc.pos.overwriteWith(nodeFrom.locatable().loc.pos);
+            var linkDirection = link.displacement(cluster).normalize();
+            if (isLinkForward == false) {
+                linkDirection.multiplyScalar(-1);
+            }
+            shipLoc.vel.overwriteWith(linkDirection);
         }
-        shipLoc.vel.overwriteWith(linkDirection);
     }
     linkExit(world, link) {
         var ship = this;

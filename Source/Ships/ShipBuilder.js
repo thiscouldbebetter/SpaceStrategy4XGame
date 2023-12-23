@@ -1,7 +1,7 @@
 "use strict";
 class ShipBuilder {
     constructor() {
-        this.shipName = "ShipTodo";
+        this.shipName = "Ship";
         this.buildableDefnsAvailable = null;
         this.buildableDefnAvailableSelected = null;
         this.buildableDefnsToBuild = [];
@@ -199,6 +199,11 @@ class ShipBuilder {
         font, 32, // charCountMax
         DataBinding.fromTrue() // isEnabled
         );
+        var nameRandomize = () => {
+            shipBuilder.shipName = NameGenerator.generateName();
+        };
+        var buttonNameRandomize = ControlButton.from5(textName.pos.clone().addXY(textName.size.x + margin, 0), Coords.fromXY(buttonSize.x * 1.5, textName.size.y), "Randomize", font, nameRandomize // click
+        );
         var labelHullSize = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + labelHeight), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Hull Size:"), font);
@@ -265,6 +270,7 @@ class ShipBuilder {
         [
             labelName,
             textName,
+            buttonNameRandomize,
             labelHullSize,
             selectHullSize,
             labelComponentsAvailable,

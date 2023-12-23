@@ -530,6 +530,7 @@ class WorldExtendedCreator
 			buildableDefns.ShipSensor1TonklinFrequencyAnalyzer,
 			buildableDefns.ShipShield1IonWrap,
 			buildableDefns.ShipWeapon01MassBarrageGun,
+			buildableDefns.ShipStarlaneDrive1StarLaneDrive // Note that this is the sixth item, which is impossible.
 		];
 
 		var shipComponentsAsBuildables =

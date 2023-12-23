@@ -86,7 +86,7 @@ class Planet extends Entity {
         var layoutMap = layout.map;
         var mapSizeInCells = layoutMap.sizeInCells;
         var cellPosInCells = Coords.create();
-        var terrainOrbit = layoutMap.terrainByName("Orbit");
+        var terrainOrbit = layoutMap.terrainByName("Orbital");
         for (var y = 0; y < mapSizeInCells.y; y++) {
             cellPosInCells.y = y;
             for (var x = 0; x < mapSizeInCells.x; x++) {

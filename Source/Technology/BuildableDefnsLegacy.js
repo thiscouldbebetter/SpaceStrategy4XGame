@@ -292,7 +292,7 @@ class BuildableDefnsLegacy {
         var deviceDefnSensor = (name, sensorRange) => {
             return new DeviceDefn(name, false, // isActive
             false, // needsTarget
-            [categoryShipGenerator], null, // initialize
+            [categoryShipSensor], null, // initialize
             // updateForRound
             (uwpe) => {
                 var ship = uwpe.entity;
@@ -419,13 +419,13 @@ class BuildableDefnsLegacy {
         this.SurfaceEngineeringRetreat = facilitySurfaceUsable(names.SurfaceEngineeringRetreat, visualBuild("Engineering Retreat", colors.Gray), 80, effectResourcesAdd([
             new Resource("Industry", 1),
             new Resource("Research", 1)
-        ]), "Provides 1 point each of industrial and research.");
+        ]), "Provides 1 point each of industry and research.");
         this.SurfaceFertilizationPlant = facilitySurfaceUsable(names.SurfaceFertilizationPlant, visualBuild("Fertilization Plant", colors.Gray), 200, effectResourceMultiply(new Resource("Prosperity", 1.5)), "First one present adds 50% to total prosperity produced.");
         this.SurfaceHabitat = facilitySurfaceUsable(names.SurfaceHabitat, visualBuild("Habitat", colors.Gray), 160, effectPopulationMaxAdd(3), "Increases maximum population by 3.");
         this.SurfaceHyperpowerPlant = facilitySurfaceUsable(names.SurfaceHyperpowerPlant, visualBuild("Hyperpower Plant", colors.Gray), 200, effectResourceMultiply(new Resource("Industry", 1.5)), "First one present adds 50% to total industry produced.");
         this.SurfaceIndustrialMegafacility = facilitySurfaceUsable(names.SurfaceIndustrialMegafacility, visualBuild("Industrial Megafacility", colors.Gray), 110, effectResourcesAdd([
             new Resource("Industry", 2)
-        ]), "Produces 2 industry, plus a possible bonus depending on terrain.");
+        ]), "Produces 2 industry, plus a possible bonus based on terrain.");
         this.SurfaceInternet = facilitySurfaceUsable(names.SurfaceInternet, visualBuild("Internet", colors.Gray), 250, effectResourceMultiply(new Resource("Research", 1.5)), "First one present adds 50% to total industry produced.");
         this.SurfaceLogicFactory = facilitySurfaceUsable(names.SurfaceLogicFactory, visualBuild("Logic Factory", colors.Gray), 80, effectResourcesAdd([
             new Resource("Prosperity", 1),
@@ -463,7 +463,7 @@ class BuildableDefnsLegacy {
         null, // entityModifyOnBuild
         "Extracts a technological advance from ancient ruins.");
         // Default tech.
-        this.SurfaceAgriplot = facilitySurfaceUsable(names.SurfaceAgriplot, visualBuild(names.SurfaceAgriplot, colors.GreenDark), 30, effectResourcesAdd([new Resource("Prosperity", 1)]), "Provides 1 prosperity, with a possible bonus depending on terrain.");
+        this.SurfaceAgriplot = facilitySurfaceUsable(names.SurfaceAgriplot, visualBuild(names.SurfaceAgriplot, colors.GreenDark), 30, effectResourcesAdd([new Resource("Prosperity", 1)]), "Provides 1 prosperity, plus a possible bonus based on terrain.");
         this.SurfaceColonyHub = new BuildableDefn(names.SurfaceColonyHub, false, // isItem
         canBeBuiltNever, mapCellSizeInPixels, visualBuild("Hub", colors.Gray), 30, effectResourcesAdd([
             new Resource("Industry", 1),
@@ -472,9 +472,9 @@ class BuildableDefnsLegacy {
         null, // categories
         null, // entityProperties
         null, // entityModifyOnBuild,
-        "Provides 1 industry and 1 prosperity, with a possible bonus depending on terrain.");
-        this.SurfaceFactory = facilitySurfaceUsable(names.SurfaceFactory, visualBuild(names.SurfaceFactory, colors.Red), 30, effectResourcesAdd([new Resource("Industry", 1)]), "Provides 1 industry, with a possible bonus depending on terrain.");
-        this.SurfaceLaboratory = facilitySurfaceUsable(names.SurfaceLaboratory, visualBuild(names.SurfaceLaboratory, colors.Blue), 50, effectResourcesAdd([new Resource("Research", 1)]), "Provides 1 research, with a possible bonus depending on terrain.");
+        "Provides 1 industry and 1 prosperity, plus any terrain bonus.");
+        this.SurfaceFactory = facilitySurfaceUsable(names.SurfaceFactory, visualBuild(names.SurfaceFactory, colors.Red), 30, effectResourcesAdd([new Resource("Industry", 1)]), "Provides 1 industry, plus a possible bonus based on terrain.");
+        this.SurfaceLaboratory = facilitySurfaceUsable(names.SurfaceLaboratory, visualBuild(names.SurfaceLaboratory, colors.Blue), 50, effectResourcesAdd([new Resource("Research", 1)]), "Provides 1 research, plus a possible bonus based on terrain.");
         this.SurfaceOutpost = facilitySurfaceUsable(names.SurfaceOutpost, visualBuild("Outpost", colors.Gray), 120, effectPopulationMaxAdd(1), "Increases maximum population by 1.");
         this.SurfaceTransportTubes = facilitySurfaceAnywhere(names.SurfaceTransportTubes, visualBuild("Transport", colors.GrayDark), 10, effectNone, "Allows unusable terrain to be crossed to access usable terrain.");
         this._All =

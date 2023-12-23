@@ -172,11 +172,13 @@ class DeviceUser implements EntityProperty<DeviceUser>
 			this._distanceMaxPerMove = 0;
 			var devicesDrives = this.devicesDrives(ship);
 
+			var energyPerMoveBefore = this._energyPerMove;
 			var energyPerRoundBefore = this._energyPerRound;
 
 			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
 			devicesDrives.forEach(x => x.updateForRound(uwpe) );
 
+			this._energyPerMove = energyPerMoveBefore;
 			this._energyPerRound = energyPerRoundBefore;
 		}
 		return this._distanceMaxPerMove;
@@ -273,9 +275,10 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 	energyRemainingThisRoundIsEnoughToMove(ship: Ship): boolean
 	{
+		var energyRemainingThisRound = this.energyRemainingThisRound(ship);
 		var energyPerMove = this.energyPerMove(ship);
 		var isEnough =
-			(this._energyRemainingThisRound > energyPerMove);
+			(energyRemainingThisRound >= energyPerMove);
 		return isEnough;
 	}
 
@@ -291,7 +294,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 	energyRemainsThisRoundAny(): boolean
 	{
-		return (this._energyRemainingThisRound >= 0);
+		return (this._energyRemainingThisRound > 0);
 	}
 
 	energyRemainsThisRound(energyToCheck: number): boolean

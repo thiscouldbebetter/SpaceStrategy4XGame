@@ -38,12 +38,11 @@ class Starsystem extends PlaceBase {
         var numberOfPlanets = numberOfPlanetsMin + Math.floor(Math.random() * numberOfPlanetsRange);
         var planetsInOrderOfIncreasingDistanceFromSun = new Array();
         for (var i = 0; i < numberOfPlanets; i++) {
-            var planetName = name + " " + (i + 1);
             var planetType = PlanetType.random();
             var planetPos = Coords.create().randomize(universe.randomizer).multiply(size).multiplyScalar(2).subtract(size);
             var planetDemographics = new PlanetDemographics(0);
             var planetIndustry = new PlanetIndustry(); // 0, null),
-            var planet = new Planet(planetName, planetType, planetPos, null, // factionName
+            var planet = new Planet(name, planetType, planetPos, null, // factionName
             planetDemographics, planetIndustry, null // layout
             );
             var planetDistanceFromSun = planetPos.magnitude();
@@ -57,10 +56,18 @@ class Starsystem extends PlaceBase {
             }
             planetsInOrderOfIncreasingDistanceFromSun.splice(p, 0, planet);
         }
+        for (var p = 0; p < planetsInOrderOfIncreasingDistanceFromSun.length; p++) {
+            var planet = planetsInOrderOfIncreasingDistanceFromSun[p];
+            planet.name += " " + (p + 1);
+        }
         var returnValue = new Starsystem(name, size, star, [], // linkPortals - generated later
         planetsInOrderOfIncreasingDistanceFromSun, null // factionName
         );
         return returnValue;
+    }
+    // instance methods
+    cachesClear() {
+        this.entitiesForPlanetsLinkPortalsAndShipsReset();
     }
     entitiesForPlanetsLinkPortalsAndShips() {
         if (this._entitiesForPlanetsLinkPortalsAndShips == null) {
@@ -71,6 +78,9 @@ class Starsystem extends PlaceBase {
             this._entitiesForPlanetsLinkPortalsAndShips = entities;
         }
         return this._entitiesForPlanetsLinkPortalsAndShips;
+    }
+    entitiesForPlanetsLinkPortalsAndShipsReset() {
+        this._entitiesForPlanetsLinkPortalsAndShips = null;
     }
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
@@ -146,22 +156,20 @@ class Starsystem extends PlaceBase {
     }
     notificationsForRoundAddToArray(universe, world, faction, notificationsSoFar) {
         var shipsInStarsystem = this.ships;
-        var factions = world.factions;
-        var factionForPlayer = factions[0];
+        var factionForPlayer = world.factionPlayer();
         var shipsBelongingToPlayer = shipsInStarsystem.filter(x => x.factionable().faction() == factionForPlayer);
         var factionsPresent = this.factionsPresent(world);
         var factionForPlayerDiplomacy = factionForPlayer.diplomacy;
-        var areThereEnemyFactionsPresent = factionsPresent.some(x => factionForPlayerDiplomacy.isAtWarWithFaction(x));
-        if (areThereEnemyFactionsPresent) {
-            var shipsSleeping = shipsBelongingToPlayer.filter(x => x.sleeping());
-            shipsSleeping.forEach(x => x.sleepCancel());
-        }
-        var areThereShipsWithMovesRemaining = shipsBelongingToPlayer.some(x => x.deviceUser().energyRemainsThisRoundAny());
-        var shouldNotify = areThereShipsWithMovesRemaining;
+        var areThereEnemyFactionsPresent = factionsPresent.some(x => factionForPlayerDiplomacy.factionIsAnEnemy(x));
+        var areThereAwakeShipsWithMovesRemaining = shipsBelongingToPlayer.some(x => x.sleeping() == false
+            && x.deviceUser().energyRemainsThisRoundAny());
+        var shouldNotify = areThereAwakeShipsWithMovesRemaining;
         if (shouldNotify) {
             var message = "There are moves remaining in the "
                 + this.name
-                + " system.";
+                + " system";
+            +areThereEnemyFactionsPresent ? ", and enemies are present" : ""
+                + ".";
             var starsystem = this;
             var notification = new Notification2(message, () => starsystem.jumpTo(universe));
             notificationsSoFar.push(notification);
@@ -176,19 +184,25 @@ class Starsystem extends PlaceBase {
     }
     shipAdd(shipToAdd, world) {
         this.entityToSpawnAdd(shipToAdd);
+        var factionsInStarsystem = this.factionsPresent(world);
+        var shipFaction = shipToAdd.factionable().faction();
+        var factionsInStarsystemEnemy = factionsInStarsystem.filter(x => x.diplomacy.factionIsAnEnemy(shipFaction));
+        var shipsBelongingToEnemies = this.ships.filter(x => factionsInStarsystemEnemy.some(y => x.factionable().faction() == y));
+        shipsBelongingToEnemies.forEach(x => x.sleepCancel());
         this.ships.push(shipToAdd);
         shipToAdd.locatable().loc.placeName =
             Starsystem.name + ":" + this.name;
-        var factionsInStarsystem = this.factionsPresent(world);
         factionsInStarsystem.forEach(faction => {
             var factionKnowledge = faction.knowledge;
             factionKnowledge.shipAdd(shipToAdd, world);
             factionKnowledge.starsystemAdd(this, world);
         });
+        this.cachesClear();
     }
     shipRemove(shipToRemove) {
         ArrayHelper.remove(this.ships, shipToRemove);
         this.entityRemove(shipToRemove);
+        this.cachesClear();
     }
     toVenue() {
         return new VenueStarsystem(null, this);
@@ -207,10 +221,10 @@ class Starsystem extends PlaceBase {
         DataBinding.fromTrue(), // isEnabled
         () => {
             var venueCurrent = universe.venueCurrent();
-            var shipSelected = venueCurrent.entitySelected;
+            var shipSelected = venueCurrent.entitySelected();
             if (shipSelected != null) {
                 var shipFaction = shipSelected.factionable().faction();
-                var factionForPlayer = world.factions[0];
+                var factionForPlayer = world.factionPlayer();
                 var doesShipBelongToPlayer = (shipFaction == factionForPlayer);
                 if (doesShipBelongToPlayer) {
                     shipSelected.moveRepeat(universe);
@@ -222,16 +236,8 @@ class Starsystem extends PlaceBase {
         DataBinding.fromTrue(), // isEnabled
         () => {
             var venueCurrent = universe.venueCurrent();
-            var shipSelected = venueCurrent.entitySelected;
-            if (shipSelected != null) {
-                var shipFaction = shipSelected.factionable().faction();
-                var factionForPlayer = world.factions[0];
-                var doesShipBelongToPlayer = (shipFaction == factionForPlayer);
-                if (doesShipBelongToPlayer) {
-                    var shipAsDeviceUser = shipSelected.deviceUser();
-                    shipAsDeviceUser.energyRemainingThisRoundClear();
-                }
-            }
+            var starsystem = venueCurrent.starsystem;
+            starsystem.factionToMoveAdvance(world);
         });
         var returnValue = ControlContainer.from3("containerMoveRepeatOrPass", pos.clone(), size.clone(), 
         // children
@@ -267,12 +273,12 @@ class Starsystem extends PlaceBase {
         fontNameAndHeight, true, // hasBorder
         DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.entityHighlighted != null)), // isEnabled
         () => // click
-         venueStarsystem.entitySelected = venueStarsystem.entityHighlighted);
+         venueStarsystem.entitySelect(venueStarsystem.entityHighlighted));
         var buttonTarget = ControlButton.from8("buttonTarget", // name,
         Coords.fromXY(margin * 2 + buttonSize.x, size.y - margin - buttonSize.y), // pos
         buttonSize, "Target", // text,
         fontNameAndHeight, true, // hasBorder
-        DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.entitySelected != null)), // isEnabled
+        DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.entitySelected() != null)), // isEnabled
         () => alert("todo - target") // click
         );
         var returnValue = new ControlContainer("containerSelected", pos.clone(), size.clone(), 
@@ -295,7 +301,7 @@ class Starsystem extends PlaceBase {
         DataBinding.fromContextAndGet(universe, (c) => {
             // hack
             var venue = c.venueCurrent();
-            return (venue.model == null ? "" : venue.model().name);
+            return (venue.model == null ? "" : venue.model().name + " System");
         }), fontNameAndHeight);
         var textRoundColonSpace = "Round:";
         var labelRound = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight), // pos

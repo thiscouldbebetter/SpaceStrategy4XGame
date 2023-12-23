@@ -5,7 +5,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 	starsystem: Starsystem;
 
 	cursor: Cursor;
-	entitySelected: Entity;
+	_entitySelected: Entity;
 	entityHighlighted: Entity;
 	entityMoving: Entity;
 
@@ -61,14 +61,28 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	entitySelect(value: Entity): void
 	{
-		this.entitySelected = value;
+		this._entitySelected = value;
+	}
+
+	entitySelected(): Entity
+	{
+		if (this.starsystem.entityIsPresent(this._entitySelected) == false)
+		{
+			this.entitySelectedClear();
+		}
+		return this._entitySelected;
+	}
+
+	entitySelectedClear(): void
+	{
+		this._entitySelected = null;
 	}
 
 	entitySelectedDetailsAreViewable(universe: Universe): boolean
 	{
 		var entitySelectedDetailsAreViewable = false;
 
-		var entitySelected = this.entitySelected;
+		var entitySelected = this.entitySelected();
 
 		if (entitySelected != null)
 		{
@@ -98,7 +112,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			return;
 		}
 
-		var selectedEntity = this.entitySelected;
+		var selectedEntity = this.entitySelected();
 		if (selectedEntity != null)
 		{
 			var venueNext: Venue;
@@ -123,6 +137,11 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 				universe.venueTransitionTo(venueNext);
 			}
 		}
+	}
+
+	entitySelectedEquals(other: Entity): boolean
+	{
+		return (this.entitySelected() == other);
 	}
 
 	factionsPresent(world: WorldExtended): Faction[]
@@ -209,7 +228,8 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	selectionName(): string
 	{
-		return (this.entitySelected == null ? "[none]" : this.entitySelected.name);
+		var entitySelected = this.entitySelected();
+		return (entitySelected == null ? "[none]" : entitySelected.name);
 	}
 
 	updateForTimerTick(universe: Universe): void
@@ -367,7 +387,8 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			}
 
 			var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
-			if (this.entitySelected == null || numberOfCollisions == 1)
+			var entitySelected = this.entitySelected();
+			if (entitySelected == null || numberOfCollisions == 1)
 			{
 				bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
 			}
@@ -378,7 +399,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 					var collision = bodiesClickedAsCollisionsSorted[c];
 					bodyClicked = collision.colliders[0];
 
-					if (bodyClicked == this.entitySelected)
+					if (bodyClicked == entitySelected)
 					{
 						var cNext = c + 1;
 						if (cNext >= numberOfCollisions)
@@ -403,14 +424,16 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		universe: Universe, entityClicked: Entity
 	): void
 	{
+		var entitySelected = this.entitySelected();
+
 		var selectionTypeName =
 		(
-			this.entitySelected == null
+			entitySelected == null
 			? null
-			: this.entitySelected.constructor.name
+			: entitySelected.constructor.name
 		);
 
-		if (this.entitySelected == null)
+		if (entitySelected == null)
 		{
 			this.entitySelect(entityClicked);
 		}
@@ -439,7 +462,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		universe: Universe, bodyClicked: Entity
 	): void
 	{
-		var planetSelected = this.entitySelected as Planet;
+		var planetSelected = this.entitySelected() as Planet;
 
 		if (bodyClicked == null)
 		{
@@ -475,7 +498,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 	{
 		var inputHelper = universe.inputHelper;
 
-		var entityOrderable = this.entitySelected;
+		var entityOrderable = this.entitySelected();
 		var orderable = Orderable.fromEntity(entityOrderable);
 		var order = orderable.order(entityOrderable);
 
@@ -597,7 +620,8 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	cameraCenterOnSelection(): void
 	{
-		if (this.entitySelected != null)
+		var entitySelected = this.entitySelected();
+		if (entitySelected != null)
 		{
 			var constraint =
 				this.cameraEntity.constrainable().constraintByClassName
@@ -605,7 +629,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 					Constraint_PositionOnCylinder.name
 				);
 			var constraintPosition = constraint as Constraint_PositionOnCylinder;
-			var selectionPos = this.entitySelected.locatable().loc.pos;
+			var selectionPos = entitySelected.locatable().loc.pos;
 			constraintPosition.center.overwriteWith(selectionPos);
 		}
 	}

@@ -62,6 +62,9 @@ class WorldExtended extends World {
     factionCurrent() {
         return this.factions[this.factionIndexCurrent];
     }
+    factionPlayer() {
+        return this.factions[0];
+    }
     factionsOtherThanCurrent() {
         return this.factionsOtherThan(this.factionCurrent());
     }

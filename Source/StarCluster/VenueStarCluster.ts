@@ -4,7 +4,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 	world: WorldExtended;
 	cameraEntity: Entity;
 
-	entitySelected: Entity;
+	_entitySelected: Entity;
 
 	hasBeenUpdatedSinceDrawn: boolean;
 
@@ -28,9 +28,10 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	cameraCenterOnSelection(): void
 	{
-		if (this.entitySelected != null)
+		var entitySelected = this.entitySelected();
+		if (entitySelected != null)
 		{
-			var targetPosNew = this.entitySelected.locatable().loc.pos;
+			var targetPosNew = entitySelected.locatable().loc.pos;
 
 			var cameraConstrainable = this.cameraEntity.constrainable();
 			var constraint =
@@ -246,7 +247,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 			this.hasBeenUpdatedSinceDrawn = false;
 
 			universe.display.drawBackground(null, null);
-			var playerFaction = this.world.factions[0];
+			var playerFaction = this.world.factionPlayer();
 			var playerKnowledge = playerFaction.knowledge;
 			var worldKnown = playerKnowledge.world(universe, this.world);
 			worldKnown.starCluster.drawForCamera(universe, worldKnown.camera);
@@ -296,9 +297,10 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	selectionName(): string
 	{
+		var entitySelected = this.entitySelected();
 		var returnValue =
 		(
-			this.entitySelected == null ? "[none]" : this.entitySelected.name
+			entitySelected == null ? "[none]" : entitySelected.name
 		);
 		return returnValue;
 	}
@@ -356,7 +358,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 				).normalize()
 			);
 
-			var playerFaction = world.factions[0];
+			var playerFaction = world.factionPlayer();
 			var worldKnown = playerFaction.knowledge.world
 			(
 				universe, world
@@ -384,7 +386,9 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 				var bodyClicked = collisionNearest.colliders[0]; // todo
 
-				if (bodyClicked == this.entitySelected)
+				var entitySelected = this.entitySelected();
+
+				if (bodyClicked == entitySelected)
 				{
 					var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
 					
@@ -402,7 +406,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 					}
 				}
 
-				this.entitySelected = bodyClicked;
+				this.entitySelect(bodyClicked);
 
 				universe.inputHelper.mouseClickedSet(false);
 			}
@@ -469,9 +473,20 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	// VenueWithCameraAndSelection.
 
+	entitySelect(value: Entity): void
+	{
+		this._entitySelected = value;
+	}
+
+	entitySelected(): Entity
+	{
+		return this._entitySelected;
+	}
+
 	entitySelectedDetailsAreViewable(universe: Universe): boolean
 	{
-		return true;
+		var entitySelected = this.entitySelected();
+		return (entitySelected != null && entitySelected.name != "?");
 	}
 
 	entitySelectedDetailsView(universe: Universe): void
@@ -483,7 +498,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 			return;
 		}
 
-		var selectedEntity = this.entitySelected;
+		var selectedEntity = this.entitySelected();
 		if (selectedEntity != null)
 		{
 			var venueNext: Venue;

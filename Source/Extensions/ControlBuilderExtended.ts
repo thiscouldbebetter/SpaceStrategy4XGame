@@ -71,7 +71,10 @@ class ControlBuilderExtended extends ControlBuilder
 			(
 				universe,
 				(c: Universe) =>
-					(c.venueCurrent() as VenueStarsystem).entitySelected, // get
+				{
+					var venue = c.venueCurrent() as VenueStarsystem;
+					return (venue.entitySelected == null ? null : venue.entitySelected() ); // get
+				}
 			),
 			(v: Entity) =>
 			{
@@ -262,7 +265,7 @@ class ControlBuilderExtended extends ControlBuilder
 				(c: VenueStarsystem) => (c.entityHighlighted != null)
 			), // isEnabled
 			() => // click
-				venueStarsystem.entitySelected = venueStarsystem.entityHighlighted
+				venueStarsystem.entitySelect(venueStarsystem.entityHighlighted)
 		);
 
 		var buttonTarget = ControlButton.from8
@@ -282,7 +285,7 @@ class ControlBuilderExtended extends ControlBuilder
 				venueStarsystem,
 				(c: VenueStarsystem) =>
 					c.entitySelected != null
-					&& c.entitySelected != c.entityHighlighted
+					&& c.entitySelectedEquals(c.entityHighlighted)
 			), // isEnabled
 			() => alert("todo - target")// click
 		);
@@ -341,7 +344,7 @@ class ControlBuilderExtended extends ControlBuilder
 
 		var buttonSize = Coords.fromXY(1, 1).multiplyScalar(buttonWidthAndHeight);
 
-		var buttonViewRotateUp = new ControlButton
+		var buttonViewRotateUp = ControlButton.from11
 		(
 			"buttonViewRotateUp",
 			Coords.fromXY
@@ -361,7 +364,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewRotateDown = new ControlButton
+		var buttonViewRotateDown = ControlButton.from11
 		(
 			"buttonViewRotateDown",
 			Coords.fromXY
@@ -381,7 +384,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewRotateLeft = new ControlButton
+		var buttonViewRotateLeft = ControlButton.from11
 		(
 			"buttonViewRotateLeft",
 			Coords.fromXY
@@ -401,7 +404,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewRotateRight = new ControlButton
+		var buttonViewRotateRight = ControlButton.from11
 		(
 			"buttonViewRotateRight",
 			Coords.fromXY
@@ -421,7 +424,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewZoomIn = new ControlButton
+		var buttonViewZoomIn = ControlButton.from11
 		(
 			"buttonViewZoomIn",
 			Coords.fromXY
@@ -441,7 +444,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewZoomOut = new ControlButton
+		var buttonViewZoomOut = ControlButton.from11
 		(
 			"buttonViewZoomOut",
 			Coords.fromXY
@@ -504,5 +507,5 @@ interface VenueWithCameraAndSelection extends Venue
 	cameraCenterOnSelection(): void;
 	entitySelectedDetailsAreViewable(universe: Universe): boolean;
 	entitySelectedDetailsView(universe: Universe): void;
-	entitySelected: Entity;
+	entitySelected(): Entity;
 }

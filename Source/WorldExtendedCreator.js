@@ -90,7 +90,7 @@ class WorldExtendedCreator {
             communicationStyleNames.splice(communicationStyleNames.indexOf(communicationStyleName), 1);
         }
         if (this.isDebuggingMode) {
-            this.create_FactionsAndShips_2_ShipOther(worldDummy, factions, deviceDefnsByName);
+            this.create_FactionsAndShips_2_ShipOther(buildableDefns, worldDummy, factions, deviceDefnsByName);
         }
         var factionsAndShips = [factions, ships];
         return factionsAndShips;
@@ -250,7 +250,7 @@ class WorldExtendedCreator {
         }
         return factionShips;
     }
-    create_FactionsAndShips_2_ShipOther(worldDummy, factions, deviceDefnsByName) {
+    create_FactionsAndShips_2_ShipOther(buildableDefns, worldDummy, factions, deviceDefnsByName) {
         var shipHullSize = ShipHullSize.Instances().Small;
         var factionUser = factions[0];
         var factionUserHomeStarsystem = factionUser.starsystemHome(worldDummy);
@@ -259,9 +259,16 @@ class WorldExtendedCreator {
         var factionOtherColor = factionOther.color;
         var factionOtherShipDefn = Ship.bodyDefnBuild(factionOtherColor);
         var shipPos = Coords.create().randomize(this.universe.randomizer).multiply(factionUserHomeStarsystemSize).multiplyScalar(2).subtract(factionUserHomeStarsystemSize);
-        var shipOther = new Ship("ShipOther", shipHullSize, factionOtherShipDefn, shipPos, factionOther, [
-        // No devices.
-        ]);
+        var shipComponentsAsBuildableDefns = [
+            buildableDefns.ShipDrive1TonklinMotor,
+            buildableDefns.ShipGenerator1ProtonShaver,
+            buildableDefns.ShipSensor1TonklinFrequencyAnalyzer,
+            buildableDefns.ShipShield1IonWrap,
+            buildableDefns.ShipWeapon01MassBarrageGun,
+        ];
+        var shipComponentsAsBuildables = shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x));
+        var shipComponentsAsEntities = shipComponentsAsBuildables.map(x => x.toEntity(worldDummy));
+        var shipOther = new Ship("ShipOther", shipHullSize, factionOtherShipDefn, shipPos, factionOther, shipComponentsAsEntities);
         factionOther.shipAdd(shipOther);
         factionUserHomeStarsystem.shipAdd(shipOther, worldDummy);
     }

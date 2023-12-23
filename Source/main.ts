@@ -286,7 +286,7 @@ function worldCreatorToControl
 		fontNameAndHeight
 	);
 
-	var buttonCreate = new ControlButton
+	var buttonCreate = ControlButton.from11
 	(
 		"buttonCreate",
 		Coords.fromXY

@@ -99,7 +99,6 @@ class Starsystem extends PlaceBase
 
 		for (var i = 0; i < numberOfPlanets; i++)
 		{
-			var planetName = name + " " + (i + 1);
 			var planetType = PlanetType.random();
 
 			var planetPos = Coords.create().randomize(universe.randomizer).multiply
@@ -119,7 +118,7 @@ class Starsystem extends PlaceBase
 
 			var planet = new Planet
 			(
-				planetName,
+				name,
 				planetType,
 				planetPos,
 				null, // factionName
@@ -145,6 +144,12 @@ class Starsystem extends PlaceBase
 			planetsInOrderOfIncreasingDistanceFromSun.splice(p, 0, planet);
 		}
 
+		for (var p = 0; p < planetsInOrderOfIncreasingDistanceFromSun.length; p++)
+		{
+			var planet = planetsInOrderOfIncreasingDistanceFromSun[p];
+			planet.name += " " + (p + 1);
+		}
+
 		var returnValue = new Starsystem
 		(
 			name,
@@ -160,6 +165,11 @@ class Starsystem extends PlaceBase
 
 	// instance methods
 
+	cachesClear(): void
+	{
+		this.entitiesForPlanetsLinkPortalsAndShipsReset();
+	}
+
 	_entitiesForPlanetsLinkPortalsAndShips: Entity[];
 
 	entitiesForPlanetsLinkPortalsAndShips(): Entity[]
@@ -173,7 +183,11 @@ class Starsystem extends PlaceBase
 			this._entitiesForPlanetsLinkPortalsAndShips = entities;
 		}
 		return this._entitiesForPlanetsLinkPortalsAndShips;
+	}
 
+	entitiesForPlanetsLinkPortalsAndShipsReset(): void
+	{
+		this._entitiesForPlanetsLinkPortalsAndShips = null;
 	}
 
 	faction(world: WorldExtended): Faction
@@ -312,8 +326,7 @@ class Starsystem extends PlaceBase
 	): Notification2[]
 	{
 		var shipsInStarsystem = this.ships;
-		var factions = world.factions;
-		var factionForPlayer = factions[0];
+		var factionForPlayer = world.factionPlayer();
 
 		var shipsBelongingToPlayer = shipsInStarsystem.filter
 		(
@@ -324,32 +337,27 @@ class Starsystem extends PlaceBase
 		var factionForPlayerDiplomacy = factionForPlayer.diplomacy;
 		var areThereEnemyFactionsPresent = factionsPresent.some
 		(
-			x => factionForPlayerDiplomacy.isAtWarWithFaction(x)
+			x => factionForPlayerDiplomacy.factionIsAnEnemy(x)
 		);
 
-		if (areThereEnemyFactionsPresent)
-		{
-			var shipsSleeping = shipsBelongingToPlayer.filter
-			(
-				x => x.sleeping()
-			);
-			shipsSleeping.forEach(x => x.sleepCancel() );
-		}
-
-		var areThereShipsWithMovesRemaining =
+		var areThereAwakeShipsWithMovesRemaining =
 			shipsBelongingToPlayer.some
 			(
-				x => x.deviceUser().energyRemainsThisRoundAny()
+				x =>
+					x.sleeping() == false
+					&& x.deviceUser().energyRemainsThisRoundAny()
 			);
 
-		var shouldNotify = areThereShipsWithMovesRemaining;
+		var shouldNotify = areThereAwakeShipsWithMovesRemaining;
 
 		if (shouldNotify)
 		{
 			var message =
 				"There are moves remaining in the "
 				+ this.name
-				+ " system.";
+				+ " system";
+				+ areThereEnemyFactionsPresent ? ", and enemies are present" : ""
+				+ "."
 
 			var starsystem = this;
 
@@ -381,12 +389,31 @@ class Starsystem extends PlaceBase
 	{
 		this.entityToSpawnAdd(shipToAdd);
 
+		var factionsInStarsystem = this.factionsPresent(world);
+
+		var shipFaction = shipToAdd.factionable().faction();
+
+		var factionsInStarsystemEnemy = factionsInStarsystem.filter
+		(
+			x => x.diplomacy.factionIsAnEnemy(shipFaction)
+		);
+
+		var shipsBelongingToEnemies = this.ships.filter
+		(
+			x =>
+				factionsInStarsystemEnemy.some
+				(
+					y => x.factionable().faction() == y
+				)
+		);
+
+		shipsBelongingToEnemies.forEach(x => x.sleepCancel() );
+
 		this.ships.push(shipToAdd);
 
 		shipToAdd.locatable().loc.placeName =
 			Starsystem.name + ":" + this.name;
 
-		var factionsInStarsystem = this.factionsPresent(world);
 		factionsInStarsystem.forEach
 		(
 			faction =>
@@ -396,12 +423,15 @@ class Starsystem extends PlaceBase
 				factionKnowledge.starsystemAdd(this, world);
 			}
 		);
+
+		this.cachesClear();
 	}
 
 	shipRemove(shipToRemove: Ship): void
 	{
 		ArrayHelper.remove(this.ships, shipToRemove);
 		this.entityRemove(shipToRemove);
+		this.cachesClear();
 	}
 
 	toVenue(): VenueStarsystem
@@ -451,11 +481,11 @@ class Starsystem extends PlaceBase
 			() =>
 			{
 				var venueCurrent = universe.venueCurrent() as VenueStarsystem;
-				var shipSelected = venueCurrent.entitySelected as Ship;
+				var shipSelected = venueCurrent.entitySelected() as Ship;
 				if (shipSelected != null)
 				{
 					var shipFaction = shipSelected.factionable().faction();
-					var factionForPlayer = world.factions[0];
+					var factionForPlayer = world.factionPlayer();
 					var doesShipBelongToPlayer =
 						(shipFaction == factionForPlayer);
 					if (doesShipBelongToPlayer)
@@ -482,19 +512,8 @@ class Starsystem extends PlaceBase
 			() =>
 			{
 				var venueCurrent = universe.venueCurrent() as VenueStarsystem;
-				var shipSelected = venueCurrent.entitySelected as Ship;
-				if (shipSelected != null)
-				{
-					var shipFaction = shipSelected.factionable().faction();
-					var factionForPlayer = world.factions[0];
-					var doesShipBelongToPlayer =
-						(shipFaction == factionForPlayer);
-					if (doesShipBelongToPlayer)
-					{
-						var shipAsDeviceUser = shipSelected.deviceUser();
-						shipAsDeviceUser.energyRemainingThisRoundClear();
-					}
-				}
+				var starsystem = venueCurrent.starsystem;
+				starsystem.factionToMoveAdvance(world);
 			}
 		);
 
@@ -602,7 +621,7 @@ class Starsystem extends PlaceBase
 				(c: VenueStarsystem) => (c.entityHighlighted != null)
 			), // isEnabled
 			() => // click
-				venueStarsystem.entitySelected = venueStarsystem.entityHighlighted
+				venueStarsystem.entitySelect(venueStarsystem.entityHighlighted)
 		);
 
 		var buttonTarget = ControlButton.from8
@@ -620,7 +639,7 @@ class Starsystem extends PlaceBase
 			DataBinding.fromContextAndGet
 			(
 				venueStarsystem,
-				(c: VenueStarsystem) => (c.entitySelected != null)
+				(c: VenueStarsystem) => (c.entitySelected() != null)
 			), // isEnabled
 			() => alert("todo - target")// click
 		);
@@ -672,7 +691,7 @@ class Starsystem extends PlaceBase
 				{
 					// hack
 					var venue = c.venueCurrent() as VenueStarsystem;
-					return (venue.model == null ? "" : venue.model().name);
+					return (venue.model == null ? "" : venue.model().name + " System");
 				}
 			),
 			fontNameAndHeight

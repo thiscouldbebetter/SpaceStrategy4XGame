@@ -131,7 +131,7 @@ function worldCreatorToControl(universe, worldCreator) {
     DataBinding.fromGet((c) => c), // bindingForOptionValues,
     DataBinding.fromGet((c) => c.name), // bindingForOptionText
     fontNameAndHeight);
-    var buttonCreate = new ControlButton("buttonCreate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Create", fontNameAndHeight, true, // hasBorder
+    var buttonCreate = ControlButton.from11("buttonCreate", Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), buttonSize, "Create", fontNameAndHeight, true, // hasBorder
     DataBinding.fromContextAndGet(worldCreator, (wc) => wc.settings.isValid(worldCreator)), // isEnabled
     () => universe.venueTransitionTo(worldCreator.venueWorldGenerate(universe)), false // canBeHeldDown
     );

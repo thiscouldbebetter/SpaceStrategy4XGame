@@ -34,7 +34,7 @@ class StarClusterNode extends Entity {
         "View", fontNameAndHeight, () => // click
          {
             var venueCurrent = universe.venueCurrent();
-            var starsystemToView = venueCurrent.entitySelected.starsystem;
+            var starsystemToView = venueCurrent.entitySelected().starsystem;
             if (starsystemToView != null) {
                 universe.venueTransitionTo(new VenueStarsystem(venueCurrent, starsystemToView));
             }

@@ -8,7 +8,7 @@ class FactionDiplomacy {
     static fromFactionSelf(factionSelf) {
         return new FactionDiplomacy(factionSelf, "Default", []);
     }
-    isAtWarWithFaction(factionToCheck) {
+    factionIsAnEnemy(factionToCheck) {
         var relationship = this.relationshipByFaction(factionToCheck);
         var isWar = relationship.stateIsWar();
         return isWar;

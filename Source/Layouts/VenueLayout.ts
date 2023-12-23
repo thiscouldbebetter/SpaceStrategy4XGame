@@ -19,6 +19,11 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
+	buildableDefnSelectedDescription(): string
+	{
+		return (this.buildableDefnSelected == null ? "" : this.buildableDefnSelected.description);
+	}
+
 	buildableDefnsAllowedAtPosInCells
 	(
 		buildableDefnsToCheck: BuildableDefn[],
@@ -379,7 +384,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		var displaySize = universe.display.sizeInPixels.clone().clearZ();
 		var containerSize = displaySize.clone().half();
 		var margin = Coords.fromXY(1, 1).multiplyScalar(8);
-		var fontHeightInPixels = 10; // hack
+		var fontHeightInPixels = displaySize.x / 60;
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var columnWidth = containerSize.x - margin.x * 2;
@@ -388,16 +393,40 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		(
 			(columnWidth - margin.x) / 2, buttonHeight
 		);
+		var labelSize = Coords.fromXY(columnWidth, fontHeightInPixels);
 		var listSize = Coords.fromXY
 		(
 			columnWidth,
-			containerSize.y - buttonHeight * 2 - margin.y * 4
+			containerSize.y - labelSize.y * 3 - buttonHeight - margin.y * 5
+		);
+
+		var terrainAtCursor = map.terrainAtCursor();
+		var terrainDescription = terrainAtCursor.name + ": " + terrainAtCursor.description;
+
+		var labelTerrainDescription = ControlLabel.from4Uncentered
+		(
+			margin,
+			labelSize,
+			DataBinding.fromContext("Terrain: " + terrainDescription), // text
+			fontNameAndHeight
+		);
+
+		var labelFacilityToBuild = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY(margin.x, margin.y + labelSize.y),
+			labelSize,
+			DataBinding.fromContext("Facility to Build on this Cell:"), // text
+			fontNameAndHeight
 		);
 
 		var listBuildables = ControlList.from8
 		(
 			"listBuildables",
-			Coords.fromXY(margin.x, margin.y * 2 + buttonSize.y),
+			Coords.fromXY
+			(
+				margin.x,
+				margin.y * 2 + labelSize.y * 2
+			),
 			listSize,
 			DataBinding.fromContextAndGet
 			(
@@ -419,13 +448,27 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			DataBinding.fromGet( (c: BuildableDefn) => c.name) // bindingForItemValue
 		);
 
+		var textFacilityToBuild = ControlLabel.from4Uncentered
+		(
+			Coords.fromXY
+			(
+				margin.x,
+				margin.y * 3 + labelSize.y * 2 + listSize.y
+			),
+			labelSize,
+			DataBinding.fromContextAndGet
+			(
+				this,
+				(c: VenueLayout) => c.buildableDefnSelectedDescription(),
+			), // text
+			fontNameAndHeight
+		);
+
 		var buttonBuild_Clicked = () =>
 		{
 			var buildableDefnSelected = venueLayout.buildableDefnSelected;
 			if (buildableDefnSelected != null)
 			{
-				var layout = venueLayout.layout;
-				var cursorPos = layout.map.cursor.pos;
 				var buildable = new Buildable(buildableDefnSelected, cursorPos.clone(), false, false);
 				var buildableEntity = buildable.toEntity(world);
 				this.modelParent.buildableEntityBuild(universe, buildableEntity);
@@ -437,14 +480,6 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		{
 			universe.venueJumpTo(venueLayout);
 		}
-
-		var labelFacilityToBuild = ControlLabel.from4Uncentered
-		(
-			margin,
-			listSize,
-			DataBinding.fromContext("Facility to Build on this Cell:"), // text
-			fontNameAndHeight
-		);
 
 		var buttonBuild = ControlButton.from8
 		(
@@ -487,8 +522,10 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			displaySize.clone().subtract(containerSize).half(), // pos
 			containerSize,
 			[
+				labelTerrainDescription,
 				labelFacilityToBuild,
 				listBuildables,
+				textFacilityToBuild,
 				buttonBuild,
 				buttonCancel
 			]
@@ -543,11 +580,14 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			controlHeight
 		);
 
+		var containerPopulationAndProductionSize =
+			containerInnerSize.clone().multiplyScalar(1.2);
+
 		var controlPopulationAndProduction = this.toControl_PopulationAndProduction
 		(
 			universe,
 			containerMainSize,
-			containerInnerSize,
+			containerPopulationAndProductionSize,
 			margin,
 			controlHeight
 		);
@@ -792,10 +832,15 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
+		var controlPos = Coords.fromXY
+		(
+			margin, containerMainSize.y - margin - containerInnerSize.y
+		);
+
 		var returnValue = ControlContainer.from4
 		(
 			"containerPopulationAndProduction",
-			Coords.fromXY(margin, containerMainSize.y - margin - containerInnerSize.y),
+			controlPos,
 			size,
 			// children
 			[
@@ -831,18 +876,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 			display.drawBackground(null, null);
 
-			var planetRadius = display.sizeInPixels.x / 6;
-			var colors = Color.Instances();
-			var planetColor = colors.Cyan.clone(); // .darken();
-			var planetPos = display.sizeInPixels.clone().half();
-			planetPos.addXY(0, planetRadius / 2);
-			var visualBackground =
-				VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor); // todo
-			var visualBackgroundAsEntity =
-				Entity.fromProperty(Locatable.fromPos(planetPos) );
-
-			var uwpe = UniverseWorldPlaceEntities.create().entitySet(visualBackgroundAsEntity);
-			visualBackground.draw(uwpe, universe.display);
+			this.visualBackgroundDraw(universe);
 
 			this.layout.draw(universe, universe.display);
 
@@ -851,5 +885,46 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 				this.venueControls.draw(universe);
 			}
 		}
+	}
+
+	visualBackgroundDraw(universe: Universe): void
+	{
+		var display = universe.display;
+
+		var planetType = this.modelParent.planetType;
+		var planetScaleFactor = 16;
+		var planetRadius = planetType.size.radiusInPixels * planetScaleFactor;
+		var planetColor = planetType.environment.color.clone().darken();
+		var planetPos = display.sizeInPixels.clone().half();
+		planetPos.addXY(0, planetRadius / 2);
+
+		var colors = Color.Instances();
+		var colorAtCenter = planetColor;
+		var colorMiddle = colorAtCenter;
+		var colorSpace = colors.Black;
+
+		// var visualBackground = VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor); // todo
+		var visualBackground = new VisualCircleGradient
+		(
+			planetRadius,
+			new ValueBreakGroup
+			(
+				[
+					new ValueBreak(0, colorAtCenter),
+					new ValueBreak(.2, colorAtCenter),
+					new ValueBreak(.3, colorMiddle),
+					new ValueBreak(.75, colorMiddle),
+					new ValueBreak(1, colorSpace),
+				],
+				null // ?
+			),
+			null // colorBorder
+		);
+
+		var visualBackgroundAsEntity =
+			Entity.fromProperty(Locatable.fromPos(planetPos) );
+
+		var uwpe = UniverseWorldPlaceEntities.create().entitySet(visualBackgroundAsEntity);
+		visualBackground.draw(uwpe, display);
 	}
 }

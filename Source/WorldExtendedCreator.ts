@@ -217,7 +217,7 @@ class WorldExtendedCreator
 		{
 			this.create_FactionsAndShips_2_ShipOther
 			(
-				worldDummy, factions, deviceDefnsByName
+				buildableDefns, worldDummy, factions, deviceDefnsByName
 			);
 		}
 
@@ -574,6 +574,7 @@ class WorldExtendedCreator
 
 	create_FactionsAndShips_2_ShipOther
 	(
+		buildableDefns: BuildableDefnsLegacy,
 		worldDummy: WorldExtended,
 		factions: Faction[],
 		deviceDefnsByName: Map<string, DeviceDefn>
@@ -605,6 +606,21 @@ class WorldExtendedCreator
 			factionUserHomeStarsystemSize
 		);
 
+		var shipComponentsAsBuildableDefns = 
+		[
+			buildableDefns.ShipDrive1TonklinMotor,
+			buildableDefns.ShipGenerator1ProtonShaver,
+			buildableDefns.ShipSensor1TonklinFrequencyAnalyzer,
+			buildableDefns.ShipShield1IonWrap,
+			buildableDefns.ShipWeapon01MassBarrageGun,
+		];
+
+		var shipComponentsAsBuildables =
+			shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x) );
+
+		var shipComponentsAsEntities =
+			shipComponentsAsBuildables.map(x => x.toEntity(worldDummy) );
+
 		var shipOther = new Ship
 		(
 			"ShipOther",
@@ -612,9 +628,7 @@ class WorldExtendedCreator
 			factionOtherShipDefn,
 			shipPos,
 			factionOther,
-			[
-				// No devices.
-			]
+			shipComponentsAsEntities
 		);
 
 		factionOther.shipAdd(shipOther);

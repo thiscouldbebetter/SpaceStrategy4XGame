@@ -23,11 +23,20 @@ class VenueStarsystem {
         }
     }
     entitySelect(value) {
-        this.entitySelected = value;
+        this._entitySelected = value;
+    }
+    entitySelected() {
+        if (this.starsystem.entityIsPresent(this._entitySelected) == false) {
+            this.entitySelectedClear();
+        }
+        return this._entitySelected;
+    }
+    entitySelectedClear() {
+        this._entitySelected = null;
     }
     entitySelectedDetailsAreViewable(universe) {
         var entitySelectedDetailsAreViewable = false;
-        var entitySelected = this.entitySelected;
+        var entitySelected = this.entitySelected();
         if (entitySelected != null) {
             var world = universe.world;
             var factionable = Factionable.ofEntity(entitySelected);
@@ -47,7 +56,7 @@ class VenueStarsystem {
         if (detailsAreViewable == false) {
             return;
         }
-        var selectedEntity = this.entitySelected;
+        var selectedEntity = this.entitySelected();
         if (selectedEntity != null) {
             var venueNext;
             var selectionTypeName = selectedEntity.constructor.name;
@@ -63,6 +72,9 @@ class VenueStarsystem {
                 universe.venueTransitionTo(venueNext);
             }
         }
+    }
+    entitySelectedEquals(other) {
+        return (this.entitySelected() == other);
     }
     factionsPresent(world) {
         return this.starsystem.factionsPresent(world);
@@ -108,7 +120,8 @@ class VenueStarsystem {
         return this.starsystem;
     }
     selectionName() {
-        return (this.entitySelected == null ? "[none]" : this.entitySelected.name);
+        var entitySelected = this.entitySelected();
+        return (entitySelected == null ? "[none]" : entitySelected.name);
     }
     updateForTimerTick(universe) {
         var world = universe.world;
@@ -190,14 +203,15 @@ class VenueStarsystem {
                 ArrayHelper.insertElementAt(bodiesClickedAsCollisionsSorted, collisionToSort, j);
             }
             var numberOfCollisions = bodiesClickedAsCollisionsSorted.length;
-            if (this.entitySelected == null || numberOfCollisions == 1) {
+            var entitySelected = this.entitySelected();
+            if (entitySelected == null || numberOfCollisions == 1) {
                 bodyClicked = bodiesClickedAsCollisionsSorted[0].colliders[0];
             }
             else {
                 for (var c = 0; c < numberOfCollisions; c++) {
                     var collision = bodiesClickedAsCollisionsSorted[c];
                     bodyClicked = collision.colliders[0];
-                    if (bodyClicked == this.entitySelected) {
+                    if (bodyClicked == entitySelected) {
                         var cNext = c + 1;
                         if (cNext >= numberOfCollisions) {
                             cNext = 0;
@@ -213,10 +227,11 @@ class VenueStarsystem {
         this.updateForTimerTick_Input_Mouse_Selection(universe, bodyClicked);
     }
     updateForTimerTick_Input_Mouse_Selection(universe, entityClicked) {
-        var selectionTypeName = (this.entitySelected == null
+        var entitySelected = this.entitySelected();
+        var selectionTypeName = (entitySelected == null
             ? null
-            : this.entitySelected.constructor.name);
-        if (this.entitySelected == null) {
+            : entitySelected.constructor.name);
+        if (entitySelected == null) {
             this.entitySelect(entityClicked);
         }
         else if (selectionTypeName == Planet.name) {
@@ -230,7 +245,7 @@ class VenueStarsystem {
         }
     }
     updateForTimerTick_Input_Mouse_Selection_Planet(universe, bodyClicked) {
-        var planetSelected = this.entitySelected;
+        var planetSelected = this.entitySelected();
         if (bodyClicked == null) {
             this.entitySelect(null);
         }
@@ -251,7 +266,7 @@ class VenueStarsystem {
     }
     updateForTimerTick_Input_Mouse_Selection_Ship(universe, entityClicked) {
         var inputHelper = universe.inputHelper;
-        var entityOrderable = this.entitySelected;
+        var entityOrderable = this.entitySelected();
         var orderable = Orderable.fromEntity(entityOrderable);
         var order = orderable.order(entityOrderable);
         var entityTarget;
@@ -311,10 +326,11 @@ class VenueStarsystem {
         return this.cameraEntity.camera();
     }
     cameraCenterOnSelection() {
-        if (this.entitySelected != null) {
+        var entitySelected = this.entitySelected();
+        if (entitySelected != null) {
             var constraint = this.cameraEntity.constrainable().constraintByClassName(Constraint_PositionOnCylinder.name);
             var constraintPosition = constraint;
-            var selectionPos = this.entitySelected.locatable().loc.pos;
+            var selectionPos = entitySelected.locatable().loc.pos;
             constraintPosition.center.overwriteWith(selectionPos);
         }
     }

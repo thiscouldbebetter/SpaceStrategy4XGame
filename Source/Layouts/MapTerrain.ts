@@ -3,15 +3,17 @@ class MapTerrain
 {
 	name: string;
 	codeChar: string;
+	description: string;
 	visual: VisualBase;
 
 	constructor
 	(
-		name: string, codeChar: string, visual: VisualBase
+		name: string, codeChar: string, description: string, visual: VisualBase
 	)
 	{
 		this.name = name;
 		this.codeChar = codeChar;
+		this.description = description;
 		this.visual = visual;
 	}
 
@@ -62,17 +64,17 @@ class MapTerrain_Instances
 
 		var colors = Color.Instances();
 
-		var mt = (name: string, codeChar: string, color: Color) =>
-			new MapTerrain(name, codeChar, visualFromColor(color) );
+		var mt = (name: string, codeChar: string, description: string, color: Color) =>
+			new MapTerrain(name, codeChar, description, visualFromColor(color) );
 
-		this.None 					= mt("None", " ", colors._Transparent);
-		this.Orbit 					= mt("Orbit", "-", colors.Violet);
-		this.Ship 					= mt("Ship", "#", colors.Violet);
-		this.SurfaceDefault 		= mt("White", ".", colors.White);
-		this.SurfaceIndustry 		= mt("Red", "r", colors.Red);
-		this.SurfaceProsperity 		= mt("Green", "p", colors.Green);
-		this.SurfaceResearch 		= mt("Blue", "b", colors.Blue);
-		this.SurfaceUnusable 		= mt("Black", "k", colors.GrayDark);
+		this.None 					= mt("None", " ", "No terrain present.", colors._Transparent);
+		this.Orbit 					= mt("Orbital", "-", "Allows only orbital structures.", colors.Violet);
+		this.Ship 					= mt("Ship", "#", "A ship.", colors.Violet);
+		this.SurfaceDefault 		= mt("Normal", ".", "Ordinary usable land.", colors.White);
+		this.SurfaceIndustry 		= mt("Mineral", "r", "Grants industry bonus.", colors.Red);
+		this.SurfaceProsperity 		= mt("Healthy", "p", "Grants prosperity bonus.", colors.Green);
+		this.SurfaceResearch 		= mt("Interesting", "b", "Grants research bonus.", colors.Blue);
+		this.SurfaceUnusable 		= mt("Hostile", "k", "Most structures cannot be built.", colors.GrayDark);
 
 		this._Planet =
 		[

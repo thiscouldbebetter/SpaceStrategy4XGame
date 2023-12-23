@@ -97,7 +97,7 @@ class StarClusterNode extends Entity
 				var venueCurrent =
 					universe.venueCurrent() as VenueStarCluster;
 				var starsystemToView =
-					(venueCurrent.entitySelected as StarClusterNode).starsystem;
+					(venueCurrent.entitySelected() as StarClusterNode).starsystem;
 				if (starsystemToView != null)
 				{
 					universe.venueTransitionTo

@@ -6,6 +6,9 @@ class VenueLayout {
         this.layout = layout;
         this.hasBeenUpdatedSinceDrawn = true;
     }
+    buildableDefnSelectedDescription() {
+        return (this.buildableDefnSelected == null ? "" : this.buildableDefnSelected.description);
+    }
     buildableDefnsAllowedAtPosInCells(buildableDefnsToCheck, posInCells) {
         var returnValues = buildableDefnsToCheck.filter(x => x.canBeBuiltOnMapAtPosInCells(this.layout.map, posInCells));
         return returnValues;
@@ -174,21 +177,28 @@ class VenueLayout {
         var displaySize = universe.display.sizeInPixels.clone().clearZ();
         var containerSize = displaySize.clone().half();
         var margin = Coords.fromXY(1, 1).multiplyScalar(8);
-        var fontHeightInPixels = 10; // hack
+        var fontHeightInPixels = displaySize.x / 60;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var columnWidth = containerSize.x - margin.x * 2;
         var buttonHeight = fontHeightInPixels * 2;
         var buttonSize = Coords.fromXY((columnWidth - margin.x) / 2, buttonHeight);
-        var listSize = Coords.fromXY(columnWidth, containerSize.y - buttonHeight * 2 - margin.y * 4);
-        var listBuildables = ControlList.from8("listBuildables", Coords.fromXY(margin.x, margin.y * 2 + buttonSize.y), listSize, DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsAllowedAtPosInCells(buildableDefnsAvailable, cursorPosInCells)), DataBinding.fromGet((c) => c.name), //bindingForItemText,
+        var labelSize = Coords.fromXY(columnWidth, fontHeightInPixels);
+        var listSize = Coords.fromXY(columnWidth, containerSize.y - labelSize.y * 3 - buttonHeight - margin.y * 5);
+        var terrainAtCursor = map.terrainAtCursor();
+        var terrainDescription = terrainAtCursor.name + ": " + terrainAtCursor.description;
+        var labelTerrainDescription = ControlLabel.from4Uncentered(margin, labelSize, DataBinding.fromContext("Terrain: " + terrainDescription), // text
+        fontNameAndHeight);
+        var labelFacilityToBuild = ControlLabel.from4Uncentered(Coords.fromXY(margin.x, margin.y + labelSize.y), labelSize, DataBinding.fromContext("Facility to Build on this Cell:"), // text
+        fontNameAndHeight);
+        var listBuildables = ControlList.from8("listBuildables", Coords.fromXY(margin.x, margin.y * 2 + labelSize.y * 2), listSize, DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsAllowedAtPosInCells(buildableDefnsAvailable, cursorPosInCells)), DataBinding.fromGet((c) => c.name), //bindingForItemText,
         fontNameAndHeight, new DataBinding(this, (c) => c.buildableDefnSelected, (c, v) => c.buildableDefnSelected = v), // bindingForItemSelected,
         DataBinding.fromGet((c) => c.name) // bindingForItemValue
         );
+        var textFacilityToBuild = ControlLabel.from4Uncentered(Coords.fromXY(margin.x, margin.y * 3 + labelSize.y * 2 + listSize.y), labelSize, DataBinding.fromContextAndGet(this, (c) => c.buildableDefnSelectedDescription()), // text
+        fontNameAndHeight);
         var buttonBuild_Clicked = () => {
             var buildableDefnSelected = venueLayout.buildableDefnSelected;
             if (buildableDefnSelected != null) {
-                var layout = venueLayout.layout;
-                var cursorPos = layout.map.cursor.pos;
                 var buildable = new Buildable(buildableDefnSelected, cursorPos.clone(), false, false);
                 var buildableEntity = buildable.toEntity(world);
                 this.modelParent.buildableEntityBuild(universe, buildableEntity);
@@ -198,8 +208,6 @@ class VenueLayout {
         var buttonCancel_Clicked = () => {
             universe.venueJumpTo(venueLayout);
         };
-        var labelFacilityToBuild = ControlLabel.from4Uncentered(margin, listSize, DataBinding.fromContext("Facility to Build on this Cell:"), // text
-        fontNameAndHeight);
         var buttonBuild = ControlButton.from8("buttonBuild", Coords.fromXY(margin.x, containerSize.y - margin.y - buttonSize.y), //pos,
         buttonSize, "Build", // text,
         fontNameAndHeight, true, // hasBorder,
@@ -212,8 +220,10 @@ class VenueLayout {
         buttonCancel_Clicked);
         var returnValue = ControlContainer.from4("containerBuild", displaySize.clone().subtract(containerSize).half(), // pos
         containerSize, [
+            labelTerrainDescription,
             labelFacilityToBuild,
             listBuildables,
+            textFacilityToBuild,
             buttonBuild,
             buttonCancel
         ]);
@@ -240,7 +250,8 @@ class VenueLayout {
             universe.venueTransitionTo(venueNext);
         });
         var controlNameTypeOwner = this.toControl_NameTypeOwner(universe, containerMainSize, containerInnerSize, margin, controlHeight);
-        var controlPopulationAndProduction = this.toControl_PopulationAndProduction(universe, containerMainSize, containerInnerSize, margin, controlHeight);
+        var containerPopulationAndProductionSize = containerInnerSize.clone().multiplyScalar(1.2);
+        var controlPopulationAndProduction = this.toControl_PopulationAndProduction(universe, containerMainSize, containerPopulationAndProductionSize, margin, controlHeight);
         var container = ControlContainer.from4("containerMain", Coords.fromXY(0, 0), // pos
         containerMainSize, 
         // children
@@ -333,7 +344,8 @@ class VenueLayout {
         var textResearch = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
         DataBinding.fromContextAndGet(planet, (c) => "" + c.researchThisRound(universe, world, faction)), fontNameAndHeight);
-        var returnValue = ControlContainer.from4("containerPopulationAndProduction", Coords.fromXY(margin, containerMainSize.y - margin - containerInnerSize.y), size, 
+        var controlPos = Coords.fromXY(margin, containerMainSize.y - margin - containerInnerSize.y);
+        var returnValue = ControlContainer.from4("containerPopulationAndProduction", controlPos, size, 
         // children
         [
             labelPopulation,
@@ -356,19 +368,37 @@ class VenueLayout {
             this.hasBeenUpdatedSinceDrawn = false;
             var display = universe.display;
             display.drawBackground(null, null);
-            var planetRadius = display.sizeInPixels.x / 6;
-            var colors = Color.Instances();
-            var planetColor = colors.Cyan.clone(); // .darken();
-            var planetPos = display.sizeInPixels.clone().half();
-            planetPos.addXY(0, planetRadius / 2);
-            var visualBackground = VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor); // todo
-            var visualBackgroundAsEntity = Entity.fromProperty(Locatable.fromPos(planetPos));
-            var uwpe = UniverseWorldPlaceEntities.create().entitySet(visualBackgroundAsEntity);
-            visualBackground.draw(uwpe, universe.display);
+            this.visualBackgroundDraw(universe);
             this.layout.draw(universe, universe.display);
             if (this.venueControls != null) {
                 this.venueControls.draw(universe);
             }
         }
+    }
+    visualBackgroundDraw(universe) {
+        var display = universe.display;
+        var planetType = this.modelParent.planetType;
+        var planetScaleFactor = 16;
+        var planetRadius = planetType.size.radiusInPixels * planetScaleFactor;
+        var planetColor = planetType.environment.color.clone().darken();
+        var planetPos = display.sizeInPixels.clone().half();
+        planetPos.addXY(0, planetRadius / 2);
+        var colors = Color.Instances();
+        var colorAtCenter = planetColor;
+        var colorMiddle = colorAtCenter;
+        var colorSpace = colors.Black;
+        // var visualBackground = VisualCircle.fromRadiusAndColorFill(planetRadius, planetColor); // todo
+        var visualBackground = new VisualCircleGradient(planetRadius, new ValueBreakGroup([
+            new ValueBreak(0, colorAtCenter),
+            new ValueBreak(.2, colorAtCenter),
+            new ValueBreak(.3, colorMiddle),
+            new ValueBreak(.75, colorMiddle),
+            new ValueBreak(1, colorSpace),
+        ], null // ?
+        ), null // colorBorder
+        );
+        var visualBackgroundAsEntity = Entity.fromProperty(Locatable.fromPos(planetPos));
+        var uwpe = UniverseWorldPlaceEntities.create().entitySet(visualBackgroundAsEntity);
+        visualBackground.draw(uwpe, display);
     }
 }

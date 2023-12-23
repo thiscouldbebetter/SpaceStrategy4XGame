@@ -1156,7 +1156,7 @@ class BuildableDefnsLegacy
 					name,
 					false, // isActive
 					false, // needsTarget
-					[ categoryShipGenerator ],
+					[ categoryShipSensor ],
 					null, // initialize
 					// updateForRound
 					(uwpe: UniverseWorldPlaceEntities) =>
@@ -1632,7 +1632,7 @@ class BuildableDefnsLegacy
 				new Resource("Industry", 1),
 				new Resource("Research", 1)
 			]),
-			"Provides 1 point each of industrial and research."
+			"Provides 1 point each of industry and research."
 		);
 
 		this.SurfaceFertilizationPlant = facilitySurfaceUsable
@@ -1671,7 +1671,7 @@ class BuildableDefnsLegacy
 			([
 				new Resource("Industry", 2)
 			]),
-			"Produces 2 industry, plus a possible bonus depending on terrain."
+			"Produces 2 industry, plus a possible bonus based on terrain."
 		);
 
 		this.SurfaceInternet = facilitySurfaceUsable
@@ -1811,7 +1811,7 @@ class BuildableDefnsLegacy
 			visualBuild(names.SurfaceAgriplot, colors.GreenDark),
 			30,
 			effectResourcesAdd( [ new Resource("Prosperity", 1) ] ),
-			"Provides 1 prosperity, with a possible bonus depending on terrain."
+			"Provides 1 prosperity, plus a possible bonus based on terrain."
 		);
 
 		this.SurfaceColonyHub = new BuildableDefn
@@ -1831,7 +1831,7 @@ class BuildableDefnsLegacy
 			null, // categories
 			null, // entityProperties
 			null, // entityModifyOnBuild,
-			"Provides 1 industry and 1 prosperity, with a possible bonus depending on terrain."
+			"Provides 1 industry and 1 prosperity, plus any terrain bonus."
 		);
 
 		this.SurfaceFactory = facilitySurfaceUsable
@@ -1840,7 +1840,7 @@ class BuildableDefnsLegacy
 			visualBuild(names.SurfaceFactory, colors.Red),
 			30,
 			effectResourcesAdd( [ new Resource("Industry", 1) ] ),
-			"Provides 1 industry, with a possible bonus depending on terrain."
+			"Provides 1 industry, plus a possible bonus based on terrain."
 		);
 
 		this.SurfaceLaboratory = facilitySurfaceUsable
@@ -1849,7 +1849,7 @@ class BuildableDefnsLegacy
 			visualBuild(names.SurfaceLaboratory, colors.Blue),
 			50,
 			effectResourcesAdd( [ new Resource("Research", 1) ] ),
-			"Provides 1 research, with a possible bonus depending on terrain."
+			"Provides 1 research, plus a possible bonus based on terrain."
 		);
 
 		this.SurfaceOutpost = facilitySurfaceUsable

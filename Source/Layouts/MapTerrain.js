@@ -1,8 +1,9 @@
 "use strict";
 class MapTerrain {
-    constructor(name, codeChar, visual) {
+    constructor(name, codeChar, description, visual) {
         this.name = name;
         this.codeChar = codeChar;
+        this.description = description;
         this.visual = visual;
     }
     static Instances(cellSizeInPixels) {
@@ -22,15 +23,15 @@ class MapTerrain_Instances {
     constructor(cellSizeInPixels) {
         var visualFromColor = (color) => VisualRectangle.fromSizeAndColorBorder(cellSizeInPixels.clone().half(), color);
         var colors = Color.Instances();
-        var mt = (name, codeChar, color) => new MapTerrain(name, codeChar, visualFromColor(color));
-        this.None = mt("None", " ", colors._Transparent);
-        this.Orbit = mt("Orbit", "-", colors.Violet);
-        this.Ship = mt("Ship", "#", colors.Violet);
-        this.SurfaceDefault = mt("White", ".", colors.White);
-        this.SurfaceIndustry = mt("Red", "r", colors.Red);
-        this.SurfaceProsperity = mt("Green", "p", colors.Green);
-        this.SurfaceResearch = mt("Blue", "b", colors.Blue);
-        this.SurfaceUnusable = mt("Black", "k", colors.GrayDark);
+        var mt = (name, codeChar, description, color) => new MapTerrain(name, codeChar, description, visualFromColor(color));
+        this.None = mt("None", " ", "No terrain present.", colors._Transparent);
+        this.Orbit = mt("Orbital", "-", "Allows only orbital structures.", colors.Violet);
+        this.Ship = mt("Ship", "#", "A ship.", colors.Violet);
+        this.SurfaceDefault = mt("Normal", ".", "Ordinary usable land.", colors.White);
+        this.SurfaceIndustry = mt("Mineral", "r", "Grants industry bonus.", colors.Red);
+        this.SurfaceProsperity = mt("Healthy", "p", "Grants prosperity bonus.", colors.Green);
+        this.SurfaceResearch = mt("Interesting", "b", "Grants research bonus.", colors.Blue);
+        this.SurfaceUnusable = mt("Hostile", "k", "Most structures cannot be built.", colors.GrayDark);
         this._Planet =
             [
                 this.None,

@@ -81,9 +81,11 @@ class DeviceUser {
         if (this._distanceMaxPerMove == null) {
             this._distanceMaxPerMove = 0;
             var devicesDrives = this.devicesDrives(ship);
+            var energyPerMoveBefore = this._energyPerMove;
             var energyPerRoundBefore = this._energyPerRound;
             var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
             devicesDrives.forEach(x => x.updateForRound(uwpe));
+            this._energyPerMove = energyPerMoveBefore;
             this._energyPerRound = energyPerRoundBefore;
         }
         return this._distanceMaxPerMove;
@@ -147,8 +149,9 @@ class DeviceUser {
         this._energyRemainingThisRound = 0;
     }
     energyRemainingThisRoundIsEnoughToMove(ship) {
+        var energyRemainingThisRound = this.energyRemainingThisRound(ship);
         var energyPerMove = this.energyPerMove(ship);
-        var isEnough = (this._energyRemainingThisRound > energyPerMove);
+        var isEnough = (energyRemainingThisRound >= energyPerMove);
         return isEnough;
     }
     energyRemainingThisRoundReset(ship) {
@@ -158,7 +161,7 @@ class DeviceUser {
         this._energyRemainingThisRound -= energyToSubtract;
     }
     energyRemainsThisRoundAny() {
-        return (this._energyRemainingThisRound >= 0);
+        return (this._energyRemainingThisRound > 0);
     }
     energyRemainsThisRound(energyToCheck) {
         return (this._energyRemainingThisRound >= energyToCheck);

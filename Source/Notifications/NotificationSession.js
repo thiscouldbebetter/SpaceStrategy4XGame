@@ -19,7 +19,7 @@ class NotificationSession {
     }
     notificationSelectedDismiss(universe) {
         var world = universe.world;
-        var faction = world.factions[0]; // hack
+        var faction = world.factionPlayer();
         var notificationSession = faction.notificationSession;
         var notification = notificationSession.notificationSelected;
         notificationSession.notificationDismiss(notification);
@@ -39,8 +39,6 @@ class NotificationSession {
     }
     notificationsAllDismiss(universe) {
         var world = universe.world;
-        // var faction = world.factions[0]; // hack
-        // var notificationSession = faction.notificationSession;
         this.clear();
         var venueNext = world.toVenue();
         universe.venueTransitionTo(venueNext);
@@ -57,7 +55,7 @@ class NotificationSession {
     }
     toControl_Multiple(universe, containerSize, fontHeightInPixels) {
         var notificationSession = this;
-        fontHeightInPixels = fontHeightInPixels || 10;
+        fontHeightInPixels = fontHeightInPixels || universe.display.fontNameAndHeight.heightInPixels;
         var controlHeight = containerSize.y / 16;
         var margin = fontHeightInPixels;
         var columnWidth = containerSize.x - margin * 2;
@@ -117,7 +115,7 @@ class NotificationSession {
         return returnValue;
     }
     toControl_Single(universe, containerSize, fontHeightInPixels) {
-        fontHeightInPixels = fontHeightInPixels || 10;
+        fontHeightInPixels = fontHeightInPixels || universe.display.fontNameAndHeight.heightInPixels;
         var notificationSession = this;
         var notifications = notificationSession.notifications();
         this.notificationSelected = notifications[0];

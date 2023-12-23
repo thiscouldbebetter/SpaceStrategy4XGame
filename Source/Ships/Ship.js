@@ -46,8 +46,7 @@ class Ship extends Entity {
             ship.planetOrbitEnter(universe, starsystem, planet);
         }
         else if (targetTypeName == Ship.name) {
-            var shipCollidable = ship.collidable();
-            shipCollidable.collideEntities(ship, target);
+            // todo - ship-ship collision
         }
         else {
             // Do nothing.
@@ -252,11 +251,11 @@ class Ship extends Entity {
         }
     }
     moveSleepOrWake() {
+        var wasSleeping = this.sleeping();
         var order = this.order();
-        order.clear();
-        var isSleeping = this.sleeping();
         var orders = OrderDefn.Instances();
-        var orderDefnToSet = isSleeping ? orders.DoNothing : orders.Sleep;
+        var orderDefnToSet = wasSleeping ? orders.DoNothing : orders.Sleep;
+        order.clear();
         order.defnSet(orderDefnToSet);
     }
     moveStart(universe) {
@@ -402,9 +401,9 @@ class Ship extends Entity {
             buttonHalfSize, "Move", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled // todo - Disable if depleted.
             () => ship.moveStart(universe));
-            var buttonSleep = ControlButton.from8("buttonSleep", Coords.fromXY(margin + buttonHalfSize.x, margin * 2 + labelHeight), // pos
-            buttonHalfSize, (ship.sleeping() ? "Wake" : "Sleep"), fontNameAndHeight, true, // hasBorder
-            DataBinding.fromTrue(), // isEnabled
+            var buttonSleep = ControlButton.from8WithTextAsBinding("buttonSleep", Coords.fromXY(margin + buttonHalfSize.x, margin * 2 + labelHeight), // pos
+            buttonHalfSize, DataBinding.fromContextAndGet(this, (c) => c.sleeping() ? "Wake" : "Sleep"), fontNameAndHeight, true, // hasBorder
+            DataBinding.fromTrueWithContext(ship), // isEnabled
             () => ship.moveSleepOrWake() // click
             );
             var labelDevices = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 3 + labelHeight + buttonHeight), // pos
@@ -423,7 +422,7 @@ class Ship extends Entity {
             () => // click
              {
                 var venue = universe.venueCurrent();
-                var ship = venue.entitySelected;
+                var ship = venue.entitySelected();
                 ship.deviceUseStart(universe);
             });
             var childControlsCommands = [

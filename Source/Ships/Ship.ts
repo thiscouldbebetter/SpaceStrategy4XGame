@@ -97,8 +97,7 @@ class Ship extends Entity
 		}
 		else if (targetTypeName == Ship.name)
 		{
-			var shipCollidable = ship.collidable();
-			shipCollidable.collideEntities(ship, target);
+			// todo - ship-ship collision
 		}
 		else
 		{
@@ -364,7 +363,9 @@ class Ship extends Entity
 
 	linkPortalEnter
 	(
-		cluster: StarCluster, linkPortal: LinkPortal, ship: Ship
+		cluster: StarCluster,
+		linkPortal: LinkPortal,
+		ship: Ship
 	): void
 	{
 		var starsystemFrom = linkPortal.starsystemFrom(cluster);
@@ -444,11 +445,11 @@ class Ship extends Entity
 
 	moveSleepOrWake(): void
 	{
+		var wasSleeping = this.sleeping();
 		var order = this.order();
-		order.clear();
-		var isSleeping = this.sleeping();
 		var orders = OrderDefn.Instances();
-		var orderDefnToSet = isSleeping ? orders.DoNothing : orders.Sleep;
+		var orderDefnToSet = wasSleeping ? orders.DoNothing : orders.Sleep;
+		order.clear();
 		order.defnSet(orderDefnToSet);
 	}
 
@@ -758,7 +759,7 @@ class Ship extends Entity
 				() => ship.moveStart(universe)
 			);
 
-			var buttonSleep = ControlButton.from8
+			var buttonSleep = ControlButton.from8WithTextAsBinding<Ship>
 			(
 				"buttonSleep",
 				Coords.fromXY
@@ -767,10 +768,14 @@ class Ship extends Entity
 					margin * 2 + labelHeight
 				), // pos
 				buttonHalfSize,
-				(ship.sleeping() ? "Wake" : "Sleep"),
+				DataBinding.fromContextAndGet<Ship, string>
+				(
+					this,
+					(c: Ship) => c.sleeping() ? "Wake" : "Sleep"
+				),
 				fontNameAndHeight,
 				true, // hasBorder
-				DataBinding.fromTrue(), // isEnabled
+				DataBinding.fromTrueWithContext<Ship>(ship), // isEnabled
 				() => ship.moveSleepOrWake() // click
 			);
 
@@ -838,7 +843,7 @@ class Ship extends Entity
 				() => // click
 				{
 					var venue = universe.venueCurrent() as VenueStarsystem;
-					var ship = venue.entitySelected as Ship;
+					var ship = venue.entitySelected() as Ship;
 					ship.deviceUseStart(universe);
 				}
 			);

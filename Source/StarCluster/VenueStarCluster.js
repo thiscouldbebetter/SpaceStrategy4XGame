@@ -11,8 +11,9 @@ class VenueStarCluster extends VenueWorld {
     }
     // camera
     cameraCenterOnSelection() {
-        if (this.entitySelected != null) {
-            var targetPosNew = this.entitySelected.locatable().loc.pos;
+        var entitySelected = this.entitySelected();
+        if (entitySelected != null) {
+            var targetPosNew = entitySelected.locatable().loc.pos;
             var cameraConstrainable = this.cameraEntity.constrainable();
             var constraint = cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
             var constraintDistance = constraint;
@@ -123,7 +124,7 @@ class VenueStarCluster extends VenueWorld {
         if (shouldDraw) {
             this.hasBeenUpdatedSinceDrawn = false;
             universe.display.drawBackground(null, null);
-            var playerFaction = this.world.factions[0];
+            var playerFaction = this.world.factionPlayer();
             var playerKnowledge = playerFaction.knowledge;
             var worldKnown = playerKnowledge.world(universe, this.world);
             worldKnown.starCluster.drawForCamera(universe, worldKnown.camera);
@@ -156,7 +157,8 @@ class VenueStarCluster extends VenueWorld {
         this.hasBeenUpdatedSinceDrawn = true;
     }
     selectionName() {
-        var returnValue = (this.entitySelected == null ? "[none]" : this.entitySelected.name);
+        var entitySelected = this.entitySelected();
+        var returnValue = (entitySelected == null ? "[none]" : entitySelected.name);
         return returnValue;
     }
     updateForTimerTick(universe) {
@@ -181,7 +183,7 @@ class VenueStarCluster extends VenueWorld {
             var cameraPos = camera.loc.pos;
             var rayFromCameraThroughClick = new Ray(cameraPos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
             ).subtract(cameraPos).normalize());
-            var playerFaction = world.factions[0];
+            var playerFaction = world.factionPlayer();
             var worldKnown = playerFaction.knowledge.world(universe, world);
             var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, worldKnown.starCluster.nodes, [] // listToAddTo
             );
@@ -194,7 +196,8 @@ class VenueStarCluster extends VenueWorld {
                     }
                 }
                 var bodyClicked = collisionNearest.colliders[0]; // todo
-                if (bodyClicked == this.entitySelected) {
+                var entitySelected = this.entitySelected();
+                if (bodyClicked == entitySelected) {
                     var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
                     if (isFastForwarding == false) {
                         var venueCurrent = universe.venueCurrent();
@@ -206,7 +209,7 @@ class VenueStarCluster extends VenueWorld {
                         }
                     }
                 }
-                this.entitySelected = bodyClicked;
+                this.entitySelect(bodyClicked);
                 universe.inputHelper.mouseClickedSet(false);
             }
         }
@@ -253,15 +256,22 @@ class VenueStarCluster extends VenueWorld {
         }
     }
     // VenueWithCameraAndSelection.
+    entitySelect(value) {
+        this._entitySelected = value;
+    }
+    entitySelected() {
+        return this._entitySelected;
+    }
     entitySelectedDetailsAreViewable(universe) {
-        return true;
+        var entitySelected = this.entitySelected();
+        return (entitySelected != null && entitySelected.name != "?");
     }
     entitySelectedDetailsView(universe) {
         var detailsAreViewable = this.entitySelectedDetailsAreViewable(universe);
         if (detailsAreViewable == false) {
             return;
         }
-        var selectedEntity = this.entitySelected;
+        var selectedEntity = this.entitySelected();
         if (selectedEntity != null) {
             var venueNext;
             var selectionTypeName = selectedEntity.constructor.name;

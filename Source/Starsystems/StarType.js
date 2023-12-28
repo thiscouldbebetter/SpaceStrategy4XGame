@@ -18,20 +18,27 @@ class StarType {
         return StarType.Instances().random();
     }
     bodyDefn() {
-        // var starName = this.name; // todo
         var starRadius = this.radiusInPixels;
-        var starColor = this.color;
         if (this._bodyDefn == null) {
+            var visual = this.visualBeforeProjection();
+            this._bodyDefn = new BodyDefn("Star", Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
+            visual);
+        }
+        return this._bodyDefn;
+    }
+    visualBeforeProjection() {
+        if (this._visualBeforeProjection == null) {
+            var starRadius = this.radiusInPixels;
+            var starColor = this.color;
             var visualBody = new VisualCircle(starRadius, starColor, starColor, null);
             var colors = Color.Instances();
             var visualName = VisualText.fromTextBindingFontAndColorsFillAndBorder(DataBinding.fromGet((c) => c.place.name), FontNameAndHeight.fromHeightInPixels(starRadius / 2), colors.Gray, colors.White);
             var visual = new VisualGroup([
                 visualBody, visualName
             ]);
-            this._bodyDefn = new BodyDefn("Star", Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
-            visual);
+            this._visualBeforeProjection = visual;
         }
-        return this._bodyDefn;
+        return this._visualBeforeProjection;
     }
     visualFromOutside() {
         if (this._visualFromOutside == null) {
@@ -39,6 +46,18 @@ class StarType {
             this._visualFromOutside = visual;
         }
         return this._visualFromOutside;
+    }
+    visualProjected() {
+        if (this._visualProjected == null) {
+            var visualToProject = this.visualBeforeProjection();
+            var visualProjected = new VisualCameraProjection(uwpe => uwpe.place.camera2(uwpe.universe), visualToProject);
+            var visualWithStem = new VisualGroup([
+                new VisualElevationStem(),
+                visualProjected
+            ]);
+            this._visualProjected = visualWithStem;
+        }
+        return this._visualProjected;
     }
 }
 class StarType_Instances {

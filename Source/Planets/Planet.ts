@@ -39,8 +39,8 @@ class Planet extends Entity
 				),
 				new Controllable(Planet.toControl),
 				new DeviceUser(),
+				Drawable.fromVisual(planetType.visualProjected() ),
 				new Factionable(faction),
-				ItemHolder.create(),
 				Locatable.fromPos(pos)
 			]
 		);

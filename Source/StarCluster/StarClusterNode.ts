@@ -27,7 +27,10 @@ class StarClusterNode extends Entity
 						VisualStar.radiusActual(), pos
 					)
 				),
-				new Controllable(StarClusterNode.toControl),
+				new Controllable
+				(
+					(uwpe, size, controlTypeName) => StarClusterNode.toControl(uwpe, size, controlTypeName)
+				),
 				Drawable.fromVisual(star.starType.visualFromOutside() ),
 				Locatable.fromPos(pos)
 			]

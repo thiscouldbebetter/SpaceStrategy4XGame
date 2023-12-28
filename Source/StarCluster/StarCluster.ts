@@ -271,7 +271,7 @@ class StarCluster extends PlaceBase
 					]
 				);
 
-				starsystem.linkPortalAdd(linkPortal);
+				starsystem.linkPortalAdd(universe, linkPortal);
 				//starsystemPortalsByStarsystemName.set(starsystemOther.name, linkPortal);
 			}
 		}
@@ -385,7 +385,7 @@ class StarCluster extends PlaceBase
 
 		var nodeRadiusActual = 4; // todo
 
-		var shipsInLinks = new Array<any>();
+		var shipsInLinks = new Array<Ship>();
 		for (var i = 0; i < this.links.length; i++)
 		{
 			var link = this.links[i];
@@ -397,17 +397,19 @@ class StarCluster extends PlaceBase
 				drawPosFrom,
 				drawPosTo
 			);
-			shipsInLinks = shipsInLinks.concat(link.ships);
+			shipsInLinks.push(...link.ships);
 		}
 
-		var drawablesToSort = shipsInLinks.concat(this.nodes);
+		var entitiesDrawableToSort = new Array<Entity>();
+		entitiesDrawableToSort.push(...shipsInLinks);
+		entitiesDrawableToSort.push(...this.nodes);
 		var drawablesSortedByZ = new Array<Entity>();
-		for (var i = 0; i < drawablesToSort.length; i++)
+		for (var i = 0; i < entitiesDrawableToSort.length; i++)
 		{
-			var drawableToSort = drawablesToSort[i];
+			var entityDrawableToSort = entitiesDrawableToSort[i];
 			camera.coordsTransformWorldToView
 			(
-				drawPos.overwriteWith(drawableToSort.locatable().loc.pos)
+				drawPos.overwriteWith(entityDrawableToSort.locatable().loc.pos)
 			);
 
 			if (drawPos.z > 0)
@@ -427,7 +429,7 @@ class StarCluster extends PlaceBase
 					}
 				}
 
-				ArrayHelper.insertElementAt(drawablesSortedByZ, drawableToSort, j);
+				ArrayHelper.insertElementAt(drawablesSortedByZ, entityDrawableToSort, j);
 			}
 		}
 
@@ -449,11 +451,9 @@ class StarCluster extends PlaceBase
 			}
 			else if (entityTypeName == Ship.name)
 			{
-				var ship = entity as Ship;
-				if (ship != null)
-				{
-					ship.draw(universe, nodeRadiusActual, camera, this.drawPos);
-				}
+				// var ship = entity as Ship;
+				//ship.draw(uwpe); // universe, nodeRadiusActual, camera, this.drawPos);
+				console.log("todo - draw ship");
 			}
 		}
 	}

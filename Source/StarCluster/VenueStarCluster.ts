@@ -431,18 +431,15 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 			var cameraSpeed = 20;
 
-			if (inputActive == "MouseMove")
+			var inputNames = Input.Names();
+
+			if (inputActive == inputNames.MouseMove)
 			{
 				// Do nothing.
 			}
-			else if (inputActive == "MouseClick")
+			else if (inputActive == inputNames.MouseClick)
 			{
-				// todo
-				// fix
-				// Leaving this in makes it impossible to hold down view rotate/zoom buttons,
-				// but commenting it out means that you only have to click once to view a starsystem,
-				// because the second click comes so fast after the first.
-				//inputHelper.mouseClickedSet(false);
+				// Mouse clicks are handled through controls.
 			}
 			else if (inputActive == "a")
 			{
@@ -464,9 +461,19 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 			{
 				this.cameraOut(cameraSpeed);
 			}
+			else if (inputActive == inputNames.MouseWheelDown)
+			{
+				this.cameraOut(cameraSpeed);
+				inputHelper.inputRemove(inputActive);
+			}
 			else if (inputActive == "r")
 			{
 				this.cameraIn(cameraSpeed);
+			}
+			else if (inputActive == inputNames.MouseWheelUp)
+			{
+				this.cameraIn(cameraSpeed);
+				inputHelper.inputRemove(inputActive);
 			}
 		}
 	}

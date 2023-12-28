@@ -33,9 +33,11 @@ var VenueMessage = gf.VenueMessage;
 var Color = gf.Color;
 var Drawable = gf.Drawable;
 var Display2D = gf.Display2D;
+var DisplayFarToNear = gf.DisplayFarToNear;
 var DisplayRecorder = gf.DisplayRecorder;
 var VenueFader = gf.VenueFader;
 var VenueLayered = gf.VenueLayered;
+var VisualCameraProjection = gf.VisualCameraProjection;
 var VisualCircle = gf.VisualCircle;
 var VisualCircleGradient = gf.VisualCircleGradient;
 var VisualDirectional = gf.VisualDirectional;
@@ -88,6 +90,7 @@ var MapLocated = gf.MapLocated;
 // Geometry - Shapes - Meshes.
 var Mesh = gf.Mesh;
 ;
+var Transform_Camera = gf.Transform_Camera;
 var Transform_Locate = gf.Transform_Locate;
 var Transform_Orient = gf.Transform_Orient;
 var Transform_Translate = gf.Transform_Translate;
@@ -145,6 +148,8 @@ var TalkNodeDefn = gf.TalkNodeDefn;
 var Talker = gf.Talker;
 // Profiles.
 var Profile = gf.Profile;
+var SaveStateBase = gf.SaveStateBase;
+var SaveStateWorld = gf.SaveStateWorld;
 // Storage.
 var FileHelper = gf.FileHelper;
 var Serializer = gf.Serializer;

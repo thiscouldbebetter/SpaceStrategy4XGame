@@ -344,7 +344,7 @@ class BuildableDefnsLegacy {
         var deviceDefnStarlaneDrive = (name, speedIncrement) => {
             return new DeviceDefn(name, false, // isActive
             false, // needsTarget
-            [categoryShipShield], null, // initialize
+            [categoryShipStarlaneDrive], null, // initialize
             // updateForRound
             (uwpe) => {
                 var ship = uwpe.entity;

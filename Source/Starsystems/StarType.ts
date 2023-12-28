@@ -40,12 +40,31 @@ class StarType
 	private _bodyDefn: BodyDefn
 	bodyDefn(): BodyDefn
 	{
-		// var starName = this.name; // todo
 		var starRadius = this.radiusInPixels;
-		var starColor = this.color;
 
 		if (this._bodyDefn == null)
 		{
+			var visual = this.visualBeforeProjection();
+
+			this._bodyDefn = new BodyDefn
+			(
+				"Star",
+				Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
+				visual
+			);
+		}
+
+		return this._bodyDefn;
+	}
+
+	private _visualBeforeProjection: VisualBase;
+	visualBeforeProjection(): VisualBase
+	{
+		if (this._visualBeforeProjection == null)
+		{
+			var starRadius = this.radiusInPixels;
+			var starColor = this.color;
+
 			var visualBody = new VisualCircle(starRadius, starColor, starColor, null);
 
 			var colors = Color.Instances();
@@ -65,15 +84,10 @@ class StarType
 				visualBody, visualName
 			]);
 
-			this._bodyDefn = new BodyDefn
-			(
-				"Star",
-				Coords.fromXY(1, 1).multiplyScalar(starRadius), // size
-				visual
-			);
+			this._visualBeforeProjection = visual;
 		}
 
-		return this._bodyDefn;
+		return this._visualBeforeProjection;
 	}
 
 	private _visualFromOutside: VisualStar
@@ -86,6 +100,31 @@ class StarType
 		}
 
 		return this._visualFromOutside;
+	}
+
+	private _visualProjected: VisualBase;
+	visualProjected(): VisualBase
+	{
+		if (this._visualProjected == null)
+		{
+			var visualToProject = this.visualBeforeProjection();
+
+			var visualProjected = new VisualCameraProjection
+			(
+				uwpe => (uwpe.place as Starsystem).camera2(uwpe.universe),
+				visualToProject
+			);
+
+			var visualWithStem = new VisualGroup
+			([
+				new VisualElevationStem(),
+				visualProjected
+			]);
+
+			this._visualProjected = visualWithStem;
+		}
+
+		return this._visualProjected;
 	}
 
 }

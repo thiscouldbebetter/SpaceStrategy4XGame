@@ -17,6 +17,7 @@ class Star extends Entity
 			[
 				starType.bodyDefn(),
 				new Controllable(Star.toControl),
+				Drawable.fromVisual(starType.visualProjected() ),
 				Locatable.fromPos(pos)
 			]
 		);

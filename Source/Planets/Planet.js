@@ -6,8 +6,8 @@ class Planet extends Entity {
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Planet.toControl),
             new DeviceUser(),
+            Drawable.fromVisual(planetType.visualProjected()),
             new Factionable(faction),
-            ItemHolder.create(),
             Locatable.fromPos(pos)
         ]);
         this.planetType = planetType;

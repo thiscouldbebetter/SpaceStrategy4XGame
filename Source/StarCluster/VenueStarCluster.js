@@ -224,16 +224,12 @@ class VenueStarCluster extends VenueWorld {
                 universe.venueTransitionTo(venueNext);
             }
             var cameraSpeed = 20;
-            if (inputActive == "MouseMove") {
+            var inputNames = Input.Names();
+            if (inputActive == inputNames.MouseMove) {
                 // Do nothing.
             }
-            else if (inputActive == "MouseClick") {
-                // todo
-                // fix
-                // Leaving this in makes it impossible to hold down view rotate/zoom buttons,
-                // but commenting it out means that you only have to click once to view a starsystem,
-                // because the second click comes so fast after the first.
-                //inputHelper.mouseClickedSet(false);
+            else if (inputActive == inputNames.MouseClick) {
+                // Mouse clicks are handled through controls.
             }
             else if (inputActive == "a") {
                 this.cameraLeft(cameraSpeed);
@@ -250,8 +246,16 @@ class VenueStarCluster extends VenueWorld {
             else if (inputActive == "f") {
                 this.cameraOut(cameraSpeed);
             }
+            else if (inputActive == inputNames.MouseWheelDown) {
+                this.cameraOut(cameraSpeed);
+                inputHelper.inputRemove(inputActive);
+            }
             else if (inputActive == "r") {
                 this.cameraIn(cameraSpeed);
+            }
+            else if (inputActive == inputNames.MouseWheelUp) {
+                this.cameraIn(cameraSpeed);
+                inputHelper.inputRemove(inputActive);
             }
         }
     }

@@ -2,7 +2,6 @@
 class WorldExtended extends World
 {
 	buildableDefns: BuildableDefn[];
-	deviceDefns: DeviceDefn[];
 	technologyGraph: TechnologyGraph;
 	starCluster: StarCluster;
 	factions: Faction[];
@@ -10,7 +9,6 @@ class WorldExtended extends World
 	camera: Camera;
 
 	private buildableDefnsByName: Map<string, BuildableDefn>;
-	private deviceDefnsByName: Map<string, DeviceDefn>;
 	private factionsByName: Map<string, Faction>;
 
 	factionIndexCurrent: number;
@@ -26,7 +24,6 @@ class WorldExtended extends World
 		dateCreated: DateTime,
 		activityDefns: ActivityDefn[],
 		buildableDefns: BuildableDefn[],
-		deviceDefns: DeviceDefn[],
 		technologyGraph: TechnologyGraph,
 		starCluster: StarCluster,
 		factions: Faction[],
@@ -50,7 +47,6 @@ class WorldExtended extends World
 		);
 
 		this.buildableDefns = buildableDefns;
-		this.deviceDefns = deviceDefns;
 		this.technologyGraph = technologyGraph;
 		this.starCluster = starCluster;
 		this.factions = factions;
@@ -60,18 +56,7 @@ class WorldExtended extends World
 		this.dateSaved = this.dateCreated;
 
 		this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
-		this.deviceDefnsByName = ArrayHelper.addLookupsByName(this.deviceDefns);
 		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
-		//this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
-
-		this.defn.itemDefnsInitialize([]);
-		// this.defn.itemDefns.push(...deviceDefns);
-		var buildableDefnsNonDevice = this.buildableDefns.filter(
-			x => this.deviceDefnsByName.has(x.name) == false
-		);
-		var itemDefns = buildableDefnsNonDevice.map(x => ItemDefn.fromName(x.name) );
-		this.defn.itemDefns.push(...itemDefns);
-		this.defn.itemDefnsByName = ArrayHelper.addLookupsByName(this.defn.itemDefns);
 
 		this.roundsSoFar = 0;
 		this._isAdvancingThroughRoundsUntilNotification = false;
@@ -106,11 +91,6 @@ class WorldExtended extends World
 	{
 		this.buildableDefns.splice(this.buildableDefns.indexOf(buildableDefn), 1);
 		this.buildableDefnsByName.delete(buildableDefn.name);
-	}
-
-	deviceDefnByName(deviceDefnName: string): DeviceDefn
-	{
-		return this.deviceDefnsByName.get(deviceDefnName);
 	}
 
 	factionAdd(faction: Faction): void

@@ -168,6 +168,7 @@ class DeviceUser {
     }
     movementSpeedThroughLink(ship) {
         if (this._movementSpeedThroughLink == null) {
+            this._movementSpeedThroughLink = 0;
             var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
             var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
             for (var i = 0; i < starlaneDrivesAsDevices.length; i++) {

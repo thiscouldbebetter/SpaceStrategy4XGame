@@ -1351,7 +1351,7 @@ class BuildableDefnsLegacy
 					name,
 					false, // isActive
 					false, // needsTarget
-					[ categoryShipShield ],
+					[ categoryShipStarlaneDrive ],
 					null, // initialize
 					// updateForRound
 					(uwpe: UniverseWorldPlaceEntities) =>

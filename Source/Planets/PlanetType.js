@@ -20,33 +20,7 @@ class PlanetType {
         if (this._bodyDefn == null) {
             var planetDimension = this.size.radiusInPixels;
             var size = Coords.fromXY(1, 1).multiplyScalar(planetDimension);
-            var colors = Color.Instances();
-            var colorAtCenter = this.environment.color; // White;
-            var colorMiddle = colorAtCenter;
-            var colorSpace = colors.Black;
-            var visualForPlanetType = new VisualCircleGradient(planetDimension, // radius
-            new ValueBreakGroup([
-                new ValueBreak(0, colorAtCenter),
-                new ValueBreak(.2, colorAtCenter),
-                new ValueBreak(.3, colorMiddle),
-                new ValueBreak(.75, colorMiddle),
-                new ValueBreak(1, colorSpace),
-            ], null // ?
-            ), null // colorBorder
-            );
-            var visualLabel = new VisualDynamic // todo - VisualDynamic2?
-            ((uwpe) => {
-                var planet = uwpe.entity;
-                var faction = planet.factionable().faction();
-                var returnValue = (faction == null
-                    ? new VisualNone()
-                    : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColorsFillAndBorder("Owned by " + faction.name, FontNameAndHeight.fromHeightInPixels(planetDimension * 1.5), colors.Black, colors.White)));
-                return returnValue;
-            });
-            var visual = new VisualGroup([
-                visualForPlanetType,
-                visualLabel
-            ]);
+            var visual = this.visualBeforeProjection();
             this._bodyDefn = new BodyDefn(this.name(), size, visual);
         }
         return this._bodyDefn;
@@ -94,6 +68,49 @@ class PlanetType {
     }
     name() {
         return this.size.name + " " + this.environment.name;
+    }
+    visualBeforeProjection() {
+        var planetDimension = this.size.radiusInPixels;
+        var colors = Color.Instances();
+        var colorAtCenter = this.environment.color; // White;
+        var colorMiddle = colorAtCenter;
+        var colorSpace = colors.Black;
+        var visualForPlanetType = new VisualCircleGradient(planetDimension, // radius
+        new ValueBreakGroup([
+            new ValueBreak(0, colorAtCenter),
+            new ValueBreak(.2, colorAtCenter),
+            new ValueBreak(.3, colorMiddle),
+            new ValueBreak(.75, colorMiddle),
+            new ValueBreak(1, colorSpace),
+        ], null // ?
+        ), null // colorBorder
+        );
+        var visualLabel = new VisualDynamic // todo - VisualDynamic2?
+        ((uwpe) => {
+            var planet = uwpe.entity;
+            var faction = planet.factionable().faction();
+            var returnValue = (faction == null
+                ? new VisualNone()
+                : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColorsFillAndBorder("Owned by " + faction.name, FontNameAndHeight.fromHeightInPixels(planetDimension * 1.5), colors.Black, colors.White)));
+            return returnValue;
+        });
+        var visual = new VisualGroup([
+            visualForPlanetType,
+            visualLabel
+        ]);
+        return visual;
+    }
+    visualProjected() {
+        if (this._visualProjected == null) {
+            var visualBeforeProjection = this.visualBeforeProjection();
+            var visual = new VisualCameraProjection(uwpe => uwpe.place.camera2(uwpe.universe), visualBeforeProjection);
+            visual = new VisualGroup([
+                new VisualElevationStem(),
+                visual
+            ]);
+            this._visualProjected = visual;
+        }
+        return this._visualProjected;
     }
 }
 class PlanetType_Instances {

@@ -58,15 +58,11 @@ class WorldExtendedCreator
 		var focalLength = viewDimension;
 		viewSize.z = focalLength;
 
-		var deviceDefns = this.create_DeviceDefns();
-		var deviceDefnsByName = ArrayHelper.addLookupsByName(deviceDefns);
-
 		var factionsAndShips = this.create_FactionsAndShips
 		(
 			starCluster, 
 			technologyGraph,
 			buildableDefns,
-			deviceDefnsByName,
 			factionCount,
 			factionDefnNameForPlayer,
 			factionColorForPlayer
@@ -92,7 +88,6 @@ class WorldExtendedCreator
 			DateTime.now(),
 			activityDefns,
 			buildableDefns._All,
-			deviceDefns,
 			technologyGraph,
 			starCluster,
 			factions,
@@ -103,17 +98,11 @@ class WorldExtendedCreator
 		return returnValue;
 	}
 
-	create_DeviceDefns(): DeviceDefn[]
-	{
-		return DeviceDefns.Instance()._All;
-	}
-
 	create_FactionsAndShips
 	(
 		starCluster: StarCluster,
 		technologyGraph: TechnologyGraph,
 		buildableDefns: BuildableDefnsLegacy,
-		deviceDefnsByName: Map<string, DeviceDefn>,
 		factionCount: number,
 		factionDefnNameForPlayer: string,
 		factionColorForPlayer: Color
@@ -129,7 +118,6 @@ class WorldExtendedCreator
 			DateTime.now(), // dateCreated
 			[], // activityDefns
 			buildableDefns._All,
-			[], // deviceDefns
 			technologyGraph,
 			starCluster,
 			factions,
@@ -175,7 +163,6 @@ class WorldExtendedCreator
 				factionDefns,
 				technologyGraph,
 				buildableDefns,
-				deviceDefnsByName,
 				i,
 				ships
 			);
@@ -217,7 +204,7 @@ class WorldExtendedCreator
 		{
 			this.create_FactionsAndShips_2_ShipOther
 			(
-				buildableDefns, worldDummy, factions, deviceDefnsByName
+				buildableDefns, worldDummy, factions
 			);
 		}
 
@@ -235,7 +222,6 @@ class WorldExtendedCreator
 		factionDefns: FactionDefn[],
 		technologyGraph: TechnologyGraph,
 		buildableDefns: BuildableDefnsLegacy,
-		deviceDefnsByName: Map<string, DeviceDefn>,
 		i: number,
 		ships: Ship[]
 	): void
@@ -577,8 +563,7 @@ class WorldExtendedCreator
 	(
 		buildableDefns: BuildableDefnsLegacy,
 		worldDummy: WorldExtended,
-		factions: Faction[],
-		deviceDefnsByName: Map<string, DeviceDefn>
+		factions: Faction[]
 	): void
 	{
 		var shipHullSize = ShipHullSize.Instances().Small;

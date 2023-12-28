@@ -128,7 +128,7 @@ class StarCluster extends PlaceBase {
                     starsystem.name,
                     starsystemOther.name
                 ]);
-                starsystem.linkPortalAdd(linkPortal);
+                starsystem.linkPortalAdd(universe, linkPortal);
                 //starsystemPortalsByStarsystemName.set(starsystemOther.name, linkPortal);
             }
         }
@@ -202,13 +202,15 @@ class StarCluster extends PlaceBase {
         for (var i = 0; i < this.links.length; i++) {
             var link = this.links[i];
             link.draw(universe, camera, nodeRadiusActual, drawPosFrom, drawPosTo);
-            shipsInLinks = shipsInLinks.concat(link.ships);
+            shipsInLinks.push(...link.ships);
         }
-        var drawablesToSort = shipsInLinks.concat(this.nodes);
+        var entitiesDrawableToSort = new Array();
+        entitiesDrawableToSort.push(...shipsInLinks);
+        entitiesDrawableToSort.push(...this.nodes);
         var drawablesSortedByZ = new Array();
-        for (var i = 0; i < drawablesToSort.length; i++) {
-            var drawableToSort = drawablesToSort[i];
-            camera.coordsTransformWorldToView(drawPos.overwriteWith(drawableToSort.locatable().loc.pos));
+        for (var i = 0; i < entitiesDrawableToSort.length; i++) {
+            var entityDrawableToSort = entitiesDrawableToSort[i];
+            camera.coordsTransformWorldToView(drawPos.overwriteWith(entityDrawableToSort.locatable().loc.pos));
             if (drawPos.z > 0) {
                 var j;
                 for (j = 0; j < drawablesSortedByZ.length; j++) {
@@ -219,7 +221,7 @@ class StarCluster extends PlaceBase {
                         break;
                     }
                 }
-                ArrayHelper.insertElementAt(drawablesSortedByZ, drawableToSort, j);
+                ArrayHelper.insertElementAt(drawablesSortedByZ, entityDrawableToSort, j);
             }
         }
         var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, universe.world);
@@ -232,10 +234,9 @@ class StarCluster extends PlaceBase {
                 node.draw(uwpe);
             }
             else if (entityTypeName == Ship.name) {
-                var ship = entity;
-                if (ship != null) {
-                    ship.draw(universe, nodeRadiusActual, camera, this.drawPos);
-                }
+                // var ship = entity as Ship;
+                //ship.draw(uwpe); // universe, nodeRadiusActual, camera, this.drawPos);
+                console.log("todo - draw ship");
             }
         }
     }

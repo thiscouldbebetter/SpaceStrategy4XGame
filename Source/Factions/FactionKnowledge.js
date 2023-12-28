@@ -182,7 +182,7 @@ class FactionKnowledge {
             var starClusterKnown = this.starCluster(worldActual);
             var factionsKnown = this.factions(worldActual);
             var shipsKnown = this.ships(worldActual);
-            this._world = new WorldExtended(worldActual.name, worldActual.dateCreated, worldActual.defn.activityDefns, worldActual.buildableDefns, worldActual.deviceDefns, worldActual.technologyGraph, starClusterKnown, factionsKnown, shipsKnown, // todo
+            this._world = new WorldExtended(worldActual.name, worldActual.dateCreated, worldActual.defn.activityDefns, worldActual.buildableDefns, worldActual.technologyGraph, starClusterKnown, factionsKnown, shipsKnown, // todo
             worldActual.camera);
         }
         return this._world;

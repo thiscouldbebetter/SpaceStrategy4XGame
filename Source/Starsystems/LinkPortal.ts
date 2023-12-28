@@ -26,6 +26,7 @@ class LinkPortal extends Entity
 					)
 				),
 				new Controllable(LinkPortal.toControl),
+				Drawable.fromVisual(LinkPortal.visualProjected() ),
 				Locatable.fromPos(pos)
 			]
 		);
@@ -37,30 +38,13 @@ class LinkPortal extends Entity
 
 	static bodyDefn(): BodyDefn
 	{
-		var colors = Color.Instances();
+		var visual = LinkPortal.visualBeforeProjection();
 
 		var bodyDefnLinkPortal = new BodyDefn
 		(
 			"LinkPortal",
 			Coords.fromXY(10, 10), // size
-			new VisualGroup
-			([
-				new VisualCircleGradient
-				(
-					10, // radius
-					new ValueBreakGroup
-					(
-						[
-							new ValueBreak(0, colors.Black),
-							new ValueBreak(.5, colors.Black),
-							new ValueBreak(.75, colors.Violet),
-							new ValueBreak(1, colors.Blue)
-						],
-						null // interpolationMode
-					),
-					null // colorBorder
-				)
-			])
+			visual
 		);
 
 		return bodyDefnLinkPortal;
@@ -119,5 +103,56 @@ class LinkPortal extends Entity
 		);
 
 		return returnValue;
+	}
+
+	// Drawable.
+
+	static visualBeforeProjection(): VisualBase
+	{
+		var colors = Color.Instances();
+
+		var radius = 10;
+
+		var visual: VisualBase = new VisualCircleGradient
+		(
+			radius,
+			new ValueBreakGroup
+			(
+				[
+					new ValueBreak(0, colors.Black),
+					new ValueBreak(.5, colors.Black),
+					new ValueBreak(.75, colors.Violet),
+					new ValueBreak(1, colors.Blue)
+				],
+				null // interpolationMode
+			),
+			null // colorBorder
+		);
+
+		visual = new VisualGroup
+		([
+			visual
+		]);
+
+		return visual;
+	}
+
+	static visualProjected(): VisualBase
+	{
+		var visualBeforeProjection = this.visualBeforeProjection();
+
+		var visual: VisualBase = new VisualCameraProjection
+		(
+			uwpe => (uwpe.place as Starsystem).camera2(uwpe.universe),
+			visualBeforeProjection
+		);
+
+		var visualWithStem = new VisualGroup
+		([
+			new VisualElevationStem(),
+			visual
+		]);
+
+		return visualWithStem;
 	}
 }

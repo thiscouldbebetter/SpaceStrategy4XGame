@@ -46,6 +46,7 @@ import Color = gf.Color;
 import Drawable = gf.Drawable;
 import Display = gf.Display;
 import Display2D = gf.Display2D;
+import DisplayFarToNear = gf.DisplayFarToNear;
 import DisplayRecorder = gf.DisplayRecorder;
 import VenueFader = gf.VenueFader;
 import VenueLayered = gf.VenueLayered;
@@ -54,6 +55,7 @@ import VenueLayered = gf.VenueLayered;
 
 import Visual = gf.Visual;
 import VisualBase = gf.VisualBase;
+import VisualCameraProjection = gf.VisualCameraProjection;
 import VisualCircle = gf.VisualCircle;
 import VisualCircleGradient = gf.VisualCircleGradient;
 import VisualDirectional = gf.VisualDirectional;
@@ -120,6 +122,7 @@ import Mesh = gf.Mesh;;
 
 import Transform = gf.Transform;
 import TransformBase = gf.TransformBase;
+import Transform_Camera = gf.Transform_Camera;
 import Transform_Locate = gf.Transform_Locate;
 import Transform_Orient = gf.Transform_Orient;
 import Transform_Translate = gf.Transform_Translate;
@@ -205,6 +208,8 @@ import Talker = gf.Talker;
 // Profiles.
 
 import Profile = gf.Profile;
+import SaveStateBase = gf.SaveStateBase;
+import SaveStateWorld = gf.SaveStateWorld;
 
 // Storage.
 

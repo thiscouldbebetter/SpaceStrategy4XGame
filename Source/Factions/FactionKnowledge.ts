@@ -383,7 +383,6 @@ class FactionKnowledge
 				worldActual.dateCreated,
 				worldActual.defn.activityDefns,
 				worldActual.buildableDefns,
-				worldActual.deviceDefns,
 				worldActual.technologyGraph,
 				starClusterKnown,
 				factionsKnown,

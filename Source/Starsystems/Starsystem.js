@@ -136,8 +136,10 @@ class Starsystem extends PlaceBase {
         );
         universe.venueTransitionTo(venueStarsystem);
     }
-    linkPortalAdd(linkPortalToAdd) {
+    linkPortalAdd(universe, linkPortalToAdd) {
         this.linkPortals.push(linkPortalToAdd);
+        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, this, linkPortalToAdd, null);
+        this.entitySpawn(uwpe);
     }
     linkPortalByStarsystemName(starsystemName) {
         if (this._linkPortalsByStarsystemName == null) {
@@ -350,41 +352,18 @@ class Starsystem extends PlaceBase {
         return camera;
     }
     draw(universe, world, display) {
-        var camera = this.camera2(universe);
         var uwpe = new UniverseWorldPlaceEntities(universe, world, this, null, null);
         this.visualGrid.draw(uwpe, display);
-        var projectiles = this.projectiles();
-        var bodiesByType = [
-            [this.star],
-            this.linkPortals,
-            this.planets,
-            this.ships,
-            projectiles
-        ];
-        var bodyToSortDrawPos = Coords.create();
-        var bodySortedDrawPos = Coords.create();
-        var bodiesToDrawSorted = new Array();
-        for (var t = 0; t < bodiesByType.length; t++) {
-            var bodies = bodiesByType[t];
-            for (var i = 0; i < bodies.length; i++) {
-                var bodyToSort = bodies[i];
-                var bodyToSortPos = bodyToSort.locatable().loc.pos;
-                camera.coordsTransformWorldToView(bodyToSortDrawPos.overwriteWith(bodyToSortPos));
-                var j = 0;
-                for (j = 0; j < bodiesToDrawSorted.length; j++) {
-                    var bodySorted = bodiesToDrawSorted[j];
-                    camera.coordsTransformWorldToView(bodySortedDrawPos.overwriteWith(bodySorted.locatable().loc.pos));
-                    if (bodyToSortDrawPos.z >= bodySortedDrawPos.z) {
-                        break;
-                    }
-                }
-                ArrayHelper.insertElementAt(bodiesToDrawSorted, bodyToSort, j);
-            }
-        }
-        for (var i = 0; i < bodiesToDrawSorted.length; i++) {
-            var body = bodiesToDrawSorted[i];
-            this.draw_Body(uwpe.entitySet(body), display);
-        }
+        var entitiesDrawable = this.drawables();
+        var displayFarToNear = new DisplayFarToNear(universe.display);
+        universe.display = displayFarToNear;
+        entitiesDrawable.forEach(entityDrawable => {
+            uwpe.entitySet(entityDrawable);
+            var drawable = entityDrawable.drawable();
+            drawable.draw(uwpe);
+        });
+        displayFarToNear.flush();
+        universe.display = displayFarToNear.displayInner;
     }
     draw_Body(uwpe, display) {
         var universe = uwpe.universe;

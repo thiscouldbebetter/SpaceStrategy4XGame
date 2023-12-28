@@ -284,9 +284,14 @@ class Starsystem extends PlaceBase
 		universe.venueTransitionTo(venueStarsystem);
 	}
 
-	linkPortalAdd(linkPortalToAdd: LinkPortal)
+	linkPortalAdd(universe: Universe, linkPortalToAdd: LinkPortal)
 	{
 		this.linkPortals.push(linkPortalToAdd);
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, universe.world, this, linkPortalToAdd, null
+		);
+		this.entitySpawn(uwpe);
 	}
 
 	linkPortalByStarsystemName(starsystemName: string)
@@ -796,8 +801,6 @@ class Starsystem extends PlaceBase
 
 	draw(universe: Universe, world: World, display: Display): void
 	{
-		var camera = this.camera2(universe);
-
 		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, world, this, null, null
@@ -805,59 +808,20 @@ class Starsystem extends PlaceBase
 
 		this.visualGrid.draw(uwpe, display);
 
-		var projectiles = this.projectiles();
-
-		var bodiesByType =
-		[
-			[ this.star ],
-			this.linkPortals,
-			this.planets,
-			this.ships,
-			projectiles
-		];
-
-		var bodyToSortDrawPos = Coords.create();
-		var bodySortedDrawPos = Coords.create();
-		var bodiesToDrawSorted = new Array<Entity>();
-
-		for (var t = 0; t < bodiesByType.length; t++)
-		{
-			var bodies = bodiesByType[t];
-
-			for (var i = 0; i < bodies.length; i++)
+		var entitiesDrawable = this.drawables();
+		var displayFarToNear = new DisplayFarToNear(universe.display as Display2D);
+		universe.display = displayFarToNear;
+		entitiesDrawable.forEach
+		(
+			entityDrawable =>
 			{
-				var bodyToSort = bodies[i];
-				var bodyToSortPos = bodyToSort.locatable().loc.pos;
-				camera.coordsTransformWorldToView
-				(
-					bodyToSortDrawPos.overwriteWith(bodyToSortPos)
-				);
-				var j = 0;
-				for (j = 0; j < bodiesToDrawSorted.length; j++)
-				{
-					var bodySorted = bodiesToDrawSorted[j];
-					camera.coordsTransformWorldToView
-					(
-						bodySortedDrawPos.overwriteWith(bodySorted.locatable().loc.pos)
-					);
-					if (bodyToSortDrawPos.z >= bodySortedDrawPos.z)
-					{
-						break;
-					}
-				}
-
-				ArrayHelper.insertElementAt
-				(
-					bodiesToDrawSorted, bodyToSort, j
-				);
+				uwpe.entitySet(entityDrawable);
+				var drawable = entityDrawable.drawable();
+				drawable.draw(uwpe);
 			}
-		}
-
-		for (var i = 0; i < bodiesToDrawSorted.length; i++)
-		{
-			var body = bodiesToDrawSorted[i];
-			this.draw_Body(uwpe.entitySet(body), display);
-		}
+		);
+		displayFarToNear.flush();
+		universe.display = displayFarToNear.displayInner;
 	}
 
 	draw_Body

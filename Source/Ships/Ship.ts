@@ -27,6 +27,7 @@ class Ship extends Entity
 				Ship.collidableBuild(pos),
 				new Controllable(Ship.toControl),
 				new DeviceUser(),
+				Drawable.fromVisual(Ship.visualForColorAndScaleFactor(faction.color, 10) ),
 				new Factionable(faction),
 				Ship.killableBuild(hullSize, faction),
 				Locatable.fromPos(pos),
@@ -368,7 +369,11 @@ class Ship extends Entity
 	{
 		var deviceUser = ship.deviceUser();
 		var starlaneDrives = deviceUser.devicesStarlaneDrives(ship);
-		if (starlaneDrives.length > 0)
+		if (starlaneDrives.length == 0)
+		{
+			this.nudgeInFrontOfEntityIfTouching(linkPortal);
+		}
+		else
 		{
 			var starsystemFrom = linkPortal.starsystemFrom(cluster);
 			var starsystemTo = linkPortal.starsystemTo(cluster);
@@ -535,6 +540,42 @@ class Ship extends Entity
 	movementSpeedThroughLinkThisRoundReset(): void
 	{
 		this._movementSpeedThroughLinkThisRound = null;
+	}
+
+	nudgeInFrontOfEntityIfTouching(entityToNudgeInFrontOf: Entity): void
+	{
+		// For adding visual separation between two formerly colliding entities.
+
+		var shipToNudge = this;
+
+		var shipToNudgePos = shipToNudge.locatable().loc.pos;
+		var entityToNudgeInFrontOfPos =
+			entityToNudgeInFrontOf.locatable().loc.pos;
+
+		var distanceBetweenShipAndEntity = this._displacement.overwriteWith
+		(
+			entityToNudgeInFrontOfPos
+		).subtract
+		(
+			shipToNudgePos
+		).magnitude();
+
+		var distanceBetweenShipAndEntityMin = 3;
+		var isShipTooCloseToEntity =
+			(distanceBetweenShipAndEntity < distanceBetweenShipAndEntityMin);
+
+		if (isShipTooCloseToEntity)
+		{
+			var displacement = this._displacement.overwriteWith
+			(
+				Coords.Instances().ZeroOneZero
+			).multiplyScalar
+			(
+				distanceBetweenShipAndEntityMin
+			);
+
+			shipToNudgePos.overwriteWith(entityToNudgeInFrontOfPos).add(displacement);
+		}
 	}
 
 	planetOrbitEnter
@@ -916,8 +957,7 @@ class Ship extends Entity
 		deviceUser.energyRemainingThisRoundReset(this);
 	}
 
-	// drawable
-
+	/*
 	draw
 	(
 		universe: Universe,
@@ -947,6 +987,7 @@ class Ship extends Entity
 		);
 		visual.draw(uwpe, display); // todo
 	}
+	*/
 
 	visual(world: WorldExtended): VisualBase
 	{
@@ -955,7 +996,7 @@ class Ship extends Entity
 
 	static visualForColorAndScaleFactor(color: Color, scaleFactor: number): VisualBase
 	{
-		var visual = new VisualGroup
+		var visual: VisualBase = new VisualGroup
 		([
 			new VisualPolygon
 			(
@@ -969,6 +1010,18 @@ class Ship extends Entity
 				Color.Instances().Black, // colorBorder
 				false // shouldUseEntityOrientation
 			),
+		]);
+
+		visual = new VisualCameraProjection
+		(
+			uwpe => (uwpe.place as Starsystem).camera2(uwpe.universe),
+			visual
+		);
+
+		visual = new VisualGroup
+		([
+			new VisualElevationStem(),
+			visual
 		]);
 
 		return visual;

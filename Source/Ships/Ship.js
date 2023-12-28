@@ -7,6 +7,7 @@ class Ship extends Entity {
             Ship.collidableBuild(pos),
             new Controllable(Ship.toControl),
             new DeviceUser(),
+            Drawable.fromVisual(Ship.visualForColorAndScaleFactor(faction.color, 10)),
             new Factionable(faction),
             Ship.killableBuild(hullSize, faction),
             Locatable.fromPos(pos),
@@ -199,7 +200,10 @@ class Ship extends Entity {
     linkPortalEnter(cluster, linkPortal, ship) {
         var deviceUser = ship.deviceUser();
         var starlaneDrives = deviceUser.devicesStarlaneDrives(ship);
-        if (starlaneDrives.length > 0) {
+        if (starlaneDrives.length == 0) {
+            this.nudgeInFrontOfEntityIfTouching(linkPortal);
+        }
+        else {
             var starsystemFrom = linkPortal.starsystemFrom(cluster);
             var starsystemTo = linkPortal.starsystemTo(cluster);
             var link = linkPortal.link(cluster);
@@ -314,6 +318,19 @@ class Ship extends Entity {
     }
     movementSpeedThroughLinkThisRoundReset() {
         this._movementSpeedThroughLinkThisRound = null;
+    }
+    nudgeInFrontOfEntityIfTouching(entityToNudgeInFrontOf) {
+        // For adding visual separation between two formerly colliding entities.
+        var shipToNudge = this;
+        var shipToNudgePos = shipToNudge.locatable().loc.pos;
+        var entityToNudgeInFrontOfPos = entityToNudgeInFrontOf.locatable().loc.pos;
+        var distanceBetweenShipAndEntity = this._displacement.overwriteWith(entityToNudgeInFrontOfPos).subtract(shipToNudgePos).magnitude();
+        var distanceBetweenShipAndEntityMin = 3;
+        var isShipTooCloseToEntity = (distanceBetweenShipAndEntity < distanceBetweenShipAndEntityMin);
+        if (isShipTooCloseToEntity) {
+            var displacement = this._displacement.overwriteWith(Coords.Instances().ZeroOneZero).multiplyScalar(distanceBetweenShipAndEntityMin);
+            shipToNudgePos.overwriteWith(entityToNudgeInFrontOfPos).add(displacement);
+        }
     }
     planetOrbitEnter(universe, starsystem, planet) {
         starsystem.shipRemove(this);
@@ -462,17 +479,37 @@ class Ship extends Entity {
         }
         deviceUser.energyRemainingThisRoundReset(this);
     }
-    // drawable
-    draw(universe, nodeRadiusActual, camera, drawPos) {
-        var world = universe.world;
+    /*
+    draw
+    (
+        universe: Universe,
+        nodeRadiusActual: number,
+        camera: Camera,
+        drawPos: Coords
+    ): void
+    {
+        var world = universe.world as WorldExtended;
         var display = universe.display;
+
         var ship = this;
         var shipPos = ship.locatable().loc.pos;
-        camera.coordsTransformWorldToView(drawPos.overwriteWith(shipPos));
+
+        camera.coordsTransformWorldToView
+        (
+            drawPos.overwriteWith
+            (
+                shipPos
+            )
+        );
+
         var visual = this.visual(world);
-        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
+        var uwpe = new UniverseWorldPlaceEntities
+        (
+            universe, world, null, ship, null
+        );
         visual.draw(uwpe, display); // todo
     }
+    */
     visual(world) {
         return new VisualNone(); // todo
     }
@@ -485,6 +522,11 @@ class Ship extends Entity {
             ]), color, Color.Instances().Black, // colorBorder
             false // shouldUseEntityOrientation
             ),
+        ]);
+        visual = new VisualCameraProjection(uwpe => uwpe.place.camera2(uwpe.universe), visual);
+        visual = new VisualGroup([
+            new VisualElevationStem(),
+            visual
         ]);
         return visual;
     }

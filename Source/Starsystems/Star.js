@@ -4,6 +4,7 @@ class Star extends Entity {
         super(name, [
             starType.bodyDefn(),
             new Controllable(Star.toControl),
+            Drawable.fromVisual(starType.visualProjected()),
             Locatable.fromPos(pos)
         ]);
         this.starType = starType;

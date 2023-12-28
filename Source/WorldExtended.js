@@ -1,6 +1,6 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, dateCreated, activityDefns, buildableDefns, deviceDefns, technologyGraph, starCluster, factions, ships, camera) {
+    constructor(name, dateCreated, activityDefns, buildableDefns, technologyGraph, starCluster, factions, ships, camera) {
         super(name, dateCreated, new WorldDefn([
             activityDefns
         ]), // worldDefn
@@ -9,7 +9,6 @@ class WorldExtended extends World {
         }, // placeGetByName
         (starCluster == null ? "dummy" : starCluster.name));
         this.buildableDefns = buildableDefns;
-        this.deviceDefns = deviceDefns;
         this.technologyGraph = technologyGraph;
         this.starCluster = starCluster;
         this.factions = factions;
@@ -17,15 +16,7 @@ class WorldExtended extends World {
         this.camera = camera;
         this.dateSaved = this.dateCreated;
         this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
-        this.deviceDefnsByName = ArrayHelper.addLookupsByName(this.deviceDefns);
         this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
-        //this.shipsByName = ArrayHelper.addLookupsByName(this.ships);
-        this.defn.itemDefnsInitialize([]);
-        // this.defn.itemDefns.push(...deviceDefns);
-        var buildableDefnsNonDevice = this.buildableDefns.filter(x => this.deviceDefnsByName.has(x.name) == false);
-        var itemDefns = buildableDefnsNonDevice.map(x => ItemDefn.fromName(x.name));
-        this.defn.itemDefns.push(...itemDefns);
-        this.defn.itemDefnsByName = ArrayHelper.addLookupsByName(this.defn.itemDefns);
         this.roundsSoFar = 0;
         this._isAdvancingThroughRoundsUntilNotification = false;
         this.factionIndexCurrent = 0;
@@ -48,9 +39,6 @@ class WorldExtended extends World {
     buildableDefnRemove(buildableDefn) {
         this.buildableDefns.splice(this.buildableDefns.indexOf(buildableDefn), 1);
         this.buildableDefnsByName.delete(buildableDefn.name);
-    }
-    deviceDefnByName(deviceDefnName) {
-        return this.deviceDefnsByName.get(deviceDefnName);
     }
     factionAdd(faction) {
         this.factions.push(faction);

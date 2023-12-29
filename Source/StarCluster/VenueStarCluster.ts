@@ -238,9 +238,11 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	draw(universe: Universe): void
 	{
-		var shouldDraw =
+		var shouldDraw = true;
+		/*
 			this.world.shouldDrawOnlyWhenUpdated == false
 			|| this.hasBeenUpdatedSinceDrawn;
+		*/
 
 		if (shouldDraw)
 		{

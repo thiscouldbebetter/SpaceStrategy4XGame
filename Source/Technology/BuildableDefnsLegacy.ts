@@ -1343,8 +1343,10 @@ class BuildableDefnsLegacy
 
 		var categoryShipStarlaneDrive = categories.ShipStarlaneDrive;
 
+		var speedIncrementStep = 20;
+
 		var deviceDefnStarlaneDrive =
-			(name: string, speedIncrement: number) =>
+			(name: string, speedIncrementMultiple: number) =>
 			{
 				return new DeviceDefn
 				(
@@ -1357,7 +1359,11 @@ class BuildableDefnsLegacy
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
 						var ship = uwpe.entity as Ship;
-						ship.deviceUser().movementSpeedThroughLinkAdd(speedIncrement);
+						var deviceUser = ship.deviceUser();
+						var speedIncrement = 
+							speedIncrementMultiple
+							* speedIncrementStep;
+						deviceUser.speedThroughLinkAdd(speedIncrement);
 					},
 					0, // usesPerRound
 					0, // energyPerUse

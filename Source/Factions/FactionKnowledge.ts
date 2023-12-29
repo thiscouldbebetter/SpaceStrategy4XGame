@@ -214,7 +214,10 @@ class FactionKnowledge
 			this.starsystemNames.push(starsystemName);
 
 			var starsystemFaction = starsystem.faction(world);
-			this.factionAdd(starsystemFaction);
+			if (starsystemFaction != null)
+			{
+				this.factionAdd(starsystemFaction);
+			}
 
 			var starCluster = world.starCluster;
 			var linkPortals = starsystem.linkPortals;

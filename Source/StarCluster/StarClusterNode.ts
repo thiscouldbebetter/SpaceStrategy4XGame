@@ -84,7 +84,7 @@ class StarClusterNode extends Entity
 			DataBinding.fromContextAndGet
 			(
 				networkNode,
-				(c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)
+				(c) => (c.starsystem == null ? "?" : c.starsystem.factionNameGet(world) )
 			),
 			fontNameAndHeight
 		);

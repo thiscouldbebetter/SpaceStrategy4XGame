@@ -13,9 +13,9 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	_energyPerMove: number;
 	_energyPerRound: number;
 	_energyRemainingThisRound: number;
-	_movementSpeedThroughLink: number;
 	_sensorRange: number;
 	_shielding: number;
+	_speedThroughLink: number;
 
 	static ofEntity(entity: Entity): DeviceUser
 	{
@@ -27,7 +27,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this.distanceMaxPerMoveReset();
 		this.energyPerMoveReset();
 		this.energyPerRoundReset();
-		this.movementSpeedThroughLinkReset();
+		this.speedThroughLinkReset();
 		this.sensorRangeReset();
 		this.shieldingReset();
 	}
@@ -302,42 +302,6 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return (this._energyRemainingThisRound >= energyToCheck);
 	}
 
-	movementSpeedThroughLink(ship: Ship): number
-	{
-		if (this._movementSpeedThroughLink == null)
-		{
-			this._movementSpeedThroughLink = 0;
-
-			var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
-
-			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
-
-			for (var i = 0; i < starlaneDrivesAsDevices.length; i++)
-			{
-				var starlaneDrive = starlaneDrivesAsDevices[i];
-				starlaneDrive.updateForRound(uwpe);
-			}
-
-			var shipFaction = ship.factionable().faction();
-			var shipFactionDefn = shipFaction.defn();
-
-			this._movementSpeedThroughLink
-				*= shipFactionDefn.starlaneTravelSpeedMultiplier;
-		}
-
-		return this._movementSpeedThroughLink;
-	}
-
-	movementSpeedThroughLinkAdd(speedToAdd: number): void
-	{
-		this._movementSpeedThroughLink += speedToAdd;
-	}
-
-	movementSpeedThroughLinkReset(): void
-	{
-		this._movementSpeedThroughLink = null;
-	}
-
 	sensorRange(ship: Ship): number
 	{
 		if (this._sensorRange == null)
@@ -381,6 +345,42 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	shieldingReset(): void
 	{
 		this._shielding = null;
+	}
+
+	speedThroughLink(ship: Ship): number
+	{
+		if (this._speedThroughLink == null)
+		{
+			this._speedThroughLink = 0;
+
+			var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
+
+			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+
+			for (var i = 0; i < starlaneDrivesAsDevices.length; i++)
+			{
+				var starlaneDrive = starlaneDrivesAsDevices[i];
+				starlaneDrive.updateForRound(uwpe);
+			}
+
+			var shipFaction = ship.factionable().faction();
+			var shipFactionDefn = shipFaction.defn();
+
+			this._speedThroughLink
+				*= shipFactionDefn.starlaneTravelSpeedMultiplier;
+		}
+
+		return this._speedThroughLink;
+	}
+
+	speedThroughLinkAdd(speedToAdd: number): void
+	{
+		this._speedThroughLink += speedToAdd;
+	}
+
+	speedThroughLinkReset(): void
+	{
+		this._speedThroughLink = null;
 	}
 
 	// Clonable.

@@ -504,44 +504,6 @@ class Ship extends Entity
 		return distanceToTarget;
 	}
 
-	private _movementSpeedThroughLinkThisRound: number;
-
-	movementSpeedThroughLinkThisRound(link: StarClusterLink): number
-	{
-		var linkFrictionDivisor = link.frictionDivisor();
-
-		if (this._movementSpeedThroughLinkThisRound == null)
-		{
-			var deviceUser = this.deviceUser();
-			var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives(this);
-
-			var uwpe = UniverseWorldPlaceEntities.create().entitySet(this);
-
-			for (var i = 0; i < starlaneDrivesAsDevices.length; i++)
-			{
-				var starlaneDrive = starlaneDrivesAsDevices[i];
-				// uwpe.entity2Set(starlaneDrive);
-				starlaneDrive.use(uwpe);
-			}
-
-			var shipFaction = this.factionable().faction();
-			var shipFactionDefn = shipFaction.defn();
-
-			this._movementSpeedThroughLinkThisRound
-				*= shipFactionDefn.starlaneTravelSpeedMultiplier;
-
-			this._movementSpeedThroughLinkThisRound
-				/= linkFrictionDivisor;
-		}
-
-		return this._movementSpeedThroughLinkThisRound;
-	}
-
-	movementSpeedThroughLinkThisRoundReset(): void
-	{
-		this._movementSpeedThroughLinkThisRound = null;
-	}
-
 	nudgeInFrontOfEntityIfTouching(entityToNudgeInFrontOf: Entity): void
 	{
 		// For adding visual separation between two formerly colliding entities.
@@ -599,6 +561,44 @@ class Ship extends Entity
 	): void
 	{
 		planet.shipLeaveOrbit(this, world);
+	}
+
+	private _speedThroughLinkThisRound: number;
+
+	speedThroughLinkThisRound(link: StarClusterLink): number
+	{
+		var linkFrictionDivisor = link.frictionDivisor();
+
+		if (this._speedThroughLinkThisRound == null)
+		{
+			var deviceUser = this.deviceUser();
+			var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives(this);
+
+			var uwpe = UniverseWorldPlaceEntities.create().entitySet(this);
+
+			for (var i = 0; i < starlaneDrivesAsDevices.length; i++)
+			{
+				var starlaneDrive = starlaneDrivesAsDevices[i];
+				// uwpe.entity2Set(starlaneDrive);
+				starlaneDrive.use(uwpe);
+			}
+
+			var shipFaction = this.factionable().faction();
+			var shipFactionDefn = shipFaction.defn();
+
+			this._speedThroughLinkThisRound
+				*= shipFactionDefn.starlaneTravelSpeedMultiplier;
+
+			this._speedThroughLinkThisRound
+				/= linkFrictionDivisor;
+		}
+
+		return this._speedThroughLinkThisRound;
+	}
+
+	speedThroughLinkThisRoundReset(): void
+	{
+		this._speedThroughLinkThisRound = null;
 	}
 
 	// controls

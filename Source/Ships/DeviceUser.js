@@ -7,7 +7,7 @@ class DeviceUser {
         this.distanceMaxPerMoveReset();
         this.energyPerMoveReset();
         this.energyPerRoundReset();
-        this.movementSpeedThroughLinkReset();
+        this.speedThroughLinkReset();
         this.sensorRangeReset();
         this.shieldingReset();
     }
@@ -166,28 +166,6 @@ class DeviceUser {
     energyRemainsThisRound(energyToCheck) {
         return (this._energyRemainingThisRound >= energyToCheck);
     }
-    movementSpeedThroughLink(ship) {
-        if (this._movementSpeedThroughLink == null) {
-            this._movementSpeedThroughLink = 0;
-            var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
-            var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
-            for (var i = 0; i < starlaneDrivesAsDevices.length; i++) {
-                var starlaneDrive = starlaneDrivesAsDevices[i];
-                starlaneDrive.updateForRound(uwpe);
-            }
-            var shipFaction = ship.factionable().faction();
-            var shipFactionDefn = shipFaction.defn();
-            this._movementSpeedThroughLink
-                *= shipFactionDefn.starlaneTravelSpeedMultiplier;
-        }
-        return this._movementSpeedThroughLink;
-    }
-    movementSpeedThroughLinkAdd(speedToAdd) {
-        this._movementSpeedThroughLink += speedToAdd;
-    }
-    movementSpeedThroughLinkReset() {
-        this._movementSpeedThroughLink = null;
-    }
     sensorRange(ship) {
         if (this._sensorRange == null) {
             this._sensorRange = 0;
@@ -217,6 +195,28 @@ class DeviceUser {
     }
     shieldingReset() {
         this._shielding = null;
+    }
+    speedThroughLink(ship) {
+        if (this._speedThroughLink == null) {
+            this._speedThroughLink = 0;
+            var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
+            var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
+            for (var i = 0; i < starlaneDrivesAsDevices.length; i++) {
+                var starlaneDrive = starlaneDrivesAsDevices[i];
+                starlaneDrive.updateForRound(uwpe);
+            }
+            var shipFaction = ship.factionable().faction();
+            var shipFactionDefn = shipFaction.defn();
+            this._speedThroughLink
+                *= shipFactionDefn.starlaneTravelSpeedMultiplier;
+        }
+        return this._speedThroughLink;
+    }
+    speedThroughLinkAdd(speedToAdd) {
+        this._speedThroughLink += speedToAdd;
+    }
+    speedThroughLinkReset() {
+        this._speedThroughLink = null;
     }
     // Clonable.
     clone() {

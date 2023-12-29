@@ -55,7 +55,7 @@ class StarClusterLink {
                 var shipPos = shipLoc.pos;
                 var shipVel = shipLoc.vel;
                 var shipAsDeviceUser = ship.deviceUser();
-                var shipSpeedBeforeFriction = shipAsDeviceUser.movementSpeedThroughLink(ship);
+                var shipSpeedBeforeFriction = shipAsDeviceUser.speedThroughLink(ship);
                 var frictionDivisor = this.type.frictionDivisor;
                 var shipSpeed = shipSpeedBeforeFriction / frictionDivisor;
                 shipVel = shipVel.clone().multiplyScalar(shipSpeed);

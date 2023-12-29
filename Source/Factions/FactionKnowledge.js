@@ -113,7 +113,9 @@ class FactionKnowledge {
         if (this.starsystemNames.indexOf(starsystemName) == -1) {
             this.starsystemNames.push(starsystemName);
             var starsystemFaction = starsystem.faction(world);
-            this.factionAdd(starsystemFaction);
+            if (starsystemFaction != null) {
+                this.factionAdd(starsystemFaction);
+            }
             var starCluster = world.starCluster;
             var linkPortals = starsystem.linkPortals;
             for (var i = 0; i < linkPortals.length; i++) {

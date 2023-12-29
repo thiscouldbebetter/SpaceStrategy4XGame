@@ -224,16 +224,19 @@ class WorldExtendedCreator {
     }
     create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy) {
         var factionHomeStarsystemSize = factionHomeStarsystem.size();
-        var shipHullSize = ShipHullSize.Instances().Small;
+        var shipHullSize = ShipHullSize.Instances().Medium;
         var shipDefn = Ship.bodyDefnBuild(factionColor);
         var shipCount = (this.isDebuggingMode ? 2 : 0);
         var shipComponentsAsBuildableDefns = [
             buildableDefns.ShipDrive1TonklinMotor,
             buildableDefns.ShipGenerator1ProtonShaver,
+            buildableDefns.ShipGenerator1ProtonShaver,
+            buildableDefns.ShipGenerator1ProtonShaver,
+            buildableDefns.ShipGenerator1ProtonShaver,
             buildableDefns.ShipSensor1TonklinFrequencyAnalyzer,
             buildableDefns.ShipShield1IonWrap,
             buildableDefns.ShipWeapon01MassBarrageGun,
-            buildableDefns.ShipStarlaneDrive1StarLaneDrive // Note that this is the sixth item, which is impossible.
+            buildableDefns.ShipStarlaneDrive1StarLaneDrive
         ];
         var shipComponentsAsBuildables = shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x));
         var shipComponentsAsEntities = shipComponentsAsBuildables.map(x => x.toEntity(worldDummy));

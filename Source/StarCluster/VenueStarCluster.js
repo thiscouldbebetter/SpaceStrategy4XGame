@@ -119,8 +119,11 @@ class VenueStarCluster extends VenueWorld {
     }
     // venue
     draw(universe) {
-        var shouldDraw = this.world.shouldDrawOnlyWhenUpdated == false
+        var shouldDraw = true;
+        /*
+            this.world.shouldDrawOnlyWhenUpdated == false
             || this.hasBeenUpdatedSinceDrawn;
+        */
         if (shouldDraw) {
             this.hasBeenUpdatedSinceDrawn = false;
             universe.display.drawBackground(null, null);

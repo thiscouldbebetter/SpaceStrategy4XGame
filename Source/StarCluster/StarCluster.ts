@@ -369,6 +369,21 @@ class StarCluster extends PlaceBase
 
 	// drawing
 
+	camera2(universe: Universe): Camera
+	{
+		// hack - Get a camera, without a Place.
+		var venue = universe.venueCurrent();
+		var venueTypeName = venue.constructor.name;
+		if (venueTypeName == VenueFader.name)
+		{
+			var venueAsVenueFader = venue as VenueFader;
+			venue = venueAsVenueFader.venueCurrent();
+		}
+		var venueAsVenueStarCluster = venue as VenueStarCluster;
+		var camera = venueAsVenueStarCluster.cameraEntity.camera();
+		return camera;
+	}
+
 	draw(universe: Universe, world: World, display: Display): void
 	{
 		// todo - worldKnown?
@@ -433,9 +448,9 @@ class StarCluster extends PlaceBase
 			}
 		}
 
-		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld
+		var uwpe = new UniverseWorldPlaceEntities
 		(
-			universe, universe.world
+			universe, universe.world, this, null, null
 		);
 
 		for (var i = 0; i < drawablesSortedByZ.length; i++)
@@ -451,9 +466,8 @@ class StarCluster extends PlaceBase
 			}
 			else if (entityTypeName == Ship.name)
 			{
-				// var ship = entity as Ship;
-				//ship.draw(uwpe); // universe, nodeRadiusActual, camera, this.drawPos);
-				console.log("todo - draw ship");
+				var visual = entity.drawable().visual;
+				visual.draw(uwpe, universe.display);
 			}
 		}
 	}

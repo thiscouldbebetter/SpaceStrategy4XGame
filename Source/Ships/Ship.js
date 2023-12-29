@@ -296,29 +296,6 @@ class Ship extends Entity {
         }
         return distanceToTarget;
     }
-    movementSpeedThroughLinkThisRound(link) {
-        var linkFrictionDivisor = link.frictionDivisor();
-        if (this._movementSpeedThroughLinkThisRound == null) {
-            var deviceUser = this.deviceUser();
-            var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives(this);
-            var uwpe = UniverseWorldPlaceEntities.create().entitySet(this);
-            for (var i = 0; i < starlaneDrivesAsDevices.length; i++) {
-                var starlaneDrive = starlaneDrivesAsDevices[i];
-                // uwpe.entity2Set(starlaneDrive);
-                starlaneDrive.use(uwpe);
-            }
-            var shipFaction = this.factionable().faction();
-            var shipFactionDefn = shipFaction.defn();
-            this._movementSpeedThroughLinkThisRound
-                *= shipFactionDefn.starlaneTravelSpeedMultiplier;
-            this._movementSpeedThroughLinkThisRound
-                /= linkFrictionDivisor;
-        }
-        return this._movementSpeedThroughLinkThisRound;
-    }
-    movementSpeedThroughLinkThisRoundReset() {
-        this._movementSpeedThroughLinkThisRound = null;
-    }
     nudgeInFrontOfEntityIfTouching(entityToNudgeInFrontOf) {
         // For adding visual separation between two formerly colliding entities.
         var shipToNudge = this;
@@ -340,6 +317,29 @@ class Ship extends Entity {
     }
     planetOrbitExit(world, planet) {
         planet.shipLeaveOrbit(this, world);
+    }
+    speedThroughLinkThisRound(link) {
+        var linkFrictionDivisor = link.frictionDivisor();
+        if (this._speedThroughLinkThisRound == null) {
+            var deviceUser = this.deviceUser();
+            var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives(this);
+            var uwpe = UniverseWorldPlaceEntities.create().entitySet(this);
+            for (var i = 0; i < starlaneDrivesAsDevices.length; i++) {
+                var starlaneDrive = starlaneDrivesAsDevices[i];
+                // uwpe.entity2Set(starlaneDrive);
+                starlaneDrive.use(uwpe);
+            }
+            var shipFaction = this.factionable().faction();
+            var shipFactionDefn = shipFaction.defn();
+            this._speedThroughLinkThisRound
+                *= shipFactionDefn.starlaneTravelSpeedMultiplier;
+            this._speedThroughLinkThisRound
+                /= linkFrictionDivisor;
+        }
+        return this._speedThroughLinkThisRound;
+    }
+    speedThroughLinkThisRoundReset() {
+        this._speedThroughLinkThisRound = null;
     }
     // controls
     static toControl(uwpe, size, controlTypeName) {

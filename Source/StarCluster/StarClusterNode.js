@@ -28,7 +28,7 @@ class StarClusterNode extends Entity {
         var labelStarsystemName = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), Coords.fromXY(0, 0), // this.size
         DataBinding.fromContext(this.name), fontNameAndHeight);
         var labelStarsystemHolder = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(0, 0), // this.size
-        DataBinding.fromContextAndGet(networkNode, (c) => (c.starsystem == null ? "?" : c.starsystem.faction(world).name)), fontNameAndHeight);
+        DataBinding.fromContextAndGet(networkNode, (c) => (c.starsystem == null ? "?" : c.starsystem.factionNameGet(world))), fontNameAndHeight);
         var buttonView = ControlButton.from5(Coords.fromXY(margin, margin + controlSpacing * 2), // pos
         buttonSize, // size
         "View", fontNameAndHeight, () => // click

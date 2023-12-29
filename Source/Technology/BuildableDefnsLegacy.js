@@ -341,14 +341,18 @@ class BuildableDefnsLegacy {
         this.ShipShield6Nanoshell = shipShield(names.ShipShield6Nanoshell, 200, 6, 5, "Quintuple the shielding of the baseline, at only three times the energy use.");
         // Starlane Drives.
         var categoryShipStarlaneDrive = categories.ShipStarlaneDrive;
-        var deviceDefnStarlaneDrive = (name, speedIncrement) => {
+        var speedIncrementStep = 20;
+        var deviceDefnStarlaneDrive = (name, speedIncrementMultiple) => {
             return new DeviceDefn(name, false, // isActive
             false, // needsTarget
             [categoryShipStarlaneDrive], null, // initialize
             // updateForRound
             (uwpe) => {
                 var ship = uwpe.entity;
-                ship.deviceUser().movementSpeedThroughLinkAdd(speedIncrement);
+                var deviceUser = ship.deviceUser();
+                var speedIncrement = speedIncrementMultiple
+                    * speedIncrementStep;
+                deviceUser.speedThroughLinkAdd(speedIncrement);
             }, 0, // usesPerRound
             0, // energyPerUse
             null // use

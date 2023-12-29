@@ -100,7 +100,7 @@ class StarClusterLink implements EntityPropertyBase
 				var shipVel = shipLoc.vel;
 				var shipAsDeviceUser = ship.deviceUser();
 				var shipSpeedBeforeFriction =
-					shipAsDeviceUser.movementSpeedThroughLink(ship);
+					shipAsDeviceUser.speedThroughLink(ship);
 				var frictionDivisor = this.type.frictionDivisor;
 				var shipSpeed = shipSpeedBeforeFriction / frictionDivisor;
 				shipVel = shipVel.clone().multiplyScalar(shipSpeed);

@@ -85,6 +85,10 @@ class Starsystem extends PlaceBase {
     faction(world) {
         return (this.factionName == null ? null : world.factionByName(this.factionName));
     }
+    factionNameGet(world) {
+        var faction = this.faction(world);
+        return (faction == null ? "[none]" : faction.name);
+    }
     factionSet(faction) {
         this.factionName = faction.name;
     }

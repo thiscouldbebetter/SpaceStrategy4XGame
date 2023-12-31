@@ -11,7 +11,6 @@ class ShipBuilder {
     }
     build(universe, venuePrev, faction, sizeDialog) {
         var returnValue = null;
-        var world = universe.world;
         var categories = BuildableCategory.Instances();
         var doesShipHaveAGenerator = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipGenerator));
         var doesShipHaveADrive = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipDrive));
@@ -40,7 +39,7 @@ class ShipBuilder {
             var effectLeaveOrbit = new BuildableEffect("Leave Orbit", 0, // order
             (uwpe) => {
                 var ship = uwpe.entity;
-                ship.planetOrbitExit(world, planet);
+                ship.planetOrbitExit(planet, uwpe);
                 universe.venueJumpTo(venuePrev);
             });
             var effectCreateColony = new BuildableEffect("Colonize Planet", 0, // order
@@ -293,9 +292,8 @@ class ShipBuilder {
         return new BuildableEffect("Leave Orbit", 0, // order
         (uwpe) => {
             var universe = uwpe.universe;
-            var world = uwpe.world;
             var ship = uwpe.entity;
-            ship.planetOrbitExit(world, planet);
+            ship.planetOrbitExit(planet, uwpe);
             universe.venueJumpTo(venuePrev);
         });
     }

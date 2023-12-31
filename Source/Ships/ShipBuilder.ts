@@ -35,8 +35,6 @@ class ShipBuilder
 	{
 		var returnValue: Ship = null;
 
-		var world = universe.world as WorldExtended;
-
 		var categories = BuildableCategory.Instances();
 
 		var doesShipHaveAGenerator =
@@ -106,7 +104,7 @@ class ShipBuilder
 				(uwpe: UniverseWorldPlaceEntities) =>
 				{
 					var ship = uwpe.entity as Ship;
-					ship.planetOrbitExit(world, planet);
+					ship.planetOrbitExit(planet, uwpe);
 					universe.venueJumpTo(venuePrev);
 				}
 			);
@@ -711,10 +709,8 @@ class ShipBuilder
 			(uwpe: UniverseWorldPlaceEntities) =>
 			{
 				var universe = uwpe.universe;
-				var world = uwpe.world as WorldExtended;
-
 				var ship = uwpe.entity as Ship;
-				ship.planetOrbitExit(world, planet);
+				ship.planetOrbitExit(planet, uwpe);
 				universe.venueJumpTo(venuePrev);
 			}
 		);

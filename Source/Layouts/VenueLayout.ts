@@ -40,7 +40,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 	finalize(universe: Universe): void
 	{
-		// Do nothing.
+		// universe.soundHelper.soundForMusicPause(universe);
 	}
 
 	initialize(universe: Universe): void
@@ -49,6 +49,9 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		this.venueControls = new VenueControls(controlRoot, null);
 
 		this.layout.initialize(universe);
+
+		var soundHelper = universe.soundHelper;
+		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
 
 		this.hasBeenUpdatedSinceDrawn = true;
 	}

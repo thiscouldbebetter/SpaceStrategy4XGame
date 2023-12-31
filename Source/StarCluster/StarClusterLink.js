@@ -44,6 +44,7 @@ class StarClusterLink {
     // turns
     updateForRound(universe, world) {
         if (this.ships.length > 0) {
+            var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
             var cluster = world.starCluster;
             var nodesLinked = this.nodesLinked(cluster);
             var length = this.length(cluster);
@@ -71,7 +72,7 @@ class StarClusterLink {
             }
             for (var i = 0; i < shipsExitingLink.length; i++) {
                 var ship = shipsExitingLink[i];
-                ship.linkExit(world, this);
+                ship.linkExit(this, uwpe);
             }
         }
     }

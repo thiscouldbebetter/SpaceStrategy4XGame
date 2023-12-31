@@ -5,7 +5,7 @@ class Planet extends Entity {
             planetType.bodyDefn(),
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Planet.toControl),
-            new DeviceUser(),
+            new DeviceUser([]),
             Drawable.fromVisual(planetType.visualProjected()),
             new Factionable(faction),
             Locatable.fromPos(pos)
@@ -135,14 +135,15 @@ class Planet extends Entity {
         this.ships.push(shipToAdd);
         shipToAdd.locatable().loc.placeName = Planet.name + ":" + this.name;
     }
-    shipLeaveOrbit(shipToLeaveOrbit, world) {
+    shipLeaveOrbit(shipToLeaveOrbit, uwpe) {
         ArrayHelper.remove(this.ships, shipToLeaveOrbit);
         var shipLoc = shipToLeaveOrbit.locatable().loc;
         var planetPos = this.locatable().loc.pos;
+        var world = uwpe.world;
         var starsystem = this.starsystem(world);
         shipLoc.placeName = Starsystem.name + starsystem.name;
         shipLoc.pos.overwriteWith(planetPos); // todo - offset.
-        starsystem.shipAdd(shipToLeaveOrbit, world);
+        starsystem.shipAdd(shipToLeaveOrbit, uwpe);
     }
     starsystem(world) {
         var starClusterNodeFound = world.starCluster.nodes.find(x => (x.starsystem.planets.indexOf(this) >= 0));

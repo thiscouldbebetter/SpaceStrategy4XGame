@@ -54,7 +54,7 @@ class FactionIntelligence_Instances
 					shipsAll.filter(x => x.factionable().faction() == factionToMove);
 				var factionToMoveShipsWithEnergyToMove = factionToMoveShips.filter
 				(
-					x => x.deviceUser().energyRemainingThisRoundIsEnoughToMove(x)
+					x => x.deviceUser().energyRemainingThisRoundIsEnoughToMove(uwpe.entitySet(x) )
 				);
 				if (factionToMoveShipsWithEnergyToMove.length == 0)
 				{

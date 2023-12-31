@@ -1,5 +1,13 @@
 "use strict";
 class DeviceUser {
+    constructor(devices) {
+        this._devices = devices;
+    }
+    static fromEntities(entities) {
+        var devices = entities.map(x => Device.ofEntity(x)).filter(x => (x != null));
+        var deviceUser = new DeviceUser(devices);
+        return deviceUser;
+    }
     static ofEntity(entity) {
         return entity.propertyByName(DeviceUser.name);
     }
@@ -12,6 +20,12 @@ class DeviceUser {
         this.shieldingReset();
     }
     // Devices.
+    deviceAdd(deviceToAdd) {
+        this._devices.push(deviceToAdd);
+    }
+    deviceRemove(deviceToRemove) {
+        this._devices.splice(this._devices.indexOf(deviceToRemove), 1);
+    }
     deviceSelect(deviceToSelect) {
         this._deviceSelected = deviceToSelect;
     }
@@ -25,65 +39,62 @@ class DeviceUser {
             : deviceSelected.canBeUsedThisRoundByDeviceUser(this);
         return canBeUsed;
     }
-    devices(ship) {
-        var deviceEntities = ship.componentEntities.filter((x) => Device.ofEntity(x) != null);
-        var devices = deviceEntities.map(x => Device.ofEntity(x));
-        return devices;
+    devices() {
+        return this._devices;
     }
-    devicesDrives(ship) {
+    devicesDrives() {
         if (this._devicesDrives == null) {
-            var devices = this.devices(ship);
+            var devices = this.devices();
             var categoryShipDrive = BuildableCategory.Instances().ShipDrive;
             this._devicesDrives = devices.filter((x) => x.defn().categories.indexOf(categoryShipDrive) >= 0);
         }
         return this._devicesDrives;
     }
-    devicesGenerators(ship) {
+    devicesGenerators() {
         if (this._devicesGenerators == null) {
-            var devices = this.devices(ship);
+            var devices = this.devices();
             var categoryShipGenerators = BuildableCategory.Instances().ShipGenerator;
             this._devicesGenerators = devices.filter((x) => x.defn().categories.indexOf(categoryShipGenerators) >= 0);
         }
         return this._devicesGenerators;
     }
-    devicesSensors(ship) {
+    devicesSensors() {
         if (this._devicesSensors == null) {
-            var devices = this.devices(ship);
+            var devices = this.devices();
             var categoryShipSensor = BuildableCategory.Instances().ShipSensor;
             this._devicesSensors = devices.filter((x) => x.defn().categories.indexOf(categoryShipSensor) >= 0);
         }
         return this._devicesSensors;
     }
-    devicesShields(ship) {
+    devicesShields() {
         if (this._devicesShields == null) {
-            var devices = this.devices(ship);
+            var devices = this.devices();
             var categoryShipShield = BuildableCategory.Instances().ShipShield;
             this._devicesShields = devices.filter((x) => x.defn().categories.indexOf(categoryShipShield) >= 0);
         }
         return this._devicesShields;
     }
-    devicesStarlaneDrives(ship) {
+    devicesStarlaneDrives() {
         if (this._devicesStarlaneDrives == null) {
-            var devices = this.devices(ship);
+            var devices = this.devices();
             var categories = BuildableCategory.Instances();
             this._devicesStarlaneDrives = devices.filter((x) => x.defn().categories.indexOf(categories.ShipStarlaneDrive) >= 0);
         }
         return this._devicesStarlaneDrives;
     }
-    devicesUsable(ship) {
+    devicesUsable() {
         if (this._devicesUsable == null) {
-            var devices = this.devices(ship);
+            var devices = this.devices();
             this._devicesUsable = devices.filter((x) => x.defn().isActive);
         }
         return this._devicesUsable;
     }
-    distanceMaxPerMove(ship) {
+    distanceMaxPerMove(uwpe) {
         if (this._distanceMaxPerMove == null) {
             this._distanceMaxPerMove = 0;
-            var devicesDrives = this.devicesDrives(ship);
+            var devicesDrives = this.devicesDrives();
             var energyPerMoveBefore = this._energyPerMove;
             var energyPerRoundBefore = this._energyPerRound;
-            var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
             devicesDrives.forEach(x => x.updateForRound(uwpe));
             this._energyPerMove = energyPerMoveBefore;
             this._energyPerRound = energyPerRoundBefore;
@@ -96,9 +107,9 @@ class DeviceUser {
     distanceMaxPerMoveReset() {
         this._distanceMaxPerMove = null;
     }
-    energyPerMove(ship) {
+    energyPerMove() {
         if (this._energyPerMove == null) {
-            var devicesDrives = this.devicesDrives(ship);
+            var devicesDrives = this.devicesDrives();
             var energyPerMoveSoFar = 0;
             var distanceMaxPerMoveBefore = this._distanceMaxPerMove;
             devicesDrives.forEach(x => energyPerMoveSoFar += x.defn().energyPerUse);
@@ -113,12 +124,11 @@ class DeviceUser {
     energyPerMoveReset() {
         this._energyPerMove = null;
     }
-    energyPerRound(ship) {
+    energyPerRound(uwpe) {
         if (this._energyPerRound == null) {
             this._energyPerRound = 0;
-            var devicesGenerators = this.devicesGenerators(ship);
+            var devicesGenerators = this.devicesGenerators();
             var distanceMaxPerMoveBefore = this._distanceMaxPerMove;
-            var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
             devicesGenerators.forEach(x => x.updateForRound(uwpe));
             this._distanceMaxPerMove = distanceMaxPerMoveBefore;
         }
@@ -130,15 +140,15 @@ class DeviceUser {
     energyPerRoundReset() {
         this._energyPerRound = null;
     }
-    energyRemainingOverMax(ship) {
-        var energyRemaining = this.energyRemainingThisRound(ship);
-        var energyPerRound = this.energyPerRound(ship);
+    energyRemainingOverMax(uwpe) {
+        var energyRemaining = this.energyRemainingThisRound(uwpe);
+        var energyPerRound = this.energyPerRound(uwpe);
         var energyRemainingOverMax = energyRemaining + "/" + energyPerRound;
         return energyRemainingOverMax;
     }
-    energyRemainingThisRound(ship) {
+    energyRemainingThisRound(uwpe) {
         if (this._energyRemainingThisRound == null) {
-            this.energyRemainingThisRoundReset(ship);
+            this.energyRemainingThisRoundReset(uwpe);
         }
         return this._energyRemainingThisRound;
     }
@@ -148,14 +158,14 @@ class DeviceUser {
     energyRemainingThisRoundClear() {
         this._energyRemainingThisRound = 0;
     }
-    energyRemainingThisRoundIsEnoughToMove(ship) {
-        var energyRemainingThisRound = this.energyRemainingThisRound(ship);
-        var energyPerMove = this.energyPerMove(ship);
+    energyRemainingThisRoundIsEnoughToMove(uwpe) {
+        var energyRemainingThisRound = this.energyRemainingThisRound(uwpe);
+        var energyPerMove = this.energyPerMove();
         var isEnough = (energyRemainingThisRound >= energyPerMove);
         return isEnough;
     }
-    energyRemainingThisRoundReset(ship) {
-        this._energyRemainingThisRound = this.energyPerRound(ship);
+    energyRemainingThisRoundReset(uwpe) {
+        this._energyRemainingThisRound = this.energyPerRound(uwpe);
     }
     energyRemainingThisRoundSubtract(energyToSubtract) {
         this._energyRemainingThisRound -= energyToSubtract;
@@ -169,7 +179,7 @@ class DeviceUser {
     sensorRange(ship) {
         if (this._sensorRange == null) {
             this._sensorRange = 0;
-            var devicesSensors = this.devicesSensors(ship);
+            var devicesSensors = this.devicesSensors();
             var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
             devicesSensors.forEach(x => x.updateForRound(uwpe));
         }
@@ -184,7 +194,7 @@ class DeviceUser {
     shielding(ship) {
         if (this._shielding == null) {
             this._shielding = 0;
-            var devicesShields = this.devicesShields(ship);
+            var devicesShields = this.devicesShields();
             var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
             devicesShields.forEach(x => x.updateForRound(uwpe));
         }
@@ -199,7 +209,7 @@ class DeviceUser {
     speedThroughLink(ship) {
         if (this._speedThroughLink == null) {
             this._speedThroughLink = 0;
-            var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
+            var starlaneDrivesAsDevices = this.devicesStarlaneDrives();
             var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
             for (var i = 0; i < starlaneDrivesAsDevices.length; i++) {
                 var starlaneDrive = starlaneDrivesAsDevices[i];
@@ -218,6 +228,16 @@ class DeviceUser {
     speedThroughLinkReset() {
         this._speedThroughLink = null;
     }
+    updateForRound(uwpe) {
+        this.reset();
+        var devices = this.devices();
+        for (var i = 0; i < devices.length; i++) {
+            var device = devices[i];
+            uwpe.entity2Set(device.toEntity());
+            device.updateForRound(uwpe);
+        }
+        this.energyRemainingThisRoundReset(uwpe);
+    }
     // Clonable.
     clone() {
         throw new Error("Not yet implemented.");
@@ -227,7 +247,9 @@ class DeviceUser {
     }
     // EntityProperty.
     finalize(uwpe) { }
-    initialize(uwpe) { }
+    initialize(uwpe) {
+        this.energyRemainingThisRound(uwpe); // Do the calculations, but ignore the result for now.
+    }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) {

@@ -730,16 +730,6 @@ class Faction implements EntityProperty<Faction>
 		return returnValues;
 	}
 
-	relationsInitialize(universe: Universe): void
-	{
-		var diplomaticSessionAsControl = this.toControl_Details_Diplomacy
-		(
-			universe, universe.display.sizeInPixels
-		);
-		var venueNext: Venue = diplomaticSessionAsControl.toVenue();
-		universe.venueTransitionTo(venueNext);
-	}
-
 	relationshipByFactionName(factionName: string): DiplomaticRelationship
 	{
 		var returnValue = this.diplomacy.relationships.find
@@ -888,7 +878,10 @@ class Faction implements EntityProperty<Faction>
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	initialize(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this.ships.forEach(x => x.initialize(uwpe));
+	}
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{

@@ -32,9 +32,9 @@ class OrderDefn_Instances {
     go(uwpe) {
         var shipMoving = uwpe.entity;
         var deviceUser = DeviceUser.ofEntity(shipMoving);
-        var hasEnoughEnergy = deviceUser.energyRemainingThisRoundIsEnoughToMove(shipMoving);
+        var hasEnoughEnergy = deviceUser.energyRemainingThisRoundIsEnoughToMove(uwpe);
         if (hasEnoughEnergy) {
-            var energyPerMove = deviceUser.energyPerMove(shipMoving);
+            var energyPerMove = deviceUser.energyPerMove();
             deviceUser.energyRemainingThisRoundSubtract(energyPerMove);
             var orderable = Orderable.fromEntity(shipMoving);
             var order = orderable.order(shipMoving);
@@ -43,7 +43,7 @@ class OrderDefn_Instances {
             var entityMovingPos = shipMoving.locatable().loc.pos;
             var displacementToTargetFinal = targetFinalPos.clone().subtract(entityMovingPos);
             var distanceToTargetFinal = displacementToTargetFinal.magnitude();
-            var distanceMaxPerMove = deviceUser.distanceMaxPerMove(shipMoving);
+            var distanceMaxPerMove = deviceUser.distanceMaxPerMove(uwpe);
             var entityTargetImmediate;
             if (distanceToTargetFinal <= distanceMaxPerMove) {
                 entityTargetImmediate = targetFinal;

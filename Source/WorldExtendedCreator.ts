@@ -400,9 +400,11 @@ class WorldExtendedCreator
 
 		worldDummy.factionAdd(faction);
 
+		var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
+
 		factionShips.forEach
 		(
-			ship => factionHomeStarsystem.shipAdd(ship, worldDummy)
+			ship => factionHomeStarsystem.shipAdd(ship, uwpe)
 		);
 	}
 
@@ -621,7 +623,8 @@ class WorldExtendedCreator
 		);
 
 		factionOther.shipAdd(shipOther);
-		factionUserHomeStarsystem.shipAdd(shipOther, worldDummy);
+		var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
+		factionUserHomeStarsystem.shipAdd(shipOther, uwpe);
 	}
 
 }

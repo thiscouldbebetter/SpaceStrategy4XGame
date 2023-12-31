@@ -6,7 +6,7 @@ class Ship extends Entity {
             defn,
             Ship.collidableBuild(pos),
             new Controllable(Ship.toControl),
-            new DeviceUser(),
+            DeviceUser.fromEntities(componentEntities),
             Drawable.fromVisual(Ship.visualForColorAndScaleFactor(faction.color, 10)),
             new Factionable(faction),
             Ship.killableBuild(hullSize, faction),
@@ -199,7 +199,7 @@ class Ship extends Entity {
     // movement
     linkPortalEnter(cluster, linkPortal, ship) {
         var deviceUser = ship.deviceUser();
-        var starlaneDrives = deviceUser.devicesStarlaneDrives(ship);
+        var starlaneDrives = deviceUser.devicesStarlaneDrives();
         if (starlaneDrives.length == 0) {
             this.nudgeInFrontOfEntityIfTouching(linkPortal);
         }
@@ -225,9 +225,10 @@ class Ship extends Entity {
             shipLoc.vel.overwriteWith(linkDirection);
         }
     }
-    linkExit(world, link) {
+    linkExit(link, uwpe) {
         var ship = this;
         link.shipRemove(ship); // todo
+        var world = uwpe.world;
         var cluster = world.starCluster;
         var shipLoc = ship.locatable().loc;
         var shipPos = shipLoc.pos;
@@ -244,11 +245,12 @@ class Ship extends Entity {
         shipLoc.placeName = Starsystem.name + ":" + starsystemDestination.name;
         var portalToExitFrom = starsystemDestination.linkPortalByStarsystemName(starsystemSource.name);
         var exitPos = portalToExitFrom.locatable().loc.pos;
-        shipPos.overwriteWith(exitPos).add(Coords.Instances().Ones);
-        starsystemDestination.shipAdd(ship, world);
+        shipPos.overwriteWith(exitPos);
+        ship.nudgeInFrontOfEntityIfTouching(portalToExitFrom);
+        starsystemDestination.shipAdd(ship, uwpe);
         var shipFaction = ship.faction();
         var factionKnowledge = shipFaction.knowledge;
-        factionKnowledge.starsystemAdd(starsystemDestination, world);
+        factionKnowledge.starsystemAdd(starsystemDestination, uwpe);
     }
     moveRepeat(universe) {
         var order = this.order();
@@ -267,7 +269,7 @@ class Ship extends Entity {
     }
     moveStart(universe) {
         var deviceUser = this.deviceUser();
-        var devicesDrives = deviceUser.devicesDrives(this);
+        var devicesDrives = deviceUser.devicesDrives();
         var deviceDriveToSelect = devicesDrives[0];
         this.deviceSelect(deviceDriveToSelect);
         var venueStarsystem = universe.venueCurrent();
@@ -315,14 +317,14 @@ class Ship extends Entity {
         this.locatable().loc.placeName =
             Planet.name + ":" + planet.name;
     }
-    planetOrbitExit(world, planet) {
-        planet.shipLeaveOrbit(this, world);
+    planetOrbitExit(planet, uwpe) {
+        planet.shipLeaveOrbit(this, uwpe);
     }
     speedThroughLinkThisRound(link) {
         var linkFrictionDivisor = link.frictionDivisor();
         if (this._speedThroughLinkThisRound == null) {
             var deviceUser = this.deviceUser();
-            var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives(this);
+            var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives();
             var uwpe = UniverseWorldPlaceEntities.create().entitySet(this);
             for (var i = 0; i < starlaneDrivesAsDevices.length; i++) {
                 var starlaneDrive = starlaneDrivesAsDevices[i];
@@ -406,7 +408,10 @@ class Ship extends Entity {
             var labelIntegrity = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), labelSize, DataBinding.fromContext("Hull:"), fontNameAndHeight);
             var textIntegrity = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x / 4, margin), labelSize, DataBinding.fromContextAndGet(ship, (c) => "" + c.integrityCurrentOverMax()), fontNameAndHeight);
             var labelEnergy = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x / 2, margin), labelSize, DataBinding.fromContext("Energy:"), fontNameAndHeight);
-            var textEnergy = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x * 3 / 4, margin), labelSize, DataBinding.fromContextAndGet(ship, (c) => "" + c.deviceUser().energyRemainingOverMax(c)), fontNameAndHeight);
+            var textEnergy = ControlLabel.from4Uncentered(Coords.fromXY(containerSize.x * 3 / 4, margin), labelSize, DataBinding.fromContextAndGet(ship, (c) => {
+                var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+                return "" + c.deviceUser().energyRemainingOverMax(uwpe);
+            }), fontNameAndHeight);
             var childControlsVitals = [
                 labelIntegrity,
                 textIntegrity,
@@ -432,7 +437,7 @@ class Ship extends Entity {
             var listPos = Coords.fromXY(margin, margin * 3 + labelHeight + buttonHeight); // pos
             var listDevices = ControlList.from8("listDevices", listPos, listSize, 
             // dataBindingForItems
-            DataBinding.fromContextAndGet(ship, (c) => c.deviceUser().devicesUsable(c)), DataBinding.fromGet((c) => c.nameAndUsesRemainingThisRound()), // bindingForOptionText
+            DataBinding.fromContextAndGet(ship, (c) => c.deviceUser().devicesUsable()), DataBinding.fromGet((c) => c.nameAndUsesRemainingThisRound()), // bindingForOptionText
             fontNameAndHeight, new DataBinding(ship, (c) => c.deviceUser().deviceSelected(), (c, v) => c.deviceSelect(v)), // dataBindingForItemSelected
             DataBinding.fromContext(null) // bindingForItemValue
             );
@@ -468,16 +473,9 @@ class Ship extends Entity {
     }
     // Rounds.
     updateForRound(universe, world, faction) {
-        var deviceUser = this.deviceUser();
-        deviceUser.reset();
-        var devices = deviceUser.devices(this);
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
-        for (var i = 0; i < devices.length; i++) {
-            var device = devices[i];
-            uwpe.entity2Set(device.toEntity());
-            device.updateForRound(uwpe);
-        }
-        deviceUser.energyRemainingThisRoundReset(this);
+        var deviceUser = this.deviceUser();
+        deviceUser.updateForRound(uwpe);
     }
     /*
     draw

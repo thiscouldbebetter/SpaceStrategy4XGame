@@ -292,11 +292,6 @@ class Faction {
         var returnValues = relationshipsMatching.map(x => x.factionOther());
         return returnValues;
     }
-    relationsInitialize(universe) {
-        var diplomaticSessionAsControl = this.toControl_Details_Diplomacy(universe, universe.display.sizeInPixels);
-        var venueNext = diplomaticSessionAsControl.toVenue();
-        universe.venueTransitionTo(venueNext);
-    }
     relationshipByFactionName(factionName) {
         var returnValue = this.diplomacy.relationships.find(x => x.factionOther().name == factionName);
         return returnValue;
@@ -370,7 +365,9 @@ class Faction {
     }
     // EntityProperty.
     finalize(uwpe) { }
-    initialize(uwpe) { }
+    initialize(uwpe) {
+        this.ships.forEach(x => x.initialize(uwpe));
+    }
     updateForTimerTick(uwpe) {
         var universe = uwpe.universe;
         var venueCurrent = universe.venueCurrent();

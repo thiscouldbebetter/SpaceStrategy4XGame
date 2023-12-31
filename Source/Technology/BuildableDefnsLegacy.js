@@ -147,11 +147,10 @@ class BuildableDefnsLegacy {
         var categoryShipDrive = categories.ShipDrive;
         var deviceDefnDrive = (energyPerUse, distanceMaxPerMoveMultiple) => new DeviceDefn("Drive", false, // isActive
         false, // needsTarget
-        [categoryShipDrive], (uwpe) => // init
-         { }, (uwpe) => // updateForRound
+        [categoryShipDrive], (uwpe) => { }, // init
+        (uwpe) => // updateForRound
          {
-            var ship = uwpe.entity;
-            var shipDeviceUser = ship.deviceUser();
+            var shipDeviceUser = DeviceUser.ofEntity(uwpe.entity);
             shipDeviceUser.energyPerMoveAdd(energyPerUse);
             var distanceMaxPerMoveBase = 50;
             var distanceMaxPerMove = distanceMaxPerMoveMultiple * distanceMaxPerMoveBase;
@@ -174,8 +173,8 @@ class BuildableDefnsLegacy {
             [categoryShipGenerator], null, // initialize
             // updateForRound
             (uwpe) => {
-                var ship = uwpe.entity;
-                ship.deviceUser().energyPerRoundAdd(energyPerTurn);
+                var deviceUser = DeviceUser.ofEntity(uwpe.entity);
+                deviceUser.energyPerRoundAdd(energyPerTurn);
             }, 0, // usesPerRound
             0, // energyPerUse
             null // use
@@ -295,8 +294,8 @@ class BuildableDefnsLegacy {
             [categoryShipSensor], null, // initialize
             // updateForRound
             (uwpe) => {
-                var ship = uwpe.entity;
-                ship.deviceUser().sensorRangeAdd(sensorRange);
+                var deviceUser = DeviceUser.ofEntity(uwpe.entity);
+                deviceUser.sensorRangeAdd(sensorRange);
             }, 0, // usesPerRound
             0, // energyPerUse
             null // use
@@ -321,8 +320,8 @@ class BuildableDefnsLegacy {
             [categoryShipShield], null, // initialize
             // updateForRound
             (uwpe) => {
-                var ship = uwpe.entity;
-                ship.deviceUser().shieldingAdd(damageAbsorbed);
+                var deviceUser = DeviceUser.ofEntity(uwpe.entity);
+                deviceUser.shieldingAdd(damageAbsorbed);
             }, 0, // usesPerRound
             0, // energyPerUse
             null // use
@@ -348,8 +347,7 @@ class BuildableDefnsLegacy {
             [categoryShipStarlaneDrive], null, // initialize
             // updateForRound
             (uwpe) => {
-                var ship = uwpe.entity;
-                var deviceUser = ship.deviceUser();
+                var deviceUser = DeviceUser.ofEntity(uwpe.entity);
                 var speedIncrement = speedIncrementMultiple
                     * speedIncrementStep;
                 deviceUser.speedThroughLinkAdd(speedIncrement);

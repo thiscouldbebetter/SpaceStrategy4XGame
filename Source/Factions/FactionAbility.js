@@ -107,7 +107,7 @@ class FactionAbility_Instances {
             var faction = factions[i];
             if (faction != factionSelf) {
                 var factionHomeStarsystem = faction.starsystemHome(world);
-                factionSelfKnowledge.starsystemAdd(factionHomeStarsystem, world);
+                factionSelfKnowledge.starsystemAdd(factionHomeStarsystem, uwpe);
             }
         }
     }
@@ -140,7 +140,8 @@ class FactionAbility_Instances {
         for (var i = 0; i < ships.length; i++) {
             var ship = ships[i];
             var shipDeviceUser = ship.deviceUser();
-            var energyRemainingThisRound = shipDeviceUser.energyRemainingThisRound(ship);
+            uwpe.entitySet(ship);
+            var energyRemainingThisRound = shipDeviceUser.energyRemainingThisRound(uwpe);
             shipDeviceUser.energyRemainingThisRoundAdd(energyRemainingThisRound);
         }
     }

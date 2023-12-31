@@ -2,6 +2,7 @@
 class DeviceUser implements EntityProperty<DeviceUser>
 {
 	_deviceSelected: Device;
+	_devices: Device[];
 	_devicesDrives: Device[];
 	_devicesGenerators: Device[];
 	_devicesSensors: Device[];
@@ -16,6 +17,26 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	_sensorRange: number;
 	_shielding: number;
 	_speedThroughLink: number;
+
+	constructor(devices: Device[])
+	{
+		this._devices = devices;
+	}
+
+	static fromEntities(entities: Entity[]): DeviceUser
+	{
+		var devices = entities.map
+		(
+			x => Device.ofEntity(x)
+		).filter
+		(
+			x => (x != null)
+		);
+
+		var deviceUser = new DeviceUser(devices);
+
+		return deviceUser;
+	}
 
 	static ofEntity(entity: Entity): DeviceUser
 	{
@@ -33,6 +54,16 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	}
 
 	// Devices.
+
+	deviceAdd(deviceToAdd: Device): void
+	{
+		this._devices.push(deviceToAdd);
+	}
+
+	deviceRemove(deviceToRemove: Device): void
+	{
+		this._devices.splice(this._devices.indexOf(deviceToRemove), 1);
+	}
 
 	deviceSelect(deviceToSelect: Device): void
 	{
@@ -54,21 +85,16 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return canBeUsed;
 	}
 
-	devices(ship: Ship): Device[]
+	devices(): Device[]
 	{
-		var deviceEntities = ship.componentEntities.filter
-		(
-			(x: Entity) => Device.ofEntity(x) != null
-		);
-		var devices = deviceEntities.map(x => Device.ofEntity(x) );
-		return devices;
+		return this._devices;
 	}
 
-	devicesDrives(ship: Ship): Device[]
+	devicesDrives(): Device[]
 	{
 		if (this._devicesDrives == null)
 		{
-			var devices = this.devices(ship);
+			var devices = this.devices();
 
 			var categoryShipDrive = BuildableCategory.Instances().ShipDrive;
 
@@ -81,11 +107,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesDrives;
 	}
 
-	devicesGenerators(ship: Ship): Device[]
+	devicesGenerators(): Device[]
 	{
 		if (this._devicesGenerators == null)
 		{
-			var devices = this.devices(ship);
+			var devices = this.devices();
 
 			var categoryShipGenerators =
 				BuildableCategory.Instances().ShipGenerator;
@@ -99,11 +125,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesGenerators;
 	}
 
-	devicesSensors(ship: Ship): Device[]
+	devicesSensors(): Device[]
 	{
 		if (this._devicesSensors == null)
 		{
-			var devices = this.devices(ship);
+			var devices = this.devices();
 
 			var categoryShipSensor = BuildableCategory.Instances().ShipSensor;
 
@@ -116,11 +142,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesSensors;
 	}
 
-	devicesShields(ship: Ship): Device[]
+	devicesShields(): Device[]
 	{
 		if (this._devicesShields == null)
 		{
-			var devices = this.devices(ship);
+			var devices = this.devices();
 
 			var categoryShipShield = BuildableCategory.Instances().ShipShield;
 
@@ -133,11 +159,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesShields;
 	}
 
-	devicesStarlaneDrives(ship: Ship): Device[]
+	devicesStarlaneDrives(): Device[]
 	{
 		if (this._devicesStarlaneDrives == null)
 		{
-			var devices = this.devices(ship);
+			var devices = this.devices();
 
 			var categories = BuildableCategory.Instances();
 
@@ -150,11 +176,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesStarlaneDrives;
 	}
 
-	devicesUsable(ship: Ship): Device[]
+	devicesUsable(): Device[]
 	{
 		if (this._devicesUsable == null)
 		{
-			var devices = this.devices(ship);
+			var devices = this.devices();
 
 			this._devicesUsable = devices.filter
 			(
@@ -165,17 +191,16 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return this._devicesUsable;
 	}
 
-	distanceMaxPerMove(ship: Ship): number
+	distanceMaxPerMove(uwpe: UniverseWorldPlaceEntities): number
 	{
 		if (this._distanceMaxPerMove == null)
 		{
 			this._distanceMaxPerMove = 0;
-			var devicesDrives = this.devicesDrives(ship);
+			var devicesDrives = this.devicesDrives();
 
 			var energyPerMoveBefore = this._energyPerMove;
 			var energyPerRoundBefore = this._energyPerRound;
 
-			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
 			devicesDrives.forEach(x => x.updateForRound(uwpe) );
 
 			this._energyPerMove = energyPerMoveBefore;
@@ -194,11 +219,11 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._distanceMaxPerMove = null;
 	}
 
-	energyPerMove(ship: Ship): number
+	energyPerMove(): number
 	{
 		if (this._energyPerMove == null)
 		{
-			var devicesDrives = this.devicesDrives(ship);
+			var devicesDrives = this.devicesDrives();
 			var energyPerMoveSoFar = 0;
 			var distanceMaxPerMoveBefore = this._distanceMaxPerMove;
 			devicesDrives.forEach(x => energyPerMoveSoFar += x.defn().energyPerUse);
@@ -218,17 +243,16 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._energyPerMove = null;
 	}
 
-	energyPerRound(ship: Ship): number
+	energyPerRound(uwpe: UniverseWorldPlaceEntities): number
 	{
 		if (this._energyPerRound == null)
 		{
 			this._energyPerRound = 0;
 
-			var devicesGenerators = this.devicesGenerators(ship);
+			var devicesGenerators = this.devicesGenerators();
 
 			var distanceMaxPerMoveBefore = this._distanceMaxPerMove;
 
-			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
 			devicesGenerators.forEach(x => x.updateForRound(uwpe) );
 
 			this._distanceMaxPerMove = distanceMaxPerMoveBefore;
@@ -246,19 +270,19 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._energyPerRound = null;
 	}
 
-	energyRemainingOverMax(ship: Ship): string
+	energyRemainingOverMax(uwpe: UniverseWorldPlaceEntities): string
 	{
-		var energyRemaining = this.energyRemainingThisRound(ship);
-		var energyPerRound = this.energyPerRound(ship);
+		var energyRemaining = this.energyRemainingThisRound(uwpe);
+		var energyPerRound = this.energyPerRound(uwpe);
 		var energyRemainingOverMax = energyRemaining + "/" + energyPerRound;
 		return energyRemainingOverMax;
 	}
 
-	energyRemainingThisRound(ship: Ship): number
+	energyRemainingThisRound(uwpe: UniverseWorldPlaceEntities): number
 	{
 		if (this._energyRemainingThisRound == null)
 		{
-			this.energyRemainingThisRoundReset(ship);
+			this.energyRemainingThisRoundReset(uwpe);
 		}
 		return this._energyRemainingThisRound;
 	}
@@ -273,18 +297,18 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._energyRemainingThisRound = 0;
 	}
 
-	energyRemainingThisRoundIsEnoughToMove(ship: Ship): boolean
+	energyRemainingThisRoundIsEnoughToMove(uwpe: UniverseWorldPlaceEntities): boolean
 	{
-		var energyRemainingThisRound = this.energyRemainingThisRound(ship);
-		var energyPerMove = this.energyPerMove(ship);
+		var energyRemainingThisRound = this.energyRemainingThisRound(uwpe);
+		var energyPerMove = this.energyPerMove();
 		var isEnough =
 			(energyRemainingThisRound >= energyPerMove);
 		return isEnough;
 	}
 
-	energyRemainingThisRoundReset(ship: Ship): void
+	energyRemainingThisRoundReset(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this._energyRemainingThisRound = this.energyPerRound(ship);
+		this._energyRemainingThisRound = this.energyPerRound(uwpe);
 	}
 
 	energyRemainingThisRoundSubtract(energyToSubtract: number): void
@@ -307,7 +331,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		if (this._sensorRange == null)
 		{
 			this._sensorRange = 0;
-			var devicesSensors = this.devicesSensors(ship);
+			var devicesSensors = this.devicesSensors();
 			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
 			devicesSensors.forEach(x => x.updateForRound(uwpe) );
 		}
@@ -329,7 +353,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		if (this._shielding == null)
 		{
 			this._shielding = 0;
-			var devicesShields = this.devicesShields(ship);
+			var devicesShields = this.devicesShields();
 			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
 			devicesShields.forEach(x => x.updateForRound(uwpe) );
 		}
@@ -353,7 +377,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		{
 			this._speedThroughLink = 0;
 
-			var starlaneDrivesAsDevices = this.devicesStarlaneDrives(ship);
+			var starlaneDrivesAsDevices = this.devicesStarlaneDrives();
 
 			var uwpe = UniverseWorldPlaceEntities.create().entitySet(ship);
 
@@ -383,6 +407,23 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this._speedThroughLink = null;
 	}
 
+	updateForRound(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this.reset();
+
+		var devices = this.devices();
+
+		for (var i = 0; i < devices.length; i++)
+		{
+			var device = devices[i];
+			uwpe.entity2Set(device.toEntity() );
+			device.updateForRound(uwpe);
+		}
+
+		this.energyRemainingThisRoundReset(uwpe);
+	}
+
+
 	// Clonable.
 
 	clone(): DeviceUser
@@ -398,7 +439,12 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+
+	initialize(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this.energyRemainingThisRound(uwpe); // Do the calculations, but ignore the result for now.
+	}
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.

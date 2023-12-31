@@ -25,7 +25,7 @@ class FactionIntelligence_Instances {
             var factionToMove = starsystem.factionToMove(world);
             var shipsAll = starsystem.ships;
             var factionToMoveShips = shipsAll.filter(x => x.factionable().faction() == factionToMove);
-            var factionToMoveShipsWithEnergyToMove = factionToMoveShips.filter(x => x.deviceUser().energyRemainingThisRoundIsEnoughToMove(x));
+            var factionToMoveShipsWithEnergyToMove = factionToMoveShips.filter(x => x.deviceUser().energyRemainingThisRoundIsEnoughToMove(uwpe.entitySet(x)));
             if (factionToMoveShipsWithEnergyToMove.length == 0) {
                 starsystem.factionToMoveAdvance(world);
             }

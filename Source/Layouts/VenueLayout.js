@@ -14,12 +14,14 @@ class VenueLayout {
         return returnValues;
     }
     finalize(universe) {
-        // Do nothing.
+        // universe.soundHelper.soundForMusicPause(universe);
     }
     initialize(universe) {
         var controlRoot = this.toControl(universe);
         this.venueControls = new VenueControls(controlRoot, null);
         this.layout.initialize(universe);
+        var soundHelper = universe.soundHelper;
+        soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
         this.hasBeenUpdatedSinceDrawn = true;
     }
     model() {

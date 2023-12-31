@@ -38,7 +38,7 @@ class Planet extends Entity
 					)
 				),
 				new Controllable(Planet.toControl),
-				new DeviceUser(),
+				new DeviceUser([]),
 				Drawable.fromVisual(planetType.visualProjected() ),
 				new Factionable(faction),
 				Locatable.fromPos(pos)
@@ -259,15 +259,16 @@ class Planet extends Entity
 		shipToAdd.locatable().loc.placeName = Planet.name + ":" + this.name;
 	}
 
-	shipLeaveOrbit(shipToLeaveOrbit: Ship, world: WorldExtended): void
+	shipLeaveOrbit(shipToLeaveOrbit: Ship, uwpe: UniverseWorldPlaceEntities): void
 	{
 		ArrayHelper.remove(this.ships, shipToLeaveOrbit);
 		var shipLoc = shipToLeaveOrbit.locatable().loc;
 		var planetPos = this.locatable().loc.pos;
+		var world = uwpe.world as WorldExtended;
 		var starsystem = this.starsystem(world);
 		shipLoc.placeName = Starsystem.name + starsystem.name;
 		shipLoc.pos.overwriteWith(planetPos); // todo - offset.
-		starsystem.shipAdd(shipToLeaveOrbit, world);
+		starsystem.shipAdd(shipToLeaveOrbit, uwpe);
 	}
 
 	starsystem(world: WorldExtended): Starsystem

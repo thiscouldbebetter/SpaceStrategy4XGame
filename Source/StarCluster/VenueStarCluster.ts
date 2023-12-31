@@ -259,7 +259,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	finalize(universe: Universe): void
 	{
-		universe.soundHelper.soundForMusic.pause(universe);
+		// universe.soundHelper.soundForMusicPause(universe);
 	}
 
 	initialize(universe: Universe): void

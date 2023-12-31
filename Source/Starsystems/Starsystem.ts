@@ -366,8 +366,8 @@ class Starsystem extends PlaceBase
 			var message =
 				"There are moves remaining in the "
 				+ this.name
-				+ " system";
-				+ areThereEnemyFactionsPresent ? ", and enemies are present" : ""
+				+ " system"
+				+ (areThereEnemyFactionsPresent ? ", and enemies are present" : "")
 				+ "."
 
 			var starsystem = this;
@@ -396,10 +396,11 @@ class Starsystem extends PlaceBase
 		) as Projectile[];	
 	}
 
-	shipAdd(shipToAdd: Ship, world: WorldExtended): void
+	shipAdd(shipToAdd: Ship, uwpe: UniverseWorldPlaceEntities): void
 	{
 		this.entityToSpawnAdd(shipToAdd);
 
+		var world = uwpe.world as WorldExtended;
 		var factionsInStarsystem = this.factionsPresent(world);
 
 		var shipFaction = shipToAdd.factionable().faction();
@@ -431,7 +432,7 @@ class Starsystem extends PlaceBase
 			{
 				var factionKnowledge = faction.knowledge;
 				factionKnowledge.shipAdd(shipToAdd, world);
-				factionKnowledge.starsystemAdd(this, world);
+				factionKnowledge.starsystemAdd(this, uwpe);
 			}
 		);
 
@@ -476,6 +477,15 @@ class Starsystem extends PlaceBase
 		var buttonHalfSize =
 			buttonSize.clone().multiply(Coords.fromXY(.5, 1));
 
+		var buttonsRepeatAndPassAreEnabled = DataBinding.fromGet
+		(
+			() =>
+			{
+				var venue = universe.venueCurrent() as VenueStarsystem;
+				return (venue instanceof VenueStarsystem ? venue.entitiesAreMoving() == false : false);
+			}
+		);
+
 		var buttonRepeat = ControlButton.from8
 		(
 			"buttonRepeat",
@@ -488,7 +498,7 @@ class Starsystem extends PlaceBase
 			"Repeat",
 			fontNameAndHeight,
 			true, // hasBorder
-			DataBinding.fromTrue(), // isEnabled
+			buttonsRepeatAndPassAreEnabled,
 			() =>
 			{
 				var venueCurrent = universe.venueCurrent() as VenueStarsystem;
@@ -519,7 +529,7 @@ class Starsystem extends PlaceBase
 			"Pass",
 			fontNameAndHeight,
 			true, // hasBorder
-			DataBinding.fromTrue(), // isEnabled
+			buttonsRepeatAndPassAreEnabled,
 			() =>
 			{
 				var venueCurrent = universe.venueCurrent() as VenueStarsystem;

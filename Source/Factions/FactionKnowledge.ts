@@ -205,14 +205,18 @@ class FactionKnowledge
 		this.factionsCacheClear();
 	}
 
-	starsystemAdd(starsystem: Starsystem, world: WorldExtended): void
+	starsystemAdd(starsystem: Starsystem, uwpe: UniverseWorldPlaceEntities): void
 	{
 		var starsystemName = starsystem.name;
 
-		if (this.starsystemNames.indexOf(starsystemName) == -1)
+		var starsystemIsNotYetKnown =
+			(this.starsystemNames.indexOf(starsystemName) == -1);
+
+		if (starsystemIsNotYetKnown)
 		{
 			this.starsystemNames.push(starsystemName);
 
+			var world = uwpe.world as WorldExtended;
 			var starsystemFaction = starsystem.faction(world);
 			if (starsystemFaction != null)
 			{
@@ -228,6 +232,31 @@ class FactionKnowledge
 				var link = linkPortal.link(starCluster);
 				this.linkAdd(link);
 			}
+
+			var message =
+				"We have discovered the "
+				+ starsystem.name
+				+ " system.  It contains "
+				+ starsystem.planets.length + " planets and links to "
+				+ starsystem.linkPortals.length + " other systems.";
+
+			var factionControlling = starsystem.faction(world);
+			if (factionControlling != null)
+			{
+				message += "  It is claimed by the " + factionControlling.name + ".";
+			}
+
+			var notification = new Notification2
+			(
+				message,
+				() => starsystem.jumpTo(universe)
+			);
+
+			var factionSelf = this.factionSelf(world);
+
+			factionSelf.notificationSession.notificationAdd(notification);
+			var universe = uwpe.universe;
+			factionSelf.notificationSessionStart(universe, universe.display.sizeInPixelsHalf);
 		}
 
 		this.starsystemsCacheClear();

@@ -59,6 +59,11 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		}
 	}
 
+	entitiesAreMoving(): boolean
+	{
+		return this.entityMoving != null;
+	}
+
 	entitySelect(value: Entity): void
 	{
 		this._entitySelected = value;
@@ -151,7 +156,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	finalize(universe: Universe): void
 	{
-		universe.soundHelper.soundForMusic.pause(universe);
+		// universe.soundHelper.soundForMusicPause(universe);
 	}
 
 	initialize(universe: Universe): void

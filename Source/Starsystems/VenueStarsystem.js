@@ -22,6 +22,9 @@ class VenueStarsystem {
             this.venueControls.draw(universe);
         }
     }
+    entitiesAreMoving() {
+        return this.entityMoving != null;
+    }
     entitySelect(value) {
         this._entitySelected = value;
     }
@@ -80,7 +83,7 @@ class VenueStarsystem {
         return this.starsystem.factionsPresent(world);
     }
     finalize(universe) {
-        universe.soundHelper.soundForMusic.pause(universe);
+        // universe.soundHelper.soundForMusicPause(universe);
     }
     initialize(universe) {
         var starsystem = this.starsystem;

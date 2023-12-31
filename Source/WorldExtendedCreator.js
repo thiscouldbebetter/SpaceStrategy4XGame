@@ -177,7 +177,8 @@ class WorldExtendedCreator {
         this.create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy);
         ships.push(...factionShips);
         worldDummy.factionAdd(faction);
-        factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, worldDummy));
+        var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
+        factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, uwpe));
     }
     create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn) {
         var universe = this.universe;
@@ -268,6 +269,7 @@ class WorldExtendedCreator {
         var shipComponentsAsEntities = shipComponentsAsBuildables.map(x => x.toEntity(worldDummy));
         var shipOther = new Ship("ShipOther", shipHullSize, factionOtherShipDefn, shipPos, factionOther, shipComponentsAsEntities);
         factionOther.shipAdd(shipOther);
-        factionUserHomeStarsystem.shipAdd(shipOther, worldDummy);
+        var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
+        factionUserHomeStarsystem.shipAdd(shipOther, uwpe);
     }
 }

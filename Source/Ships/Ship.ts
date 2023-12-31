@@ -26,7 +26,7 @@ class Ship extends Entity
 				defn,
 				Ship.collidableBuild(pos),
 				new Controllable(Ship.toControl),
-				new DeviceUser(),
+				DeviceUser.fromEntities(componentEntities),
 				Drawable.fromVisual(Ship.visualForColorAndScaleFactor(faction.color, 10) ),
 				new Factionable(faction),
 				Ship.killableBuild(hullSize, faction),
@@ -368,7 +368,7 @@ class Ship extends Entity
 	): void
 	{
 		var deviceUser = ship.deviceUser();
-		var starlaneDrives = deviceUser.devicesStarlaneDrives(ship);
+		var starlaneDrives = deviceUser.devicesStarlaneDrives();
 		if (starlaneDrives.length == 0)
 		{
 			this.nudgeInFrontOfEntityIfTouching(linkPortal);
@@ -404,11 +404,12 @@ class Ship extends Entity
 		}
 	}
 
-	linkExit(world: WorldExtended, link: StarClusterLink): void
+	linkExit(link: StarClusterLink, uwpe: UniverseWorldPlaceEntities): void
 	{
 		var ship = this;
 		link.shipRemove(ship); // todo
 
+		var world = uwpe.world as WorldExtended;
 		var cluster = world.starCluster;
 		var shipLoc = ship.locatable().loc;
 
@@ -432,13 +433,14 @@ class Ship extends Entity
 		var portalToExitFrom =
 			starsystemDestination.linkPortalByStarsystemName(starsystemSource.name);
 		var exitPos = portalToExitFrom.locatable().loc.pos;
-		shipPos.overwriteWith(exitPos).add(Coords.Instances().Ones);
+		shipPos.overwriteWith(exitPos);
+		ship.nudgeInFrontOfEntityIfTouching(portalToExitFrom);
 
-		starsystemDestination.shipAdd(ship, world);
+		starsystemDestination.shipAdd(ship, uwpe);
 
 		var shipFaction = ship.faction();
 		var factionKnowledge = shipFaction.knowledge;
-		factionKnowledge.starsystemAdd(starsystemDestination, world);
+		factionKnowledge.starsystemAdd(starsystemDestination, uwpe);
 	}
 
 	moveRepeat(universe: Universe): void
@@ -464,7 +466,7 @@ class Ship extends Entity
 	moveStart(universe: Universe): void
 	{
 		var deviceUser = this.deviceUser();
-		var devicesDrives = deviceUser.devicesDrives(this);
+		var devicesDrives = deviceUser.devicesDrives();
 		var deviceDriveToSelect = devicesDrives[0];
 		this.deviceSelect(deviceDriveToSelect);
 
@@ -556,11 +558,11 @@ class Ship extends Entity
 
 	planetOrbitExit
 	(
-		world:  WorldExtended,
-		planet: Planet
+		planet: Planet,
+		uwpe: UniverseWorldPlaceEntities
 	): void
 	{
-		planet.shipLeaveOrbit(this, world);
+		planet.shipLeaveOrbit(this, uwpe);
 	}
 
 	private _speedThroughLinkThisRound: number;
@@ -572,7 +574,8 @@ class Ship extends Entity
 		if (this._speedThroughLinkThisRound == null)
 		{
 			var deviceUser = this.deviceUser();
-			var starlaneDrivesAsDevices = deviceUser.devicesStarlaneDrives(this);
+			var starlaneDrivesAsDevices =
+				deviceUser.devicesStarlaneDrives();
 
 			var uwpe = UniverseWorldPlaceEntities.create().entitySet(this);
 
@@ -767,7 +770,11 @@ class Ship extends Entity
 				DataBinding.fromContextAndGet
 				(
 					ship,
-					(c: Ship) => "" + c.deviceUser().energyRemainingOverMax(c)
+					(c: Ship) =>
+					{
+						var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+						return "" + c.deviceUser().energyRemainingOverMax(uwpe)
+					}
 				),
 				fontNameAndHeight
 			);
@@ -855,7 +862,8 @@ class Ship extends Entity
 				// dataBindingForItems
 				DataBinding.fromContextAndGet
 				(
-					ship, (c: Ship) => c.deviceUser().devicesUsable(c)
+					ship,
+					(c: Ship) => c.deviceUser().devicesUsable()
 				),
 				DataBinding.fromGet
 				(
@@ -937,24 +945,14 @@ class Ship extends Entity
 
 	updateForRound(universe: Universe, world: World, faction: Faction): void
 	{
-		var deviceUser = this.deviceUser();
-
-		deviceUser.reset();
-
-		var devices = deviceUser.devices(this);
 		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, world, null, this, null
 		);
 
-		for (var i = 0; i < devices.length; i++)
-		{
-			var device = devices[i];
-			uwpe.entity2Set(device.toEntity() );
-			device.updateForRound(uwpe);
-		}
+		var deviceUser = this.deviceUser();
 
-		deviceUser.energyRemainingThisRoundReset(this);
+		deviceUser.updateForRound(uwpe);
 	}
 
 	/*

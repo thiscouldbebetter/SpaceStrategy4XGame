@@ -130,7 +130,7 @@ class NotificationSession {
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var buttonPosY = containerSize.y - margin - buttonHeight;
         var textNotificationSingle = ControlLabel.from4Centered(Coords.fromXY(margin, margin), // pos
-        textNotificationSingleSize, DataBinding.fromContextAndGet(this, (c) => c.notificationSelected.message), fontNameAndHeight);
+        textNotificationSingleSize, DataBinding.fromContextAndGet(this, (c) => (c.notificationSelected == null ? "[none]" : c.notificationSelected.message)), fontNameAndHeight);
         var buttonGoTo = ControlButton.from5(Coords.fromXY(margin, buttonPosY), // pos
         buttonSize, "Go To", fontNameAndHeight, () => notificationSession.notificationSelectedGoTo(universe) // click
         );

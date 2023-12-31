@@ -575,12 +575,10 @@ class BuildableDefnsLegacy
 				false, // isActive
 				false, // needsTarget
 				[ categoryShipDrive ],
-				(uwpe: UniverseWorldPlaceEntities) => // init
-				{},
+				(uwpe: UniverseWorldPlaceEntities) => {}, // init
 				(uwpe: UniverseWorldPlaceEntities) => // updateForRound
 				{
-					var ship = uwpe.entity as Ship;
-					var shipDeviceUser = ship.deviceUser();
+					var shipDeviceUser = DeviceUser.ofEntity(uwpe.entity);
 					shipDeviceUser.energyPerMoveAdd(energyPerUse);
 					var distanceMaxPerMoveBase = 50;
 					var distanceMaxPerMove =
@@ -662,8 +660,8 @@ class BuildableDefnsLegacy
 					// updateForRound
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
-						var ship = uwpe.entity as Ship;
-						ship.deviceUser().energyPerRoundAdd(energyPerTurn);
+						var deviceUser = DeviceUser.ofEntity(uwpe.entity);
+						deviceUser.energyPerRoundAdd(energyPerTurn);
 					},
 					0, // usesPerRound
 					0, // energyPerUse
@@ -1161,8 +1159,8 @@ class BuildableDefnsLegacy
 					// updateForRound
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
-						var ship = uwpe.entity as Ship;
-						ship.deviceUser().sensorRangeAdd(sensorRange);
+						var deviceUser = DeviceUser.ofEntity(uwpe.entity);
+						deviceUser.sensorRangeAdd(sensorRange);
 					},
 					0, // usesPerRound
 					0, // energyPerUse
@@ -1253,8 +1251,8 @@ class BuildableDefnsLegacy
 					// updateForRound
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
-						var ship = uwpe.entity as Ship;
-						ship.deviceUser().shieldingAdd(damageAbsorbed);
+						var deviceUser = DeviceUser.ofEntity(uwpe.entity);
+						deviceUser.shieldingAdd(damageAbsorbed);
 					},
 					0, // usesPerRound
 					0, // energyPerUse
@@ -1358,8 +1356,7 @@ class BuildableDefnsLegacy
 					// updateForRound
 					(uwpe: UniverseWorldPlaceEntities) =>
 					{
-						var ship = uwpe.entity as Ship;
-						var deviceUser = ship.deviceUser();
+						var deviceUser = DeviceUser.ofEntity(uwpe.entity);
 						var speedIncrement = 
 							speedIncrementMultiple
 							* speedIncrementStep;

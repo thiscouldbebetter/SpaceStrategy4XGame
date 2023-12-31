@@ -288,7 +288,7 @@ class NotificationSession
 			DataBinding.fromContextAndGet
 			(
 				this,
-				(c: NotificationSession) => c.notificationSelected.message
+				(c: NotificationSession) => (c.notificationSelected == null ? "[none]" : c.notificationSelected.message)
 			),
 			fontNameAndHeight
 		);

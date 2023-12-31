@@ -135,7 +135,7 @@ class VenueStarCluster extends VenueWorld {
         }
     }
     finalize(universe) {
-        universe.soundHelper.soundForMusic.pause(universe);
+        // universe.soundHelper.soundForMusicPause(universe);
     }
     initialize(universe) {
         var world = universe.world;

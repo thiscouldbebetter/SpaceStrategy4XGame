@@ -84,6 +84,8 @@ class StarClusterLink implements EntityPropertyBase
 	{
 		if (this.ships.length > 0)
 		{
+			var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+
 			var cluster = world.starCluster;
 
 			var nodesLinked = this.nodesLinked(cluster);
@@ -124,7 +126,7 @@ class StarClusterLink implements EntityPropertyBase
 			for (var i = 0; i < shipsExitingLink.length; i++)
 			{
 				var ship = shipsExitingLink[i];
-				ship.linkExit(world, this);
+				ship.linkExit(this, uwpe);
 			}
 		}
 	}

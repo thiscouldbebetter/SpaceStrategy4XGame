@@ -34,7 +34,7 @@ function main()
 		[
 			new SoundFromFile("Music_Title", contentPathAudio + "Music/Music.mp3"),
 			new SoundFromFile("Music_Producer", contentPathAudio + "Music/Producer.mp3"),
-			new SoundFromFile("Sound", contentPathAudio + "Effects/Sound.wav"),
+			new SoundFromFile("Sound", contentPathAudio + "Effects/Sine-440Hz-250ms-Fading.mp3"),
 		],
 		// videos
 		[

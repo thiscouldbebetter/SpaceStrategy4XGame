@@ -60,7 +60,7 @@ class WorldExtended extends World {
         return this.factions.filter(x => x.name != faction.name);
     }
     initialize(uwpe) {
-        // Do nothing.
+        this.factions.forEach(x => x.initialize(uwpe));
     }
     isAdvancingThroughRoundsUntilNotification() {
         return this._isAdvancingThroughRoundsUntilNotification;
@@ -104,17 +104,16 @@ class WorldExtended extends World {
             factionCurrent.notificationSessionStart(universe, universe.display.sizeInPixels.clone().half());
         }
         else {
-            uwpe.world = this;
-            var world = universe.world;
-            this.starCluster.updateForRound(universe, world);
-            this.factions.forEach(x => x.updateForRound(universe, world));
-            this.roundsSoFar++;
+            this.updateForRound_IgnoringNotifications(uwpe);
         }
     }
     updateForRound_IgnoringNotifications(uwpe) {
-        // This seems to be for automated tests.
-        this.updateForRound(uwpe);
-        // todo - Ignore notifications.
+        var universe = uwpe.universe;
+        uwpe.world = this;
+        var world = this;
+        this.starCluster.updateForRound(universe, world);
+        this.factions.forEach(x => x.updateForRound(universe, world));
+        this.roundsSoFar++;
     }
     updateForTimerTick(uwpe) {
         var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();

@@ -129,10 +129,10 @@ class WorldExtended extends World
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
-		// Do nothing.
+		this.factions.forEach(x => x.initialize(uwpe));
 	}
 
-	private _isAdvancingThroughRoundsUntilNotification: boolean;	
+	private _isAdvancingThroughRoundsUntilNotification: boolean;
 	isAdvancingThroughRoundsUntilNotification(): boolean
 	{
 		return this._isAdvancingThroughRoundsUntilNotification;
@@ -201,23 +201,22 @@ class WorldExtended extends World
 				universe, universe.display.sizeInPixels.clone().half()
 			);
 		}
-		else
+		else 
 		{
-			uwpe.world = this;
-			var world = universe.world as WorldExtended;
-
-			this.starCluster.updateForRound(universe, world);
-			this.factions.forEach(x => x.updateForRound(universe, world) );
-
-			this.roundsSoFar++;
+			this.updateForRound_IgnoringNotifications(uwpe);
 		}
 	}
 
 	updateForRound_IgnoringNotifications(uwpe: UniverseWorldPlaceEntities): void
 	{
-		// This seems to be for automated tests.
-		this.updateForRound(uwpe);
-		// todo - Ignore notifications.
+		var universe = uwpe.universe;
+		uwpe.world = this;
+		var world = this as WorldExtended;
+
+		this.starCluster.updateForRound(universe, world);
+		this.factions.forEach(x => x.updateForRound(universe, world) );
+
+		this.roundsSoFar++;
 	}
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void

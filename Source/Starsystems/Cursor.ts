@@ -38,20 +38,23 @@ class Cursor extends Entity
 	bodyDefn(): BodyDefn
 	{
 		var radius = 5;
-		var color = Color.Instances().White;
+		var colors = Color.Instances();
+		var colorWhite = colors.White;
 		
 		var visualCrosshairs = new VisualGroup
 		([
-			VisualCircle.fromRadiusAndColors(radius, null, color),
+			VisualCircle.fromRadiusAndColors(radius, null, colorWhite),
 			new VisualLine
 			(
-				Coords.fromXY(-radius, 0), Coords.fromXY(radius, 0), color, null
+				Coords.fromXY(-radius, 0), Coords.fromXY(radius, 0), colorWhite, null
 			),
 			new VisualLine
 			(
-				Coords.fromXY(0, -radius), Coords.fromXY(0, radius), color, null
+				Coords.fromXY(0, -radius), Coords.fromXY(0, radius), colorWhite, null
 			),
 		]);
+
+		var cursor = this;
 
 		var visualReticle = new VisualSelect
 		(
@@ -64,19 +67,8 @@ class Cursor extends Entity
 			(
 				uwpe: UniverseWorldPlaceEntities, display: Display
 			) =>
-			{
-				var returnValue;
-				var cursor = uwpe.entity as Cursor;
-				if (cursor.entityUsingCursorToTarget == null)
-				{
-					returnValue = "None";
-				}
-				else
-				{
-					returnValue = "Crosshairs";
-				}
-				return [ returnValue ];
-			}
+				cursor.visualReticleSelectChildNames(uwpe, display)
+
 		);
 
 		var visualHover = new VisualText
@@ -84,42 +76,11 @@ class Cursor extends Entity
 			DataBinding.fromContextAndGet
 			(
 				UniverseWorldPlaceEntities.create(), // hack - See VisualText.draw().
-				(uwpe: UniverseWorldPlaceEntities) =>
-				{
-					var returnValue;
-
-					var venue = uwpe.universe.venueCurrent() as VenueStarsystem;
-					var c = venue.cursor;
-					if (c == null)
-					{
-						returnValue = "";
-					}
-					else
-					{
-						var world = uwpe.world as WorldExtended;
-
-						if (c.entityUnderneath == null)
-						{
-							returnValue = "";
-						}
-						else if (c.entityUnderneath.constructor.name == LinkPortal.name)
-						{
-							var linkPortal = c.entityUnderneath as LinkPortal;
-							returnValue =
-								linkPortal.nameAccordingToFactionPlayerKnowledge(world);
-						}
-						else
-						{
-							returnValue = c.entityUnderneath.name;
-						}
-					}
-
-					return returnValue;
-				} 
+				(uwpe: UniverseWorldPlaceEntities) => cursor.visualHoverTextGet(uwpe)
 			),
-			null, // heightInPixels
-			Color.byName("Gray"),
-			Color.byName("White")
+			FontNameAndHeight.fromHeightInPixels(20),
+			colors.Black,
+			colors.White
 		);
 
 		var visual = new VisualGroup
@@ -162,4 +123,57 @@ class Cursor extends Entity
 		var starsystem = venueStarsystem.starsystem;
 		starsystem.draw_Body(uwpe, display);
 	}
+
+	visualHoverTextGet(uwpe: UniverseWorldPlaceEntities)
+	{
+		var returnValue;
+
+		var venue = uwpe.universe.venueCurrent() as VenueStarsystem;
+		var c = venue.cursor;
+		if (c == null)
+		{
+			returnValue = "";
+		}
+		else
+		{
+			var world = uwpe.world as WorldExtended;
+
+			if (c.entityUnderneath == null)
+			{
+				returnValue = "";
+			}
+			else if (c.entityUnderneath.constructor.name == LinkPortal.name)
+			{
+				var linkPortal = c.entityUnderneath as LinkPortal;
+				returnValue =
+					linkPortal.nameAccordingToFactionPlayerKnowledge(world);
+			}
+			else
+			{
+				returnValue = c.entityUnderneath.name;
+			}
+		}
+
+		return returnValue;
+	}
+
+	visualReticleSelectChildNames
+	(
+		uwpe: UniverseWorldPlaceEntities, display: Display
+	)
+	{
+		var returnValue;
+		var cursor = uwpe.entity as Cursor;
+		if (cursor.entityUsingCursorToTarget == null)
+		{
+			returnValue = "None";
+		}
+		else
+		{
+			returnValue = "Crosshairs";
+		}
+		return [ returnValue ];
+	}
+
+
 }

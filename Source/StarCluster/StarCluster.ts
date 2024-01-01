@@ -192,6 +192,9 @@ class StarCluster extends PlaceBase
 
 		var tempPos = Coords.create();
 
+		var linkTypes = StarClusterLinkType.Instances();
+		var linkTypeNormal = linkTypes.Normal;
+
 		while (nodesLinked.length < numberOfNodes)
 		{
 			var nodePairClosestSoFar = null;
@@ -225,17 +228,9 @@ class StarCluster extends PlaceBase
 			var nodeToLink = nodePairClosestSoFar[0];
 			var nodeLinked = nodePairClosestSoFar[1];
 
-			var linkTypes = StarClusterLinkType.Instances();
-			var probabilityLinkTypeIsNormalNotHard = .9;
-			var randomFraction = randomizer.fraction();
-			var linkType =
-				randomFraction <= probabilityLinkTypeIsNormalNotHard
-				? linkTypes.Normal
-				: linkTypes.Hard;
-
 			var link = new StarClusterLink
 			(
-				linkType,
+				linkTypeNormal,
 				[ nodeToLink.name, nodeLinked.name ]
 			);
 			links.push(link);
@@ -275,6 +270,13 @@ class StarCluster extends PlaceBase
 				//starsystemPortalsByStarsystemName.set(starsystemOther.name, linkPortal);
 			}
 		}
+
+		var fractionOfLinksThatAreHardNotNormal = .2;
+		var linksHardCount = Math.round(links.length * fractionOfLinksThatAreHardNotNormal);
+		var randomizer = universe.randomizer;
+		var linksHard = randomizer.chooseNElementsFromArray(linksHardCount, links);
+		var linkTypeHard = linkTypes.Hard;
+		linksHard.forEach(x => x.type = linkTypeHard);
 
 		var returnValue = new StarCluster(name, nodesLinked, links);
 

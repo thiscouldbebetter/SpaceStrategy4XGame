@@ -48,7 +48,9 @@ class BuildableDefn {
         return this._canBeBuiltOnMapAtPosInCells(map, posInCells);
     }
     effectPerRoundApply(uwpe) {
-        this.effectPerRound.apply(uwpe);
+        if (this.effectPerRound != null) {
+            this.effectPerRound.apply(uwpe);
+        }
     }
     entityModifyOnBuild(uwpe) {
         if (this._entityModifyOnBuild != null) {

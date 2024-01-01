@@ -1,11 +1,5 @@
 "use strict";
 class StarNames {
-    static Instance() {
-        if (StarNames._instance == null) {
-            StarNames._instance = new StarNames();
-        }
-        return StarNames._instance;
-    }
     constructor() {
         this._All =
             [
@@ -110,5 +104,11 @@ class StarNames {
                 "Zosh",
                 "Zuddur"
             ];
+    }
+    static Instance() {
+        if (StarNames._instance == null) {
+            StarNames._instance = new StarNames();
+        }
+        return StarNames._instance;
     }
 }

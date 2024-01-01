@@ -17,7 +17,7 @@ class LinkPortal extends Entity
 		(
 			name,
 			[
-				defn,
+				// defn,
 				Collidable.fromCollider
 				(
 					Sphere.fromRadiusAndCenter
@@ -39,7 +39,7 @@ class LinkPortal extends Entity
 
 	static bodyDefn(): BodyDefn
 	{
-		var visual = LinkPortal.visualBeforeProjection();
+		var visual = new VisualNone(); // LinkPortal.visualBeforeProjection();
 
 		var bodyDefnLinkPortal = new BodyDefn
 		(
@@ -131,33 +131,58 @@ class LinkPortal extends Entity
 
 		var radius = 10;
 
-		var visual: VisualBase = new VisualCircleGradient
-		(
-			radius,
-			new ValueBreakGroup
-			(
-				[
-					new ValueBreak(0, colors.Black),
-					new ValueBreak(.5, colors.Black),
-					new ValueBreak(.75, colors.Violet),
-					new ValueBreak(1, colors.Blue)
-				],
-				null // interpolationMode
-			),
-			null // colorBorder
-		);
+		var visualsForLinkTypes = new Array<VisualBase>();
 
-		visual = new VisualGroup
-		([
-			visual
-		]);
+		var colorsAtCenter = [ colors.Black, colors.Red ];
+
+		for (var i = 0; i < colorsAtCenter.length; i++)
+		{
+			var colorAtCenter = colorsAtCenter[i];
+
+			var visualCenter = new VisualCircleGradient
+			(
+				radius,
+				new ValueBreakGroup
+				(
+					[
+						new ValueBreak(0, colorAtCenter),
+						new ValueBreak(.5, colorAtCenter),
+						new ValueBreak(.75, colors.Violet),
+						new ValueBreak(1, colors.Blue)
+					],
+					null // interpolationMode
+				),
+				null // colorBorder
+			);
+
+			visualsForLinkTypes.push(visualCenter);
+		}
+
+		var visual: VisualBase = new VisualSelect
+		(
+			new Map<string,VisualBase>
+			([
+				[ "Normal", visualsForLinkTypes[0] ],
+				[ "Hard", visualsForLinkTypes[1] ],
+			]),
+			(uwpe: UniverseWorldPlaceEntities, display: Display) =>
+			{
+				var linkPortal = uwpe.entity as LinkPortal;
+				var world = uwpe.world as WorldExtended;
+				var starCluster = world.starCluster;
+				var link = linkPortal.link(starCluster);
+				var linkType = link.type;
+				var visualName = linkType.name;
+				return [ visualName ];
+			}
+		);
 
 		return visual;
 	}
 
 	static visualProjected(): VisualBase
 	{
-		var visualBeforeProjection = this.visualBeforeProjection();
+		var visualBeforeProjection = LinkPortal.visualBeforeProjection();
 
 		var visual: VisualBase = new VisualCameraProjection
 		(

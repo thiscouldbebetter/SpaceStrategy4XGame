@@ -2,7 +2,7 @@
 class LinkPortal extends Entity {
     constructor(name, defn, pos, starsystemNamesFromAndTo) {
         super(name, [
-            defn,
+            // defn,
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(LinkPortal.toControl),
             Drawable.fromVisual(LinkPortal.visualProjected()),
@@ -12,7 +12,7 @@ class LinkPortal extends Entity {
         this.starsystemNamesFromAndTo = starsystemNamesFromAndTo;
     }
     static bodyDefn() {
-        var visual = LinkPortal.visualBeforeProjection();
+        var visual = new VisualNone(); // LinkPortal.visualBeforeProjection();
         var bodyDefnLinkPortal = new BodyDefn("LinkPortal", Coords.fromXY(10, 10), // size
         visual);
         return bodyDefnLinkPortal;
@@ -59,21 +59,36 @@ class LinkPortal extends Entity {
     static visualBeforeProjection() {
         var colors = Color.Instances();
         var radius = 10;
-        var visual = new VisualCircleGradient(radius, new ValueBreakGroup([
-            new ValueBreak(0, colors.Black),
-            new ValueBreak(.5, colors.Black),
-            new ValueBreak(.75, colors.Violet),
-            new ValueBreak(1, colors.Blue)
-        ], null // interpolationMode
-        ), null // colorBorder
-        );
-        visual = new VisualGroup([
-            visual
-        ]);
+        var visualsForLinkTypes = new Array();
+        var colorsAtCenter = [colors.Black, colors.Red];
+        for (var i = 0; i < colorsAtCenter.length; i++) {
+            var colorAtCenter = colorsAtCenter[i];
+            var visualCenter = new VisualCircleGradient(radius, new ValueBreakGroup([
+                new ValueBreak(0, colorAtCenter),
+                new ValueBreak(.5, colorAtCenter),
+                new ValueBreak(.75, colors.Violet),
+                new ValueBreak(1, colors.Blue)
+            ], null // interpolationMode
+            ), null // colorBorder
+            );
+            visualsForLinkTypes.push(visualCenter);
+        }
+        var visual = new VisualSelect(new Map([
+            ["Normal", visualsForLinkTypes[0]],
+            ["Hard", visualsForLinkTypes[1]],
+        ]), (uwpe, display) => {
+            var linkPortal = uwpe.entity;
+            var world = uwpe.world;
+            var starCluster = world.starCluster;
+            var link = linkPortal.link(starCluster);
+            var linkType = link.type;
+            var visualName = linkType.name;
+            return [visualName];
+        });
         return visual;
     }
     static visualProjected() {
-        var visualBeforeProjection = this.visualBeforeProjection();
+        var visualBeforeProjection = LinkPortal.visualBeforeProjection();
         var visual = new VisualCameraProjection(uwpe => uwpe.place.camera2(uwpe.universe), visualBeforeProjection);
         var visualWithStem = new VisualGroup([
             new VisualElevationStem(),

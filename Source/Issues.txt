@@ -21,6 +21,12 @@ Getting an error dialog (like "Already building something") causes Back button f
 Some dialogs are full-screen, instead of half-screen.
 
 
+Starsystems
+-----------
+
+Ships entering starsystems owned by other factions get renamed!
+
+
 Startup
 -------
 If "Tough" is faction type, might end up on husk planet with no special ability to use black cells.
@@ -29,5 +35,6 @@ If "Tough" is faction type, might end up on husk planet with no special ability 
 Technology
 ----------
 
-Text is too small.
+A tech named "TechnologyBeingResearched" appears in the list of known techs.
+
 

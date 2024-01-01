@@ -142,8 +142,9 @@ class PlanetType
 		var planetDimension = this.size.radiusInPixels;
 
 		var colors = Color.Instances();
-		var colorAtCenter = this.environment.color; // White;
-		var colorMiddle = colorAtCenter;
+		var environmentColor = this.environment.color;
+		var colorAtCenter = environmentColor.clone().multiplyRGBScalar(1.2);
+		var colorMiddle = environmentColor;
 		var colorSpace = colors.Black;
 
 		var visualForPlanetType = new VisualCircleGradient
@@ -163,34 +164,12 @@ class PlanetType
 			null // colorBorder
 		);
 
+		var planetType = this;
+
 		var visualLabel = new VisualDynamic // todo - VisualDynamic2?
 		(
 			(uwpe: UniverseWorldPlaceEntities) =>
-			{
-				var planet = uwpe.entity as Planet;
-				var faction = planet.factionable().faction();
-				var returnValue: VisualBase = 
-				(
-					faction == null
-					? new VisualNone()
-					: new VisualOffset
-					(
-						Coords.fromXY
-						(
-							0,
-							planet.planetType.size.radiusInPixels * 2
-						),
-						VisualText.fromTextImmediateFontAndColorsFillAndBorder
-						(
-							"Owned by " + faction.name,
-							FontNameAndHeight.fromHeightInPixels(planetDimension * 1.5),
-							colors.Black,
-							colors.White
-						)
-					)
-				);
-				return returnValue;
-			}
+				planetType.visualLabelTextGet(uwpe, 16)
 		);
 
 		var visual = new VisualGroup
@@ -200,6 +179,34 @@ class PlanetType
 		]);
 
 		return visual;
+	}
+
+	visualLabelTextGet(uwpe: UniverseWorldPlaceEntities, fontHeightInPixels: number)
+	{
+		var colors = Color.Instances();
+		var planet = uwpe.entity as Planet;
+		var faction = planet.factionable().faction();
+		var returnValue: VisualBase = 
+		(
+			faction == null
+			? new VisualNone()
+			: new VisualOffset
+			(
+				Coords.fromXY
+				(
+					0,
+					planet.planetType.size.radiusInPixels * 2
+				),
+				VisualText.fromTextImmediateFontAndColorsFillAndBorder
+				(
+					"Owned by " + faction.name,
+					FontNameAndHeight.fromHeightInPixels(fontHeightInPixels),
+					colors.Black,
+					colors.White
+				)
+			)
+		);
+		return returnValue;
 	}
 
 	private _visualProjected: VisualBase;

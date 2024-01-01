@@ -1,16 +1,16 @@
 "use strict";
 class FactionNames {
-    static Instance() {
-        if (FactionNames._instance == null) {
-            FactionNames._instance = new FactionNames();
-        }
-        return FactionNames._instance;
-    }
     constructor() {
         this._All =
             this.namesAlternate();
         //this.namesDescriptive();
         //this.namesLegacy();
+    }
+    static Instance() {
+        if (FactionNames._instance == null) {
+            FactionNames._instance = new FactionNames();
+        }
+        return FactionNames._instance;
     }
     namesAlternate() {
         var returnValues = [

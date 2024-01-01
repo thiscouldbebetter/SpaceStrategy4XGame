@@ -104,7 +104,10 @@ class BuildableDefn
 
 	effectPerRoundApply(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.effectPerRound.apply(uwpe);
+		if (this.effectPerRound != null)
+		{
+			this.effectPerRound.apply(uwpe);
+		}
 	}
 
 	entityModifyOnBuild(uwpe: UniverseWorldPlaceEntities): void

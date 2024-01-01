@@ -72,8 +72,9 @@ class PlanetType {
     visualBeforeProjection() {
         var planetDimension = this.size.radiusInPixels;
         var colors = Color.Instances();
-        var colorAtCenter = this.environment.color; // White;
-        var colorMiddle = colorAtCenter;
+        var environmentColor = this.environment.color;
+        var colorAtCenter = environmentColor.clone().multiplyRGBScalar(1.2);
+        var colorMiddle = environmentColor;
         var colorSpace = colors.Black;
         var visualForPlanetType = new VisualCircleGradient(planetDimension, // radius
         new ValueBreakGroup([
@@ -85,20 +86,23 @@ class PlanetType {
         ], null // ?
         ), null // colorBorder
         );
+        var planetType = this;
         var visualLabel = new VisualDynamic // todo - VisualDynamic2?
-        ((uwpe) => {
-            var planet = uwpe.entity;
-            var faction = planet.factionable().faction();
-            var returnValue = (faction == null
-                ? new VisualNone()
-                : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColorsFillAndBorder("Owned by " + faction.name, FontNameAndHeight.fromHeightInPixels(planetDimension * 1.5), colors.Black, colors.White)));
-            return returnValue;
-        });
+        ((uwpe) => planetType.visualLabelTextGet(uwpe, 16));
         var visual = new VisualGroup([
             visualForPlanetType,
             visualLabel
         ]);
         return visual;
+    }
+    visualLabelTextGet(uwpe, fontHeightInPixels) {
+        var colors = Color.Instances();
+        var planet = uwpe.entity;
+        var faction = planet.factionable().faction();
+        var returnValue = (faction == null
+            ? new VisualNone()
+            : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColorsFillAndBorder("Owned by " + faction.name, FontNameAndHeight.fromHeightInPixels(fontHeightInPixels), colors.Black, colors.White)));
+        return returnValue;
     }
     visualProjected() {
         if (this._visualProjected == null) {

@@ -75,7 +75,7 @@ class StarType
 					(c: any) => (c.place as Place).name
 				),
 				FontNameAndHeight.fromHeightInPixels(starRadius / 2),
-				colors.Gray,
+				colors.Black,
 				colors.White
 			);
 

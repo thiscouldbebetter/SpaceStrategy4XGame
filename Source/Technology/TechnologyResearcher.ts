@@ -137,11 +137,17 @@ class TechnologyResearcher
 			if (this.researchAccumulated >= researchToLearn)
 			{
 				this.technologyBeingResearchedLearn();
-				
+
 				var technologyResearcher = this;
+
+				var message =
+					"The " + faction.name
+					+ " have discovered the technology of "
+					+ technologyBeingResearched.name + ".";
+
 				var notification = new Notification2
 				(
-					"The " + faction.name + " have discovered the technology of " + technologyBeingResearched.name + ".",
+					message,
 					() =>
 					{
 						var session = technologyResearcher.toSession(world.technologyGraph);
@@ -150,6 +156,8 @@ class TechnologyResearcher
 					}
 				);
 				faction.notificationAdd(notification);
+
+				world.roundAdvanceUntilNotificationDisable();
 			}
 		}
 	}

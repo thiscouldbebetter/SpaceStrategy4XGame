@@ -48,7 +48,8 @@ class ControlBuilderExtended extends ControlBuilder
 					}
 					else if (venueTypeName == VenueStarsystem.name)
 					{
-						returnValue = (venue as VenueStarsystem).selectionName();
+						var world = universe.world as WorldExtended;
+						returnValue = (venue as VenueStarsystem).selectionName(world);
 					}
 					return returnValue;
 				}

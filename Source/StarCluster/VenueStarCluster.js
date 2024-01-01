@@ -271,7 +271,9 @@ class VenueStarCluster extends VenueWorld {
     }
     entitySelectedDetailsAreViewable(universe) {
         var entitySelected = this.entitySelected();
-        return (entitySelected != null && entitySelected.name != "?");
+        var returnValue = entitySelected != null
+            && entitySelected.name != FactionKnowledge.TextUnknownStarsystem;
+        return returnValue;
     }
     entitySelectedDetailsView(universe) {
         var detailsAreViewable = this.entitySelectedDetailsAreViewable(universe);

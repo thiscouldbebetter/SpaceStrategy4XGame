@@ -1,6 +1,29 @@
 
 class PlanetIndustry
 {
+	buildablesAreChosenAutomatically: boolean;
+
+	constructor()
+	{
+		this.buildablesAreChosenAutomatically = false;
+	}
+
+	buildableChooseAutomatically
+	(
+		universe: Universe,
+		world: World,
+		planet: Planet
+	): void
+	{
+		var planetAsPlace = planet.toPlace();
+		var uwpe = new UniverseWorldPlaceEntities
+		(
+			universe, world, planetAsPlace, null, null
+		);
+		var intelligenceComputer = FactionIntelligence.Instances().Computer;
+		intelligenceComputer.planetBuildableChoose(uwpe);
+	}
+
 	notificationsForRoundAddToArray
 	(
 		universe: Universe,
@@ -18,12 +41,23 @@ class PlanetIndustry
 
 			if (hasIdlePopulation)
 			{
-				var notification = new Notification2
-				(
-					"Planet " + planet.name + " has free population, but nothing is being built.",
-					() => planet.jumpTo(universe)
-				);
-				notificationsSoFar.push(notification);
+				if (this.buildablesAreChosenAutomatically)
+				{
+					this.buildableChooseAutomatically(universe, world, planet);
+				}
+				else
+				{
+					var message =
+						"Planet " + planet.name
+						+ " has free population, but nothing is being built.";
+
+					var notification = new Notification2
+					(
+						message,
+						() => planet.jumpTo(universe)
+					);
+					notificationsSoFar.push(notification);
+				}
 			}
 		}
 
@@ -107,18 +141,31 @@ class PlanetIndustry
 					planet.itemHolder().itemAdd(buildableAsItem);
 				}
 
-				var populationIdle = planet.populationIdle(universe);
-				var notificationText =
-					"Planet " + planet.name + " is done building " + buildableDefn.name + ", "
-					+ (populationIdle > 0 ? "and" : "but")
-					+ " has " + populationIdle + " free population.";
-				var notification = new Notification2
-				(
-					notificationText, () => planet.jumpTo(universe)
-				);
-				faction.notificationAdd(notification);
-
 				planet.resourcesThisRoundReset();
+
+				var intelligenceComputer = FactionIntelligence.Instances().Computer;
+
+				var buildablesAreChosenAutomatically =
+					this.buildablesAreChosenAutomatically
+					|| faction.intelligence == intelligenceComputer;
+
+				if (buildablesAreChosenAutomatically)
+				{
+					this.buildableChooseAutomatically(universe, world, planet);
+				}
+				else
+				{
+					var populationIdle = planet.populationIdle(universe);
+					var notificationText =
+						"Planet " + planet.name + " is done building " + buildableDefn.name + ", "
+						+ (populationIdle > 0 ? "and" : "but")
+						+ " has " + populationIdle + " free population.";
+					var notification = new Notification2
+					(
+						notificationText, () => planet.jumpTo(universe)
+					);
+					faction.notificationAdd(notification);
+				}
 			}
 		}
 	}

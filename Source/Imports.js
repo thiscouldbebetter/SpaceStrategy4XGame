@@ -13,6 +13,7 @@ var ControlActionNames = gf.ControlActionNames;
 var ControlBase = gf.ControlBase;
 var ControlBuilder = gf.ControlBuilder;
 var ControlButton = gf.ControlButton;
+var ControlCheckbox = gf.ControlCheckbox;
 var ControlContainer = gf.ControlContainer;
 var ControlContainerTransparent = gf.ControlContainerTransparent;
 var ControlLabel = gf.ControlLabel;

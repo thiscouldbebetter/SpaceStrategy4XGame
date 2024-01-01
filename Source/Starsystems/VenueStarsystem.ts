@@ -231,10 +231,34 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		return this.starsystem;
 	}
 
-	selectionName(): string
+	selectionName(world: WorldExtended): string
 	{
+		var returnValue: string;
+
 		var entitySelected = this.entitySelected();
-		return (entitySelected == null ? "[none]" : entitySelected.name);
+		if (entitySelected == null)
+		{
+			returnValue = "[none]";
+		}
+		else
+		{
+			var entitySelectedTypeName = entitySelected.constructor.name;
+			if (entitySelectedTypeName == LinkPortal.name)
+			{
+				var linkPortalSelected = entitySelected as LinkPortal;
+				returnValue =
+					linkPortalSelected.nameAccordingToFactionPlayerKnowledge
+					(
+						world
+					);
+			}
+			else
+			{
+				returnValue = entitySelected.name;
+			}
+		}
+
+		return returnValue;
 	}
 
 	updateForTimerTick(universe: Universe): void

@@ -114,7 +114,7 @@ class Starsystem extends PlaceBase
 
 			var planetDemographics = new PlanetDemographics(0);
 
-			var planetIndustry = new PlanetIndustry(); // 0, null),
+			var planetIndustry = new PlanetIndustry();
 
 			var planet = new Planet
 			(
@@ -693,6 +693,9 @@ class Starsystem extends PlaceBase
 		controlHeight: number
 	): ControlBase
 	{
+		var starsystem = this;
+		var world = universe.world as WorldExtended;
+
 		var fontHeightInPixels = margin;
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
@@ -707,31 +710,26 @@ class Starsystem extends PlaceBase
 			), // size
 			DataBinding.fromContextAndGet
 			(
-				universe,
-				(c: Universe) =>
-				{
-					// hack
-					var venue = c.venueCurrent() as VenueStarsystem;
-					return (venue.model == null ? "" : venue.model().name + " System");
-				}
+				starsystem,
+				c => c.name + " System"
 			),
 			fontNameAndHeight
 		);
 
-		var textRoundColonSpace = "Round:";
-		var labelRound = ControlLabel.from4Uncentered
+		var textLiteralOwnedBy = "Owned by:";
+		var labelOwnedBy = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight), // pos
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-			DataBinding.fromContext(textRoundColonSpace),
+			DataBinding.fromContext(textLiteralOwnedBy),
 			fontNameAndHeight
 		);
 
-		var textRound = ControlLabel.from4Uncentered
+		var textOwnedBy = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY
 			(
-				margin + textRoundColonSpace.length * fontHeightInPixels * 0.45,
+				margin + textLiteralOwnedBy.length * fontHeightInPixels * 0.45,
 				margin + controlHeight
 			), // pos
 			Coords.fromXY
@@ -741,8 +739,8 @@ class Starsystem extends PlaceBase
 			), // size
 			DataBinding.fromContextAndGet
 			(
-				universe,
-				(c: Universe) => "" + ( (c.world as WorldExtended).roundsSoFar + 1)
+				starsystem,
+				c => c.factionNameGet(world)
 			),
 			fontNameAndHeight
 		);
@@ -750,8 +748,8 @@ class Starsystem extends PlaceBase
 		var childControls =
 		[
 			textPlace,
-			labelRound,
-			textRound
+			labelOwnedBy,
+			textOwnedBy
 		];
 
 		var size = Coords.fromXY

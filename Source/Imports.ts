@@ -23,6 +23,7 @@ import ControlActionNames = gf.ControlActionNames;
 import ControlBase = gf.ControlBase;
 import ControlBuilder = gf.ControlBuilder;
 import ControlButton = gf.ControlButton;
+import ControlCheckbox = gf.ControlCheckbox;
 import ControlContainer = gf.ControlContainer;
 import ControlContainerTransparent = gf.ControlContainerTransparent;
 import ControlLabel = gf.ControlLabel;

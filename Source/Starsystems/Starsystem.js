@@ -41,7 +41,7 @@ class Starsystem extends PlaceBase {
             var planetType = PlanetType.random();
             var planetPos = Coords.create().randomize(universe.randomizer).multiply(size).multiplyScalar(2).subtract(size);
             var planetDemographics = new PlanetDemographics(0);
-            var planetIndustry = new PlanetIndustry(); // 0, null),
+            var planetIndustry = new PlanetIndustry();
             var planet = new Planet(name, planetType, planetPos, null, // factionName
             planetDemographics, planetIndustry, null // layout
             );
@@ -303,26 +303,24 @@ class Starsystem extends PlaceBase {
         return returnValue;
     }
     controlBuildTimeAndPlace(universe, containerMainSize, containerInnerSize, margin, controlHeight) {
+        var starsystem = this;
+        var world = universe.world;
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var textPlace = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(universe, (c) => {
-            // hack
-            var venue = c.venueCurrent();
-            return (venue.model == null ? "" : venue.model().name + " System");
-        }), fontNameAndHeight);
-        var textRoundColonSpace = "Round:";
-        var labelRound = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight), // pos
+        DataBinding.fromContextAndGet(starsystem, c => c.name + " System"), fontNameAndHeight);
+        var textLiteralOwnedBy = "Owned by:";
+        var labelOwnedBy = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext(textRoundColonSpace), fontNameAndHeight);
-        var textRound = ControlLabel.from4Uncentered(Coords.fromXY(margin + textRoundColonSpace.length * fontHeightInPixels * 0.45, margin + controlHeight), // pos
+        DataBinding.fromContext(textLiteralOwnedBy), fontNameAndHeight);
+        var textOwnedBy = ControlLabel.from4Uncentered(Coords.fromXY(margin + textLiteralOwnedBy.length * fontHeightInPixels * 0.45, margin + controlHeight), // pos
         Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-        DataBinding.fromContextAndGet(universe, (c) => "" + (c.world.roundsSoFar + 1)), fontNameAndHeight);
+        DataBinding.fromContextAndGet(starsystem, c => c.factionNameGet(world)), fontNameAndHeight);
         var childControls = [
             textPlace,
-            labelRound,
-            textRound
+            labelOwnedBy,
+            textOwnedBy
         ];
         var size = Coords.fromXY(containerInnerSize.x, margin * 3 + controlHeight * 2);
         var returnValue = ControlContainer.from4("containerTimeAndPlace", Coords.fromXY(margin, margin), size, childControls);

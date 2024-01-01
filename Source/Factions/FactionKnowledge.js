@@ -72,7 +72,7 @@ class FactionKnowledge {
                     nodeActual.collidable().colliderResetToRestPosition();
                 }
                 else {
-                    returnValue = new StarClusterNode("?", // name
+                    returnValue = new StarClusterNode(FactionKnowledge.TextUnknownStarsystem, // name
                     nodeActual.defn, nodeActual.locatable().loc.pos, nodeActual.starsystem.star, null // starsystem
                     );
                 }
@@ -110,7 +110,7 @@ class FactionKnowledge {
     }
     starsystemAdd(starsystem, uwpe) {
         var starsystemName = starsystem.name;
-        var starsystemIsNotYetKnown = (this.starsystemNames.indexOf(starsystemName) == -1);
+        var starsystemIsNotYetKnown = (this.starsystemIsKnown(starsystem) == false);
         if (starsystemIsNotYetKnown) {
             this.starsystemNames.push(starsystemName);
             var world = uwpe.world;
@@ -125,22 +125,29 @@ class FactionKnowledge {
                 var link = linkPortal.link(starCluster);
                 this.linkAdd(link);
             }
-            var message = "We have discovered the "
+            var factionSelf = this.factionSelf(world);
+            var message = "The " + factionSelf.name + " have discovered the "
                 + starsystem.name
                 + " system.  It contains "
                 + starsystem.planets.length + " planets and links to "
                 + starsystem.linkPortals.length + " other systems.";
-            var factionControlling = starsystem.faction(world);
-            if (factionControlling != null) {
-                message += "  It is claimed by the " + factionControlling.name + ".";
+            if (starsystemFaction != null) {
+                message += "  It is claimed by the " + starsystemFaction.name + ".";
             }
             var notification = new Notification2(message, () => starsystem.jumpTo(universe));
             var factionSelf = this.factionSelf(world);
             factionSelf.notificationSession.notificationAdd(notification);
             var universe = uwpe.universe;
             factionSelf.notificationSessionStart(universe, universe.display.sizeInPixelsHalf);
+            world.roundAdvanceUntilNotificationDisable();
         }
         this.starsystemsCacheClear();
+    }
+    starsystemIsKnown(starsystem) {
+        return this.starsystemWithNameIsKnown(starsystem.name);
+    }
+    starsystemWithNameIsKnown(starsystemName) {
+        return (this.starsystemNames.indexOf(starsystemName) >= 0);
     }
     starsystems(world) {
         if (this._starsystems == null) {
@@ -209,3 +216,4 @@ class FactionKnowledge {
         this._world = null;
     }
 }
+FactionKnowledge.TextUnknownStarsystem = "Unknown Starsystem";

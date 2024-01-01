@@ -83,18 +83,37 @@ class Cursor extends Entity
 		(
 			DataBinding.fromContextAndGet
 			(
-				this,
-				(c: Cursor) =>
+				UniverseWorldPlaceEntities.create(), // hack - See VisualText.draw().
+				(uwpe: UniverseWorldPlaceEntities) =>
 				{
 					var returnValue;
-					if (c.entityUnderneath == null)
+
+					var venue = uwpe.universe.venueCurrent() as VenueStarsystem;
+					var c = venue.cursor;
+					if (c == null)
 					{
 						returnValue = "";
 					}
 					else
 					{
-						returnValue = c.entityUnderneath.name;
+						var world = uwpe.world as WorldExtended;
+
+						if (c.entityUnderneath == null)
+						{
+							returnValue = "";
+						}
+						else if (c.entityUnderneath.constructor.name == LinkPortal.name)
+						{
+							var linkPortal = c.entityUnderneath as LinkPortal;
+							returnValue =
+								linkPortal.nameAccordingToFactionPlayerKnowledge(world);
+						}
+						else
+						{
+							returnValue = c.entityUnderneath.name;
+						}
 					}
+
 					return returnValue;
 				} 
 			),

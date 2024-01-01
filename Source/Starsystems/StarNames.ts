@@ -26,7 +26,7 @@ class StarNames
 			"Borodos",
 			"Bullen",
 			"Calaphet",
-			"Cimmaro",
+			"Cimarro",
 			"Cozen",
 			"Curnahan",
 			"Dall",

@@ -65,7 +65,8 @@ class Ship extends Entity
 	{
 		var collider = Sphere.fromRadiusAndCenter
 		(
-			VisualStar.radiusActual(), pos
+			VisualStar.radiusActual(),
+			pos
 		);
 
 		return Collidable.fromColliderAndCollideEntities
@@ -79,31 +80,38 @@ class Ship extends Entity
 	{
 		var universe = uwpe.universe;
 		var ship = uwpe.entity as Ship;
-		var target = uwpe.entity2;
+		var entityToCollideWith = uwpe.entity2;
 
-		var targetTypeName = target.constructor.name;
-		if (targetTypeName == LinkPortal.name)
+		var shipTarget = ship.actor().activity.targetEntity();
+		var isEntityToCollideWithTargetedByShip =
+			(shipTarget == entityToCollideWith); // No unintentional collisions!
+
+		if (isEntityToCollideWithTargetedByShip)
 		{
-			var portal = target as LinkPortal;
-			ship.linkPortalEnter(
-				(universe.world as WorldExtended).starCluster, portal, ship
-			);
-		}
-		else if (targetTypeName == Planet.name)
-		{
-			var planet = target as Planet;
-			var venue = universe.venueCurrent() as VenueStarsystem;
-			var starsystem = venue.starsystem;
-			ship.planetOrbitEnter(universe, starsystem, planet);
-		}
-		else if (targetTypeName == Ship.name)
-		{
-			// todo - ship-ship collision
-		}
-		else
-		{
-			// Do nothing.
-			// throw new Error("Unexpected collision!");
+			var entityToCollideWithTypeName = entityToCollideWith.constructor.name;
+			if (entityToCollideWithTypeName == LinkPortal.name)
+			{
+				var portal = entityToCollideWith as LinkPortal;
+				ship.linkPortalEnter(
+					(universe.world as WorldExtended).starCluster, portal, ship
+				);
+			}
+			else if (entityToCollideWithTypeName == Planet.name)
+			{
+				var planet = entityToCollideWith as Planet;
+				var venue = universe.venueCurrent() as VenueStarsystem;
+				var starsystem = venue.starsystem;
+				ship.planetOrbitEnter(universe, starsystem, planet);
+			}
+			else if (entityToCollideWithTypeName == Ship.name)
+			{
+				// todo - ship-ship collision
+			}
+			else
+			{
+				// Do nothing.
+				// throw new Error("Unexpected collision!");
+			}
 		}
 	}
 
@@ -375,6 +383,9 @@ class Ship extends Entity
 		}
 		else
 		{
+			ship.orderable().order(ship).clear();
+			ship.actor().activity.clear();
+
 			var starsystemFrom = linkPortal.starsystemFrom(cluster);
 			var starsystemTo = linkPortal.starsystemTo(cluster);
 			var link = linkPortal.link(cluster);
@@ -411,11 +422,10 @@ class Ship extends Entity
 
 		var world = uwpe.world as WorldExtended;
 		var cluster = world.starCluster;
+
 		var shipLoc = ship.locatable().loc;
 
-		var shipPos = shipLoc.pos;
 		var shipVel = shipLoc.vel;
-
 		var linkDisplacement = link.displacement(cluster);
 		var isShipMovingForward = (shipVel.dotProduct(linkDisplacement) > 0);
 		var indexOfNodeDestination = (isShipMovingForward ? 1 : 0);
@@ -433,6 +443,7 @@ class Ship extends Entity
 		var portalToExitFrom =
 			starsystemDestination.linkPortalByStarsystemName(starsystemSource.name);
 		var exitPos = portalToExitFrom.locatable().loc.pos;
+		var shipPos = shipLoc.pos;
 		shipPos.overwriteWith(exitPos);
 		ship.nudgeInFrontOfEntityIfTouching(portalToExitFrom);
 
@@ -441,6 +452,8 @@ class Ship extends Entity
 		var shipFaction = ship.faction();
 		var factionKnowledge = shipFaction.knowledge;
 		factionKnowledge.starsystemAdd(starsystemDestination, uwpe);
+
+		shipVel.clear();
 	}
 
 	moveRepeat(universe: Universe): void
@@ -524,7 +537,11 @@ class Ship extends Entity
 			shipToNudgePos
 		).magnitude();
 
-		var distanceBetweenShipAndEntityMin = 3;
+		var distanceBetweenShipAndEntityMin =
+			(shipToNudge.collidable().collider as Sphere).radius
+			+ (entityToNudgeInFrontOf.collidable().collider as Sphere).radius
+			+ 1;
+
 		var isShipTooCloseToEntity =
 			(distanceBetweenShipAndEntity < distanceBetweenShipAndEntityMin);
 

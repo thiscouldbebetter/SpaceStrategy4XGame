@@ -21,6 +21,16 @@ class LinkPortal extends Entity {
         var returnValue = cluster.linkByStarsystemNamesFromTo(this.starsystemNameFrom(), this.starsystemNameTo());
         return returnValue;
     }
+    nameAccordingToFactionPlayerKnowledge(world) {
+        var factionPlayer = world.factionPlayer();
+        var factionKnowledge = factionPlayer.knowledge;
+        var starsystemToName = this.starsystemNameTo();
+        var isStarsystemToKnown = factionKnowledge.starsystemWithNameIsKnown(starsystemToName);
+        var returnValue = isStarsystemToKnown
+            ? this.name
+            : "Link to " + FactionKnowledge.TextUnknownStarsystem;
+        return returnValue;
+    }
     starsystemFrom(cluster) {
         var starsystemName = this.starsystemNameFrom();
         var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
@@ -40,7 +50,9 @@ class LinkPortal extends Entity {
     // controls
     static toControl(uwpe, size, controlTypeName) {
         var linkPortal = uwpe.entity;
-        var returnValue = ControlLabel.from4Uncentered(Coords.fromXY(0, 0), size, DataBinding.fromContext("Link to " + linkPortal.starsystemNamesFromAndTo[1]), FontNameAndHeight.fromHeightInPixels(10));
+        var world = uwpe.world;
+        var name = linkPortal.nameAccordingToFactionPlayerKnowledge(world);
+        var returnValue = ControlLabel.from4Uncentered(Coords.fromXY(0, 0), size, DataBinding.fromContext(name), FontNameAndHeight.fromHeightInPixels(10));
         return returnValue;
     }
     // Drawable.

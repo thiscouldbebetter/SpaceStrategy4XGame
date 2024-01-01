@@ -38,13 +38,27 @@ class Cursor extends Entity {
             }
             return [returnValue];
         });
-        var visualHover = new VisualText(DataBinding.fromContextAndGet(this, (c) => {
+        var visualHover = new VisualText(DataBinding.fromContextAndGet(UniverseWorldPlaceEntities.create(), // hack - See VisualText.draw().
+        (uwpe) => {
             var returnValue;
-            if (c.entityUnderneath == null) {
+            var venue = uwpe.universe.venueCurrent();
+            var c = venue.cursor;
+            if (c == null) {
                 returnValue = "";
             }
             else {
-                returnValue = c.entityUnderneath.name;
+                var world = uwpe.world;
+                if (c.entityUnderneath == null) {
+                    returnValue = "";
+                }
+                else if (c.entityUnderneath.constructor.name == LinkPortal.name) {
+                    var linkPortal = c.entityUnderneath;
+                    returnValue =
+                        linkPortal.nameAccordingToFactionPlayerKnowledge(world);
+                }
+                else {
+                    returnValue = c.entityUnderneath.name;
+                }
             }
             return returnValue;
         }), null, // heightInPixels

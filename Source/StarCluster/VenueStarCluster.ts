@@ -495,7 +495,10 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 	entitySelectedDetailsAreViewable(universe: Universe): boolean
 	{
 		var entitySelected = this.entitySelected();
-		return (entitySelected != null && entitySelected.name != "?");
+		var returnValue =
+			entitySelected != null
+			&& entitySelected.name != FactionKnowledge.TextUnknownStarsystem;
+		return returnValue;
 	}
 
 	entitySelectedDetailsView(universe: Universe): void

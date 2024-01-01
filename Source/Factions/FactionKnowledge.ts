@@ -31,6 +31,8 @@ class FactionKnowledge
 		this.linkNames = linkNames || [];
 	}
 
+	static TextUnknownStarsystem = "Unknown Starsystem";
+
 	static fromFactionSelfName(factionSelfName: string): FactionKnowledge
 	{
 		return new FactionKnowledge(factionSelfName, null, null, null, null);
@@ -140,7 +142,7 @@ class FactionKnowledge
 					{
 						returnValue = new StarClusterNode
 						(
-							"?", // name
+							FactionKnowledge.TextUnknownStarsystem, // name
 							nodeActual.defn,
 							nodeActual.locatable().loc.pos,
 							nodeActual.starsystem.star,
@@ -210,7 +212,7 @@ class FactionKnowledge
 		var starsystemName = starsystem.name;
 
 		var starsystemIsNotYetKnown =
-			(this.starsystemNames.indexOf(starsystemName) == -1);
+			(this.starsystemIsKnown(starsystem) == false);
 
 		if (starsystemIsNotYetKnown)
 		{
@@ -233,17 +235,18 @@ class FactionKnowledge
 				this.linkAdd(link);
 			}
 
+			var factionSelf = this.factionSelf(world);
+
 			var message =
-				"We have discovered the "
+				"The " + factionSelf.name + " have discovered the "
 				+ starsystem.name
 				+ " system.  It contains "
 				+ starsystem.planets.length + " planets and links to "
 				+ starsystem.linkPortals.length + " other systems.";
 
-			var factionControlling = starsystem.faction(world);
-			if (factionControlling != null)
+			if (starsystemFaction != null)
 			{
-				message += "  It is claimed by the " + factionControlling.name + ".";
+				message += "  It is claimed by the " + starsystemFaction.name + ".";
 			}
 
 			var notification = new Notification2
@@ -257,9 +260,21 @@ class FactionKnowledge
 			factionSelf.notificationSession.notificationAdd(notification);
 			var universe = uwpe.universe;
 			factionSelf.notificationSessionStart(universe, universe.display.sizeInPixelsHalf);
+
+			world.roundAdvanceUntilNotificationDisable();
 		}
 
 		this.starsystemsCacheClear();
+	}
+
+	starsystemIsKnown(starsystem: Starsystem): boolean
+	{
+		return this.starsystemWithNameIsKnown(starsystem.name);
+	}
+
+	starsystemWithNameIsKnown(starsystemName: string): boolean
+	{
+		return (this.starsystemNames.indexOf(starsystemName) >= 0);
 	}
 
 	starsystems(world: WorldExtended): Starsystem[]

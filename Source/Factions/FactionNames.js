@@ -1,16 +1,16 @@
 "use strict";
 class FactionNames {
-    constructor() {
-        this._All =
-            this.namesAlternate();
-        //this.namesDescriptive();
-        //this.namesLegacy();
-    }
     static Instance() {
         if (FactionNames._instance == null) {
             FactionNames._instance = new FactionNames();
         }
         return FactionNames._instance;
+    }
+    constructor() {
+        this._All =
+            this.namesAlternate();
+        //this.namesDescriptive();
+        //this.namesLegacy();
     }
     namesAlternate() {
         var returnValues = [
@@ -24,7 +24,7 @@ class FactionNames {
             "Ildun",
             "Jarrae",
             "Kwarg",
-            "Laretta",
+            "Lacresa",
             "Mooldug",
             "Opretti",
             "Panquel",

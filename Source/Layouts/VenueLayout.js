@@ -201,9 +201,7 @@ class VenueLayout {
         var buttonBuild_Clicked = () => {
             var buildableDefnSelected = venueLayout.buildableDefnSelected;
             if (buildableDefnSelected != null) {
-                var buildable = new Buildable(buildableDefnSelected, cursorPos.clone(), false, false);
-                var buildableEntity = buildable.toEntity(world);
-                this.modelParent.buildableEntityBuild(universe, buildableEntity);
+                this.layout.buildableDefnStartBuildingAtPos(universe, buildableDefnSelected, cursorPos.clone());
             }
             universe.venueJumpTo(venueLayout);
         };
@@ -241,6 +239,7 @@ class VenueLayout {
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var containerInnerSize = containerMainSize.clone().multiply(Coords.fromXY(.3, .12));
         var buttonWidth = (containerInnerSize.x - margin * 3) / 2;
+        buttonWidth /= 2; // To make it match the Back buttons in starsystem and cluster.
         var buttonBack = ControlButton.from8("buttonBack", Coords.fromXY((containerMainSize.x - buttonWidth) / 2, containerMainSize.y - margin - controlHeight), // pos
         Coords.fromXY(buttonWidth, controlHeight), // size
         "Back", fontNameAndHeight, true, // hasBorder
@@ -252,7 +251,7 @@ class VenueLayout {
             universe.venueTransitionTo(venueNext);
         });
         var controlNameTypeOwner = this.toControl_NameTypeOwner(universe, containerMainSize, containerInnerSize, margin, controlHeight);
-        var containerPopulationAndProductionSize = containerInnerSize.clone().multiplyScalar(1.2);
+        var containerPopulationAndProductionSize = Coords.fromXY(containerInnerSize.x * 1.2, containerInnerSize.y * 1.4);
         var controlPopulationAndProduction = this.toControl_PopulationAndProduction(universe, containerMainSize, containerPopulationAndProductionSize, margin, controlHeight);
         var container = ControlContainer.from4("containerMain", Coords.fromXY(0, 0), // pos
         containerMainSize, 
@@ -322,30 +321,27 @@ class VenueLayout {
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var size = containerInnerSize;
+        var controlSize = Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight);
         var labelPopulation = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 0), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext("Population:"), fontNameAndHeight);
+        controlSize, DataBinding.fromContext("Population:"), fontNameAndHeight);
         var textPopulation = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 0), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => "" + c.populationOverMaxPlusIdle(universe)), fontNameAndHeight);
+        controlSize, DataBinding.fromContextAndGet(planet, (c) => "" + c.populationOverMaxPlusIdle(universe)), fontNameAndHeight);
         var labelIndustry = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 1), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext("Industry:"), fontNameAndHeight);
+        controlSize, DataBinding.fromContext("Industry:"), fontNameAndHeight);
         var textIndustry = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 1), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => "" + c.industryAndBuildableInProgress(universe, world)), fontNameAndHeight);
+        controlSize, DataBinding.fromContextAndGet(planet, (c) => "" + c.industryAndBuildableInProgress(universe, world)), fontNameAndHeight);
         var labelProsperity = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 2), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext("Prosperity:"), fontNameAndHeight);
+        controlSize, DataBinding.fromContext("Prosperity:"), fontNameAndHeight);
         var textProsperity = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => c.prosperityNetWithNeededToGrow(universe)), fontNameAndHeight);
+        controlSize, DataBinding.fromContextAndGet(planet, (c) => c.prosperityNetWithNeededToGrow(universe)), fontNameAndHeight);
         var labelResearch = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight * 3), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContext("Research:"), fontNameAndHeight);
+        controlSize, DataBinding.fromContext("Research:"), fontNameAndHeight);
         var textResearch = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
-        Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => "" + c.researchThisRound(universe, world, faction)), fontNameAndHeight);
+        controlSize, DataBinding.fromContextAndGet(planet, (c) => "" + c.researchThisRound(universe, world, faction)), fontNameAndHeight);
+        var checkboxAutomatic = new ControlCheckbox("checkboxAutomatic", Coords.fromXY(margin, margin + controlHeight * 4.5), // pos
+        controlSize, DataBinding.fromContext("Choose Projects Automatically"), // text
+        fontNameAndHeight, DataBinding.fromTrue(), // isEnabled
+        new DataBinding(planet, c => c.industry.buildablesAreChosenAutomatically, (c, v) => c.industry.buildablesAreChosenAutomatically = v));
         var controlPos = Coords.fromXY(margin, containerMainSize.y - margin - containerInnerSize.y);
         var returnValue = ControlContainer.from4("containerPopulationAndProduction", controlPos, size, 
         // children
@@ -357,7 +353,8 @@ class VenueLayout {
             labelProsperity,
             textProsperity,
             labelResearch,
-            textResearch
+            textResearch,
+            checkboxAutomatic
         ]);
         return returnValue;
     }

@@ -22,7 +22,8 @@ class LinkPortal extends Entity
 				(
 					Sphere.fromRadiusAndCenter
 					(
-						VisualStar.radiusActual(), pos
+						VisualStar.radiusActual(),
+						pos
 					)
 				),
 				new Controllable(LinkPortal.toControl),
@@ -56,6 +57,20 @@ class LinkPortal extends Entity
 		(
 			this.starsystemNameFrom(), this.starsystemNameTo()
 		);
+		return returnValue;
+	}
+
+	nameAccordingToFactionPlayerKnowledge(world: WorldExtended): string
+	{
+		var factionPlayer = world.factionPlayer();
+		var factionKnowledge = factionPlayer.knowledge;
+		var starsystemToName = this.starsystemNameTo();
+		var isStarsystemToKnown =
+			factionKnowledge.starsystemWithNameIsKnown(starsystemToName);
+		var returnValue = 
+			isStarsystemToKnown
+			? this.name
+			: "Link to " + FactionKnowledge.TextUnknownStarsystem;
 		return returnValue;
 	}
 
@@ -94,11 +109,14 @@ class LinkPortal extends Entity
 	{
 		var linkPortal = uwpe.entity as LinkPortal;
 
+		var world = uwpe.world as WorldExtended;
+		var name = linkPortal.nameAccordingToFactionPlayerKnowledge(world);
+
 		var returnValue = ControlLabel.from4Uncentered
 		(
 			Coords.fromXY(0, 0),
 			size,
-			DataBinding.fromContext("Link to " + linkPortal.starsystemNamesFromAndTo[1]),
+			DataBinding.fromContext(name),
 			FontNameAndHeight.fromHeightInPixels(10)
 		);
 

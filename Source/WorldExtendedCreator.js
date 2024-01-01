@@ -221,13 +221,14 @@ class WorldExtendedCreator {
             var buildableAsEntity = buildable.toEntity(worldDummy);
             factionHomePlanetLayoutMap.bodyAdd(buildableAsEntity);
         }
+        factionHomePlanet.industry.buildablesAreChosenAutomatically = true;
         return factionHomePlanet;
     }
     create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy) {
         var factionHomeStarsystemSize = factionHomeStarsystem.size();
         var shipHullSize = ShipHullSize.Instances().Medium;
         var shipDefn = Ship.bodyDefnBuild(factionColor);
-        var shipCount = (this.isDebuggingMode ? 2 : 0);
+        var shipCount = (this.isDebuggingMode ? 1 : 0);
         var shipComponentsAsBuildableDefns = [
             buildableDefns.ShipDrive1TonklinMotor,
             buildableDefns.ShipGenerator1ProtonShaver,

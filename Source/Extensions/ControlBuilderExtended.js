@@ -22,7 +22,8 @@ class ControlBuilderExtended extends ControlBuilder {
                 returnValue = venue.selectionName();
             }
             else if (venueTypeName == VenueStarsystem.name) {
-                returnValue = venue.selectionName();
+                var world = universe.world;
+                returnValue = venue.selectionName(world);
             }
             return returnValue;
         }), fontNameAndHeight);

@@ -122,9 +122,24 @@ class VenueStarsystem {
     model() {
         return this.starsystem;
     }
-    selectionName() {
+    selectionName(world) {
+        var returnValue;
         var entitySelected = this.entitySelected();
-        return (entitySelected == null ? "[none]" : entitySelected.name);
+        if (entitySelected == null) {
+            returnValue = "[none]";
+        }
+        else {
+            var entitySelectedTypeName = entitySelected.constructor.name;
+            if (entitySelectedTypeName == LinkPortal.name) {
+                var linkPortalSelected = entitySelected;
+                returnValue =
+                    linkPortalSelected.nameAccordingToFactionPlayerKnowledge(world);
+            }
+            else {
+                returnValue = entitySelected.name;
+            }
+        }
+        return returnValue;
     }
     updateForTimerTick(universe) {
         var world = universe.world;

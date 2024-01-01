@@ -5,6 +5,12 @@ class Layout {
         this.map = map;
     }
     // instance methods
+    buildableDefnStartBuildingAtPos(universe, buildableDefn, posToBuildAt) {
+        var buildable = Buildable.fromDefnAndPosIncomplete(buildableDefn, posToBuildAt);
+        var world = universe.world;
+        var buildableEntity = buildable.toEntity(world);
+        this.buildableEntityBuild(buildableEntity);
+    }
     buildableEntitiesRemove(buildableEntitiesToRemove) {
         buildableEntitiesToRemove.forEach(x => this.buildableEntityRemove(x));
     }

@@ -12,6 +12,22 @@ class Layout
 
 	// instance methods
 
+	buildableDefnStartBuildingAtPos
+	(
+		universe: Universe,
+		buildableDefn: BuildableDefn,
+		posToBuildAt: Coords
+	): void
+	{
+		var buildable = Buildable.fromDefnAndPosIncomplete
+		(
+			buildableDefn, posToBuildAt
+		);
+		var world = universe.world as WorldExtended;
+		var buildableEntity = buildable.toEntity(world);
+		this.buildableEntityBuild(buildableEntity);
+	}
+
 	buildableEntitiesRemove(buildableEntitiesToRemove: Entity[]): void
 	{
 		buildableEntitiesToRemove.forEach(x => this.buildableEntityRemove(x));

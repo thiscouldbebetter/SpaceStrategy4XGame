@@ -34,24 +34,28 @@ class Ship extends Entity {
     static collideEntities(uwpe, collision) {
         var universe = uwpe.universe;
         var ship = uwpe.entity;
-        var target = uwpe.entity2;
-        var targetTypeName = target.constructor.name;
-        if (targetTypeName == LinkPortal.name) {
-            var portal = target;
-            ship.linkPortalEnter(universe.world.starCluster, portal, ship);
-        }
-        else if (targetTypeName == Planet.name) {
-            var planet = target;
-            var venue = universe.venueCurrent();
-            var starsystem = venue.starsystem;
-            ship.planetOrbitEnter(universe, starsystem, planet);
-        }
-        else if (targetTypeName == Ship.name) {
-            // todo - ship-ship collision
-        }
-        else {
-            // Do nothing.
-            // throw new Error("Unexpected collision!");
+        var entityToCollideWith = uwpe.entity2;
+        var shipTarget = ship.actor().activity.targetEntity();
+        var isEntityToCollideWithTargetedByShip = (shipTarget == entityToCollideWith); // No unintentional collisions!
+        if (isEntityToCollideWithTargetedByShip) {
+            var entityToCollideWithTypeName = entityToCollideWith.constructor.name;
+            if (entityToCollideWithTypeName == LinkPortal.name) {
+                var portal = entityToCollideWith;
+                ship.linkPortalEnter(universe.world.starCluster, portal, ship);
+            }
+            else if (entityToCollideWithTypeName == Planet.name) {
+                var planet = entityToCollideWith;
+                var venue = universe.venueCurrent();
+                var starsystem = venue.starsystem;
+                ship.planetOrbitEnter(universe, starsystem, planet);
+            }
+            else if (entityToCollideWithTypeName == Ship.name) {
+                // todo - ship-ship collision
+            }
+            else {
+                // Do nothing.
+                // throw new Error("Unexpected collision!");
+            }
         }
     }
     static killableBuild(hullSize, faction) {
@@ -204,6 +208,8 @@ class Ship extends Entity {
             this.nudgeInFrontOfEntityIfTouching(linkPortal);
         }
         else {
+            ship.orderable().order(ship).clear();
+            ship.actor().activity.clear();
             var starsystemFrom = linkPortal.starsystemFrom(cluster);
             var starsystemTo = linkPortal.starsystemTo(cluster);
             var link = linkPortal.link(cluster);
@@ -231,7 +237,6 @@ class Ship extends Entity {
         var world = uwpe.world;
         var cluster = world.starCluster;
         var shipLoc = ship.locatable().loc;
-        var shipPos = shipLoc.pos;
         var shipVel = shipLoc.vel;
         var linkDisplacement = link.displacement(cluster);
         var isShipMovingForward = (shipVel.dotProduct(linkDisplacement) > 0);
@@ -245,12 +250,14 @@ class Ship extends Entity {
         shipLoc.placeName = Starsystem.name + ":" + starsystemDestination.name;
         var portalToExitFrom = starsystemDestination.linkPortalByStarsystemName(starsystemSource.name);
         var exitPos = portalToExitFrom.locatable().loc.pos;
+        var shipPos = shipLoc.pos;
         shipPos.overwriteWith(exitPos);
         ship.nudgeInFrontOfEntityIfTouching(portalToExitFrom);
         starsystemDestination.shipAdd(ship, uwpe);
         var shipFaction = ship.faction();
         var factionKnowledge = shipFaction.knowledge;
         factionKnowledge.starsystemAdd(starsystemDestination, uwpe);
+        shipVel.clear();
     }
     moveRepeat(universe) {
         var order = this.order();
@@ -304,7 +311,9 @@ class Ship extends Entity {
         var shipToNudgePos = shipToNudge.locatable().loc.pos;
         var entityToNudgeInFrontOfPos = entityToNudgeInFrontOf.locatable().loc.pos;
         var distanceBetweenShipAndEntity = this._displacement.overwriteWith(entityToNudgeInFrontOfPos).subtract(shipToNudgePos).magnitude();
-        var distanceBetweenShipAndEntityMin = 3;
+        var distanceBetweenShipAndEntityMin = shipToNudge.collidable().collider.radius
+            + entityToNudgeInFrontOf.collidable().collider.radius
+            + 1;
         var isShipTooCloseToEntity = (distanceBetweenShipAndEntity < distanceBetweenShipAndEntityMin);
         if (isShipTooCloseToEntity) {
             var displacement = this._displacement.overwriteWith(Coords.Instances().ZeroOneZero).multiplyScalar(distanceBetweenShipAndEntityMin);

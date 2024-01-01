@@ -35,7 +35,7 @@ class FactionNames
 			"Ildun",
 			"Jarrae",
 			"Kwarg",
-			"Laretta",
+			"Lacresa",
 			"Mooldug",
 			"Opretti",
 			"Panquel",

@@ -492,6 +492,8 @@ class WorldExtendedCreator
 			factionHomePlanetLayoutMap.bodyAdd(buildableAsEntity);
 		}
 
+		factionHomePlanet.industry.buildablesAreChosenAutomatically = true;
+
 		return factionHomePlanet;
 	}
 
@@ -509,7 +511,7 @@ class WorldExtendedCreator
 
 		var shipHullSize = ShipHullSize.Instances().Medium;
 		var shipDefn = Ship.bodyDefnBuild(factionColor);
-		var shipCount = (this.isDebuggingMode ? 2 : 0);
+		var shipCount = (this.isDebuggingMode ? 1 : 0);
 
 		var shipComponentsAsBuildableDefns = 
 		[

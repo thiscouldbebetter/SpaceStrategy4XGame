@@ -18,6 +18,12 @@ class Factionable implements EntityProperty<Factionable>
 		return this._faction;
 	}
 
+	factionName(): string
+	{
+		var faction = this.faction();
+		return (faction == null ? "[none]" : faction.name);
+	}
+
 	factionSet(faction: Faction): void
 	{
 		this._faction = faction;

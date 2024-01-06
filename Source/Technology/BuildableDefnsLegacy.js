@@ -52,10 +52,9 @@ class BuildableDefnsLegacy {
             });
             return effect;
         };
-        var facilityOrbital = (name, visual, industryToBuildAmount, description) => new BuildableDefn(name, false, // isItem
+        var facilityOrbital = (name, visual, industryToBuildAmount, description, categories) => new BuildableDefn(name, false, // isItem
         canBeBuiltInOrbit, mapCellSizeInPixels, visual, industryToBuildAmount, effectNone, null, // effectsAvailableToUse
-        null, // categories
-        null, // entityProperties
+        categories, null, // entityProperties
         null, // entityModifyOnBuild
         description);
         var facilitySurfaceUsable = (name, visual, industryToBuildAmount, effect, description) => new BuildableDefn(name, false, // isItem
@@ -93,10 +92,17 @@ class BuildableDefnsLegacy {
         null, description);
         var names = BuildableDefnsLegacyNames.Instance;
         // Planet - Orbit.
-        this.OrbitalCloaker = facilityOrbital(names.OrbitalCloaker, visualBuild("C", colors.Gray), 40, "Hides orbital structures from sensors.");
-        this.OrbitalDocks = facilityOrbital(names.OrbitalDocks, visualBuild("D", colors.Gray), 170, "Allows ships to be repaired and refitted.");
-        this.OrbitalShield1OrbitalShield = facilityOrbital(names.OrbitalShield1OrbitalShield, visualBuild("S", colors.Red), 60, "Protects orbital structures and prevents others from orbiting.");
-        this.OrbitalShield2OrbitalMegaShield = facilityOrbital(names.OrbitalShield2OrbitalMegaShield, visualBuild("S", colors.Blue), 120, "A more powerful orbital shield.");
+        var categories = BuildableCategory.Instances();
+        var categoryOrbital = categories.Orbital;
+        var categoriesOrbital = [categoryOrbital];
+        this.OrbitalCloaker = facilityOrbital(names.OrbitalCloaker, visualBuild("C", colors.Gray), 40, "Hides orbital structures from sensors.", categoriesOrbital);
+        this.OrbitalDocks = facilityOrbital(names.OrbitalDocks, visualBuild("D", colors.Gray), 170, "Allows ships to be repaired and refitted.", categoriesOrbital);
+        var categoriesOrbitalAndShields = [
+            categoryOrbital,
+            categories.Shield
+        ];
+        this.OrbitalShield1OrbitalShield = facilityOrbital(names.OrbitalShield1OrbitalShield, visualBuild("S", colors.Red), 60, "Protects orbital structures and prevents others from orbiting.", categoriesOrbitalAndShields);
+        this.OrbitalShield2OrbitalMegaShield = facilityOrbital(names.OrbitalShield2OrbitalMegaShield, visualBuild("S", colors.Blue), 120, "A more powerful orbital shield.", categoriesOrbitalAndShields);
         var buildShip = (uwpe) => {
             var universe = uwpe.universe;
             var displaySize = universe.display.sizeInPixels;
@@ -132,9 +138,9 @@ class BuildableDefnsLegacy {
         null, // entityProperties
         null, // entityModifyOnBuild
         "Allows new ships to be built.");
-        this.OrbitalWeapon1OrbitalMissileBase = facilityOrbital(names.OrbitalWeapon1OrbitalMissileBase, visualBuild(names.OrbitalWeapon1OrbitalMissileBase, colors.Gray), 60, "Allows the host planet to attack nearby ships twice per turn.");
-        this.OrbitalWeapon2ShortRangeOrbitalWhopper = facilityOrbital(names.OrbitalWeapon2ShortRangeOrbitalWhopper, visualBuild(names.OrbitalWeapon2ShortRangeOrbitalWhopper, colors.Red), 90, "A more powerful orbital weapon, but only one shot per turn.");
-        this.OrbitalWeapon3LongRangeOrbitalWhopper = facilityOrbital(names.OrbitalWeapon3LongRangeOrbitalWhopper, visualBuild("Long-Range Whopper", colors.Green), 180, "A still more powerful orbital weapon with longer range and multiple shots.");
+        this.OrbitalWeapon1OrbitalMissileBase = facilityOrbital(names.OrbitalWeapon1OrbitalMissileBase, visualBuild(names.OrbitalWeapon1OrbitalMissileBase, colors.Gray), 60, "Allows the host planet to attack nearby ships twice per turn.", categoriesOrbital);
+        this.OrbitalWeapon2ShortRangeOrbitalWhopper = facilityOrbital(names.OrbitalWeapon2ShortRangeOrbitalWhopper, visualBuild(names.OrbitalWeapon2ShortRangeOrbitalWhopper, colors.Red), 90, "A more powerful orbital weapon, but only one shot per turn.", categoriesOrbital);
+        this.OrbitalWeapon3LongRangeOrbitalWhopper = facilityOrbital(names.OrbitalWeapon3LongRangeOrbitalWhopper, visualBuild("Long-Range Whopper", colors.Green), 180, "A still more powerful orbital weapon with longer range and multiple shots.", categoriesOrbital);
         // Planetwide.
         this.PlanetwideFocusAlienHospitality = planetwideFocus(names.PlanetwideFocusAlienHospitality, visualBuild(names.PlanetwideFocusAlienHospitality, colors.Orange), "Directs industrial output to improving diplomatic relations.");
         this.PlanetwideFocusEndlessParty = planetwideFocus(names.PlanetwideFocusEndlessParty, visualBuild(names.PlanetwideFocusEndlessParty, colors.Green), "Directs industrial output to increasing population growth.");

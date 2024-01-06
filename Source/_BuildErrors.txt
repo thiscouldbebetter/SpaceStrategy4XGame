@@ -1,2 +1,0 @@
-Planets/PlanetType.ts(172,44): error TS1005: ')' expected.
-Planets/PlanetType.ts(173,3): error TS1128: Declaration or statement expected.

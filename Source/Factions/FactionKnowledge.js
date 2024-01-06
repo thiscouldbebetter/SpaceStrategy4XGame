@@ -1,21 +1,34 @@
 "use strict";
 class FactionKnowledge {
-    constructor(factionSelfName, factionNames, shipIds, starsystemNames, linkNames) {
+    constructor(factionSelfName, factionNames, planetNames, shipIds, starsystemNames, linkNames) {
         this.factionSelfName = factionSelfName;
         this.factionNames = factionNames || [];
+        this.planetNames = planetNames || [];
         this.shipIds = shipIds || [];
         this.starsystemNames = starsystemNames || [];
         this.linkNames = linkNames || [];
     }
     static fromFactionSelfName(factionSelfName) {
-        return new FactionKnowledge(factionSelfName, null, null, null, null);
+        return new FactionKnowledge(factionSelfName, null, null, null, null, null);
+    }
+    factionAdd(factionToAdd, uwpe) {
+        var wasFactionAlreadyKnown = this.factionIsKnown(factionToAdd);
+        if (wasFactionAlreadyKnown == false) {
+            var world = uwpe.world;
+            var factionSelf = this.factionSelf(world);
+            var message = "The " + factionSelf.name
+                + " have made first contact with the " + factionToAdd.name + ".";
+            var notification = new Notification2(message, () => { alert("todo - first contact"); });
+            factionSelf.notificationAdd(notification);
+            this.factionNames.push(factionToAdd.name);
+            this.factionsCacheClear();
+        }
     }
     factionSelf(world) {
         return world.factionByName(this.factionSelfName);
     }
-    factionAdd(factionToAdd) {
-        this.factionNames.push(factionToAdd.name);
-        this.factionsCacheClear();
+    factionIsKnown(factionToCheck) {
+        return this.factionNames.some(x => x == factionToCheck.name);
     }
     factions(world) {
         if (this._factions == null) {
@@ -48,6 +61,14 @@ class FactionKnowledge {
     linksCacheClear() {
         this._links = null;
         this.starClusterCacheClear();
+    }
+    planetAdd(planet) {
+        if (this.planetIsKnown(planet) == false) {
+            this.planetNames.push(planet.name);
+        }
+    }
+    planetIsKnown(planet) {
+        return (this.planetNames.indexOf(planet.name) >= 0);
     }
     starCluster(world) {
         if (this._starCluster == null) {
@@ -86,12 +107,12 @@ class FactionKnowledge {
         this._starCluster = null;
         this.worldCacheClear();
     }
-    shipAdd(ship, world) {
+    shipAdd(ship, uwpe) {
         var shipId = ship.id;
         if (this.shipIds.indexOf(shipId) == -1) {
             this.shipIds.push(shipId);
             var shipFaction = ship.faction();
-            this.factionAdd(shipFaction);
+            this.factionAdd(shipFaction, uwpe);
         }
         this.shipsCacheClear();
     }
@@ -115,9 +136,6 @@ class FactionKnowledge {
             this.starsystemNames.push(starsystemName);
             var world = uwpe.world;
             var starsystemFaction = starsystem.faction(world);
-            if (starsystemFaction != null) {
-                this.factionAdd(starsystemFaction);
-            }
             var starCluster = world.starCluster;
             var linkPortals = starsystem.linkPortals;
             for (var i = 0; i < linkPortals.length; i++) {
@@ -137,6 +155,9 @@ class FactionKnowledge {
             var notification = new Notification2(message, () => starsystem.jumpTo(universe));
             var factionSelf = this.factionSelf(world);
             factionSelf.notificationSession.notificationAdd(notification);
+            if (starsystemFaction != null) {
+                this.factionAdd(starsystemFaction, uwpe);
+            }
             var universe = uwpe.universe;
             factionSelf.notificationSessionStart(universe, universe.display.sizeInPixelsHalf);
             world.roundAdvanceUntilNotificationDisable();

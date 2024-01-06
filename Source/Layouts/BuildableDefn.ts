@@ -102,6 +102,16 @@ class BuildableDefn
 		return this._canBeBuiltOnMapAtPosInCells(map, posInCells);
 	}
 
+	categoryIsOrbital(): boolean
+	{
+		return this.categories.indexOf(BuildableCategory.Instances().Orbital) >= 0;
+	}
+
+	categoryIsShield(): boolean
+	{
+		return this.categories.indexOf(BuildableCategory.Instances().Shield) >= 0;
+	}
+
 	effectPerRoundApply(uwpe: UniverseWorldPlaceEntities): void
 	{
 		if (this.effectPerRound != null)

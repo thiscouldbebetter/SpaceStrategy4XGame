@@ -84,16 +84,24 @@ function worldCreatorToControl(universe, worldCreator) {
     var buttonSize = Coords.fromXY(4, 1).multiplyScalar(controlHeight);
     var labelWorldCreationSettings = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
     Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("World Creation Settings"), fontNameAndHeight);
-    var labelWorldStarsystemCount = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+    var labelOffsetY = controlHeight / 6;
+    var labelWorldStarsystemCount = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + controlHeight + labelOffsetY), // pos
     Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Starsystems:"), fontNameAndHeight);
-    var numberStarsystemCount = new ControlNumber("numberStarsystemCount", Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
+    var starsystemCountsAvailable = [
+        16, 32, 64, 128
+    ];
+    var isDebuggingMode = true;
+    if (isDebuggingMode) {
+        starsystemCountsAvailable.splice(0, 0, 2);
+    }
+    var selectStarsystemCount = new ControlSelect("selectFactionType", Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
     Coords.fromXY(controlHeight * 2, controlHeight), // size
-    new DataBinding(worldCreator, (c) => c.settings.starsystemCount, (c, v) => c.settings.starsystemCount = v), // value
-    DataBinding.fromGet((c) => 12), // valueMin
-    DataBinding.fromGet((c) => 128), // valueMax
-    fontNameAndHeight, DataBinding.fromTrue() // isEnabled
-    );
-    var labelWorldFactionCount = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
+    new DataBinding(worldCreator, (c) => c.settings.starsystemCount, (c, v) => c.settings.starsystemCount = v), // valueSelected
+    DataBinding.fromContextAndGet(worldCreator, (c) => starsystemCountsAvailable), // options
+    DataBinding.fromGet((c) => c), // bindingForOptionValues,
+    DataBinding.fromGet((c) => "" + c), // bindingForOptionText
+    fontNameAndHeight);
+    var labelWorldFactionCount = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 3 + controlHeight * 2 + labelOffsetY), // pos
     Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Factions:"), fontNameAndHeight);
     var numberFactionCount = new ControlNumber("numberFactionCount", Coords.fromXY(margin * 8, margin * 3 + controlHeight * 2), // pos
     Coords.fromXY(controlHeight * 2, controlHeight), // size
@@ -102,7 +110,7 @@ function worldCreatorToControl(universe, worldCreator) {
     DataBinding.fromGet((c) => 7), // valueMax
     fontNameAndHeight, DataBinding.fromTrue() // isEnabled
     );
-    var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
+    var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 4 + controlHeight * 3 + labelOffsetY), // pos
     Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Faction:"), fontNameAndHeight);
     var selectFactionType = new ControlSelect("selectFactionType", Coords.fromXY(margin * 8, margin * 4 + controlHeight * 3), // pos
     Coords.fromXY(controlHeight * 3, controlHeight), // size
@@ -129,7 +137,7 @@ function worldCreatorToControl(universe, worldCreator) {
         }
         return "Special Ability: " + abilityDescription;
     }), fontNameAndHeight);
-    var labelFactionColor = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 6 + controlHeight * 5), // pos
+    var labelFactionColor = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 6 + controlHeight * 5 + labelOffsetY), // pos
     Coords.fromXY(size.x - margin * 2, controlHeight), DataBinding.fromContext("Player Color:"), fontNameAndHeight);
     var selectFactionColor = new ControlSelect("selectFactionColor", Coords.fromXY(margin * 8, margin * 6 + controlHeight * 5), // pos
     Coords.fromXY(controlHeight * 3, controlHeight), // size
@@ -146,7 +154,7 @@ function worldCreatorToControl(universe, worldCreator) {
     size, [
         labelWorldCreationSettings,
         labelWorldStarsystemCount,
-        numberStarsystemCount,
+        selectStarsystemCount,
         labelWorldFactionCount,
         numberFactionCount,
         labelFactionType,

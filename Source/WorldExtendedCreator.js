@@ -60,8 +60,16 @@ class WorldExtendedCreator {
             factionDefns.splice(factionDefnIndex, 1);
             factionDefns.splice(0, 0, factionDefnForPlayer);
         }
+        var randomizer = this.universe.randomizer;
+        var factionHomeStarsystemNodes = randomizer.chooseNElementsFromArray(factionCount, starCluster.nodes);
+        var factionHomeStarsystems = factionHomeStarsystemNodes.map(x => x.starsystem);
         for (var i = 0; i < factionCount; i++) {
-            this.create_FactionsAndShips_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, ships);
+            var factionHomeStarsystem = factionHomeStarsystems[i];
+            if (factionHomeStarsystem.planets.length == 0) {
+                var planet;
+                factionHomeStarsystem.planetAdd(planet);
+            }
+            this.create_FactionsAndShips_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, ships, factionHomeStarsystem);
         }
         if (factionDefnNameForPlayer != null) {
             factions[0].defnName = factionDefnNameForPlayer;
@@ -84,35 +92,17 @@ class WorldExtendedCreator {
             communicationStyleNames.splice(communicationStyleNames.indexOf(communicationStyleName), 1);
         }
         if (this.isDebuggingMode) {
-            this.create_FactionsAndShips_2_ShipOther(buildableDefns, worldDummy, factions);
+            /*
+            this.create_FactionsAndShips_2_ShipOther
+            (
+                buildableDefns, worldDummy, factions
+            );
+            */
         }
         var factionsAndShips = [factions, ships];
         return factionsAndShips;
     }
-    create_FactionsAndShips_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, ships) {
-        var factionHomeStarsystem = null;
-        var nodes = starCluster.nodes;
-        var numberOfStarsystems = nodes.length;
-        var random = Math.random();
-        var starsystemIndexStart = Math.floor(random * numberOfStarsystems);
-        var starsystemIndex = starsystemIndexStart;
-        while (factionHomeStarsystem == null) {
-            var node = nodes[starsystemIndex];
-            factionHomeStarsystem = node.starsystem;
-            if (factionHomeStarsystem.planets.length == 0) {
-                factionHomeStarsystem = null;
-            }
-            else if (factionHomeStarsystem.factionName != null) {
-                factionHomeStarsystem = null;
-            }
-            starsystemIndex++;
-            if (starsystemIndex >= numberOfStarsystems) {
-                starsystemIndex = 0;
-            }
-            if (starsystemIndex == starsystemIndexStart) {
-                throw "There are more factions than starsystems with planets.";
-            }
-        }
+    create_FactionsAndShips_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, ships, factionHomeStarsystem) {
         var factionDefn = factionDefns[i];
         var factionName = factionDefn.name;
         factionHomeStarsystem.factionSetByName(factionName);
@@ -141,6 +131,7 @@ class WorldExtendedCreator {
         var factionShips = new Array();
         var factionKnowledge = new FactionKnowledge(factionName, // factionSelfName
         [factionName], // factionNames
+        [], // todo - planetNames
         ships.map(x => x.id), // shipIds
         [factionHomeStarsystem.name], factionHomeStarsystem.links(starCluster).map((x) => x.name));
         var factionIntelligences = FactionIntelligence.Instances();
@@ -219,7 +210,7 @@ class WorldExtendedCreator {
             }
             var buildable = Buildable.fromDefnAndPosComplete(buildableDefn, buildablePos);
             var buildableAsEntity = buildable.toEntity(worldDummy);
-            factionHomePlanetLayoutMap.bodyAdd(buildableAsEntity);
+            factionHomePlanetLayoutMap.entityAdd(buildableAsEntity);
         }
         factionHomePlanet.industry.buildablesAreChosenAutomatically = true;
         return factionHomePlanet;

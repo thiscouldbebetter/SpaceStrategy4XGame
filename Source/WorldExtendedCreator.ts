@@ -153,8 +153,22 @@ class WorldExtendedCreator
 			factionDefns.splice(0, 0, factionDefnForPlayer);
 		}
 
+		var randomizer = this.universe.randomizer;
+		var factionHomeStarsystemNodes =
+			randomizer.chooseNElementsFromArray(factionCount, starCluster.nodes);
+		var factionHomeStarsystems =
+			factionHomeStarsystemNodes.map(x => x.starsystem);
+
 		for (var i = 0; i < factionCount; i++)
 		{
+			var factionHomeStarsystem = factionHomeStarsystems[i];
+
+			if (factionHomeStarsystem.planets.length == 0)
+			{
+				var planet 
+				factionHomeStarsystem.planetAdd(planet);
+			}
+
 			this.create_FactionsAndShips_1
 			(
 				worldDummy,
@@ -164,7 +178,8 @@ class WorldExtendedCreator
 				technologyGraph,
 				buildableDefns,
 				i,
-				ships
+				ships,
+				factionHomeStarsystem
 			);
 		}
 
@@ -202,10 +217,12 @@ class WorldExtendedCreator
 
 		if (this.isDebuggingMode)
 		{
+			/*
 			this.create_FactionsAndShips_2_ShipOther
 			(
 				buildableDefns, worldDummy, factions
 			);
+			*/
 		}
 
 		var factionsAndShips: [Faction[], Ship[]] = 
@@ -223,48 +240,10 @@ class WorldExtendedCreator
 		technologyGraph: TechnologyGraph,
 		buildableDefns: BuildableDefnsLegacy,
 		i: number,
-		ships: Ship[]
+		ships: Ship[],
+		factionHomeStarsystem: Starsystem
 	): void
 	{
-		var factionHomeStarsystem: Starsystem = null;
-
-		var nodes = starCluster.nodes;
-		var numberOfStarsystems = nodes.length;
-
-		var random = Math.random();
-		var starsystemIndexStart = Math.floor
-		(
-			random * numberOfStarsystems
-		);
-
-		var starsystemIndex = starsystemIndexStart;
-
-		while (factionHomeStarsystem == null)
-		{
-			var node = nodes[starsystemIndex];
-			factionHomeStarsystem = node.starsystem;
-
-			if (factionHomeStarsystem.planets.length == 0)
-			{
-				factionHomeStarsystem = null;
-			}
-			else if (factionHomeStarsystem.factionName != null)
-			{
-				factionHomeStarsystem = null;
-			}
-
-			starsystemIndex++;
-			if (starsystemIndex >= numberOfStarsystems)
-			{
-				starsystemIndex = 0;
-			}
-
-			if (starsystemIndex == starsystemIndexStart)
-			{
-				throw "There are more factions than starsystems with planets.";
-			}
-		}
-
 		var factionDefn = factionDefns[i];
 
 		var factionName = factionDefn.name;
@@ -318,6 +297,7 @@ class WorldExtendedCreator
 		(
 			factionName, // factionSelfName
 			[ factionName ], // factionNames
+			[], // todo - planetNames
 			ships.map(x => x.id), // shipIds
 			[ factionHomeStarsystem.name ],
 			factionHomeStarsystem.links(starCluster).map
@@ -488,8 +468,8 @@ class WorldExtendedCreator
 			);
 
 			var buildableAsEntity = buildable.toEntity(worldDummy);
-			
-			factionHomePlanetLayoutMap.bodyAdd(buildableAsEntity);
+
+			factionHomePlanetLayoutMap.entityAdd(buildableAsEntity);
 		}
 
 		factionHomePlanet.industry.buildablesAreChosenAutomatically = true;

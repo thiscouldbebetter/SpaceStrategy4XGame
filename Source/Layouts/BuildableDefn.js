@@ -47,6 +47,12 @@ class BuildableDefn {
     canBeBuiltOnMapAtPosInCells(map, posInCells) {
         return this._canBeBuiltOnMapAtPosInCells(map, posInCells);
     }
+    categoryIsOrbital() {
+        return this.categories.indexOf(BuildableCategory.Instances().Orbital) >= 0;
+    }
+    categoryIsShield() {
+        return this.categories.indexOf(BuildableCategory.Instances().Shield) >= 0;
+    }
     effectPerRoundApply(uwpe) {
         if (this.effectPerRound != null) {
             this.effectPerRound.apply(uwpe);

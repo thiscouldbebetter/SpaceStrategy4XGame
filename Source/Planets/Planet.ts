@@ -39,7 +39,7 @@ class Planet extends Entity
 				),
 				new Controllable(Planet.toControl),
 				new DeviceUser([]),
-				Drawable.fromVisual(planetType.visualProjected() ),
+				Drawable.fromVisual(Planet.visualBuild(planetType)),
 				new Factionable(faction),
 				Locatable.fromPos(pos)
 			]
@@ -59,7 +59,10 @@ class Planet extends Entity
 		];
 	}
 
-	static fromNameTypeAndPos(name: string, planetType: PlanetType, pos: Coords): Planet
+	static fromNameTypeAndPos
+	(
+		name: string, planetType: PlanetType, pos: Coords
+	): Planet
 	{
 		return new Planet
 		(
@@ -71,6 +74,41 @@ class Planet extends Entity
 			null, // industry
 			null // layout
 		);
+	}
+
+	static generateRandom
+	(
+		universe: Universe,
+		starsystemName: string,
+		starsystemSize: Coords
+	): Planet
+	{
+		var planetType = PlanetType.random();
+
+		var planetPos = Coords.create().randomize(universe.randomizer).multiply
+		(
+			starsystemSize
+		).double().subtract
+		(
+			starsystemSize
+		);
+
+		var planetDemographics = new PlanetDemographics(0);
+
+		var planetIndustry = new PlanetIndustry();
+
+		var planet = new Planet
+		(
+			null, // name
+			planetType,
+			planetPos,
+			null, // factionName
+			planetDemographics,
+			planetIndustry,
+			null // layout
+		);
+
+		return planet;
 	}
 
 	// instance methods
@@ -101,14 +139,14 @@ class Planet extends Entity
 
 				if (canBuildableBeBuiltOnTerrain)
 				{
-					var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
+					var bodyAtPos = layoutMap.entityAtPosInCells(cellPosInCells);
 
 					var isVacant = (bodyAtPos == null);
 
 					if (isVacant)
 					{
 						var bodiesNeighboring =
-							layoutMap.bodiesNeighboringPosInCells(cellPosInCells);
+							layoutMap.entitiesNeighboringPosInCells(cellPosInCells);
 						if (bodiesNeighboring.length > 0)
 						{
 							returnValues.push(cellPosInCells.clone());
@@ -143,14 +181,14 @@ class Planet extends Entity
 
 				if (isSurface)
 				{
-					var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
+					var bodyAtPos = layoutMap.entityAtPosInCells(cellPosInCells);
 
 					var isVacant = (bodyAtPos == null);
 
 					if (isVacant)
 					{
 						var bodiesNeighboring =
-							layoutMap.bodiesNeighboringPosInCells(cellPosInCells);
+							layoutMap.entitiesNeighboringPosInCells(cellPosInCells);
 						if (bodiesNeighboring.length > 0)
 						{
 							returnValues.push(cellPosInCells.clone());
@@ -187,7 +225,7 @@ class Planet extends Entity
 
 				if (isOrbit)
 				{
-					var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
+					var bodyAtPos = layoutMap.entityAtPosInCells(cellPosInCells);
 
 					var isVacant = (bodyAtPos == null);
 
@@ -202,9 +240,58 @@ class Planet extends Entity
 		return returnValues;
 	}
 
+	cellsAreVacantInOrbit(universe: Universe): boolean
+	{
+		var haveAnyOrbitalCellsBeenVacantSoFar = false;
+
+		var layout = this.layout(universe);
+		var layoutMap = layout.map;
+		var mapSizeInCells = layoutMap.sizeInCells;
+		var cellPosInCells = Coords.create();
+
+		for (var y = 0; y < mapSizeInCells.y; y++)
+		{
+			cellPosInCells.y = y;
+
+			for (var x = 0; x < mapSizeInCells.x; x++)
+			{
+				cellPosInCells.x = x;
+
+				var entityAtPos = layoutMap.entityAtPosInCells(cellPosInCells);
+
+				var isVacant = (entityAtPos == null);
+
+				if (isVacant)
+				{
+					haveAnyOrbitalCellsBeenVacantSoFar = true;
+					break;
+				}
+			}
+		}
+
+		return haveAnyOrbitalCellsBeenVacantSoFar;
+	}
+
 	faction(): Faction
 	{
 		return this.factionable().faction();
+	}
+
+	factionWithShipsOrShieldsInOrbit(universe: Universe): Faction
+	{
+		var factionFound: Faction = null;
+
+		var shipsInOrbit = this.ships;
+		if (shipsInOrbit.length > 0)
+		{
+			factionFound = shipsInOrbit[0].factionable().faction();
+		}
+		else if (this.shieldsArePresentInOrbit(universe) )
+		{
+			factionFound = this.faction();
+		}
+
+		return factionFound;
 	}
 
 	factionable(): Factionable
@@ -253,10 +340,32 @@ class Planet extends Entity
 		return notificationsSoFar;
 	}
 
-	shipAddToOrbit(shipToAdd: Ship): void
+	shieldsArePresentInOrbit(universe: Universe): boolean
 	{
-		this.ships.push(shipToAdd);
-		shipToAdd.locatable().loc.placeName = Planet.name + ":" + this.name;
+		var layout = this.layout(universe);
+		var areShieldsPresent = layout.shieldsArePresentInOrbit();
+		return areShieldsPresent;
+	}
+
+	shipAddToOrbit(shipToAdd: Ship, universe: Universe): void
+	{
+		var areAnyOrbitalCellsVacant =
+			this.cellsAreVacantInOrbit(universe);
+		if (areAnyOrbitalCellsVacant == false)
+		{
+			throw new Error("No empty spaces in orbit for ship.");
+		}
+		else
+		{
+			this.ships.push(shipToAdd);
+			var placeName = Planet.name + ":" + this.name;
+			var shipLoc = shipToAdd.locatable().loc;
+			shipLoc.placeName = placeName;
+			var cellPos = this.cellPositionsAvailableToOccupyInOrbit(universe)[0];
+			shipLoc.pos.overwriteWith(cellPos);
+			var layout = this.layout(universe);
+			layout.map.entityAdd(shipToAdd);
+		}
 	}
 
 	shipLeaveOrbit(shipToLeaveOrbit: Ship, uwpe: UniverseWorldPlaceEntities): void
@@ -269,6 +378,20 @@ class Planet extends Entity
 		shipLoc.placeName = Starsystem.name + starsystem.name;
 		shipLoc.pos.overwriteWith(planetPos); // todo - offset.
 		starsystem.shipAdd(shipToLeaveOrbit, uwpe);
+	}
+
+	shipsArePresentInOrbit(): boolean
+	{
+		return (this.ships.length > 0);
+	}
+
+	shipsOrShieldsArePresentInOrbit(universe: Universe): boolean
+	{
+		var areShipsOrShieldsPresent =
+			this.shipsArePresentInOrbit()
+			|| this.shieldsArePresentInOrbit(universe);
+
+		return areShipsOrShieldsPresent;
 	}
 
 	starsystem(world: WorldExtended): Starsystem
@@ -611,10 +734,14 @@ class Planet extends Entity
 
 	resourceThisRoundByName
 	(
-		universe: Universe, world: WorldExtended, resourceDefnName: string
+		universe: Universe,
+		world: WorldExtended,
+		resourceDefnName: string
 	): Resource
 	{
-		return this.resourcesThisRoundByName(universe, world).get(resourceDefnName);
+		var resourcesThisRoundByName = this.resourcesThisRoundByName(universe, world);
+		var returnValue = resourcesThisRoundByName.get(resourceDefnName);
+		return returnValue;
 	}
 
 	resourcesThisRound(universe: Universe, world: WorldExtended): Resource[]
@@ -672,5 +799,14 @@ class Planet extends Entity
 	{
 		this._resourcesThisRound = null;
 		this._resourcesThisRoundByName = null;
+	}
+
+	// Visual.
+
+	static visualBuild(planetType: PlanetType): VisualBase
+	{
+		var returnVisual = planetType.visualProjected();
+
+		return returnVisual;
 	}
 }

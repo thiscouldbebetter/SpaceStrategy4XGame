@@ -9,6 +9,10 @@ class Factionable {
     faction() {
         return this._faction;
     }
+    factionName() {
+        var faction = this.faction();
+        return (faction == null ? "[none]" : faction.name);
+    }
     factionSet(faction) {
         this._faction = faction;
     }

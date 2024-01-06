@@ -21,22 +21,33 @@ class Layout {
                 this.buildableEntityRemove(buildableEntityInProgress);
             }
         }
-        this.map.bodyAdd(buildableEntityToBuild);
+        this.map.entityAdd(buildableEntityToBuild);
     }
     buildableEntityInProgress() {
-        return this.map.bodies().find(x => Buildable.ofEntity(x).isComplete == false);
+        return this.map.entities().find(x => Buildable.ofEntity(x).isComplete == false);
     }
     buildableEntityRemove(buildableEntityToRemove) {
-        this.map.bodyRemove(buildableEntityToRemove);
+        this.map.entityRemove(buildableEntityToRemove);
     }
     facilities() {
-        return this.map.bodies();
+        return this.map.entities();
     }
     initialize(universe) {
         // todo
     }
     notificationsForRoundAddToArray(universe, world, faction, planet, notificationsSoFar) {
         return notificationsSoFar; // todo
+    }
+    shieldsArePresentInOrbit() {
+        var entities = this.map.entities();
+        var areThereShieldsInOrbit = entities.some(x => {
+            var buildable = Buildable.ofEntity(x);
+            var defn = buildable.defn;
+            var isOrbitalShield = defn.categoryIsOrbital()
+                && defn.categoryIsShield();
+            return isOrbitalShield;
+        });
+        return areThereShieldsInOrbit;
     }
     updateForRound(universe, world, faction, parentModel) {
         // todo

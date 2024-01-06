@@ -31,7 +31,7 @@ class MapTerrain_Instances {
         this.SurfaceIndustry = mt("Mineral", "r", "Grants industry bonus.", colors.Red);
         this.SurfaceProsperity = mt("Healthy", "p", "Grants prosperity bonus.", colors.Green);
         this.SurfaceResearch = mt("Interesting", "b", "Grants research bonus.", colors.Blue);
-        this.SurfaceUnusable = mt("Hostile", "k", "Most structures cannot be built.", colors.GrayDark);
+        this.SurfaceUnusable = mt("Hostile", "k", "Most structures cannot be built.", colors.GrayDarker);
         this._Planet =
             [
                 this.None,

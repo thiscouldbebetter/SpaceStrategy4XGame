@@ -244,7 +244,8 @@ class BuildableDefnsLegacy
 			name: string,
 			visual: VisualBase,
 			industryToBuildAmount: number,
-			description: string
+			description: string,
+			categories: BuildableCategory[]
 		) =>
 			new BuildableDefn
 			(
@@ -256,7 +257,7 @@ class BuildableDefnsLegacy
 				industryToBuildAmount,
 				effectNone,
 				null, // effectsAvailableToUse
-				null, // categories
+				categories,
 				null, // entityProperties
 				null, // entityModifyOnBuild
 				description
@@ -384,12 +385,17 @@ class BuildableDefnsLegacy
 
 		// Planet - Orbit.
 
+		var categories = BuildableCategory.Instances();
+		var categoryOrbital = categories.Orbital;
+		var categoriesOrbital = [ categoryOrbital ];
+
 		this.OrbitalCloaker = facilityOrbital
 		(
 			names.OrbitalCloaker,
 			visualBuild("C", colors.Gray),
 			40,
-			"Hides orbital structures from sensors."
+			"Hides orbital structures from sensors.",
+			categoriesOrbital
 		);
 
 		this.OrbitalDocks = facilityOrbital
@@ -397,15 +403,23 @@ class BuildableDefnsLegacy
 			names.OrbitalDocks,
 			visualBuild("D", colors.Gray),
 			170,
-			"Allows ships to be repaired and refitted."
+			"Allows ships to be repaired and refitted.",
+			categoriesOrbital
 		);
+
+		var categoriesOrbitalAndShields =
+		[
+			categoryOrbital,
+			categories.Shield
+		];
 
 		this.OrbitalShield1OrbitalShield = facilityOrbital
 		(
 			names.OrbitalShield1OrbitalShield,
 			visualBuild("S", colors.Red),
 			60,
-			"Protects orbital structures and prevents others from orbiting."
+			"Protects orbital structures and prevents others from orbiting.",
+			categoriesOrbitalAndShields
 		);
 
 		this.OrbitalShield2OrbitalMegaShield = facilityOrbital
@@ -413,7 +427,8 @@ class BuildableDefnsLegacy
 			names.OrbitalShield2OrbitalMegaShield,
 			visualBuild("S", colors.Blue),
 			120,
-			"A more powerful orbital shield."
+			"A more powerful orbital shield.",
+			categoriesOrbitalAndShields
 		);
 
 		var buildShip = (uwpe: UniverseWorldPlaceEntities) =>
@@ -507,7 +522,8 @@ class BuildableDefnsLegacy
 			names.OrbitalWeapon1OrbitalMissileBase,
 			visualBuild(names.OrbitalWeapon1OrbitalMissileBase, colors.Gray),
 			60,
-			"Allows the host planet to attack nearby ships twice per turn."
+			"Allows the host planet to attack nearby ships twice per turn.",
+			categoriesOrbital
 		);
 
 		this.OrbitalWeapon2ShortRangeOrbitalWhopper = facilityOrbital
@@ -515,7 +531,8 @@ class BuildableDefnsLegacy
 			names.OrbitalWeapon2ShortRangeOrbitalWhopper,
 			visualBuild(names.OrbitalWeapon2ShortRangeOrbitalWhopper, colors.Red),
 			90,
-			"A more powerful orbital weapon, but only one shot per turn."
+			"A more powerful orbital weapon, but only one shot per turn.",
+			categoriesOrbital
 		);
 
 		this.OrbitalWeapon3LongRangeOrbitalWhopper = facilityOrbital
@@ -523,7 +540,8 @@ class BuildableDefnsLegacy
 			names.OrbitalWeapon3LongRangeOrbitalWhopper,
 			visualBuild("Long-Range Whopper", colors.Green),
 			180,
-			"A still more powerful orbital weapon with longer range and multiple shots."
+			"A still more powerful orbital weapon with longer range and multiple shots.",
+			categoriesOrbital
 		);
 
 		// Planetwide.

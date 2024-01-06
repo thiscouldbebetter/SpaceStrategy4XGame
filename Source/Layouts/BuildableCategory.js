@@ -12,12 +12,15 @@ class BuildableCategory {
 }
 class BuildableCategory_Instances {
     constructor() {
-        this.ShipDrive = new BuildableCategory("Ship Drive");
-        this.ShipGenerator = new BuildableCategory("Ship Generator");
-        this.ShipItem = new BuildableCategory("Ship Item");
-        this.ShipSensor = new BuildableCategory("Ship Sensor");
-        this.ShipShield = new BuildableCategory("Ship Shield");
-        this.ShipStarlaneDrive = new BuildableCategory("Ship Starlane Drive");
-        this.ShipWeapon = new BuildableCategory("Ship Weapon");
+        var bc = (name) => new BuildableCategory(name);
+        this.Orbital = bc("Orbital");
+        this.Shield = bc("Shield");
+        this.ShipDrive = bc("Ship Drive");
+        this.ShipGenerator = bc("Ship Generator");
+        this.ShipItem = bc("Ship Item");
+        this.ShipSensor = bc("Ship Sensor");
+        this.ShipShield = bc("Ship Shield");
+        this.ShipStarlaneDrive = bc("Ship Starlane Drive");
+        this.ShipWeapon = bc("Ship Weapon");
     }
 }

@@ -6,7 +6,7 @@ class Planet extends Entity {
             Collidable.fromCollider(Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos)),
             new Controllable(Planet.toControl),
             new DeviceUser([]),
-            Drawable.fromVisual(planetType.visualProjected()),
+            Drawable.fromVisual(Planet.visualBuild(planetType)),
             new Factionable(faction),
             Locatable.fromPos(pos)
         ]);
@@ -28,6 +28,17 @@ class Planet extends Entity {
         null // layout
         );
     }
+    static generateRandom(universe, starsystemName, starsystemSize) {
+        var planetType = PlanetType.random();
+        var planetPos = Coords.create().randomize(universe.randomizer).multiply(starsystemSize).double().subtract(starsystemSize);
+        var planetDemographics = new PlanetDemographics(0);
+        var planetIndustry = new PlanetIndustry();
+        var planet = new Planet(null, // name
+        planetType, planetPos, null, // factionName
+        planetDemographics, planetIndustry, null // layout
+        );
+        return planet;
+    }
     // instance methods
     cellPositionsAvailableToBuildBuildableDefn(universe, buildableDefn) {
         var returnValues = new Array();
@@ -41,10 +52,10 @@ class Planet extends Entity {
                 cellPosInCells.x = x;
                 var canBuildableBeBuiltOnTerrain = buildableDefn.canBeBuiltOnMapAtPosInCells(layoutMap, cellPosInCells);
                 if (canBuildableBeBuiltOnTerrain) {
-                    var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
+                    var bodyAtPos = layoutMap.entityAtPosInCells(cellPosInCells);
                     var isVacant = (bodyAtPos == null);
                     if (isVacant) {
-                        var bodiesNeighboring = layoutMap.bodiesNeighboringPosInCells(cellPosInCells);
+                        var bodiesNeighboring = layoutMap.entitiesNeighboringPosInCells(cellPosInCells);
                         if (bodiesNeighboring.length > 0) {
                             returnValues.push(cellPosInCells.clone());
                         }
@@ -67,10 +78,10 @@ class Planet extends Entity {
                 var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
                 var isSurface = terrainAtPos.isSurface();
                 if (isSurface) {
-                    var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
+                    var bodyAtPos = layoutMap.entityAtPosInCells(cellPosInCells);
                     var isVacant = (bodyAtPos == null);
                     if (isVacant) {
-                        var bodiesNeighboring = layoutMap.bodiesNeighboringPosInCells(cellPosInCells);
+                        var bodiesNeighboring = layoutMap.entitiesNeighboringPosInCells(cellPosInCells);
                         if (bodiesNeighboring.length > 0) {
                             returnValues.push(cellPosInCells.clone());
                         }
@@ -94,7 +105,7 @@ class Planet extends Entity {
                 var terrainAtPos = layoutMap.terrainAtPosInCells(cellPosInCells);
                 var isOrbit = (terrainAtPos == terrainOrbit);
                 if (isOrbit) {
-                    var bodyAtPos = layoutMap.bodyAtPosInCells(cellPosInCells);
+                    var bodyAtPos = layoutMap.entityAtPosInCells(cellPosInCells);
                     var isVacant = (bodyAtPos == null);
                     if (isVacant) {
                         returnValues.push(cellPosInCells.clone());
@@ -104,8 +115,39 @@ class Planet extends Entity {
         }
         return returnValues;
     }
+    cellsAreVacantInOrbit(universe) {
+        var haveAnyOrbitalCellsBeenVacantSoFar = false;
+        var layout = this.layout(universe);
+        var layoutMap = layout.map;
+        var mapSizeInCells = layoutMap.sizeInCells;
+        var cellPosInCells = Coords.create();
+        for (var y = 0; y < mapSizeInCells.y; y++) {
+            cellPosInCells.y = y;
+            for (var x = 0; x < mapSizeInCells.x; x++) {
+                cellPosInCells.x = x;
+                var entityAtPos = layoutMap.entityAtPosInCells(cellPosInCells);
+                var isVacant = (entityAtPos == null);
+                if (isVacant) {
+                    haveAnyOrbitalCellsBeenVacantSoFar = true;
+                    break;
+                }
+            }
+        }
+        return haveAnyOrbitalCellsBeenVacantSoFar;
+    }
     faction() {
         return this.factionable().faction();
+    }
+    factionWithShipsOrShieldsInOrbit(universe) {
+        var factionFound = null;
+        var shipsInOrbit = this.ships;
+        if (shipsInOrbit.length > 0) {
+            factionFound = shipsInOrbit[0].factionable().faction();
+        }
+        else if (this.shieldsArePresentInOrbit(universe)) {
+            factionFound = this.faction();
+        }
+        return factionFound;
     }
     factionable() {
         return this.propertyByName(Factionable.name);
@@ -131,9 +173,26 @@ class Planet extends Entity {
         this.demographics.notificationsForRoundAddToArray(notificationsSoFar);
         return notificationsSoFar;
     }
-    shipAddToOrbit(shipToAdd) {
-        this.ships.push(shipToAdd);
-        shipToAdd.locatable().loc.placeName = Planet.name + ":" + this.name;
+    shieldsArePresentInOrbit(universe) {
+        var layout = this.layout(universe);
+        var areShieldsPresent = layout.shieldsArePresentInOrbit();
+        return areShieldsPresent;
+    }
+    shipAddToOrbit(shipToAdd, universe) {
+        var areAnyOrbitalCellsVacant = this.cellsAreVacantInOrbit(universe);
+        if (areAnyOrbitalCellsVacant == false) {
+            throw new Error("No empty spaces in orbit for ship.");
+        }
+        else {
+            this.ships.push(shipToAdd);
+            var placeName = Planet.name + ":" + this.name;
+            var shipLoc = shipToAdd.locatable().loc;
+            shipLoc.placeName = placeName;
+            var cellPos = this.cellPositionsAvailableToOccupyInOrbit(universe)[0];
+            shipLoc.pos.overwriteWith(cellPos);
+            var layout = this.layout(universe);
+            layout.map.entityAdd(shipToAdd);
+        }
     }
     shipLeaveOrbit(shipToLeaveOrbit, uwpe) {
         ArrayHelper.remove(this.ships, shipToLeaveOrbit);
@@ -144,6 +203,14 @@ class Planet extends Entity {
         shipLoc.placeName = Starsystem.name + starsystem.name;
         shipLoc.pos.overwriteWith(planetPos); // todo - offset.
         starsystem.shipAdd(shipToLeaveOrbit, uwpe);
+    }
+    shipsArePresentInOrbit() {
+        return (this.ships.length > 0);
+    }
+    shipsOrShieldsArePresentInOrbit(universe) {
+        var areShipsOrShieldsPresent = this.shipsArePresentInOrbit()
+            || this.shieldsArePresentInOrbit(universe);
+        return areShipsOrShieldsPresent;
     }
     starsystem(world) {
         var starClusterNodeFound = world.starCluster.nodes.find(x => (x.starsystem.planets.indexOf(this) >= 0));
@@ -326,7 +393,9 @@ class Planet extends Entity {
         return (resource == null ? 0 : resource.quantity);
     }
     resourceThisRoundByName(universe, world, resourceDefnName) {
-        return this.resourcesThisRoundByName(universe, world).get(resourceDefnName);
+        var resourcesThisRoundByName = this.resourcesThisRoundByName(universe, world);
+        var returnValue = resourcesThisRoundByName.get(resourceDefnName);
+        return returnValue;
     }
     resourcesThisRound(universe, world) {
         if (this._resourcesThisRound == null) {
@@ -360,5 +429,10 @@ class Planet extends Entity {
     resourcesThisRoundReset() {
         this._resourcesThisRound = null;
         this._resourcesThisRoundByName = null;
+    }
+    // Visual.
+    static visualBuild(planetType) {
+        var returnVisual = planetType.visualProjected();
+        return returnVisual;
     }
 }

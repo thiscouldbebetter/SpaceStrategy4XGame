@@ -5,7 +5,7 @@ class MapLayout
 	pos: Coords;
 	terrains: MapTerrain[];
 	cellsAsStrings: string[];
-	private _bodies: Entity[];
+	private _entities: Entity[];
 
 	cellSizeInPixels: Coords;
 	cellSizeInPixelsHalf: Coords;
@@ -25,7 +25,7 @@ class MapLayout
 		pos: Coords,
 		terrains: MapTerrain[],
 		cellsAsStrings: string[],
-		bodies: Entity[]
+		entities: Entity[]
 	)
 	{
 		this.sizeInPixels = sizeInPixels;
@@ -38,7 +38,7 @@ class MapLayout
 		this.terrainsByName = ArrayHelper.addLookupsByName(this.terrains);
 
 		this.cellsAsStrings = cellsAsStrings;
-		this._bodies = bodies;
+		this._entities = entities;
 
 		this.sizeInCells = new Coords
 		(
@@ -76,17 +76,17 @@ class MapLayout
 
 	// instance methods
 
-	bodies(): Entity[]
+	entities(): Entity[]
 	{
-		return this._bodies;
+		return this._entities;
 	}
 
-	bodiesNeighboringCursor(): Entity[]
+	entitiesNeighboringCursor(): Entity[]
 	{
-		return this.bodiesNeighboringPosInCells(this.cursor.pos);
+		return this.entitiesNeighboringPosInCells(this.cursor.pos);
 	}
 
-	bodiesNeighboringPosInCells(centerPosInCells: Coords): Entity[]
+	entitiesNeighboringPosInCells(centerPosInCells: Coords): Entity[]
 	{
 		var returnValues = new Array<Entity>();
 
@@ -96,48 +96,48 @@ class MapLayout
 		{
 			var neighborOffset = this._neighborOffsets[n];
 			neighborPos.overwriteWith(neighborOffset).add(centerPosInCells);
-			var bodyAtNeighborPos = this.bodyAtPosInCells(neighborPos);
-			if (bodyAtNeighborPos != null)
+			var entityAtNeighborPos = this.entityAtPosInCells(neighborPos);
+			if (entityAtNeighborPos != null)
 			{
-				returnValues.push(bodyAtNeighborPos);
+				returnValues.push(entityAtNeighborPos);
 			}
 		}
 
 		return returnValues;
 	}
 
-	bodyAdd(bodyToAdd: Entity): void
+	entityAdd(entityToAdd: Entity): void
 	{
-		this._bodies.push(bodyToAdd);
+		this._entities.push(entityToAdd);
 	}
 
-	bodyAtPosInCells(cellPos: Coords): Entity
+	entityAtPosInCells(cellPos: Coords): Entity
 	{
 		var returnValue = null;
-		var bodies = this.bodies();
-		for (var i = 0; i < bodies.length; i++)
+		var entities = this.entities();
+		for (var i = 0; i < entities.length; i++)
 		{
-			var body = bodies[i];
-			var bodyPos = body.locatable().loc.pos;
-			if (bodyPos.equals(cellPos))
+			var entity = entities[i];
+			var entityPos = entity.locatable().loc.pos;
+			if (entityPos.equals(cellPos))
 			{
-				returnValue = body;
+				returnValue = entity;
 				break;
 			}
 		}
 		return returnValue;
 	}
 
-	bodyAtCursor(): Entity
+	entityAtCursor(): Entity
 	{
-		return this.bodyAtPosInCells(this.cursor.pos);
+		return this.entityAtPosInCells(this.cursor.pos);
 	}
 
-	bodyRemove(bodyToRemove: Entity): void
+	entityRemove(entityToRemove: Entity): void
 	{
-		this._bodies.splice
+		this._entities.splice
 		(
-			this._bodies.indexOf(bodyToRemove), 1
+			this._entities.indexOf(entityToRemove), 1
 		);
 	}
 
@@ -170,7 +170,7 @@ class MapLayout
 		var world = universe.world;
 		var map = this;
 
-		var venue = universe.venueCurrent() as VenueLayout;		
+		var venue = universe.venueCurrent() as VenueLayout;
 		var planet = venue.modelParent as Planet;
 		var planetAsPlace = (planet == null ? null : planet.toPlace() );
 
@@ -214,7 +214,7 @@ class MapLayout
 				uwpe.entitySet(drawable);
 				terrainVisual.draw(uwpe, display);
 
-				var cellEntity = map.bodyAtPosInCells(cellPos);
+				var cellEntity = map.entityAtPosInCells(cellPos);
 				if (cellEntity != null)
 				{
 					var entityPos = cellEntity.locatable().loc.pos;
@@ -261,8 +261,8 @@ class MapLayout
 
 				if (buildableDefn != null)
 				{
-					var bodyVisual = buildableDefn.visual;
-					bodyVisual.draw(universe, world, null, drawable, display);
+					var entityVisual = buildableDefn.visual;
+					entityVisual.draw(universe, world, null, drawable, display);
 
 					var isBuildableAllowedOnCell =
 						buildableDefn.canBeBuiltOnMapAtPosInCells(map, cursorPos);

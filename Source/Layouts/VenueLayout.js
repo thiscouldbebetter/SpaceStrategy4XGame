@@ -49,8 +49,14 @@ class VenueLayout {
     }
     updateForTimerTick_1(universe, planet, cursorPosInCells) {
         var layout = this.layout;
-        var bodyAtCursor = layout.map.bodyAtCursor();
-        if (bodyAtCursor != null) {
+        var bodyAtCursor = layout.map.entityAtCursor();
+        var world = universe.world;
+        var factionCurrent = world.factionCurrent();
+        var planetFaction = planet.faction();
+        if (planetFaction != factionCurrent) {
+            // Do nothing.
+        }
+        else if (bodyAtCursor != null) {
             var controlBuildableDetails = this.controlBuildableDetailsBuild(universe);
             universe.venueJumpTo(new VenueControls(controlBuildableDetails, null));
         }
@@ -71,7 +77,7 @@ class VenueLayout {
                 var isSurface = terrainAtCursor.isSurface();
                 if (isSurface) {
                     var map = layout.map;
-                    var neighboringBodies = map.bodiesNeighboringCursor();
+                    var neighboringBodies = map.entitiesNeighboringCursor();
                     if (neighboringBodies.length == 0) {
                         universe.venueJumpTo(VenueMessage.fromTextAcknowledgeAndSize("Must build near other facilities.", acknowledge, dialogSize));
                     }
@@ -93,7 +99,7 @@ class VenueLayout {
     controlBuildableDetailsBuild(universe) {
         var layout = this.layout;
         var map = layout.map;
-        var buildableAtCursorEntity = map.bodyAtCursor();
+        var buildableAtCursorEntity = map.entityAtCursor();
         var buildableAtCursor = Buildable.ofEntity(buildableAtCursorEntity);
         var buildableAtCursorDefn = buildableAtCursor.defn;
         var terrainAtCursor = map.terrainAtCursor();
@@ -147,8 +153,8 @@ class VenueLayout {
             else {
                 controlDialog = controlBuilder.confirmForUniverseSizeMessageConfirmCancel(universe, containerSize, "Really " + textDemolishOrAbandon.toLowerCase() + "?", () => // confirm
                  {
-                    var mapBodies = layout.map.bodies();
-                    ArrayHelper.remove(mapBodies, entityToDemolish);
+                    var mapEntities = layout.map.entities();
+                    ArrayHelper.remove(mapEntities, entityToDemolish);
                     universe.venueNextSet(venueThis);
                 }, null // cancel
                 );
@@ -252,22 +258,24 @@ class VenueLayout {
         });
         var controlNameTypeOwner = this.toControl_NameTypeOwner(universe, containerMainSize, containerInnerSize, margin, controlHeight);
         var containerPopulationAndProductionSize = Coords.fromXY(containerInnerSize.x * 1.2, containerInnerSize.y * 1.4);
-        var controlPopulationAndProduction = this.toControl_PopulationAndProduction(universe, containerMainSize, containerPopulationAndProductionSize, margin, controlHeight);
         var container = ControlContainer.from4("containerMain", Coords.fromXY(0, 0), // pos
         containerMainSize, 
         // children
         [
             buttonBack,
-            controlNameTypeOwner,
-            controlPopulationAndProduction
+            controlNameTypeOwner
         ]);
         var planet = this.modelParent;
-        var planetFactionName = planet.factionable().faction().name;
+        var planetFaction = planet.factionable().faction();
+        var planetFactionName = planetFaction == null
+            ? null
+            : planetFaction.name;
         if (planetFactionName != null) {
             var factionCurrent = world.factionCurrent();
             if (factionCurrent.name == planetFactionName) {
-                var faction = factionCurrent;
-                var controlFaction = faction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, false // includeDetailsButton
+                var controlPopulationAndProduction = this.toControl_PopulationAndProduction(universe, containerMainSize, containerPopulationAndProductionSize, margin, controlHeight);
+                container.childAdd(controlPopulationAndProduction);
+                var controlFaction = planetFaction.toControl_ClusterOverlay(universe, containerMainSize, containerInnerSize, margin, controlHeight, buttonWidth, false // includeDetailsButton
                 );
                 container.childAdd(controlFaction);
             }
@@ -299,7 +307,7 @@ class VenueLayout {
         DataBinding.fromContext("Owned by:"), fontNameAndHeight);
         var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
-        DataBinding.fromContextAndGet(planet, (c) => c.factionable().faction().name), fontNameAndHeight);
+        DataBinding.fromContextAndGet(planet, (c) => c.factionable().factionName()), fontNameAndHeight);
         var returnValue = ControlContainer.from4("containerTimeAndPlace", Coords.fromXY(margin, margin), size, 
         // children
         [

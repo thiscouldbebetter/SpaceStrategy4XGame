@@ -110,9 +110,17 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 	): void
 	{
 		var layout = this.layout;
-		var bodyAtCursor = layout.map.bodyAtCursor();
+		var bodyAtCursor = layout.map.entityAtCursor();
 
-		if (bodyAtCursor != null)
+		var world = universe.world as WorldExtended;
+		var factionCurrent = world.factionCurrent();
+		var planetFaction = planet.faction();
+
+		if (planetFaction != factionCurrent)
+		{
+			// Do nothing.
+		}
+		else if (bodyAtCursor != null)
 		{
 			var controlBuildableDetails =
 				this.controlBuildableDetailsBuild(universe);
@@ -165,7 +173,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 				if (isSurface)
 				{
 					var map = layout.map;
-					var neighboringBodies = map.bodiesNeighboringCursor();
+					var neighboringBodies = map.entitiesNeighboringCursor();
 					if (neighboringBodies.length == 0)
 					{
 						universe.venueJumpTo
@@ -209,7 +217,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		var layout = this.layout;
 
 		var map = layout.map;
-		var buildableAtCursorEntity = map.bodyAtCursor();
+		var buildableAtCursorEntity = map.entityAtCursor();
 		var buildableAtCursor = Buildable.ofEntity(buildableAtCursorEntity);
 		var buildableAtCursorDefn = buildableAtCursor.defn;
 		var terrainAtCursor = map.terrainAtCursor();
@@ -327,8 +335,8 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 						"Really " + textDemolishOrAbandon.toLowerCase() + "?",
 						() => // confirm
 						{
-							var mapBodies = layout.map.bodies();
-							ArrayHelper.remove(mapBodies, entityToDemolish);
+							var mapEntities = layout.map.entities();
+							ArrayHelper.remove(mapEntities, entityToDemolish);
 							universe.venueNextSet(venueThis);
 						},
 						null // cancel
@@ -592,15 +600,6 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			containerInnerSize.y * 1.4
 		);
 
-		var controlPopulationAndProduction = this.toControl_PopulationAndProduction
-		(
-			universe,
-			containerMainSize,
-			containerPopulationAndProductionSize,
-			margin,
-			controlHeight
-		);
-
 		var container = ControlContainer.from4
 		(
 			"containerMain",
@@ -609,13 +608,16 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			// children
 			[
 				buttonBack,
-				controlNameTypeOwner,
-				controlPopulationAndProduction
+				controlNameTypeOwner
 			]
 		);
 
 		var planet = this.modelParent as Planet;
-		var planetFactionName = planet.factionable().faction().name;
+		var planetFaction = planet.factionable().faction();
+		var planetFactionName =
+			planetFaction == null
+			? null
+			: planetFaction.name;
 
 		if (planetFactionName != null)
 		{
@@ -623,9 +625,18 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 			if (factionCurrent.name == planetFactionName)
 			{
-				var faction = factionCurrent;
+				var controlPopulationAndProduction = this.toControl_PopulationAndProduction
+				(
+					universe,
+					containerMainSize,
+					containerPopulationAndProductionSize,
+					margin,
+					controlHeight
+				);
 
-				var controlFaction = faction.toControl_ClusterOverlay
+				container.childAdd(controlPopulationAndProduction);
+
+				var controlFaction = planetFaction.toControl_ClusterOverlay
 				(
 					universe,
 					containerMainSize,
@@ -716,7 +727,8 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
 			DataBinding.fromContextAndGet
 			(
-				planet, (c: Planet) => c.factionable().faction().name
+				planet,
+				(c: Planet) => c.factionable().factionName()
 			),
 			fontNameAndHeight
 		);

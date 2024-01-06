@@ -49,7 +49,12 @@ class VenueStarsystem {
             else {
                 var entitySelectedFaction = factionable.faction();
                 var factionCurrent = world.factionCurrent();
-                entitySelectedDetailsAreViewable = (entitySelectedFaction == factionCurrent);
+                var planet = entitySelected;
+                entitySelectedDetailsAreViewable =
+                    (entitySelectedFaction == factionCurrent)
+                        ||
+                            (entitySelectedFaction == null
+                                && factionCurrent.knowledge.planetIsKnown(planet));
             }
         }
         return entitySelectedDetailsAreViewable;

@@ -70,14 +70,13 @@ class PlanetType {
         return this.size.name + " " + this.environment.name;
     }
     visualBeforeProjection() {
-        var planetDimension = this.size.radiusInPixels;
+        var radius = this.size.radiusInPixels;
         var colors = Color.Instances();
         var environmentColor = this.environment.color;
         var colorAtCenter = environmentColor.clone().multiplyRGBScalar(1.2);
         var colorMiddle = environmentColor;
         var colorSpace = colors.Black;
-        var visualForPlanetType = new VisualCircleGradient(planetDimension, // radius
-        new ValueBreakGroup([
+        var visualForPlanetType = new VisualCircleGradient(radius, new ValueBreakGroup([
             new ValueBreak(0, colorAtCenter),
             new ValueBreak(.2, colorAtCenter),
             new ValueBreak(.3, colorMiddle),
@@ -86,11 +85,22 @@ class PlanetType {
         ], null // ?
         ), null // colorBorder
         );
+        var colorHalo = colors.White; // Will change for faction.
+        var visualForPlanetHalo = VisualCircle.fromRadiusAndColorBorder(radius, colorHalo);
         var planetType = this;
+        var visualShipOrShieldInOrbitIndicator = new VisualDynamic(uwpe => {
+            var planet = uwpe.entity;
+            var isShipOrShieldPresentInOrbit = planet.shipsOrShieldsArePresentInOrbit(uwpe.universe);
+            var visual = isShipOrShieldPresentInOrbit
+                ? visualForPlanetHalo
+                : VisualNone.Instance;
+            return visual;
+        });
         var visualLabel = new VisualDynamic // todo - VisualDynamic2?
         ((uwpe) => planetType.visualLabelTextGet(uwpe, 16));
         var visual = new VisualGroup([
             visualForPlanetType,
+            visualShipOrShieldInOrbitIndicator,
             visualLabel
         ]);
         return visual;
@@ -107,10 +117,10 @@ class PlanetType {
     visualProjected() {
         if (this._visualProjected == null) {
             var visualBeforeProjection = this.visualBeforeProjection();
-            var visual = new VisualCameraProjection(uwpe => uwpe.place.camera2(uwpe.universe), visualBeforeProjection);
-            visual = new VisualGroup([
+            var visualProjected = new VisualCameraProjection(uwpe => uwpe.place.camera2(uwpe.universe), visualBeforeProjection);
+            var visual = new VisualGroup([
                 new VisualElevationStem(),
-                visual
+                visualProjected
             ]);
             this._visualProjected = visual;
         }

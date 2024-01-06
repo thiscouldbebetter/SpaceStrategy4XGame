@@ -139,7 +139,7 @@ class PlanetType
 
 	visualBeforeProjection(): VisualBase
 	{
-		var planetDimension = this.size.radiusInPixels;
+		var radius = this.size.radiusInPixels;
 
 		var colors = Color.Instances();
 		var environmentColor = this.environment.color;
@@ -149,7 +149,7 @@ class PlanetType
 
 		var visualForPlanetType = new VisualCircleGradient
 		(
-			planetDimension, // radius
+			radius,
 			new ValueBreakGroup
 			(
 				[
@@ -164,7 +164,32 @@ class PlanetType
 			null // colorBorder
 		);
 
+		var colorHalo = colors.White; // Will change for faction.
+
+		var visualForPlanetHalo = VisualCircle.fromRadiusAndColorBorder
+		(
+			radius, colorHalo
+		);
+
 		var planetType = this;
+
+		var visualShipOrShieldInOrbitIndicator = new VisualDynamic
+		(
+			uwpe =>
+			{
+				var planet = uwpe.entity as Planet;
+
+				var isShipOrShieldPresentInOrbit =
+					planet.shipsOrShieldsArePresentInOrbit(uwpe.universe);
+
+				var visual =
+					isShipOrShieldPresentInOrbit
+					? visualForPlanetHalo
+					: VisualNone.Instance;
+
+				return visual;
+			}
+		);
 
 		var visualLabel = new VisualDynamic // todo - VisualDynamic2?
 		(
@@ -175,6 +200,7 @@ class PlanetType
 		var visual = new VisualGroup
 		([
 			visualForPlanetType,
+			visualShipOrShieldInOrbitIndicator,
 			visualLabel
 		]);
 
@@ -216,16 +242,16 @@ class PlanetType
 		{
 			var visualBeforeProjection = this.visualBeforeProjection();
 
-			var visual: VisualBase = new VisualCameraProjection
+			var visualProjected = new VisualCameraProjection
 			(
 				uwpe => (uwpe.place as Starsystem).camera2(uwpe.universe),
 				visualBeforeProjection
 			);
 
-			visual = new VisualGroup
+			var visual = new VisualGroup
 			([
 				new VisualElevationStem(),
-				visual
+				visualProjected
 			]);
 
 			this._visualProjected = visual;

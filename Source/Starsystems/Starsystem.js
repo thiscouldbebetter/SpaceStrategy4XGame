@@ -38,13 +38,8 @@ class Starsystem extends PlaceBase {
         var numberOfPlanets = numberOfPlanetsMin + Math.floor(Math.random() * numberOfPlanetsRange);
         var planetsInOrderOfIncreasingDistanceFromSun = new Array();
         for (var i = 0; i < numberOfPlanets; i++) {
-            var planetType = PlanetType.random();
-            var planetPos = Coords.create().randomize(universe.randomizer).multiply(size).multiplyScalar(2).subtract(size);
-            var planetDemographics = new PlanetDemographics(0);
-            var planetIndustry = new PlanetIndustry();
-            var planet = new Planet(name, planetType, planetPos, null, // factionName
-            planetDemographics, planetIndustry, null // layout
-            );
+            var planet = Planet.generateRandom(universe, name, size);
+            var planetPos = planet.locatable().loc.pos;
             var planetDistanceFromSun = planetPos.magnitude();
             var p = 0;
             for (p = 0; p < planetsInOrderOfIncreasingDistanceFromSun.length; p++) {
@@ -58,7 +53,7 @@ class Starsystem extends PlaceBase {
         }
         for (var p = 0; p < planetsInOrderOfIncreasingDistanceFromSun.length; p++) {
             var planet = planetsInOrderOfIncreasingDistanceFromSun[p];
-            planet.name += " " + (p + 1);
+            planet.name = name + " " + (p + 1);
         }
         var returnValue = new Starsystem(name, size, star, [], // linkPortals - generated later
         planetsInOrderOfIncreasingDistanceFromSun, null // factionName
@@ -182,6 +177,9 @@ class Starsystem extends PlaceBase {
         }
         return notificationsSoFar;
     }
+    planetAdd(planet) {
+        this.planets.push(planet);
+    }
     planetByName(planetName) {
         return this.planetsByName.get(planetName);
     }
@@ -201,7 +199,7 @@ class Starsystem extends PlaceBase {
             Starsystem.name + ":" + this.name;
         factionsInStarsystem.forEach(faction => {
             var factionKnowledge = faction.knowledge;
-            factionKnowledge.shipAdd(shipToAdd, world);
+            factionKnowledge.shipAdd(shipToAdd, uwpe);
             factionKnowledge.starsystemAdd(this, uwpe);
         });
         this.cachesClear();

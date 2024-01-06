@@ -1,13 +1,13 @@
 "use strict";
 class MapLayout {
-    constructor(sizeInPixels, pos, terrains, cellsAsStrings, bodies) {
+    constructor(sizeInPixels, pos, terrains, cellsAsStrings, entities) {
         this.sizeInPixels = sizeInPixels;
         this.pos = pos;
         this.terrains = terrains;
         this.terrainsByCodeChar = ArrayHelper.addLookups(this.terrains, (x) => x.codeChar);
         this.terrainsByName = ArrayHelper.addLookupsByName(this.terrains);
         this.cellsAsStrings = cellsAsStrings;
-        this._bodies = bodies;
+        this._entities = entities;
         this.sizeInCells = new Coords(this.cellsAsStrings[0].length, this.cellsAsStrings.length, 1);
         this.sizeInCellsMinusOnes =
             this.sizeInCells.clone().subtract(new Coords(1, 1, 1));
@@ -27,46 +27,46 @@ class MapLayout {
             ];
     }
     // instance methods
-    bodies() {
-        return this._bodies;
+    entities() {
+        return this._entities;
     }
-    bodiesNeighboringCursor() {
-        return this.bodiesNeighboringPosInCells(this.cursor.pos);
+    entitiesNeighboringCursor() {
+        return this.entitiesNeighboringPosInCells(this.cursor.pos);
     }
-    bodiesNeighboringPosInCells(centerPosInCells) {
+    entitiesNeighboringPosInCells(centerPosInCells) {
         var returnValues = new Array();
         var neighborPos = this._cellPos;
         for (var n = 0; n < this._neighborOffsets.length; n++) {
             var neighborOffset = this._neighborOffsets[n];
             neighborPos.overwriteWith(neighborOffset).add(centerPosInCells);
-            var bodyAtNeighborPos = this.bodyAtPosInCells(neighborPos);
-            if (bodyAtNeighborPos != null) {
-                returnValues.push(bodyAtNeighborPos);
+            var entityAtNeighborPos = this.entityAtPosInCells(neighborPos);
+            if (entityAtNeighborPos != null) {
+                returnValues.push(entityAtNeighborPos);
             }
         }
         return returnValues;
     }
-    bodyAdd(bodyToAdd) {
-        this._bodies.push(bodyToAdd);
+    entityAdd(entityToAdd) {
+        this._entities.push(entityToAdd);
     }
-    bodyAtPosInCells(cellPos) {
+    entityAtPosInCells(cellPos) {
         var returnValue = null;
-        var bodies = this.bodies();
-        for (var i = 0; i < bodies.length; i++) {
-            var body = bodies[i];
-            var bodyPos = body.locatable().loc.pos;
-            if (bodyPos.equals(cellPos)) {
-                returnValue = body;
+        var entities = this.entities();
+        for (var i = 0; i < entities.length; i++) {
+            var entity = entities[i];
+            var entityPos = entity.locatable().loc.pos;
+            if (entityPos.equals(cellPos)) {
+                returnValue = entity;
                 break;
             }
         }
         return returnValue;
     }
-    bodyAtCursor() {
-        return this.bodyAtPosInCells(this.cursor.pos);
+    entityAtCursor() {
+        return this.entityAtPosInCells(this.cursor.pos);
     }
-    bodyRemove(bodyToRemove) {
-        this._bodies.splice(this._bodies.indexOf(bodyToRemove), 1);
+    entityRemove(entityToRemove) {
+        this._entities.splice(this._entities.indexOf(entityToRemove), 1);
     }
     terrainAtCursor() {
         return this.terrainAtPosInCells(this.cursor.pos);
@@ -106,7 +106,7 @@ class MapLayout {
                 var terrainVisual = cellTerrain.visual;
                 uwpe.entitySet(drawable);
                 terrainVisual.draw(uwpe, display);
-                var cellEntity = map.bodyAtPosInCells(cellPos);
+                var cellEntity = map.entityAtPosInCells(cellPos);
                 if (cellEntity != null) {
                     var entityPos = cellEntity.locatable().loc.pos;
                     posToRestoreAfterDraw.overwriteWith(entityPos);
@@ -129,8 +129,8 @@ class MapLayout {
             if (terrainName != "None") {
                 var buildableDefn = cursor.bodyDefn;
                 if (buildableDefn != null) {
-                    var bodyVisual = buildableDefn.visual;
-                    bodyVisual.draw(universe, world, null, drawable, display);
+                    var entityVisual = buildableDefn.visual;
+                    entityVisual.draw(universe, world, null, drawable, display);
                     var isBuildableAllowedOnCell = buildableDefn.canBeBuiltOnMapAtPosInCells(map, cursorPos);
                     if (isBuildableAllowedOnCell == false) {
                         var visualNotAllowed = VisualText.fromTextImmediateFontAndColor("X", FontNameAndHeight.fromHeightInPixels(this.cellSizeInPixels.y), Color.byName("Red"));

@@ -321,10 +321,20 @@ class Ship extends Entity {
         }
     }
     planetOrbitEnter(universe, starsystem, planet) {
-        starsystem.shipRemove(this);
-        planet.shipAddToOrbit(this);
-        this.locatable().loc.placeName =
-            Planet.name + ":" + planet.name;
+        var atLeastOneObitalCellIsVacant = planet.cellsAreVacantInOrbit(universe);
+        var shipsOrShieldsArePresent = planet.shipsOrShieldsArePresentInOrbit(universe);
+        var canEnterOrbit = atLeastOneObitalCellIsVacant
+            &&
+                (shipsOrShieldsArePresent == false
+                    || planet.faction() == this.faction());
+        if (canEnterOrbit) {
+            starsystem.shipRemove(this);
+            planet.shipAddToOrbit(this, universe);
+            this.locatable().loc.placeName =
+                Planet.name + ":" + planet.name;
+            var faction = this.faction();
+            faction.knowledge.planetAdd(planet);
+        }
     }
     planetOrbitExit(planet, uwpe) {
         planet.shipLeaveOrbit(this, uwpe);

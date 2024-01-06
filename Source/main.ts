@@ -141,17 +141,30 @@ function worldCreatorToControl
 		fontNameAndHeight
 	);
 
+	var labelOffsetY = controlHeight / 6;
+
 	var labelWorldStarsystemCount = ControlLabel.from4Uncentered
 	(
-		Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+		Coords.fromXY(margin, margin * 2 + controlHeight + labelOffsetY), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
 		DataBinding.fromContext("Starsystems:"),
 		fontNameAndHeight
 	);
 
-	var numberStarsystemCount = new ControlNumber
+	var starsystemCountsAvailable =
+	[
+		16, 32, 64, 128
+	];
+
+	var isDebuggingMode = true;
+	if (isDebuggingMode)
+	{
+		starsystemCountsAvailable.splice(0, 0, 2);
+	}
+
+	var selectStarsystemCount = new ControlSelect
 	(
-		"numberStarsystemCount",
+		"selectFactionType",
 		Coords.fromXY(margin * 8, margin * 2 + controlHeight), // pos
 		Coords.fromXY(controlHeight * 2, controlHeight), // size
 		new DataBinding
@@ -159,16 +172,26 @@ function worldCreatorToControl
 			worldCreator,
 			(c: WorldCreator) => c.settings.starsystemCount,
 			(c: WorldCreator, v: number) => c.settings.starsystemCount = v
-		), // value
-		DataBinding.fromGet( (c: WorldCreator) => 12), // valueMin
-		DataBinding.fromGet( (c: WorldCreator) => 128), // valueMax
-		fontNameAndHeight,
-		DataBinding.fromTrue() // isEnabled
+		), // valueSelected
+		DataBinding.fromContextAndGet
+		(
+			worldCreator,
+			(c: WorldCreator) => starsystemCountsAvailable
+		), // options
+		DataBinding.fromGet
+		(
+			(c: number) => c
+		), // bindingForOptionValues,
+		DataBinding.fromGet
+		(
+			(c: number) => "" + c
+		), // bindingForOptionText
+		fontNameAndHeight
 	);
 
 	var labelWorldFactionCount = ControlLabel.from4Uncentered
 	(
-		Coords.fromXY(margin, margin * 3 + controlHeight * 2), // pos
+		Coords.fromXY(margin, margin * 3 + controlHeight * 2 + labelOffsetY), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
 		DataBinding.fromContext("Factions:"),
 		fontNameAndHeight
@@ -193,7 +216,7 @@ function worldCreatorToControl
 
 	var labelFactionType = ControlLabel.from4Uncentered
 	(
-		Coords.fromXY(margin, margin * 4 + controlHeight * 3), // pos
+		Coords.fromXY(margin, margin * 4 + controlHeight * 3 + labelOffsetY), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
 		DataBinding.fromContext("Player Faction:"),
 		fontNameAndHeight
@@ -260,7 +283,7 @@ function worldCreatorToControl
 
 	var labelFactionColor = ControlLabel.from4Uncentered
 	(
-		Coords.fromXY(margin, margin * 6 + controlHeight * 5), // pos
+		Coords.fromXY(margin, margin * 6 + controlHeight * 5 + labelOffsetY), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
 		DataBinding.fromContext("Player Color:"),
 		fontNameAndHeight
@@ -326,7 +349,7 @@ function worldCreatorToControl
 		[
 			labelWorldCreationSettings,
 			labelWorldStarsystemCount,
-			numberStarsystemCount,
+			selectStarsystemCount,
 			labelWorldFactionCount,
 			numberFactionCount,
 			labelFactionType,

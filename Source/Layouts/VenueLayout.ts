@@ -110,25 +110,30 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 	): void
 	{
 		var layout = this.layout;
-		var bodyAtCursor = layout.map.entityAtCursor();
+		var entityAtCursor = layout.map.entityAtCursor();
 
 		var world = universe.world as WorldExtended;
 		var factionCurrent = world.factionCurrent();
 		var planetFaction = planet.faction();
 
-		if (planetFaction != factionCurrent)
+		if (entityAtCursor != null)
+		{
+			var entityFaction = Factionable.ofEntity(entityAtCursor).faction();
+
+			if (entityFaction == factionCurrent)
+			{
+				var controlBuildableDetails =
+					this.controlBuildableDetailsBuild(universe);
+
+				universe.venueJumpTo
+				(
+					new VenueControls(controlBuildableDetails, null)
+				);
+			}
+		}
+		else if (planetFaction != factionCurrent)
 		{
 			// Do nothing.
-		}
-		else if (bodyAtCursor != null)
-		{
-			var controlBuildableDetails =
-				this.controlBuildableDetailsBuild(universe);
-
-			universe.venueJumpTo
-			(
-				new VenueControls(controlBuildableDetails, null)
-			);
 		}
 		else
 		{

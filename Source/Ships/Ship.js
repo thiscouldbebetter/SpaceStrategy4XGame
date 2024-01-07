@@ -3,6 +3,7 @@ class Ship extends Entity {
     constructor(name, hullSize, defn, pos, faction, componentEntities) {
         super(name, [
             Actor.default(),
+            Ship.buildableBuild(name),
             defn,
             Ship.collidableBuild(pos),
             new Controllable(Ship.toControl),
@@ -26,6 +27,12 @@ class Ship extends Entity {
         var returnValue = new BodyDefn(Ship.name, Coords.fromXY(1, 1).multiplyScalar(scaleFactor), // size
         visual);
         return returnValue;
+    }
+    static buildableBuild(shipName) {
+        var buildableDefn = BuildableDefn.fromNameAndEffectsAvailableToUse(shipName, Ship.effectsAvailableForUse());
+        var buildable = Buildable.fromDefnAndPosComplete(buildableDefn, Coords.create() // todo
+        );
+        return buildable;
     }
     static collidableBuild(pos) {
         var collider = Sphere.fromRadiusAndCenter(VisualStar.radiusActual(), pos);
@@ -490,48 +497,95 @@ class Ship extends Entity {
         });
         return returnValue;
     }
+    static effectsAvailableForUse() {
+        if (Ship._effectsAvailableForUse == null) {
+            var effectLeaveOrbit = Ship.effectLeaveOrbitBuild();
+            var effectCreateColony = Ship.effectCreateColonyBuild();
+            var effectConquerPlanet = Ship.effectConquerPlanetBuild();
+            var effectsAvailableForUse = [
+                effectLeaveOrbit,
+                effectCreateColony,
+                effectConquerPlanet
+            ];
+            Ship._effectsAvailableForUse = effectsAvailableForUse;
+        }
+        return Ship._effectsAvailableForUse;
+    }
+    static effectLeaveOrbitBuild() {
+        return new BuildableEffect("Leave Orbit", 0, // order
+        (uwpe) => {
+            var universe = uwpe.universe;
+            var ship = uwpe.entity;
+            var planet = uwpe.place.planet;
+            var venuePrev = universe.venuePrev();
+            ship.planetOrbitExit(planet, uwpe);
+            universe.venueJumpTo(venuePrev);
+        });
+    }
+    static effectCreateColonyBuild() {
+        return new BuildableEffect("Colonize Planet", 0, // order
+        (uwpe) => {
+            var universe = uwpe.universe;
+            var display = universe.display;
+            var sizeDialog = display.sizeInPixelsHalf;
+            var venueToReturnTo = universe.venueCurrent();
+            var planet = uwpe.place.planet;
+            var ship = uwpe.entity;
+            var shipComponentEntities = ship.componentEntities;
+            var shipHasColonizer = shipComponentEntities.some((x) => Buildable.ofEntity(x).defn.name == "Colonizer");
+            if (shipHasColonizer == false) {
+                var message = "Ship has no colonizers on board.";
+                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+                universe.venueJumpTo(venue);
+            }
+            else if (planet.factionable().faction != null) {
+                var message = "Planet is already colonized.";
+                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+                universe.venueJumpTo(venue);
+            }
+            else {
+                alert("todo - colonize planet");
+            }
+        });
+    }
+    static effectConquerPlanetBuild() {
+        return new BuildableEffect("Conquer Planet", 0, // order
+        (uwpe) => {
+            var universe = uwpe.universe;
+            var display = universe.display;
+            var sizeDialog = display.sizeInPixelsHalf;
+            var venueToReturnTo = universe.venueCurrent();
+            var planet = uwpe.place.planet;
+            var ship = uwpe.entity;
+            var shipComponentEntities = ship.componentEntities;
+            var shipHasInvader = shipComponentEntities.some((x) => Buildable.ofEntity(x).defn.name == "Invasion Module");
+            if (shipHasInvader == false) {
+                var message = "Ship has no invasion modules on board.";
+                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+                universe.venueJumpTo(venue);
+            }
+            else if (planet.factionable().faction == ship.factionable().faction) {
+                var message = "Planet is already owned by your faction.";
+                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+                universe.venueJumpTo(venue);
+            }
+            else {
+                alert("todo - conquer planet");
+            }
+        });
+    }
     // Rounds.
     updateForRound(universe, world, faction) {
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, this, null);
         var deviceUser = this.deviceUser();
         deviceUser.updateForRound(uwpe);
     }
-    /*
-    draw
-    (
-        universe: Universe,
-        nodeRadiusActual: number,
-        camera: Camera,
-        drawPos: Coords
-    ): void
-    {
-        var world = universe.world as WorldExtended;
-        var display = universe.display;
-
-        var ship = this;
-        var shipPos = ship.locatable().loc.pos;
-
-        camera.coordsTransformWorldToView
-        (
-            drawPos.overwriteWith
-            (
-                shipPos
-            )
-        );
-
-        var visual = this.visual(world);
-        var uwpe = new UniverseWorldPlaceEntities
-        (
-            universe, world, null, ship, null
-        );
-        visual.draw(uwpe, display); // todo
-    }
-    */
+    // Visuals.
     visual(world) {
         return new VisualNone(); // todo
     }
     static visualForColorAndScaleFactor(color, scaleFactor) {
-        var visual = new VisualGroup([
+        var visualBody = new VisualGroup([
             new VisualPolygon(new Path([
                 Coords.fromXY(.5, 0).multiplyScalar(scaleFactor),
                 Coords.fromXY(-.5, .5).multiplyScalar(scaleFactor),
@@ -540,11 +594,23 @@ class Ship extends Entity {
             false // shouldUseEntityOrientation
             ),
         ]);
-        visual = new VisualCameraProjection(uwpe => uwpe.place.camera2(uwpe.universe), visual);
-        visual = new VisualGroup([
+        var visualProjected = new VisualCameraProjection(uwpe => uwpe.place.camera2(uwpe.universe), visualBody);
+        var visualProjectedWithStem = new VisualGroup([
             new VisualElevationStem(),
-            visual
+            visualProjected
         ]);
-        return visual;
+        var visualSelect = new VisualSelect(new Map([
+            ["Projected", visualProjectedWithStem],
+            ["Default", visualBody],
+        ]), (uwpe, d) => {
+            var universe = uwpe.universe;
+            var venueCurrent = universe.venueCurrent();
+            var venueCurrentTypeName = venueCurrent.constructor.name;
+            var shouldBeProjected = (venueCurrentTypeName == VenueStarCluster.name)
+                || (venueCurrentTypeName == VenueStarsystem.name);
+            var childVisualName = shouldBeProjected ? "Projected" : "Default";
+            return [childVisualName];
+        });
+        return visualSelect;
     }
 }

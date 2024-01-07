@@ -27,6 +27,18 @@ class BuildableDefn {
         null // description
         );
     }
+    static fromNameAndEffectsAvailableToUse(name, effectsAvailableToUse) {
+        return new BuildableDefn(name, false, // isItem
+        null, // canBeBuiltOnMapAtPosInCells
+        Coords.zeroes(), // sizeInPixels
+        new VisualNone(), 1, // industryToBuild
+        null, // effectPerRound
+        effectsAvailableToUse, null, // categories
+        null, // entityProperties
+        null, // entityModifyOnBuild
+        null // description
+        );
+    }
     buildableToEntity(buildable, world) {
         var properties = new Array();
         properties.push(buildable);

@@ -236,7 +236,8 @@ class WorldExtendedCreator {
         var randomizer = this.universe.randomizer;
         for (var s = 0; s < shipCount; s++) {
             var shipPos = Coords.create().randomize(randomizer).multiply(factionHomeStarsystemSize).multiplyScalar(2).subtract(factionHomeStarsystemSize);
-            var ship = new Ship("Ship" + s, shipHullSize, shipDefn, shipPos, faction, shipComponentsAsEntities);
+            var shipName = "Ship" + s;
+            var ship = new Ship(shipName, shipHullSize, shipDefn, shipPos, faction, shipComponentsAsEntities);
             factionShips.push(ship);
         }
         return factionShips;
@@ -259,7 +260,8 @@ class WorldExtendedCreator {
         ];
         var shipComponentsAsBuildables = shipComponentsAsBuildableDefns.map(x => Buildable.fromDefn(x));
         var shipComponentsAsEntities = shipComponentsAsBuildables.map(x => x.toEntity(worldDummy));
-        var shipOther = new Ship("ShipOther", shipHullSize, factionOtherShipDefn, shipPos, factionOther, shipComponentsAsEntities);
+        var shipName = "ShipOther";
+        var shipOther = new Ship(shipName, shipHullSize, factionOtherShipDefn, shipPos, factionOther, shipComponentsAsEntities);
         factionOther.shipAdd(shipOther);
         var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
         factionUserHomeStarsystem.shipAdd(shipOther, uwpe);

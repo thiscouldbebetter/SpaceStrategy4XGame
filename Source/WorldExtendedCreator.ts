@@ -530,14 +530,16 @@ class WorldExtendedCreator
 				factionHomeStarsystemSize
 			);
 
+			var shipName = "Ship" + s;
+
 			var ship = new Ship
 			(
-				"Ship" + s,
+				shipName,
 				shipHullSize,
 				shipDefn,
 				shipPos,
 				faction,
-				shipComponentsAsEntities
+				shipComponentsAsEntities,
 			);
 
 			factionShips.push(ship);
@@ -594,9 +596,11 @@ class WorldExtendedCreator
 		var shipComponentsAsEntities =
 			shipComponentsAsBuildables.map(x => x.toEntity(worldDummy) );
 
+		var shipName = "ShipOther";
+
 		var shipOther = new Ship
 		(
-			"ShipOther",
+			shipName,
 			shipHullSize,
 			factionOtherShipDefn,
 			shipPos,

@@ -49,16 +49,19 @@ class VenueLayout {
     }
     updateForTimerTick_1(universe, planet, cursorPosInCells) {
         var layout = this.layout;
-        var bodyAtCursor = layout.map.entityAtCursor();
+        var entityAtCursor = layout.map.entityAtCursor();
         var world = universe.world;
         var factionCurrent = world.factionCurrent();
         var planetFaction = planet.faction();
-        if (planetFaction != factionCurrent) {
-            // Do nothing.
+        if (entityAtCursor != null) {
+            var entityFaction = Factionable.ofEntity(entityAtCursor).faction();
+            if (entityFaction == factionCurrent) {
+                var controlBuildableDetails = this.controlBuildableDetailsBuild(universe);
+                universe.venueJumpTo(new VenueControls(controlBuildableDetails, null));
+            }
         }
-        else if (bodyAtCursor != null) {
-            var controlBuildableDetails = this.controlBuildableDetailsBuild(universe);
-            universe.venueJumpTo(new VenueControls(controlBuildableDetails, null));
+        else if (planetFaction != factionCurrent) {
+            // Do nothing.
         }
         else {
             var buildableEntityInProgress = planet.buildableEntityInProgress(universe);

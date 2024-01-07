@@ -23,6 +23,7 @@ class Ship extends Entity
 			name,
 			[
 				Actor.default(),
+				Ship.buildableBuild(name),
 				defn,
 				Ship.collidableBuild(pos),
 				new Controllable(Ship.toControl),
@@ -42,7 +43,7 @@ class Ship extends Entity
 
 		this._displacement = Coords.create();
 	}
-	
+
 	// static methods
 
 	static bodyDefnBuild(color: Color): BodyDefn
@@ -59,6 +60,23 @@ class Ship extends Entity
 		);
 
 		return returnValue;
+	}
+
+	static buildableBuild(shipName: string): Buildable
+	{
+		var buildableDefn = BuildableDefn.fromNameAndEffectsAvailableToUse
+		(
+			shipName,
+			Ship.effectsAvailableForUse()
+		);
+
+		var buildable = Buildable.fromDefnAndPosComplete
+		(
+			buildableDefn,
+			Coords.create() // todo
+		);
+
+		return buildable;
 	}
 
 	static collidableBuild(pos: Coords): Collidable
@@ -978,6 +996,160 @@ class Ship extends Entity
 		return returnValue;
 	}
 
+	// Effects.
+
+	private static _effectsAvailableForUse: BuildableEffect[];
+	static effectsAvailableForUse(): BuildableEffect[]
+	{
+		if (Ship._effectsAvailableForUse == null)
+		{
+			var effectLeaveOrbit = 
+				Ship.effectLeaveOrbitBuild();
+
+			var effectCreateColony =
+				Ship.effectCreateColonyBuild();
+
+			var effectConquerPlanet =
+				Ship.effectConquerPlanetBuild();
+
+			var effectsAvailableForUse =
+			[
+				effectLeaveOrbit,
+				effectCreateColony,
+				effectConquerPlanet
+			];
+
+			Ship._effectsAvailableForUse = effectsAvailableForUse;
+		}
+
+		return Ship._effectsAvailableForUse;
+	}
+
+	static effectLeaveOrbitBuild(): BuildableEffect
+	{
+		return new BuildableEffect
+		(
+			"Leave Orbit",
+			0, // order
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var universe = uwpe.universe;
+				var ship = uwpe.entity as Ship;
+
+				var planet = (uwpe.place as PlanetAsPlace).planet;
+				var venuePrev = universe.venuePrev();
+
+				ship.planetOrbitExit(planet, uwpe);
+				universe.venueJumpTo(venuePrev);
+			}
+		);
+	}
+
+	static effectCreateColonyBuild(): BuildableEffect
+	{
+		return new BuildableEffect
+		(
+			"Colonize Planet",
+			0, // order
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var universe = uwpe.universe;
+
+				var display = universe.display;
+				var sizeDialog = display.sizeInPixelsHalf;
+
+				var venueToReturnTo = universe.venueCurrent();
+				var planet = (uwpe.place as PlanetAsPlace).planet;
+				var ship = uwpe.entity as Ship;
+
+				var shipComponentEntities = ship.componentEntities;
+				var shipHasColonizer = shipComponentEntities.some
+				(
+					(x: Entity) => Buildable.ofEntity(x).defn.name == "Colonizer"
+				);
+
+				if (shipHasColonizer == false)
+				{
+					var message = "Ship has no colonizers on board."
+					var venue = VenueMessage.fromTextAcknowledgeAndSize
+					(
+						message,
+						() => universe.venueJumpTo(venueToReturnTo),
+						sizeDialog
+					);
+					universe.venueJumpTo(venue);
+				}
+				else if (planet.factionable().faction != null)
+				{
+					var message = "Planet is already colonized."
+					var venue = VenueMessage.fromTextAcknowledgeAndSize
+					(
+						message,
+						() => universe.venueJumpTo(venueToReturnTo),
+						sizeDialog
+					);
+					universe.venueJumpTo(venue);
+				}
+				else
+				{
+					alert("todo - colonize planet");
+				}
+			}
+		);
+	}
+
+	static effectConquerPlanetBuild(): BuildableEffect
+	{
+		return new BuildableEffect
+		(
+			"Conquer Planet",
+			0, // order
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				var universe = uwpe.universe;
+
+				var display = universe.display;
+				var sizeDialog = display.sizeInPixelsHalf;
+
+				var venueToReturnTo = universe.venueCurrent();
+				var planet = (uwpe.place as PlanetAsPlace).planet;
+				var ship = uwpe.entity as Ship;
+
+				var shipComponentEntities = ship.componentEntities;
+				var shipHasInvader = shipComponentEntities.some
+				(
+					(x: Entity) => Buildable.ofEntity(x).defn.name == "Invasion Module"
+				);
+				if (shipHasInvader == false)
+				{
+					var message = "Ship has no invasion modules on board."
+					var venue = VenueMessage.fromTextAcknowledgeAndSize
+					(
+						message,
+						() => universe.venueJumpTo(venueToReturnTo),
+						sizeDialog
+					);
+					universe.venueJumpTo(venue);
+				}
+				else if (planet.factionable().faction == ship.factionable().faction)
+				{
+					var message = "Planet is already owned by your faction."
+					var venue = VenueMessage.fromTextAcknowledgeAndSize
+					(
+						message,
+						() => universe.venueJumpTo(venueToReturnTo),
+						sizeDialog
+					);
+					universe.venueJumpTo(venue);
+				}
+				else
+				{
+					alert("todo - conquer planet");
+				}
+			}
+		);
+	}
+
 	// Rounds.
 
 	updateForRound(universe: Universe, world: World, faction: Faction): void
@@ -992,37 +1164,7 @@ class Ship extends Entity
 		deviceUser.updateForRound(uwpe);
 	}
 
-	/*
-	draw
-	(
-		universe: Universe,
-		nodeRadiusActual: number,
-		camera: Camera,
-		drawPos: Coords
-	): void
-	{
-		var world = universe.world as WorldExtended;
-		var display = universe.display;
-
-		var ship = this;
-		var shipPos = ship.locatable().loc.pos;
-
-		camera.coordsTransformWorldToView
-		(
-			drawPos.overwriteWith
-			(
-				shipPos
-			)
-		);
-
-		var visual = this.visual(world);
-		var uwpe = new UniverseWorldPlaceEntities
-		(
-			universe, world, null, ship, null
-		);
-		visual.draw(uwpe, display); // todo
-	}
-	*/
+	// Visuals.
 
 	visual(world: WorldExtended): VisualBase
 	{
@@ -1031,7 +1173,7 @@ class Ship extends Entity
 
 	static visualForColorAndScaleFactor(color: Color, scaleFactor: number): VisualBase
 	{
-		var visual: VisualBase = new VisualGroup
+		var visualBody = new VisualGroup
 		([
 			new VisualPolygon
 			(
@@ -1047,18 +1189,44 @@ class Ship extends Entity
 			),
 		]);
 
-		visual = new VisualCameraProjection
+		var visualProjected = new VisualCameraProjection
 		(
 			uwpe => (uwpe.place as Starsystem).camera2(uwpe.universe),
-			visual
+			visualBody
 		);
 
-		visual = new VisualGroup
+		var visualProjectedWithStem = new VisualGroup
 		([
 			new VisualElevationStem(),
-			visual
+			visualProjected
 		]);
 
-		return visual;
+		var visualSelect = new VisualSelect
+		(
+			new Map<string, VisualBase>
+			([
+				[ "Projected", visualProjectedWithStem ],
+				[ "Default", visualBody ],
+			]),
+
+			(uwpe: UniverseWorldPlaceEntities, d: Display) =>
+			{
+				var universe = uwpe.universe;
+				var venueCurrent = universe.venueCurrent();
+				var venueCurrentTypeName = venueCurrent.constructor.name;
+
+				var shouldBeProjected = 
+					(venueCurrentTypeName == VenueStarCluster.name)
+					|| (venueCurrentTypeName == VenueStarsystem.name);
+
+				var childVisualName =
+					shouldBeProjected ? "Projected" : "Default";
+
+				return [ childVisualName ];
+			}
+		)
+
+		return visualSelect;
 	}
+
 }

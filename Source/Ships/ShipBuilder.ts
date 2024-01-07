@@ -97,112 +97,7 @@ class ShipBuilder
 			var effects = BuildableEffect.Instances();
 			var effectNone = effects.None;
 
-			var effectLeaveOrbit = new BuildableEffect
-			(
-				"Leave Orbit",
-				0, // order
-				(uwpe: UniverseWorldPlaceEntities) =>
-				{
-					var ship = uwpe.entity as Ship;
-					ship.planetOrbitExit(planet, uwpe);
-					universe.venueJumpTo(venuePrev);
-				}
-			);
-
-			var effectCreateColony = new BuildableEffect
-			(
-				"Colonize Planet",
-				0, // order
-				(uwpe: UniverseWorldPlaceEntities) =>
-				{
-					var venueToReturnTo = universe.venueCurrent();
-					var planet = (uwpe.place as PlanetAsPlace).planet;
-					var ship = uwpe.entity as Ship;
-
-					var shipComponentEntities = ship.componentEntities;
-					var shipHasColonizer = shipComponentEntities.some
-					(
-						(x: Entity) => Buildable.ofEntity(x).defn.name == "Colonizer"
-					);
-					if (shipHasColonizer == false)
-					{
-						var message = "Ship has no colonizers on board."
-						var venue = VenueMessage.fromTextAcknowledgeAndSize
-						(
-							message,
-							() => universe.venueJumpTo(venueToReturnTo),
-							sizeDialog
-						);
-						universe.venueJumpTo(venue);
-					}
-					else if (planet.factionable().faction() != null)
-					{
-						var message = "Planet is already colonized."
-						var venue = VenueMessage.fromTextAcknowledgeAndSize
-						(
-							message,
-							() => universe.venueJumpTo(venueToReturnTo),
-							sizeDialog
-						);
-						universe.venueJumpTo(venue);
-					}
-					else
-					{
-						alert("todo - colonize planet");
-					}
-				}
-			);
-
-			var effectConquerPlanet = new BuildableEffect
-			(
-				"Conquer Planet",
-				0, // order
-				(uwpe: UniverseWorldPlaceEntities) =>
-				{
-					var venueToReturnTo = universe.venueCurrent();
-					var planet = (uwpe.place as PlanetAsPlace).planet;
-					var ship = uwpe.entity as Ship;
-
-					var shipComponentEntities = ship.componentEntities;
-					var shipHasInvader = shipComponentEntities.some
-					(
-						(x: Entity) => Buildable.ofEntity(x).defn.name == "Invasion Module"
-					);
-					if (shipHasInvader == false)
-					{
-						var message = "Ship has no invasion modules on board."
-						var venue = VenueMessage.fromTextAcknowledgeAndSize
-						(
-							message,
-							() => universe.venueJumpTo(venueToReturnTo),
-							sizeDialog
-						);
-						universe.venueJumpTo(venue);
-					}
-					else if (planet.factionable().faction() == ship.factionable().faction() )
-					{
-						var message = "Planet is already owned by your faction."
-						var venue = VenueMessage.fromTextAcknowledgeAndSize
-						(
-							message,
-							() => universe.venueJumpTo(venueToReturnTo),
-							sizeDialog
-						);
-						universe.venueJumpTo(venue);
-					}
-					else
-					{
-						alert("todo - conquer planet");
-					}
-				}
-			);
-
-			var effectsAvailableForUse =
-			[
-				effectLeaveOrbit,
-				effectCreateColony,
-				effectConquerPlanet
-			];
+			var effectsAvailableForUse = Ship.effectsAvailableForUse();
 
 			var shipAsBuildableDefn = new BuildableDefn
 			(
@@ -220,6 +115,7 @@ class ShipBuilder
 				null // description
 			);
 
+			/*
 			var shipAsBuildable = new Buildable
 			(
 				shipAsBuildableDefn,
@@ -227,6 +123,7 @@ class ShipBuilder
 				false, // isComplete,
 				false // isAutomated
 			);
+			*/
 
 			var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
 
@@ -240,7 +137,7 @@ class ShipBuilder
 						return entity;
 					}
 				);
-				
+
 			var shipEntity =
 				new Ship
 				(
@@ -251,8 +148,6 @@ class ShipBuilder
 					faction,
 					shipComponentEntities
 				);
-
-			shipEntity.propertyAdd(shipAsBuildable);
 
 			returnValue = shipEntity;
 
@@ -696,122 +591,6 @@ class ShipBuilder
 		);
 
 		return returnValue;
-	}
-
-	// Effects.
-
-	effectLeaveOrbit(planet: Planet, venuePrev: Venue): BuildableEffect
-	{
-		return new BuildableEffect
-		(
-			"Leave Orbit",
-			0, // order
-			(uwpe: UniverseWorldPlaceEntities) =>
-			{
-				var universe = uwpe.universe;
-				var ship = uwpe.entity as Ship;
-				ship.planetOrbitExit(planet, uwpe);
-				universe.venueJumpTo(venuePrev);
-			}
-		);
-	}
-
-	effectCreateColony(sizeDialog: Coords): BuildableEffect
-	{
-		return new BuildableEffect
-		(
-			"Colonize Planet",
-			0, // order
-			(uwpe: UniverseWorldPlaceEntities) =>
-			{
-				var universe = uwpe.universe;
-
-				var venueToReturnTo = universe.venueCurrent();
-				var planet = (uwpe.place as PlanetAsPlace).planet;
-				var ship = uwpe.entity as Ship;
-
-				var shipComponentEntities = ship.componentEntities;
-				var shipHasColonizer = shipComponentEntities.some
-				(
-					(x: Entity) => Buildable.ofEntity(x).defn.name == "Colonizer"
-				);
-				if (shipHasColonizer == false)
-				{
-					var message = "Ship has no colonizers on board."
-					var venue = VenueMessage.fromTextAcknowledgeAndSize
-					(
-						message,
-						() => universe.venueJumpTo(venueToReturnTo),
-						sizeDialog
-					);
-					universe.venueJumpTo(venue);
-				}
-				else if (planet.factionable().faction != null)
-				{
-					var message = "Planet is already colonized."
-					var venue = VenueMessage.fromTextAcknowledgeAndSize
-					(
-						message,
-						() => universe.venueJumpTo(venueToReturnTo),
-						sizeDialog
-					);
-					universe.venueJumpTo(venue);
-				}
-				else
-				{
-					alert("todo - colonize planet");
-				}
-			}
-		);
-	}
-
-	effectConquerPlanet(sizeDialog: Coords): BuildableEffect
-	{
-		return new BuildableEffect
-		(
-			"Conquer Planet",
-			0, // order
-			(uwpe: UniverseWorldPlaceEntities) =>
-			{
-				var universe = uwpe.universe;
-
-				var venueToReturnTo = universe.venueCurrent();
-				var planet = (uwpe.place as PlanetAsPlace).planet;
-				var ship = uwpe.entity as Ship;
-
-				var shipComponentEntities = ship.componentEntities;
-				var shipHasInvader = shipComponentEntities.some
-				(
-					(x: Entity) => Buildable.ofEntity(x).defn.name == "Invasion Module"
-				);
-				if (shipHasInvader == false)
-				{
-					var message = "Ship has no invasion modules on board."
-					var venue = VenueMessage.fromTextAcknowledgeAndSize
-					(
-						message,
-						() => universe.venueJumpTo(venueToReturnTo),
-						sizeDialog
-					);
-					universe.venueJumpTo(venue);
-				}
-				else if (planet.factionable().faction == ship.factionable().faction)
-				{
-					var message = "Planet is already owned by your faction."
-					var venue = VenueMessage.fromTextAcknowledgeAndSize
-					(
-						message,
-						() => universe.venueJumpTo(venueToReturnTo),
-						sizeDialog
-					);
-					universe.venueJumpTo(venue);
-				}
-				else
-				{
-					alert("todo - conquer planet");
-				}
-			}
-		);
 	}
 }
 

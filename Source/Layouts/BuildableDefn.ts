@@ -63,6 +63,29 @@ class BuildableDefn
 		);
 	}
 
+	static fromNameAndEffectsAvailableToUse
+	(
+		name: string,
+		effectsAvailableToUse: BuildableEffect[]
+	): BuildableDefn
+	{
+		return new BuildableDefn
+		(
+			name,
+			false, // isItem
+			null, // canBeBuiltOnMapAtPosInCells
+			Coords.zeroes(), // sizeInPixels
+			new VisualNone(),
+			1, // industryToBuild
+			null, // effectPerRound
+			effectsAvailableToUse,
+			null, // categories
+			null, // entityProperties
+			null, // entityModifyOnBuild
+			null // description
+		);
+	}
+
 	buildableToEntity(buildable: Buildable, world: WorldExtended): Entity
 	{
 		var properties = new Array<EntityPropertyBase>();

@@ -11,6 +11,7 @@ class StarCluster extends PlaceBase
 	linksByStarsystemNamesFromTo: Map<string, Map<string, StarClusterLink> >
 	nodesByName: Map<string, StarClusterNode>;
 	_nodesAsEntities: Entity[];
+	roundsSoFar: number;
 
 	drawPos: Coords;
 	drawPosFrom: Coords;
@@ -72,6 +73,9 @@ class StarCluster extends PlaceBase
 
 		this.factionIndexCurrent = 0;
 
+		this.roundsSoFar = 0;
+		this._roundsAreAdvancingUntilNotification = false;
+
 		// Helper variables.
 		this.drawPos = Coords.create();
 		this.drawPosFrom = Coords.create();
@@ -92,7 +96,6 @@ class StarCluster extends PlaceBase
 	static generateRandom
 	(
 		universe: Universe,
-		name: string,
 		nodeDefns: StarClusterNodeDefn[],
 		numberOfNodes: number
 	): StarCluster
@@ -285,7 +288,8 @@ class StarCluster extends PlaceBase
 		var linkTypeHard = linkTypes.Hard;
 		linksHard.forEach(x => x.type = linkTypeHard);
 
-		var returnValue = new StarCluster(name, nodesLinked, links, []);
+		var starClusterName = NameGenerator.generateName() + " Cluster";
+		var returnValue = new StarCluster(starClusterName, nodesLinked, links, []);
 
 		return returnValue;
 	}
@@ -387,6 +391,28 @@ class StarCluster extends PlaceBase
 		return returnPlace;
 	}
 
+	roundAdvanceUntilNotificationDisable(): void
+	{
+		this._roundsAreAdvancingUntilNotification = false;
+	}
+
+	roundAdvanceUntilNotificationToggle(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this._roundsAreAdvancingUntilNotification =
+			(this._roundsAreAdvancingUntilNotification == false);
+	}
+
+	roundNumberCurrent(): number
+	{
+		return this.roundsSoFar + 1;
+	}
+
+	private _roundsAreAdvancingUntilNotification: boolean;
+	roundsAreAdvancingUntilNotification(): boolean
+	{
+		return this._roundsAreAdvancingUntilNotification;
+	}
+
 	scale(scaleFactor: number): StarCluster
 	{
 		for (var i = 0; i < this.nodes.length; i++)
@@ -414,6 +440,8 @@ class StarCluster extends PlaceBase
 		}
 
 		this.factions.forEach(x => x.updateForRound(universe, world) );
+
+		this.roundsSoFar++;
 	}
 
 	// drawing
@@ -594,7 +622,7 @@ class StarCluster extends PlaceBase
 			DataBinding.fromContextAndGet
 			(
 				universe,
-				(c: Universe) => "" + ( (c.world as WorldExtended).roundsSoFar + 1)
+				(c: Universe) => "" + ( (c.world as WorldExtended).starCluster.roundsSoFar + 1)
 			),
 			fontNameAndHeight
 		);
@@ -633,7 +661,7 @@ class StarCluster extends PlaceBase
 			Coords.fromXY(controlHeight, controlHeight), // size,
 			">>", // text,
 			fontNameAndHeight,
-			() => world.roundAdvanceUntilNotificationToggle(uwpe)
+			() => world.starCluster.roundAdvanceUntilNotificationToggle(uwpe)
 		);
 
 		var roundAdvanceButtons: ControlBase[] = 

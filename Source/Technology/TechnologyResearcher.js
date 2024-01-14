@@ -77,7 +77,7 @@ class TechnologyResearcher {
                     universe.venueTransitionTo(venueNext);
                 });
                 faction.notificationAdd(notification);
-                world.roundAdvanceUntilNotificationDisable();
+                world.starCluster.roundAdvanceUntilNotificationDisable();
             }
         }
     }

@@ -392,7 +392,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 				if (bodyClicked == entitySelected)
 				{
-					var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
+					var isFastForwarding = world.starCluster.roundsAreAdvancingUntilNotification();
 					
 					if (isFastForwarding == false)
 					{

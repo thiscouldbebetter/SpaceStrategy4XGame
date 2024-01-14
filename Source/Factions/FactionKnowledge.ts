@@ -302,7 +302,7 @@ class FactionKnowledge
 			var universe = uwpe.universe;
 			factionSelf.notificationSessionStart(universe, universe.display.sizeInPixelsHalf);
 
-			world.roundAdvanceUntilNotificationDisable();
+			world.starCluster.roundAdvanceUntilNotificationDisable();
 		}
 
 		this.starsystemsCacheClear();
@@ -470,8 +470,8 @@ class FactionKnowledge
 				worldActual.defn.activityDefns,
 				worldActual.buildableDefns,
 				worldActual.technologyGraph,
-				starClusterKnown,
-				worldActual.camera
+				worldActual.camera,
+				starClusterKnown
 			);
 		}
 

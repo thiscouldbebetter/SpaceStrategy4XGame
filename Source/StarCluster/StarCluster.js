@@ -28,6 +28,8 @@ class StarCluster extends PlaceBase {
             }
         }
         this.factionIndexCurrent = 0;
+        this.roundsSoFar = 0;
+        this._roundsAreAdvancingUntilNotification = false;
         // Helper variables.
         this.drawPos = Coords.create();
         this.drawPosFrom = Coords.create();
@@ -40,7 +42,7 @@ class StarCluster extends PlaceBase {
         );
     }
     ;
-    static generateRandom(universe, name, nodeDefns, numberOfNodes) {
+    static generateRandom(universe, nodeDefns, numberOfNodes) {
         var randomizer = universe.randomizer;
         var nodesNotYetLinked = [];
         var radiusMin = .25;
@@ -137,7 +139,8 @@ class StarCluster extends PlaceBase {
         var linksHard = randomizer.chooseNElementsFromArray(linksHardCount, links);
         var linkTypeHard = linkTypes.Hard;
         linksHard.forEach(x => x.type = linkTypeHard);
-        var returnValue = new StarCluster(name, nodesLinked, links, []);
+        var starClusterName = NameGenerator.generateName() + " Cluster";
+        var returnValue = new StarCluster(starClusterName, nodesLinked, links, []);
         return returnValue;
     }
     factionAdd(faction) {
@@ -195,6 +198,19 @@ class StarCluster extends PlaceBase {
         }
         return returnPlace;
     }
+    roundAdvanceUntilNotificationDisable() {
+        this._roundsAreAdvancingUntilNotification = false;
+    }
+    roundAdvanceUntilNotificationToggle(uwpe) {
+        this._roundsAreAdvancingUntilNotification =
+            (this._roundsAreAdvancingUntilNotification == false);
+    }
+    roundNumberCurrent() {
+        return this.roundsSoFar + 1;
+    }
+    roundsAreAdvancingUntilNotification() {
+        return this._roundsAreAdvancingUntilNotification;
+    }
     scale(scaleFactor) {
         for (var i = 0; i < this.nodes.length; i++) {
             var node = this.nodes[i];
@@ -212,6 +228,7 @@ class StarCluster extends PlaceBase {
             link.updateForRound(universe, world);
         }
         this.factions.forEach(x => x.updateForRound(universe, world));
+        this.roundsSoFar++;
     }
     // drawing
     camera2(universe) {
@@ -304,7 +321,7 @@ class StarCluster extends PlaceBase {
         DataBinding.fromContext(textRoundColonSpace), fontNameAndHeight);
         var textRound = ControlLabel.from4Uncentered(Coords.fromXY(margin + textRoundColonSpace.length * fontHeightInPixels * 0.45, margin + controlHeight), // pos
         Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
-        DataBinding.fromContextAndGet(universe, (c) => "" + (c.world.roundsSoFar + 1)), fontNameAndHeight);
+        DataBinding.fromContextAndGet(universe, (c) => "" + (c.world.starCluster.roundsSoFar + 1)), fontNameAndHeight);
         var childControls = [
             textPlace,
             labelRound,
@@ -318,7 +335,7 @@ class StarCluster extends PlaceBase {
         var buttonRoundFastForward = ControlButton.from5(Coords.fromXY(containerInnerSize.x - margin - buttonSize.x, margin + controlHeight), // pos
         Coords.fromXY(controlHeight, controlHeight), // size,
         ">>", // text,
-        fontNameAndHeight, () => world.roundAdvanceUntilNotificationToggle(uwpe));
+        fontNameAndHeight, () => world.starCluster.roundAdvanceUntilNotificationToggle(uwpe));
         var roundAdvanceButtons = [
             buttonRoundNext,
             buttonRoundFastForward

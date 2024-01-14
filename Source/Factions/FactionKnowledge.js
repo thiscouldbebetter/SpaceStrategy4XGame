@@ -161,7 +161,7 @@ class FactionKnowledge {
             }
             var universe = uwpe.universe;
             factionSelf.notificationSessionStart(universe, universe.display.sizeInPixelsHalf);
-            world.roundAdvanceUntilNotificationDisable();
+            world.starCluster.roundAdvanceUntilNotificationDisable();
         }
         this.starsystemsCacheClear();
     }
@@ -227,7 +227,7 @@ class FactionKnowledge {
     world(universe, worldActual) {
         if (this._world == null) {
             var starClusterKnown = this.starCluster(worldActual);
-            this._world = new WorldExtended(worldActual.name, worldActual.dateCreated, worldActual.defn.activityDefns, worldActual.buildableDefns, worldActual.technologyGraph, starClusterKnown, worldActual.camera);
+            this._world = new WorldExtended(worldActual.name, worldActual.dateCreated, worldActual.defn.activityDefns, worldActual.buildableDefns, worldActual.technologyGraph, worldActual.camera, starClusterKnown);
         }
         return this._world;
     }

@@ -8,8 +8,6 @@ class WorldExtended extends World
 
 	private buildableDefnsByName: Map<string, BuildableDefn>;
 
-	roundsSoFar: number;
-
 	places: Place[];
 
 	shouldDrawOnlyWhenUpdated: boolean;
@@ -21,8 +19,8 @@ class WorldExtended extends World
 		activityDefns: ActivityDefn[],
 		buildableDefns: BuildableDefn[],
 		technologyGraph: TechnologyGraph,
-		starCluster: StarCluster,
-		camera: Camera
+		camera: Camera,
+		starCluster: StarCluster
 	)
 	{
 		super
@@ -49,12 +47,11 @@ class WorldExtended extends World
 
 		this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
 
-		this.roundsSoFar = 0;
-		this._isAdvancingThroughRoundsUntilNotification = false;
-
 		this.places = [];
-		this.places.push(this.starCluster);
-		this.places.push(...this.starCluster.nodes.map(x => x.starsystem) );
+		if (starCluster != null)
+		{
+			this.starClusterSet(starCluster);
+		}
 
 		this.shouldDrawOnlyWhenUpdated = true;
 	}
@@ -103,12 +100,6 @@ class WorldExtended extends World
 		this.starCluster.initialize(uwpe);
 	}
 
-	private _isAdvancingThroughRoundsUntilNotification: boolean;
-	isAdvancingThroughRoundsUntilNotification(): boolean
-	{
-		return this._isAdvancingThroughRoundsUntilNotification;
-	}
-
 	private _mapCellSizeInPixels: Coords;
 	mapCellSizeInPixels(universe: Universe)
 	{
@@ -133,20 +124,13 @@ class WorldExtended extends World
 		return this.starCluster.placeForEntityLocatable(entityLocatable);
 	}
 
-	roundAdvanceUntilNotificationDisable(): void
+	starClusterSet(value: StarCluster): void
 	{
-		this._isAdvancingThroughRoundsUntilNotification = false;
-	}
+		this.starCluster = value;
 
-	roundAdvanceUntilNotificationToggle(uwpe: UniverseWorldPlaceEntities): void
-	{
-		this._isAdvancingThroughRoundsUntilNotification =
-			(this._isAdvancingThroughRoundsUntilNotification == false);
-	}
-
-	roundNumberCurrent(): number
-	{
-		return this.roundsSoFar + 1;
+		this.name = this.starCluster.name;
+		this.places.push(this.starCluster);
+		this.places.push(...this.starCluster.nodes.map(x => x.starsystem) );
 	}
 
 	toVenue(): VenueWorld
@@ -164,7 +148,7 @@ class WorldExtended extends World
 
 		if (notificationsBlocking.length > 0)
 		{
-			this.roundAdvanceUntilNotificationDisable();
+			this.starCluster.roundAdvanceUntilNotificationDisable();
 
 			factionCurrent.notificationsAdd(notificationsBlocking);
 			factionCurrent.notificationSessionStart
@@ -185,13 +169,11 @@ class WorldExtended extends World
 		var world = this as WorldExtended;
 
 		this.starCluster.updateForRound(universe, world);
-
-		this.roundsSoFar++;
 	}
 
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
+		var isFastForwarding = this.starCluster.roundsAreAdvancingUntilNotification();
 
 		if (isFastForwarding)
 		{
@@ -202,7 +184,7 @@ class WorldExtended extends World
 
 			if (areThereAnyNotifications)
 			{
-				this.roundAdvanceUntilNotificationToggle(uwpe);
+				this.starCluster.roundAdvanceUntilNotificationToggle(uwpe);
 				factionCurrent.notificationSessionStart
 				(
 					uwpe.universe,

@@ -19,10 +19,10 @@ class FactionAbility {
     perform(uwpe) {
         var world = uwpe.world;
         this._perform(uwpe);
-        this.roundLastUsed = world.roundsSoFar;
+        this.roundLastUsed = world.starCluster.roundsSoFar;
     }
     roundsUntilCharged(world) {
-        var roundsChargingSoFar = world.roundsSoFar
+        var roundsChargingSoFar = world.starCluster.roundsSoFar
             - this.roundLastUsed;
         var roundsRemainingToCharge = this.roundsToCharge - roundsChargingSoFar;
         if (roundsRemainingToCharge < 0) {

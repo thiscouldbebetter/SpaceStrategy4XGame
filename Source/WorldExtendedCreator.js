@@ -11,7 +11,21 @@ class WorldExtendedCreator {
         var factionCount = parseInt(settings.factionCount);
         var factionDefnNameForPlayer = settings.factionDefnName;
         var factionColorForPlayer = settings.factionColor || Faction.colors()[0];
-        var worldName = NameGenerator.generateName() + " Cluster";
+        var returnValue = this.create_Blank();
+        var viewSize = this.universe.display.sizeInPixels.clone();
+        var viewDimension = viewSize.y;
+        var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
+        var buildableDefns = 
+        // new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+        BuildableDefnsLegacy.Instance(mapCellSizeInPixels);
+        var starClusterRadius = viewDimension * .25;
+        var starCluster = StarCluster.generateRandom(this.universe, StarClusterNodeDefn.Instances()._All, starsystemCount).scale(starClusterRadius);
+        var factions = this.create_Factions(starCluster, returnValue.technologyGraph, buildableDefns, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
+        factions.forEach(x => starCluster.factionAdd(x));
+        returnValue.starClusterSet(starCluster);
+        return returnValue;
+    }
+    create_Blank() {
         var activityDefns = ArrayHelper.flattenArrayOfArrays([
             new ActivityDefn_Instances2()._All,
             ActivityDefn.Instances()._All
@@ -25,15 +39,13 @@ class WorldExtendedCreator {
         // TechnologyGraph.demo(mapCellSizeInPixels);
         TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
         var viewDimension = viewSize.y;
-        var starClusterRadius = viewDimension * .25;
-        var starCluster = StarCluster.generateRandom(this.universe, worldName, StarClusterNodeDefn.Instances()._All, starsystemCount).scale(starClusterRadius);
         var focalLength = viewDimension;
         viewSize.z = focalLength;
-        var factions = this.create_Factions(starCluster, technologyGraph, buildableDefns, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
-        factions.forEach(x => starCluster.factionAdd(x));
         var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
         );
-        var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns._All, technologyGraph, starCluster, camera);
+        var returnValue = new WorldExtended(null, // name,
+        DateTime.now(), activityDefns, buildableDefns._All, technologyGraph, camera, null // starCluster
+        );
         return returnValue;
     }
     create_Factions(starCluster, technologyGraph, buildableDefns, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {
@@ -42,8 +54,8 @@ class WorldExtendedCreator {
         var worldDummy = new WorldExtended("WorldDummy", // name
         DateTime.now(), // dateCreated
         [], // activityDefns
-        buildableDefns._All, technologyGraph, starCluster, null // camera
-        );
+        buildableDefns._All, technologyGraph, null, // camera
+        starCluster);
         this.universe.world = worldDummy;
         var colorsForFactions = Faction.colors();
         colorsForFactions.splice(colorsForFactions.indexOf(factionColorForPlayer), 1);

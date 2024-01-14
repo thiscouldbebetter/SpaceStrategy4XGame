@@ -201,7 +201,7 @@ class VenueStarCluster extends VenueWorld {
                 var bodyClicked = collisionNearest.colliders[0]; // todo
                 var entitySelected = this.entitySelected();
                 if (bodyClicked == entitySelected) {
-                    var isFastForwarding = world.isAdvancingThroughRoundsUntilNotification();
+                    var isFastForwarding = world.starCluster.roundsAreAdvancingUntilNotification();
                     if (isFastForwarding == false) {
                         var venueCurrent = universe.venueCurrent();
                         var bodyClickedStarClusterNode = bodyClicked;

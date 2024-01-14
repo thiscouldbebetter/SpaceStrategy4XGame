@@ -1,6 +1,6 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, dateCreated, activityDefns, buildableDefns, technologyGraph, starCluster, camera) {
+    constructor(name, dateCreated, activityDefns, buildableDefns, technologyGraph, camera, starCluster) {
         super(name, dateCreated, new WorldDefn([
             activityDefns
         ]), // worldDefn
@@ -14,11 +14,10 @@ class WorldExtended extends World {
         this.camera = camera;
         this.dateSaved = this.dateCreated;
         this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
-        this.roundsSoFar = 0;
-        this._isAdvancingThroughRoundsUntilNotification = false;
         this.places = [];
-        this.places.push(this.starCluster);
-        this.places.push(...this.starCluster.nodes.map(x => x.starsystem));
+        if (starCluster != null) {
+            this.starClusterSet(starCluster);
+        }
         this.shouldDrawOnlyWhenUpdated = true;
     }
     // instance methods
@@ -48,9 +47,6 @@ class WorldExtended extends World {
     initialize(uwpe) {
         this.starCluster.initialize(uwpe);
     }
-    isAdvancingThroughRoundsUntilNotification() {
-        return this._isAdvancingThroughRoundsUntilNotification;
-    }
     mapCellSizeInPixels(universe) {
         if (this._mapCellSizeInPixels == null) {
             var viewSize = universe.display.sizeInPixels;
@@ -67,15 +63,11 @@ class WorldExtended extends World {
     placeForEntityLocatable(entityLocatable) {
         return this.starCluster.placeForEntityLocatable(entityLocatable);
     }
-    roundAdvanceUntilNotificationDisable() {
-        this._isAdvancingThroughRoundsUntilNotification = false;
-    }
-    roundAdvanceUntilNotificationToggle(uwpe) {
-        this._isAdvancingThroughRoundsUntilNotification =
-            (this._isAdvancingThroughRoundsUntilNotification == false);
-    }
-    roundNumberCurrent() {
-        return this.roundsSoFar + 1;
+    starClusterSet(value) {
+        this.starCluster = value;
+        this.name = this.starCluster.name;
+        this.places.push(this.starCluster);
+        this.places.push(...this.starCluster.nodes.map(x => x.starsystem));
     }
     toVenue() {
         return new VenueStarCluster(this);
@@ -85,7 +77,7 @@ class WorldExtended extends World {
         var factionCurrent = this.factionCurrent();
         var notificationsBlocking = factionCurrent.notificationsForRoundAddToArray(universe, []);
         if (notificationsBlocking.length > 0) {
-            this.roundAdvanceUntilNotificationDisable();
+            this.starCluster.roundAdvanceUntilNotificationDisable();
             factionCurrent.notificationsAdd(notificationsBlocking);
             factionCurrent.notificationSessionStart(universe, universe.display.sizeInPixels.clone().half());
         }
@@ -98,16 +90,15 @@ class WorldExtended extends World {
         uwpe.world = this;
         var world = this;
         this.starCluster.updateForRound(universe, world);
-        this.roundsSoFar++;
     }
     updateForTimerTick(uwpe) {
-        var isFastForwarding = this.isAdvancingThroughRoundsUntilNotification();
+        var isFastForwarding = this.starCluster.roundsAreAdvancingUntilNotification();
         if (isFastForwarding) {
             var world = this;
             var factionCurrent = world.factionCurrent();
             var areThereAnyNotifications = factionCurrent.notificationsExist();
             if (areThereAnyNotifications) {
-                this.roundAdvanceUntilNotificationToggle(uwpe);
+                this.starCluster.roundAdvanceUntilNotificationToggle(uwpe);
                 factionCurrent.notificationSessionStart(uwpe.universe, uwpe.universe.display.sizeInPixels.clone().half());
             }
             else {

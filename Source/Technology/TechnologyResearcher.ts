@@ -157,7 +157,7 @@ class TechnologyResearcher
 				);
 				faction.notificationAdd(notification);
 
-				world.roundAdvanceUntilNotificationDisable();
+				world.starCluster.roundAdvanceUntilNotificationDisable();
 			}
 		}
 	}

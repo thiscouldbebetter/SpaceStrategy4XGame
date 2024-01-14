@@ -22,8 +22,46 @@ class WorldExtendedCreator
 		var factionDefnNameForPlayer = settings.factionDefnName;
 		var factionColorForPlayer = settings.factionColor || Faction.colors()[0];
 
-		var worldName = NameGenerator.generateName() + " Cluster";
+		var returnValue = this.create_Blank();
 
+		var viewSize = this.universe.display.sizeInPixels.clone();
+		var viewDimension = viewSize.y;
+		var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
+		var buildableDefns =
+			// new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+			BuildableDefnsLegacy.Instance(mapCellSizeInPixels);
+
+
+		var starClusterRadius = viewDimension * .25;
+		var starCluster = StarCluster.generateRandom
+		(
+			this.universe,
+			StarClusterNodeDefn.Instances()._All,
+			starsystemCount
+		).scale
+		(
+			starClusterRadius
+		);
+
+		var factions = this.create_Factions
+		(
+			starCluster, 
+			returnValue.technologyGraph,
+			buildableDefns,
+			factionCount,
+			factionDefnNameForPlayer,
+			factionColorForPlayer
+		);
+
+		factions.forEach(x => starCluster.factionAdd(x) );
+
+		returnValue.starClusterSet(starCluster);
+
+		return returnValue;
+	}
+
+	create_Blank(): WorldExtended
+	{
 		var activityDefns = ArrayHelper.flattenArrayOfArrays
 		([
 			new ActivityDefn_Instances2()._All,
@@ -42,33 +80,8 @@ class WorldExtendedCreator
 			TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
 
 		var viewDimension = viewSize.y;
-
-		var starClusterRadius = viewDimension * .25;
-		var starCluster = StarCluster.generateRandom
-		(
-			this.universe,
-			worldName,
-			StarClusterNodeDefn.Instances()._All,
-			starsystemCount
-		).scale
-		(
-			starClusterRadius
-		);
-
 		var focalLength = viewDimension;
 		viewSize.z = focalLength;
-
-		var factions = this.create_Factions
-		(
-			starCluster, 
-			technologyGraph,
-			buildableDefns,
-			factionCount,
-			factionDefnNameForPlayer,
-			factionColorForPlayer
-		);
-
-		factions.forEach(x => starCluster.factionAdd(x) );
 
 		var camera = new Camera
 		(
@@ -83,13 +96,13 @@ class WorldExtendedCreator
 
 		var returnValue = new WorldExtended
 		(
-			worldName,
+			null, // name,
 			DateTime.now(),
 			activityDefns,
 			buildableDefns._All,
 			technologyGraph,
-			starCluster,
-			camera
+			camera,
+			null // starCluster
 		);
 
 		return returnValue;
@@ -115,8 +128,8 @@ class WorldExtendedCreator
 			[], // activityDefns
 			buildableDefns._All,
 			technologyGraph,
-			starCluster,
-			null // camera
+			null, // camera
+			starCluster
 		);
 		this.universe.world = worldDummy;
 

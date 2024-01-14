@@ -45,13 +45,13 @@ class FactionAbility
 
 		this._perform(uwpe);
 
-		this.roundLastUsed = world.roundsSoFar;
+		this.roundLastUsed = world.starCluster.roundsSoFar;
 	}
 
 	roundsUntilCharged(world: WorldExtended): number
 	{
 		var roundsChargingSoFar =
-			world.roundsSoFar
+			world.starCluster.roundsSoFar
 			- this.roundLastUsed;
 
 		var roundsRemainingToCharge =

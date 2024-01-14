@@ -4,14 +4,10 @@ class WorldExtended extends World
 	buildableDefns: BuildableDefn[];
 	technologyGraph: TechnologyGraph;
 	starCluster: StarCluster;
-	factions: Faction[];
-	ships: Ship[];
 	camera: Camera;
 
 	private buildableDefnsByName: Map<string, BuildableDefn>;
-	private factionsByName: Map<string, Faction>;
 
-	factionIndexCurrent: number;
 	roundsSoFar: number;
 
 	places: Place[];
@@ -49,18 +45,14 @@ class WorldExtended extends World
 		this.buildableDefns = buildableDefns;
 		this.technologyGraph = technologyGraph;
 		this.starCluster = starCluster;
-		this.factions = factions;
-		this.ships = ships;
 		this.camera = camera;
 
 		this.dateSaved = this.dateCreated;
 
 		this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
-		this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
 
 		this.roundsSoFar = 0;
 		this._isAdvancingThroughRoundsUntilNotification = false;
-		this.factionIndexCurrent = 0;
 
 		this.places = [];
 		this.places.push(this.starCluster);
@@ -93,43 +85,24 @@ class WorldExtended extends World
 		this.buildableDefnsByName.delete(buildableDefn.name);
 	}
 
-	factionAdd(faction: Faction): void
-	{
-		this.factions.push(faction);
-		this.factionsByName.set(faction.name, faction);
-	}
-
-	factionByName(factionName: string): Faction
-	{
-		return this.factionsByName.get(factionName);
-	}
-
 	factionCurrent(): Faction
 	{
-		return this.factions[this.factionIndexCurrent];
+		return this.starCluster.factionCurrent();
 	}
 
 	factionPlayer(): Faction
 	{
-		return this.factions[0];
+		return this.starCluster.factionPlayer();
 	}
 
-	factionsOtherThanCurrent(): Faction[]
+	factions(): Faction[]
 	{
-		return this.factionsOtherThan(this.factionCurrent());
-	}
-
-	factionsOtherThan(faction: Faction): Faction[]
-	{
-		return this.factions.filter
-		(
-			x => x.name != faction.name
-		);
+		return this.starCluster.factions;
 	}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
-		this.factions.forEach(x => x.initialize(uwpe));
+		this.starCluster.initialize(uwpe);
 	}
 
 	private _isAdvancingThroughRoundsUntilNotification: boolean;
@@ -214,7 +187,6 @@ class WorldExtended extends World
 		var world = this as WorldExtended;
 
 		this.starCluster.updateForRound(universe, world);
-		this.factions.forEach(x => x.updateForRound(universe, world) );
 
 		this.roundsSoFar++;
 	}

@@ -4,7 +4,9 @@ class StarCluster extends PlaceBase
 	name: string;
 	nodes: StarClusterNode[];
 	links: StarClusterLink[];
+	factions: Faction[];
 
+	factionIndexCurrent: number;
 	linksByName: Map<string, StarClusterLink>;
 	linksByStarsystemNamesFromTo: Map<string, Map<string, StarClusterLink> >
 	nodesByName: Map<string, StarClusterNode>;
@@ -19,7 +21,8 @@ class StarCluster extends PlaceBase
 	(
 		name: string,
 		nodes: StarClusterNode[],
-		links: StarClusterLink[]
+		links: StarClusterLink[],
+		factions: Faction[]
 	)
 	{
 		super
@@ -34,6 +37,7 @@ class StarCluster extends PlaceBase
 		this.name = name;
 		this.nodes = nodes;
 		this.links = links;
+		this.factions = factions;
 
 		this.nodesByName = ArrayHelper.addLookupsByName(this.nodes);
 
@@ -66,6 +70,8 @@ class StarCluster extends PlaceBase
 			}
 		}
 
+		this.factionIndexCurrent = 0;
+
 		// Helper variables.
 		this.drawPos = Coords.create();
 		this.drawPosFrom = Coords.create();
@@ -78,7 +84,8 @@ class StarCluster extends PlaceBase
 		(
 			"dummy",
 			[], // nodes
-			[] // links
+			[], // links
+			[] // factions
 		);
 	};
 
@@ -278,9 +285,47 @@ class StarCluster extends PlaceBase
 		var linkTypeHard = linkTypes.Hard;
 		linksHard.forEach(x => x.type = linkTypeHard);
 
-		var returnValue = new StarCluster(name, nodesLinked, links);
+		var returnValue = new StarCluster(name, nodesLinked, links, []);
 
 		return returnValue;
+	}
+
+	factionAdd(faction: Faction): void
+	{
+		this.factions.push(faction);
+	}
+
+	factionByName(factionName: string): Faction
+	{
+		return this.factions.find(x => x.name == factionName);
+	}
+
+	factionCurrent(): Faction
+	{
+		return this.factions[this.factionIndexCurrent];
+	}
+
+	factionPlayer(): Faction
+	{
+		return this.factions[0];
+	}
+
+	factionsOtherThanCurrent(): Faction[]
+	{
+		return this.factionsOtherThan(this.factionCurrent());
+	}
+
+	factionsOtherThan(faction: Faction): Faction[]
+	{
+		return this.factions.filter
+		(
+			x => x.name != faction.name
+		);
+	}
+
+	initialize(uwpe: UniverseWorldPlaceEntities): void
+	{
+		this.factions.forEach(x => x.initialize(uwpe));
 	}
 
 	linkByName(linkName: string): StarClusterLink
@@ -367,6 +412,8 @@ class StarCluster extends PlaceBase
 			var link = this.links[i];
 			link.updateForRound(universe, world);
 		}
+
+		this.factions.forEach(x => x.updateForRound(universe, world) );
 	}
 
 	// drawing
@@ -480,7 +527,8 @@ class StarCluster extends PlaceBase
 	{
 		var nodesCloned = this.nodes.map(x => x.clone()) as StarClusterNode[];
 		var linksCloned = ArrayHelper.clone(this.links);
-		var returnValue = new StarCluster(this.name, nodesCloned, linksCloned);
+		var factionsCloned = this.factions.map(x => x.clone());
+		var returnValue = new StarCluster(this.name, nodesCloned, linksCloned, factionsCloned);
 		return returnValue;
 	}
 

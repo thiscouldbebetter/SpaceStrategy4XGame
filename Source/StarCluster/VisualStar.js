@@ -84,8 +84,8 @@ class VisualStar {
             visualRing.draw(uwpe.entitySet(drawableTransformed), display);
         }
         var ships = starsystem.ships;
+        var factions = world.factions();
         var shipsSortedByFactionIndex = ships.sort((a, b) => {
-            var factions = world.factions;
             var returnValue = factions.indexOf(a.faction())
                 - factions.indexOf(b.faction());
             return returnValue;

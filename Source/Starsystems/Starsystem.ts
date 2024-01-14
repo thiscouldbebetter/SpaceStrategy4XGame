@@ -168,7 +168,7 @@ class Starsystem extends PlaceBase
 
 	faction(world: WorldExtended): Faction
 	{
-		return (this.factionName == null ? null : world.factionByName(this.factionName));
+		return (this.factionName == null ? null : world.starCluster.factionByName(this.factionName));
 	}
 
 	factionNameGet(world: WorldExtended): string

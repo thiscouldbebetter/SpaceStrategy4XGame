@@ -167,7 +167,7 @@ class WorldExtendedCreator {
         factionTechnologyResearcher.factionSet(faction);
         this.create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy);
         ships.push(...factionShips);
-        worldDummy.factionAdd(faction);
+        starCluster.factionAdd(faction);
         var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
         factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, uwpe));
     }

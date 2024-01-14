@@ -1,6 +1,6 @@
 "use strict";
 class StarCluster extends PlaceBase {
-    constructor(name, nodes, links) {
+    constructor(name, nodes, links, factions) {
         super(name, StarCluster.name, // defnName
         null, // parentName
         null, // size
@@ -9,6 +9,7 @@ class StarCluster extends PlaceBase {
         this.name = name;
         this.nodes = nodes;
         this.links = links;
+        this.factions = factions;
         this.nodesByName = ArrayHelper.addLookupsByName(this.nodes);
         this.linksByName = ArrayHelper.addLookupsByName(this.links);
         this.linksByStarsystemNamesFromTo = new Map();
@@ -26,6 +27,7 @@ class StarCluster extends PlaceBase {
                 linksOriginatingAtNodeFrom.set(nameOfNodeTo, link);
             }
         }
+        this.factionIndexCurrent = 0;
         // Helper variables.
         this.drawPos = Coords.create();
         this.drawPosFrom = Coords.create();
@@ -33,7 +35,8 @@ class StarCluster extends PlaceBase {
     }
     static empty() {
         return new StarCluster("dummy", [], // nodes
-        [] // links
+        [], // links
+        [] // factions
         );
     }
     ;
@@ -134,8 +137,29 @@ class StarCluster extends PlaceBase {
         var linksHard = randomizer.chooseNElementsFromArray(linksHardCount, links);
         var linkTypeHard = linkTypes.Hard;
         linksHard.forEach(x => x.type = linkTypeHard);
-        var returnValue = new StarCluster(name, nodesLinked, links);
+        var returnValue = new StarCluster(name, nodesLinked, links, []);
         return returnValue;
+    }
+    factionAdd(faction) {
+        this.factions.push(faction);
+    }
+    factionByName(factionName) {
+        return this.factions.find(x => x.name == factionName);
+    }
+    factionCurrent() {
+        return this.factions[this.factionIndexCurrent];
+    }
+    factionPlayer() {
+        return this.factions[0];
+    }
+    factionsOtherThanCurrent() {
+        return this.factionsOtherThan(this.factionCurrent());
+    }
+    factionsOtherThan(faction) {
+        return this.factions.filter(x => x.name != faction.name);
+    }
+    initialize(uwpe) {
+        this.factions.forEach(x => x.initialize(uwpe));
     }
     linkByName(linkName) {
         return this.linksByName.get(linkName);
@@ -187,6 +211,7 @@ class StarCluster extends PlaceBase {
             var link = this.links[i];
             link.updateForRound(universe, world);
         }
+        this.factions.forEach(x => x.updateForRound(universe, world));
     }
     // drawing
     camera2(universe) {
@@ -257,7 +282,8 @@ class StarCluster extends PlaceBase {
     clone() {
         var nodesCloned = this.nodes.map(x => x.clone());
         var linksCloned = ArrayHelper.clone(this.links);
-        var returnValue = new StarCluster(this.name, nodesCloned, linksCloned);
+        var factionsCloned = this.factions.map(x => x.clone());
+        var returnValue = new StarCluster(this.name, nodesCloned, linksCloned, factionsCloned);
         return returnValue;
     }
     // Controls.

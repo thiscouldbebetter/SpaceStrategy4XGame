@@ -78,7 +78,7 @@ class Starsystem extends PlaceBase {
         this._entitiesForPlanetsLinkPortalsAndShips = null;
     }
     faction(world) {
-        return (this.factionName == null ? null : world.factionByName(this.factionName));
+        return (this.factionName == null ? null : world.starCluster.factionByName(this.factionName));
     }
     factionNameGet(world) {
         var faction = this.faction(world);

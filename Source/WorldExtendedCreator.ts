@@ -378,7 +378,7 @@ class WorldExtendedCreator
 
 		ships.push(...factionShips);
 
-		worldDummy.factionAdd(faction);
+		starCluster.factionAdd(faction);
 
 		var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
 

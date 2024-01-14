@@ -11,15 +11,11 @@ class WorldExtended extends World {
         this.buildableDefns = buildableDefns;
         this.technologyGraph = technologyGraph;
         this.starCluster = starCluster;
-        this.factions = factions;
-        this.ships = ships;
         this.camera = camera;
         this.dateSaved = this.dateCreated;
         this.buildableDefnsByName = ArrayHelper.addLookupsByName(this.buildableDefns);
-        this.factionsByName = ArrayHelper.addLookupsByName(this.factions);
         this.roundsSoFar = 0;
         this._isAdvancingThroughRoundsUntilNotification = false;
-        this.factionIndexCurrent = 0;
         this.places = [];
         this.places.push(this.starCluster);
         this.places.push(...this.starCluster.nodes.map(x => x.starsystem));
@@ -40,27 +36,17 @@ class WorldExtended extends World {
         this.buildableDefns.splice(this.buildableDefns.indexOf(buildableDefn), 1);
         this.buildableDefnsByName.delete(buildableDefn.name);
     }
-    factionAdd(faction) {
-        this.factions.push(faction);
-        this.factionsByName.set(faction.name, faction);
-    }
-    factionByName(factionName) {
-        return this.factionsByName.get(factionName);
-    }
     factionCurrent() {
-        return this.factions[this.factionIndexCurrent];
+        return this.starCluster.factionCurrent();
     }
     factionPlayer() {
-        return this.factions[0];
+        return this.starCluster.factionPlayer();
     }
-    factionsOtherThanCurrent() {
-        return this.factionsOtherThan(this.factionCurrent());
-    }
-    factionsOtherThan(faction) {
-        return this.factions.filter(x => x.name != faction.name);
+    factions() {
+        return this.starCluster.factions;
     }
     initialize(uwpe) {
-        this.factions.forEach(x => x.initialize(uwpe));
+        this.starCluster.initialize(uwpe);
     }
     isAdvancingThroughRoundsUntilNotification() {
         return this._isAdvancingThroughRoundsUntilNotification;
@@ -112,7 +98,6 @@ class WorldExtended extends World {
         uwpe.world = this;
         var world = this;
         this.starCluster.updateForRound(universe, world);
-        this.factions.forEach(x => x.updateForRound(universe, world));
         this.roundsSoFar++;
     }
     updateForTimerTick(uwpe) {

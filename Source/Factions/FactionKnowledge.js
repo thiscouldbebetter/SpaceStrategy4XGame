@@ -25,14 +25,14 @@ class FactionKnowledge {
         }
     }
     factionSelf(world) {
-        return world.factionByName(this.factionSelfName);
+        return world.starCluster.factionByName(this.factionSelfName);
     }
     factionIsKnown(factionToCheck) {
         return this.factionNames.some(x => x == factionToCheck.name);
     }
     factions(world) {
         if (this._factions == null) {
-            this._factions = world.factions.filter(x => this.factionNames.indexOf(x.name) >= 0);
+            this._factions = world.factions().filter(x => this.factionNames.indexOf(x.name) >= 0);
         }
         return this._factions;
     }
@@ -99,7 +99,8 @@ class FactionKnowledge {
                 }
                 return returnValue;
             });
-            this._starCluster = new StarCluster(starClusterActual.name, nodesKnown, linksKnown);
+            this._starCluster = new StarCluster(starClusterActual.name, nodesKnown, linksKnown, [] // factions
+            );
         }
         return this._starCluster;
     }

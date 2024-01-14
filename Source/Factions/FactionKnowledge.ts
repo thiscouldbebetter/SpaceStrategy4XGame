@@ -67,7 +67,7 @@ class FactionKnowledge
 
 	factionSelf(world: WorldExtended): Faction
 	{
-		return world.factionByName(this.factionSelfName);
+		return world.starCluster.factionByName(this.factionSelfName);
 	}
 
 	factionIsKnown(factionToCheck: Faction): boolean
@@ -79,7 +79,7 @@ class FactionKnowledge
 	{
 		if (this._factions == null)
 		{
-			this._factions = world.factions.filter
+			this._factions = world.factions().filter
 			(
 				x => this.factionNames.indexOf(x.name) >= 0
 			);
@@ -195,7 +195,7 @@ class FactionKnowledge
 
 			this._starCluster = new StarCluster
 			(
-				starClusterActual.name, nodesKnown, linksKnown
+				starClusterActual.name, nodesKnown, linksKnown, [] // factions
 			);
 		}
 

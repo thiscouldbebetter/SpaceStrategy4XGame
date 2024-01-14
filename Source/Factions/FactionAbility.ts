@@ -175,7 +175,7 @@ class FactionAbility_Instances
 		var world = uwpe.world as WorldExtended;
 		var factionSelf = world.factionCurrent();
 		var factionSelfKnowledge = factionSelf.knowledge;
-		var factions = world.factions;
+		var factions = world.factions();
 		for (var i = 0; i < factions.length; i++)
 		{
 			var faction = factions[i];
@@ -308,7 +308,7 @@ class FactionAbility_Instances
 		var world = uwpe.world as WorldExtended;
 		var factionSelf = world.factionCurrent();
 
-		var factions = world.factions;
+		var factions = world.factions();
 		var factionsOther = factions.filter(x => x != factionSelf);
 		var technologiesAll = world.technologyGraph.technologies;
 
@@ -450,7 +450,7 @@ class FactionAbility_Instances
 		var world = uwpe.world as WorldExtended;
 		var factionSelf = world.factionCurrent();
 		var factionSelfDiplomacy = factionSelf.diplomacy;
-		var factions = world.factions;
+		var factions = world.factions();
 		var factionsOther = factions.filter(x => x != factionSelf);
 		for (var i = 0; i < factionsOther.length; i++)
 		{

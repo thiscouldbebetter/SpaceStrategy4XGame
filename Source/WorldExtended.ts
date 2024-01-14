@@ -56,6 +56,54 @@ class WorldExtended extends World
 		this.shouldDrawOnlyWhenUpdated = true;
 	}
 
+	static blank(universe: Universe): WorldExtended
+	{
+		var activityDefns = ArrayHelper.flattenArrayOfArrays
+		([
+			new ActivityDefn_Instances2()._All,
+			ActivityDefn.Instances()._All
+		]);
+
+		var viewSize = universe.display.sizeInPixels.clone();
+		var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
+
+		var buildableDefns =
+			// new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+			BuildableDefnsLegacy.Instance(mapCellSizeInPixels);
+
+		var technologyGraph =
+			// TechnologyGraph.demo(mapCellSizeInPixels);
+			TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
+
+		var viewDimension = viewSize.y;
+		var focalLength = viewDimension;
+		viewSize.z = focalLength;
+
+		var camera = new Camera
+		(
+			viewSize,
+			focalLength,
+			Disposition.fromPos
+			(
+				new Coords(-viewDimension, 0, 0), //pos,
+			),
+			null // entitiesInViewSort
+		);
+
+		var returnValue = new WorldExtended
+		(
+			null, // name,
+			DateTime.now(),
+			activityDefns,
+			buildableDefns._All,
+			technologyGraph,
+			camera,
+			null // starCluster
+		);
+
+		return returnValue;
+	}
+
 	// instance methods
 
 	activityDefnByName(activityDefnName: string): ActivityDefn
@@ -122,6 +170,15 @@ class WorldExtended extends World
 	placeForEntityLocatable(entityLocatable: Entity): any
 	{
 		return this.starCluster.placeForEntityLocatable(entityLocatable);
+	}
+
+	saveFileNameStem(): string
+	{
+		var returnValue = StringHelper.spacesToUnderscores
+		(
+			this.name + "-Round_" + this.starCluster.roundNumberCurrent()
+		);
+		return returnValue;
 	}
 
 	starClusterSet(value: StarCluster): void
@@ -204,6 +261,52 @@ class WorldExtended extends World
 
 	toSaveState(universe: Universe): SaveStateBase
 	{
-		return super.toSaveState(universe); // todo
+		var returnValue = new SaveStateWorldExtended().fromWorld(this);
+		return returnValue;
+	}
+}
+
+class SaveStateWorldExtended extends SaveStateWorld
+{
+	starCluster: StarCluster;
+
+	constructor()
+	{
+		super
+		(
+			"-", // name
+			"-", // placeName
+			"-", // timePlayingAsString
+			DateTime.now(), // timeSaved
+			null // imageSnapshot
+		);
+	}
+
+	fromWorld(world: World): SaveStateBase
+	{
+		var worldExtended = world as WorldExtended;
+
+		this.world = null; // Important to keep file size down.
+		this.starCluster = worldExtended.starCluster;
+		return this;
+	}
+
+	toWorld(universe: Universe): World
+	{
+		var world = WorldExtended.blank(universe);
+		world.starClusterSet(this.starCluster);
+		return world;
+	}
+
+	// Loadable.
+
+	load(): void
+	{
+		// todo
+	}
+
+	unload(): void
+	{
+		this.world = null;
 	}
 }

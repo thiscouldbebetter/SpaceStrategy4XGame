@@ -20,6 +20,29 @@ class WorldExtended extends World {
         }
         this.shouldDrawOnlyWhenUpdated = true;
     }
+    static blank(universe) {
+        var activityDefns = ArrayHelper.flattenArrayOfArrays([
+            new ActivityDefn_Instances2()._All,
+            ActivityDefn.Instances()._All
+        ]);
+        var viewSize = universe.display.sizeInPixels.clone();
+        var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
+        var buildableDefns = 
+        // new BuildableDefnsBasic(mapCellSizeInPixels)._All;
+        BuildableDefnsLegacy.Instance(mapCellSizeInPixels);
+        var technologyGraph = 
+        // TechnologyGraph.demo(mapCellSizeInPixels);
+        TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
+        var viewDimension = viewSize.y;
+        var focalLength = viewDimension;
+        viewSize.z = focalLength;
+        var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
+        );
+        var returnValue = new WorldExtended(null, // name,
+        DateTime.now(), activityDefns, buildableDefns._All, technologyGraph, camera, null // starCluster
+        );
+        return returnValue;
+    }
     // instance methods
     activityDefnByName(activityDefnName) {
         return this.defn.activityDefnByName(activityDefnName);
@@ -62,6 +85,10 @@ class WorldExtended extends World {
     }
     placeForEntityLocatable(entityLocatable) {
         return this.starCluster.placeForEntityLocatable(entityLocatable);
+    }
+    saveFileNameStem() {
+        var returnValue = StringHelper.spacesToUnderscores(this.name + "-Round_" + this.starCluster.roundNumberCurrent());
+        return returnValue;
     }
     starClusterSet(value) {
         this.starCluster = value;
@@ -109,6 +136,35 @@ class WorldExtended extends World {
     }
     // Saving.
     toSaveState(universe) {
-        return super.toSaveState(universe); // todo
+        var returnValue = new SaveStateWorldExtended().fromWorld(this);
+        return returnValue;
+    }
+}
+class SaveStateWorldExtended extends SaveStateWorld {
+    constructor() {
+        super("-", // name
+        "-", // placeName
+        "-", // timePlayingAsString
+        DateTime.now(), // timeSaved
+        null // imageSnapshot
+        );
+    }
+    fromWorld(world) {
+        var worldExtended = world;
+        this.world = null; // Important to keep file size down.
+        this.starCluster = worldExtended.starCluster;
+        return this;
+    }
+    toWorld(universe) {
+        var world = WorldExtended.blank(universe);
+        world.starClusterSet(this.starCluster);
+        return world;
+    }
+    // Loadable.
+    load() {
+        // todo
+    }
+    unload() {
+        this.world = null;
     }
 }

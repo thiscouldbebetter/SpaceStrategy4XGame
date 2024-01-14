@@ -26,26 +26,7 @@ class WorldExtendedCreator {
         return returnValue;
     }
     create_Blank() {
-        var activityDefns = ArrayHelper.flattenArrayOfArrays([
-            new ActivityDefn_Instances2()._All,
-            ActivityDefn.Instances()._All
-        ]);
-        var viewSize = this.universe.display.sizeInPixels.clone();
-        var mapCellSizeInPixels = viewSize.clone().divideScalar(16).zSet(0); // hack
-        var buildableDefns = 
-        // new BuildableDefnsBasic(mapCellSizeInPixels)._All;
-        BuildableDefnsLegacy.Instance(mapCellSizeInPixels);
-        var technologyGraph = 
-        // TechnologyGraph.demo(mapCellSizeInPixels);
-        TechnologyGraph.legacy(mapCellSizeInPixels, buildableDefns);
-        var viewDimension = viewSize.y;
-        var focalLength = viewDimension;
-        viewSize.z = focalLength;
-        var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
-        );
-        var returnValue = new WorldExtended(null, // name,
-        DateTime.now(), activityDefns, buildableDefns._All, technologyGraph, camera, null // starCluster
-        );
+        var returnValue = WorldExtended.blank(this.universe);
         return returnValue;
     }
     create_Factions(starCluster, technologyGraph, buildableDefns, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {

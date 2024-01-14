@@ -1,6 +1,6 @@
 "use strict";
 class WorldExtended extends World {
-    constructor(name, dateCreated, activityDefns, buildableDefns, technologyGraph, starCluster, factions, ships, camera) {
+    constructor(name, dateCreated, activityDefns, buildableDefns, technologyGraph, starCluster, camera) {
         super(name, dateCreated, new WorldDefn([
             activityDefns
         ]), // worldDefn
@@ -115,5 +115,9 @@ class WorldExtended extends World {
             }
         }
         this.timerTicksSoFar++;
+    }
+    // Saving.
+    toSaveState(universe) {
+        return super.toSaveState(universe); // todo
     }
 }

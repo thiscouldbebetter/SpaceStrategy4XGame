@@ -58,7 +58,7 @@ class WorldExtendedCreator
 		var focalLength = viewDimension;
 		viewSize.z = focalLength;
 
-		var factionsAndShips = this.create_FactionsAndShips
+		var factions = this.create_Factions
 		(
 			starCluster, 
 			technologyGraph,
@@ -68,8 +68,7 @@ class WorldExtendedCreator
 			factionColorForPlayer
 		);
 
-		var factions = factionsAndShips[0];
-		var ships = factionsAndShips[1];
+		factions.forEach(x => starCluster.factionAdd(x) );
 
 		var camera = new Camera
 		(
@@ -90,15 +89,13 @@ class WorldExtendedCreator
 			buildableDefns._All,
 			technologyGraph,
 			starCluster,
-			factions,
-			ships,
 			camera
 		);
 
 		return returnValue;
 	}
 
-	create_FactionsAndShips
+	create_Factions
 	(
 		starCluster: StarCluster,
 		technologyGraph: TechnologyGraph,
@@ -106,10 +103,9 @@ class WorldExtendedCreator
 		factionCount: number,
 		factionDefnNameForPlayer: string,
 		factionColorForPlayer: Color
-	): [ Faction[], Ship[] ]
+	): Faction[]
 	{
 		var factions = new Array<Faction>();
-		var ships = new Array<Ship>();
 
 		// hack
 		var worldDummy = new WorldExtended
@@ -120,8 +116,6 @@ class WorldExtendedCreator
 			buildableDefns._All,
 			technologyGraph,
 			starCluster,
-			factions,
-			ships, // ships
 			null // camera
 		);
 		this.universe.world = worldDummy;
@@ -169,7 +163,7 @@ class WorldExtendedCreator
 				factionHomeStarsystem.planetAdd(planet);
 			}
 
-			this.create_FactionsAndShips_1
+			this.create_Factions_1
 			(
 				worldDummy,
 				starCluster,
@@ -178,7 +172,6 @@ class WorldExtendedCreator
 				technologyGraph,
 				buildableDefns,
 				i,
-				ships,
 				factionHomeStarsystem
 			);
 		}
@@ -225,13 +218,10 @@ class WorldExtendedCreator
 			*/
 		}
 
-		var factionsAndShips: [Faction[], Ship[]] = 
-			[ factions, ships ];
-
-		return factionsAndShips;
+		return factions;
 	}
 
-	create_FactionsAndShips_1
+	create_Factions_1
 	(
 		worldDummy: WorldExtended,
 		starCluster: StarCluster,
@@ -240,7 +230,6 @@ class WorldExtendedCreator
 		technologyGraph: TechnologyGraph,
 		buildableDefns: BuildableDefnsLegacy,
 		i: number,
-		ships: Ship[],
 		factionHomeStarsystem: Starsystem
 	): void
 	{
@@ -283,27 +272,12 @@ class WorldExtendedCreator
 			factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
 		}
 
-		var factionHomePlanet = this.create_FactionsAndShips_1_1_HomePlanet
+		var factionHomePlanet = this.create_Factions_1_1_HomePlanet
 		(
 			worldDummy,
 			buildableDefns,
 			factionHomeStarsystem,
 			factionDefn
-		);
-
-		var factionShips = new Array<Ship>();
-
-		var factionKnowledge = new FactionKnowledge
-		(
-			factionName, // factionSelfName
-			[ factionName ], // factionNames
-			[], // todo - planetNames
-			ships.map(x => x.id), // shipIds
-			[ factionHomeStarsystem.name ],
-			factionHomeStarsystem.links(starCluster).map
-			(
-				(x: StarClusterLink) => x.name
-			)
 		);
 
 		var factionIntelligences = FactionIntelligence.Instances();
@@ -353,10 +327,34 @@ class WorldExtendedCreator
 			null, // factionDiplomacy,
 			factionTechnologyResearcher,
 			[ factionHomePlanet ],
-			factionShips,
-			factionKnowledge,
+			[], // ships
+			null, // factionKnowledge,
 			factionIntelligence,
 			factionVisualsForHullSizesByName
+		);
+
+		var factionShips = this.create_Factions_1_2_Ships
+		(
+			buildableDefns,
+			factionColor,
+			factionHomeStarsystem,
+			faction,
+			worldDummy
+		);
+
+		factionShips.forEach(x => faction.shipAdd(x) );
+
+		faction.knowledge = new FactionKnowledge
+		(
+			factionName, // factionSelfName
+			[ factionName ], // factionNames
+			[], // todo - planetNames
+			factionShips.map(x => x.id), // shipIds
+			[ factionHomeStarsystem.name ],
+			factionHomeStarsystem.links(starCluster).map
+			(
+				(x: StarClusterLink) => x.name
+			)
 		);
 
 		factionHomePlanet.factionable().factionSet(faction);
@@ -365,18 +363,6 @@ class WorldExtendedCreator
 		faction.diplomacy = factionDiplomacy;
 
 		factionTechnologyResearcher.factionSet(faction);
-
-		this.create_FactionsAndShips_1_2_Ships
-		(
-			buildableDefns,
-			factionColor,
-			factionHomeStarsystem,
-			faction,
-			factionShips,
-			worldDummy
-		);
-
-		ships.push(...factionShips);
 
 		starCluster.factionAdd(faction);
 
@@ -388,7 +374,7 @@ class WorldExtendedCreator
 		);
 	}
 
-	create_FactionsAndShips_1_1_HomePlanet
+	create_Factions_1_1_HomePlanet
 	(
 		worldDummy: WorldExtended,
 		buildableDefns: BuildableDefnsLegacy,
@@ -477,16 +463,17 @@ class WorldExtendedCreator
 		return factionHomePlanet;
 	}
 
-	create_FactionsAndShips_1_2_Ships
+	create_Factions_1_2_Ships
 	(
 		buildableDefns: BuildableDefnsLegacy,
 		factionColor: Color,
 		factionHomeStarsystem: Starsystem,
 		faction: Faction,
-		factionShips: Ship[],
 		worldDummy: WorldExtended
 	): Ship[]
 	{
+		var factionShips = new Array<Ship>();
+
 		var factionHomeStarsystemSize = factionHomeStarsystem.size();
 
 		var shipHullSize = ShipHullSize.Instances().Medium;

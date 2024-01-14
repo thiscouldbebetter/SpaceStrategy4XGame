@@ -462,8 +462,6 @@ class FactionKnowledge
 		if (this._world == null)
 		{
 			var starClusterKnown = this.starCluster(worldActual);
-			var factionsKnown = this.factions(worldActual);
-			var shipsKnown = this.ships(worldActual);
 
 			this._world = new WorldExtended
 			(
@@ -473,8 +471,6 @@ class FactionKnowledge
 				worldActual.buildableDefns,
 				worldActual.technologyGraph,
 				starClusterKnown,
-				factionsKnown,
-				shipsKnown, // todo
 				worldActual.camera
 			);
 		}

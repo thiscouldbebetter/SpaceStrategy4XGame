@@ -22,8 +22,6 @@ class WorldExtended extends World
 		buildableDefns: BuildableDefn[],
 		technologyGraph: TechnologyGraph,
 		starCluster: StarCluster,
-		factions: Faction[],
-		ships: Ship[],
 		camera: Camera
 	)
 	{
@@ -218,5 +216,12 @@ class WorldExtended extends World
 		}
 
 		this.timerTicksSoFar++;
+	}
+
+	// Saving.
+
+	toSaveState(universe: Universe): SaveStateBase
+	{
+		return super.toSaveState(universe); // todo
 	}
 }

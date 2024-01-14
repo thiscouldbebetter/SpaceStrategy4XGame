@@ -29,23 +29,20 @@ class WorldExtendedCreator {
         var starCluster = StarCluster.generateRandom(this.universe, worldName, StarClusterNodeDefn.Instances()._All, starsystemCount).scale(starClusterRadius);
         var focalLength = viewDimension;
         viewSize.z = focalLength;
-        var factionsAndShips = this.create_FactionsAndShips(starCluster, technologyGraph, buildableDefns, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
-        var factions = factionsAndShips[0];
-        var ships = factionsAndShips[1];
+        var factions = this.create_Factions(starCluster, technologyGraph, buildableDefns, factionCount, factionDefnNameForPlayer, factionColorForPlayer);
+        factions.forEach(x => starCluster.factionAdd(x));
         var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(-viewDimension, 0, 0)), null // entitiesInViewSort
         );
-        var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns._All, technologyGraph, starCluster, factions, ships, camera);
+        var returnValue = new WorldExtended(worldName, DateTime.now(), activityDefns, buildableDefns._All, technologyGraph, starCluster, camera);
         return returnValue;
     }
-    create_FactionsAndShips(starCluster, technologyGraph, buildableDefns, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {
+    create_Factions(starCluster, technologyGraph, buildableDefns, factionCount, factionDefnNameForPlayer, factionColorForPlayer) {
         var factions = new Array();
-        var ships = new Array();
         // hack
         var worldDummy = new WorldExtended("WorldDummy", // name
         DateTime.now(), // dateCreated
         [], // activityDefns
-        buildableDefns._All, technologyGraph, starCluster, factions, ships, // ships
-        null // camera
+        buildableDefns._All, technologyGraph, starCluster, null // camera
         );
         this.universe.world = worldDummy;
         var colorsForFactions = Faction.colors();
@@ -69,7 +66,7 @@ class WorldExtendedCreator {
                 var planet;
                 factionHomeStarsystem.planetAdd(planet);
             }
-            this.create_FactionsAndShips_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, ships, factionHomeStarsystem);
+            this.create_Factions_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, factionHomeStarsystem);
         }
         if (factionDefnNameForPlayer != null) {
             factions[0].defnName = factionDefnNameForPlayer;
@@ -99,10 +96,9 @@ class WorldExtendedCreator {
             );
             */
         }
-        var factionsAndShips = [factions, ships];
-        return factionsAndShips;
+        return factions;
     }
-    create_FactionsAndShips_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, ships, factionHomeStarsystem) {
+    create_Factions_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, factionHomeStarsystem) {
         var factionDefn = factionDefns[i];
         var factionName = factionDefn.name;
         factionHomeStarsystem.factionSetByName(factionName);
@@ -127,13 +123,7 @@ class WorldExtendedCreator {
             technologiesToLearnNames.forEach(x => factionTechnologyResearcher.technologyLearnByName(x));
             factionTechnologyResearcher.technologyBeingResearcedSetToFirstAvailable(worldDummy);
         }
-        var factionHomePlanet = this.create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn);
-        var factionShips = new Array();
-        var factionKnowledge = new FactionKnowledge(factionName, // factionSelfName
-        [factionName], // factionNames
-        [], // todo - planetNames
-        ships.map(x => x.id), // shipIds
-        [factionHomeStarsystem.name], factionHomeStarsystem.links(starCluster).map((x) => x.name));
+        var factionHomePlanet = this.create_Factions_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn);
         var factionIntelligences = FactionIntelligence.Instances();
         var factionIntelligence = (i == 0 ? factionIntelligences.Human : factionIntelligences.Computer);
         var shipHullSizes = ShipHullSize.Instances();
@@ -160,18 +150,25 @@ class WorldExtendedCreator {
             ]
         ]);
         var faction = new Faction(factionDefn.name, factionHomeStarsystem.name, factionHomePlanet.name, factionColor, null, // factionDiplomacy,
-        factionTechnologyResearcher, [factionHomePlanet], factionShips, factionKnowledge, factionIntelligence, factionVisualsForHullSizesByName);
+        factionTechnologyResearcher, [factionHomePlanet], [], // ships
+        null, // factionKnowledge,
+        factionIntelligence, factionVisualsForHullSizesByName);
+        var factionShips = this.create_Factions_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, worldDummy);
+        factionShips.forEach(x => faction.shipAdd(x));
+        faction.knowledge = new FactionKnowledge(factionName, // factionSelfName
+        [factionName], // factionNames
+        [], // todo - planetNames
+        factionShips.map(x => x.id), // shipIds
+        [factionHomeStarsystem.name], factionHomeStarsystem.links(starCluster).map((x) => x.name));
         factionHomePlanet.factionable().factionSet(faction);
         var factionDiplomacy = FactionDiplomacy.fromFactionSelf(faction);
         faction.diplomacy = factionDiplomacy;
         factionTechnologyResearcher.factionSet(faction);
-        this.create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy);
-        ships.push(...factionShips);
         starCluster.factionAdd(faction);
         var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
         factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, uwpe));
     }
-    create_FactionsAndShips_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn) {
+    create_Factions_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn) {
         var universe = this.universe;
         var planets = factionHomeStarsystem.planets;
         var planetIndexRandom = Math.floor(planets.length * Math.random());
@@ -215,7 +212,8 @@ class WorldExtendedCreator {
         factionHomePlanet.industry.buildablesAreChosenAutomatically = true;
         return factionHomePlanet;
     }
-    create_FactionsAndShips_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, factionShips, worldDummy) {
+    create_Factions_1_2_Ships(buildableDefns, factionColor, factionHomeStarsystem, faction, worldDummy) {
+        var factionShips = new Array();
         var factionHomeStarsystemSize = factionHomeStarsystem.size();
         var shipHullSize = ShipHullSize.Instances().Medium;
         var shipDefn = Ship.bodyDefnBuild(factionColor);

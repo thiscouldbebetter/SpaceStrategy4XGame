@@ -513,66 +513,72 @@ class Ship extends Entity {
     }
     static effectLeaveOrbitBuild() {
         return new BuildableEffect("Leave Orbit", 0, // order
-        (uwpe) => {
-            var universe = uwpe.universe;
-            var ship = uwpe.entity;
-            var planet = uwpe.place.planet;
-            var venuePrev = universe.venuePrev();
-            ship.planetOrbitExit(planet, uwpe);
-            universe.venueJumpTo(venuePrev);
-        });
+        // order
+        uwpe => Ship.effectLeaveOrbitPerform(uwpe));
+    }
+    static effectLeaveOrbitPerform(uwpe) {
+        var universe = uwpe.universe;
+        var ship = uwpe.entity;
+        var planet = uwpe.place.planet;
+        var venuePrev = universe.venuePrev();
+        ship.planetOrbitExit(planet, uwpe);
+        universe.venueJumpTo(venuePrev);
     }
     static effectCreateColonyBuild() {
         return new BuildableEffect("Colonize Planet", 0, // order
-        (uwpe) => {
-            var universe = uwpe.universe;
-            var display = universe.display;
-            var sizeDialog = display.sizeInPixelsHalf;
-            var venueToReturnTo = universe.venueCurrent();
-            var planet = uwpe.place.planet;
-            var ship = uwpe.entity;
-            var shipComponentEntities = ship.componentEntities;
-            var shipHasColonizer = shipComponentEntities.some((x) => Buildable.ofEntity(x).defn.name == "Colonizer");
-            if (shipHasColonizer == false) {
-                var message = "Ship has no colonizers on board.";
-                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
-                universe.venueJumpTo(venue);
-            }
-            else if (planet.factionable().faction != null) {
-                var message = "Planet is already colonized.";
-                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
-                universe.venueJumpTo(venue);
-            }
-            else {
-                alert("todo - colonize planet");
-            }
-        });
+        // order
+        uwpe => Ship.effectCreateColonyPerform(uwpe));
+    }
+    static effectCreateColonyPerform(uwpe) {
+        var universe = uwpe.universe;
+        var display = universe.display;
+        var sizeDialog = display.sizeInPixelsHalf;
+        var venueToReturnTo = universe.venueCurrent();
+        var planet = uwpe.place.planet;
+        var ship = uwpe.entity;
+        var shipComponentEntities = ship.componentEntities;
+        var shipHasColonizer = shipComponentEntities.some((x) => Buildable.ofEntity(x).defn.name == "Colonizer");
+        if (shipHasColonizer == false) {
+            var message = "Ship has no colonizers on board.";
+            var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+            universe.venueJumpTo(venue);
+        }
+        else if (planet.factionable().faction != null) {
+            var message = "Planet is already colonized.";
+            var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+            universe.venueJumpTo(venue);
+        }
+        else {
+            alert("todo - colonize planet");
+        }
     }
     static effectConquerPlanetBuild() {
         return new BuildableEffect("Conquer Planet", 0, // order
-        (uwpe) => {
-            var universe = uwpe.universe;
-            var display = universe.display;
-            var sizeDialog = display.sizeInPixelsHalf;
-            var venueToReturnTo = universe.venueCurrent();
-            var planet = uwpe.place.planet;
-            var ship = uwpe.entity;
-            var shipComponentEntities = ship.componentEntities;
-            var shipHasInvader = shipComponentEntities.some((x) => Buildable.ofEntity(x).defn.name == "Invasion Module");
-            if (shipHasInvader == false) {
-                var message = "Ship has no invasion modules on board.";
-                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
-                universe.venueJumpTo(venue);
-            }
-            else if (planet.factionable().faction == ship.factionable().faction) {
-                var message = "Planet is already owned by your faction.";
-                var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
-                universe.venueJumpTo(venue);
-            }
-            else {
-                alert("todo - conquer planet");
-            }
-        });
+        // order
+        uwpe => Ship.effectConquerPlanetPerform(uwpe));
+    }
+    static effectConquerPlanetPerform(uwpe) {
+        var universe = uwpe.universe;
+        var display = universe.display;
+        var sizeDialog = display.sizeInPixelsHalf;
+        var venueToReturnTo = universe.venueCurrent();
+        var planet = uwpe.place.planet;
+        var ship = uwpe.entity;
+        var shipComponentEntities = ship.componentEntities;
+        var shipHasInvader = shipComponentEntities.some((x) => Buildable.ofEntity(x).defn.name == "Invasion Module");
+        if (shipHasInvader == false) {
+            var message = "Ship has no invasion modules on board.";
+            var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+            universe.venueJumpTo(venue);
+        }
+        else if (planet.factionable().faction == ship.factionable().faction) {
+            var message = "Planet is already owned by your faction.";
+            var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+            universe.venueJumpTo(venue);
+        }
+        else {
+            alert("todo - conquer planet");
+        }
     }
     // Rounds.
     updateForRound(universe, world, faction) {
@@ -603,14 +609,17 @@ class Ship extends Entity {
             ["Projected", visualProjectedWithStem],
             ["Default", visualBody],
         ]), (uwpe, d) => {
-            var universe = uwpe.universe;
-            var venueCurrent = universe.venueCurrent();
-            var venueCurrentTypeName = venueCurrent.constructor.name;
-            var shouldBeProjected = (venueCurrentTypeName == VenueStarCluster.name)
-                || (venueCurrentTypeName == VenueStarsystem.name);
-            var childVisualName = shouldBeProjected ? "Projected" : "Default";
-            return [childVisualName];
+            return Ship.visualNameSelect(uwpe, d);
         });
         return visualSelect;
+    }
+    static visualNameSelect(uwpe, d) {
+        var universe = uwpe.universe;
+        var venueCurrent = universe.venueCurrent();
+        var venueCurrentTypeName = venueCurrent.constructor.name;
+        var shouldBeProjected = (venueCurrentTypeName == VenueStarCluster.name)
+            || (venueCurrentTypeName == VenueStarsystem.name);
+        var childVisualName = shouldBeProjected ? "Projected" : "Default";
+        return [childVisualName];
     }
 }

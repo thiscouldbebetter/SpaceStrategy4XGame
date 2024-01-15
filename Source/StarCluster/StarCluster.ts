@@ -591,8 +591,8 @@ class StarCluster extends PlaceBase
 				(c: Universe) =>
 				{
 					// hack
-					var venue = c.venueCurrent() as VenueStarsystem;
-					return (venue.model == null ? "" : venue.model().name);
+					var venue = c.venueCurrent() as VenueStarCluster;
+					return (venue.model == null ? "" : venue.model(c.world as WorldExtended).name);
 				}
 			),
 			fontNameAndHeight

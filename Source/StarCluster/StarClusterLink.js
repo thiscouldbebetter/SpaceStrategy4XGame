@@ -24,8 +24,8 @@ class StarClusterLink {
     }
     nodesLinked(cluster) {
         var returnValue = [
-            cluster.nodesByName.get(this.namesOfNodesLinked[0]),
-            cluster.nodesByName.get(this.namesOfNodesLinked[1]),
+            cluster.nodeByName(this.namesOfNodesLinked[0]),
+            cluster.nodeByName(this.namesOfNodesLinked[1]),
         ];
         return returnValue;
     }

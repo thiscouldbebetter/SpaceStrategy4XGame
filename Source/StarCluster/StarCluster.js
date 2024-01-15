@@ -313,7 +313,7 @@ class StarCluster extends PlaceBase {
         DataBinding.fromContextAndGet(universe, (c) => {
             // hack
             var venue = c.venueCurrent();
-            return (venue.model == null ? "" : venue.model().name);
+            return (venue.model == null ? "" : venue.model(c.world).name);
         }), fontNameAndHeight);
         var textRoundColonSpace = "Round:";
         var labelRound = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight), // pos

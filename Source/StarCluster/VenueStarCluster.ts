@@ -1,7 +1,6 @@
 
 class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSelection
 {
-	world: WorldExtended;
 	cameraEntity: Entity;
 
 	_entitySelected: Entity;
@@ -12,16 +11,14 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 	{
 		super(world);
 
-		this.world = world;
-
-		this.cameraEntity = new Entity("camera", [ this.world.camera ] );
+		this.cameraEntity = new Entity("camera", [ world.camera ] );
 
 		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
-	model(): StarCluster
+	model(world: WorldExtended): StarCluster
 	{
-		return this.world.starCluster;
+		return world.starCluster;
 	}
 
 	// camera
@@ -249,9 +246,10 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 			this.hasBeenUpdatedSinceDrawn = false;
 
 			universe.display.drawBackground(null, null);
-			var playerFaction = this.world.factionPlayer();
+			var world = universe.world as WorldExtended;
+			var playerFaction = world.factionPlayer();
 			var playerKnowledge = playerFaction.knowledge;
-			var worldKnown = playerKnowledge.world(universe, this.world);
+			var worldKnown = playerKnowledge.world(universe, world);
 			worldKnown.starCluster.drawForCamera(universe, worldKnown.camera);
 			this.venueControls.draw(universe);
 		}
@@ -264,12 +262,12 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	initialize(universe: Universe): void
 	{
-		var world = universe.world;
-		world.placeCurrent = this.model();
+		var world = universe.world as WorldExtended;
+		world.placeCurrent = this.model(world);
 
 		var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
 
-		this.world.initialize(uwpe);
+		world.initialize(uwpe);
 		this.venueControls = this.toControl(universe).toVenue();
 
 		var soundHelper = universe.soundHelper;

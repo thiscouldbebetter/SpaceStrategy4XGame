@@ -33,7 +33,7 @@ class LinkPortal extends Entity {
     }
     starsystemFrom(cluster) {
         var starsystemName = this.starsystemNameFrom();
-        var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
+        var returnValue = cluster.nodeByName(starsystemName).starsystem;
         return returnValue;
     }
     starsystemNameFrom() {
@@ -44,7 +44,7 @@ class LinkPortal extends Entity {
     }
     starsystemTo(cluster) {
         var starsystemName = this.starsystemNameTo();
-        var returnValue = cluster.nodesByName.get(starsystemName).starsystem;
+        var returnValue = cluster.nodeByName(starsystemName).starsystem;
         return returnValue;
     }
     // controls

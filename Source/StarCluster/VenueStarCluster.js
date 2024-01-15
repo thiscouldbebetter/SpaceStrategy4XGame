@@ -2,12 +2,11 @@
 class VenueStarCluster extends VenueWorld {
     constructor(world) {
         super(world);
-        this.world = world;
-        this.cameraEntity = new Entity("camera", [this.world.camera]);
+        this.cameraEntity = new Entity("camera", [world.camera]);
         this.hasBeenUpdatedSinceDrawn = true;
     }
-    model() {
-        return this.world.starCluster;
+    model(world) {
+        return world.starCluster;
     }
     // camera
     cameraCenterOnSelection() {
@@ -127,9 +126,10 @@ class VenueStarCluster extends VenueWorld {
         if (shouldDraw) {
             this.hasBeenUpdatedSinceDrawn = false;
             universe.display.drawBackground(null, null);
-            var playerFaction = this.world.factionPlayer();
+            var world = universe.world;
+            var playerFaction = world.factionPlayer();
             var playerKnowledge = playerFaction.knowledge;
-            var worldKnown = playerKnowledge.world(universe, this.world);
+            var worldKnown = playerKnowledge.world(universe, world);
             worldKnown.starCluster.drawForCamera(universe, worldKnown.camera);
             this.venueControls.draw(universe);
         }
@@ -139,9 +139,9 @@ class VenueStarCluster extends VenueWorld {
     }
     initialize(universe) {
         var world = universe.world;
-        world.placeCurrent = this.model();
+        world.placeCurrent = this.model(world);
         var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
-        this.world.initialize(uwpe);
+        world.initialize(uwpe);
         this.venueControls = this.toControl(universe).toVenue();
         var soundHelper = universe.soundHelper;
         soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");

@@ -164,31 +164,11 @@ class PlanetType
 			null // colorBorder
 		);
 
-		var colorHalo = colors.White; // Will change for faction.
-
-		var visualForPlanetHalo = VisualCircle.fromRadiusAndColorBorder
-		(
-			radius, colorHalo
-		);
-
 		var planetType = this;
 
 		var visualShipOrShieldInOrbitIndicator = new VisualDynamic
 		(
-			uwpe =>
-			{
-				var planet = uwpe.entity as Planet;
-
-				var isShipOrShieldPresentInOrbit =
-					planet.shipsOrShieldsArePresentInOrbit(uwpe.universe);
-
-				var visual =
-					isShipOrShieldPresentInOrbit
-					? visualForPlanetHalo
-					: VisualNone.Instance;
-
-				return visual;
-			}
+			uwpe => planetType.visualDynamicGet(uwpe)
 		);
 
 		var visualLabel = new VisualDynamic // todo - VisualDynamic2?
@@ -203,6 +183,32 @@ class PlanetType
 			visualShipOrShieldInOrbitIndicator,
 			visualLabel
 		]);
+
+		return visual;
+	}
+
+	visualDynamicGet(uwpe: UniverseWorldPlaceEntities): VisualBase
+	{
+		var planet = uwpe.entity as Planet;
+
+		var isShipOrShieldPresentInOrbit =
+			planet.shipsOrShieldsArePresentInOrbit(uwpe.universe);
+
+		var colors = Color.Instances();
+
+		var colorHalo = colors.White; // Will change for faction.
+
+		var radius = this.size.radiusInPixels;
+
+		var visualForPlanetHalo = VisualCircle.fromRadiusAndColorBorder
+		(
+			radius, colorHalo
+		);
+
+		var visual =
+			isShipOrShieldPresentInOrbit
+			? visualForPlanetHalo
+			: VisualNone.Instance;
 
 		return visual;
 	}

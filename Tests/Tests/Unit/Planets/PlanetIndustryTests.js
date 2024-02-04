@@ -4,7 +4,7 @@ class PlanetIndustryTests extends TestFixture {
         super(PlanetIndustryTests.name);
         this.universe = new EnvironmentMock().universeBuild();
         this.world = this.universe.world;
-        var faction = this.world.factions[0];
+        var faction = this.world.factions()[0];
         this.planet = faction.planetHome(this.world);
     }
     tests() {

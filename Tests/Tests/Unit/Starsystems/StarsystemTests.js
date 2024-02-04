@@ -4,7 +4,7 @@ class StarsystemTests extends TestFixture {
         super(StarsystemTests.name);
         this.universe = new EnvironmentMock().universeBuild();
         this.world = this.universe.world;
-        this.starsystem = this.world.factions[0].starsystemHome(this.world);
+        this.starsystem = this.world.factions()[0].starsystemHome(this.world);
         this.universe.soundHelper = new SoundHelperMock();
         var venue = new VenueStarsystem(null, this.starsystem);
         this.universe.venueNextSet(venue);
@@ -28,7 +28,8 @@ class StarsystemTests extends TestFixture {
     shipAddThenRemove() {
         var ship = this.shipBuild();
         Assert.isTrue(this.starsystem.ships.indexOf(ship) == -1);
-        this.starsystem.shipAdd(ship, this.world);
+        var uwpe = new UniverseWorldPlaceEntities(this.universe, this.world, null, null, null);
+        this.starsystem.shipAdd(ship, uwpe);
         Assert.isTrue(this.starsystem.ships.indexOf(ship) >= 0);
         this.starsystem.shipRemove(ship);
         Assert.isTrue(this.starsystem.ships.indexOf(ship) == -1);
@@ -40,7 +41,7 @@ class StarsystemTests extends TestFixture {
     }
     // Tests.
     generateRandom() {
-        var starsystem = Starsystem.generateRandom(this.universe);
+        var starsystem = Starsystem.generateRandom(this.universe, Starsystem.name + "Test");
         Assert.isNotNull(starsystem);
     }
     faction() {
@@ -48,7 +49,7 @@ class StarsystemTests extends TestFixture {
         Assert.isNotNull(faction);
     }
     linkPortalAdd() {
-        var starsystemOther = this.world.factions[1].starsystemHome(this.world);
+        var starsystemOther = this.world.factions()[1].starsystemHome(this.world);
         var linkPortal = new LinkPortal(LinkPortal.name, LinkPortal.bodyDefn(), Coords.create(), 
         // starsystemNamesFromAndTo
         [
@@ -56,7 +57,7 @@ class StarsystemTests extends TestFixture {
             starsystemOther.name
         ]);
         Assert.isTrue(this.starsystem.linkPortals.indexOf(linkPortal) == -1);
-        this.starsystem.linkPortalAdd(linkPortal);
+        this.starsystem.linkPortalAdd(this.universe, linkPortal);
         Assert.isTrue(this.starsystem.linkPortals.indexOf(linkPortal) >= 0);
     }
     linkPortalByStarsystemName() {
@@ -66,7 +67,7 @@ class StarsystemTests extends TestFixture {
         Assert.isTrue(linkPortalRetrievedByName == linkPortal0);
     }
     links() {
-        var network = this.world.network;
+        var network = this.world.starCluster;
         var links = this.starsystem.links(network);
         Assert.isNotNull(links);
     }

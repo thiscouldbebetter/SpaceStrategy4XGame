@@ -10,7 +10,7 @@ class StarsystemTests extends TestFixture
 		super(StarsystemTests.name);
 		this.universe = new EnvironmentMock().universeBuild();
 		this.world = this.universe.world as WorldExtended;
-		this.starsystem = this.world.factions[0].starsystemHome(this.world);
+		this.starsystem = this.world.factions()[0].starsystemHome(this.world);
 
 		this.universe.soundHelper = new SoundHelperMock();
 		var venue = new VenueStarsystem(null, this.starsystem);
@@ -42,7 +42,8 @@ class StarsystemTests extends TestFixture
 	{
 		var ship = this.shipBuild();
 		Assert.isTrue(this.starsystem.ships.indexOf(ship) == -1);
-		this.starsystem.shipAdd(ship, this.world);
+		var uwpe = new UniverseWorldPlaceEntities(this.universe, this.world, null, null, null);
+		this.starsystem.shipAdd(ship, uwpe);
 		Assert.isTrue(this.starsystem.ships.indexOf(ship) >= 0);
 		this.starsystem.shipRemove(ship);
 		Assert.isTrue(this.starsystem.ships.indexOf(ship) == -1);
@@ -67,7 +68,7 @@ class StarsystemTests extends TestFixture
 
 	generateRandom(): void
 	{
-		var starsystem = Starsystem.generateRandom(this.universe);
+		var starsystem = Starsystem.generateRandom(this.universe, Starsystem.name + "Test");
 		Assert.isNotNull(starsystem);
 	}
 
@@ -79,7 +80,7 @@ class StarsystemTests extends TestFixture
 
 	linkPortalAdd(): void
 	{
-		var starsystemOther = this.world.factions[1].starsystemHome(this.world);
+		var starsystemOther = this.world.factions()[1].starsystemHome(this.world);
 		var linkPortal = new LinkPortal
 		(
 			LinkPortal.name,
@@ -92,7 +93,7 @@ class StarsystemTests extends TestFixture
 			]
 		);
 		Assert.isTrue(this.starsystem.linkPortals.indexOf(linkPortal) == -1);
-		this.starsystem.linkPortalAdd(linkPortal);
+		this.starsystem.linkPortalAdd(this.universe, linkPortal);
 		Assert.isTrue(this.starsystem.linkPortals.indexOf(linkPortal) >= 0);
 	}
 
@@ -107,7 +108,7 @@ class StarsystemTests extends TestFixture
 
 	links(): void
 	{
-		var network = this.world.network;
+		var network = this.world.starCluster;
 		var links = this.starsystem.links(network);
 		Assert.isNotNull(links);
 	}

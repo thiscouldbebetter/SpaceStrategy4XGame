@@ -22,7 +22,7 @@ class VenueLayoutTests extends TestFixture {
     }
     venueLayoutBuild(universe) {
         var world = universe.world;
-        var faction = world.factions[0];
+        var faction = world.factions()[0];
         var planet = faction.planetHome(world);
         var layout = planet.layout(universe);
         var map = layout.map;
@@ -35,7 +35,7 @@ class VenueLayoutTests extends TestFixture {
             Drawable.fromVisual(new VisualNone()),
             Locatable.fromPos(mapCursorPos)
         ]);
-        map.bodies().push(entity);
+        map.entities().push(entity);
         var venueParent = null; // todo
         var modelParent = planet;
         var returnValue = new VenueLayout(venueParent, modelParent, layout);

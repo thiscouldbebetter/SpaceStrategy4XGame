@@ -194,6 +194,8 @@ import Movable = gf.Movable;
 // Profiles.
 
 import Profile = gf.Profile;
+import SaveStateBase = gf.SaveStateBase;
+import SaveStateWorld = gf.SaveStateWorld;
 
 // Storage.
 

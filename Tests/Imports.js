@@ -136,6 +136,8 @@ var Locatable = gf.Locatable;
 var Movable = gf.Movable;
 // Profiles.
 var Profile = gf.Profile;
+var SaveStateBase = gf.SaveStateBase;
+var SaveStateWorld = gf.SaveStateWorld;
 // Storage.
 var FileHelper = gf.FileHelper;
 var Serializer = gf.Serializer;

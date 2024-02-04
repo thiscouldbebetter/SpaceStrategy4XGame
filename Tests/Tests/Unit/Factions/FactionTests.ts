@@ -11,8 +11,8 @@ class FactionTests extends TestFixture
 		super(FactionTests.name);
 		this.universe = new EnvironmentMock().universeBuild();
 		this.world = this.universe.world as WorldExtended;
-		this.faction = this.world.factions[0];
-		this.factionOther = this.world.factions[1];
+		this.faction = this.world.factions()[0];
+		this.factionOther = this.world.factions()[1];
 	}
 
 	tests(): ( () => void )[]

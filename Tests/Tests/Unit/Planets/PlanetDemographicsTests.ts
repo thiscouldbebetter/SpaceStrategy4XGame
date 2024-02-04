@@ -11,7 +11,7 @@ class PlanetDemographicsTests extends TestFixture
 
 		this.universe = new EnvironmentMock().universeBuild();
 		this.world = this.universe.world as WorldExtended;
-		var faction = this.world.factions[0];
+		var faction = this.world.factions()[0];
 		this.planet = faction.planetHome(this.world);
 	}
 

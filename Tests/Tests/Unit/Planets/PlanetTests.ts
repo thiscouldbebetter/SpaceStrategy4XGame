@@ -11,7 +11,7 @@ class PlanetTests extends TestFixture
 
 		this.universe = new EnvironmentMock().universeBuild();
 		this.world = this.universe.world as WorldExtended;
-		var faction = this.world.factions[0];
+		var faction = this.world.factions()[0];
 		this.planet = faction.planetHome(this.world);
 	}
 
@@ -42,7 +42,7 @@ class PlanetTests extends TestFixture
 	{
 		var ship = this.shipBuild();
 		Assert.isTrue(this.planet.ships.indexOf(ship) == -1);
-		this.planet.shipAddToOrbit(ship);
+		this.planet.shipAddToOrbit(ship, this.universe);
 		Assert.isTrue(this.planet.ships.indexOf(ship) >= 0);
 		this.planet.shipLeaveOrbit(ship, this.world);
 		Assert.isTrue(this.planet.ships.indexOf(ship) == -1);

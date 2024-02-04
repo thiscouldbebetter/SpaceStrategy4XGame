@@ -94,7 +94,7 @@ class SystemTests extends TestFixture {
         var linkPortalToGoTo = starsystemUser.linkPortals[0];
         Assert.isNotNull(linkPortalToGoTo);
         var starsystemBeyondLinkName = linkPortalToGoTo.name.split(" to ")[1];
-        var network = world.network;
+        var network = world.starCluster;
         var starsystemBeyondLink = network.starsystemByName(starsystemBeyondLinkName);
         var factionUserKnowledge = factionUser.knowledge;
         var starsystemsKnown = factionUserKnowledge.starsystems(world);
@@ -123,7 +123,7 @@ class SystemTests extends TestFixture {
         shipOrder.isComplete = false; // hack - This shouldn't be necessary, but is.
         universe.venueCurrent = null;
         var shipLoc = ship.locatable().loc;
-        while (shipLoc.placeName.startsWith(NetworkLink2.name)) {
+        while (shipLoc.placeName.startsWith(StarClusterLink.name)) {
             world.updateForRound_IgnoringNotifications(uwpe);
         }
         Assert.isTrue(shipLoc.placeName.startsWith(Starsystem.name));

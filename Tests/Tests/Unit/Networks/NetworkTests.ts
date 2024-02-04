@@ -2,7 +2,7 @@
 class Network2Tests extends TestFixture
 {
 	universe: Universe;
-	network: Network2;
+	network: StarCluster;
 	display: DisplayTest;
 
 	constructor()
@@ -14,11 +14,11 @@ class Network2Tests extends TestFixture
 		this.display = DisplayTest.default();
 	}
 
-	networkBuildRandom(): Network2
+	networkBuildRandom(): StarCluster
 	{
-		var nodeDefns = NetworkNodeDefn.Instances()._All;
+		var nodeDefns = StarClusterNodeDefn.Instances()._All;
 		var numberOfNodes = 12;
-		var network = Network2.generateRandom
+		var network = StarCluster.generateRandom
 		(
 			this.universe, "[networkName]", nodeDefns, numberOfNodes
 		);
@@ -116,7 +116,7 @@ class Network2Tests extends TestFixture
 	draw(): void
 	{
 		var world = this.universe.world as WorldExtended;
-		var networkFromUniverse = world.network; // hack - Not this.network.
+		var networkFromUniverse = world.starCluster; // hack - Not this.network.
 
 		networkFromUniverse.draw(this.universe, world, this.display);
 	}

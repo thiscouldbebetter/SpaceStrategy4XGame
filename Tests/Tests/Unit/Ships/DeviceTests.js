@@ -4,9 +4,9 @@ class DeviceTests extends TestFixture {
         super(DeviceTests.name);
         this.universe = new EnvironmentMock().universeBuild();
         this.world = this.universe.world;
-        var starsystem = this.world.factions[0].starsystemHome(this.world);
+        var starsystem = this.world.factions()[0].starsystemHome(this.world);
         this.ship = starsystem.ships[0];
-        var devices = this.ship.deviceUser().devices(this.ship);
+        var devices = this.ship.deviceUser().devices();
         this.device = devices[0];
         this.uwpe = new UniverseWorldPlaceEntities(this.universe, this.world, null, this.ship, null);
     }

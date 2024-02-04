@@ -16,7 +16,7 @@ class LayoutTests extends TestFixture {
     // Setup.
     layoutBuild(universe) {
         var world = universe.world;
-        var planet = world.network.nodes[0].starsystem.planets[0];
+        var planet = world.starCluster.nodes[0].starsystem.planets[0];
         var layout = planet.layout(universe);
         return layout;
     }
@@ -28,7 +28,7 @@ class LayoutTests extends TestFixture {
     planet() {
         var universe = this.universeBuild();
         var world = universe.world;
-        var planet = world.network.nodes[0].starsystem.planets[0];
+        var planet = world.starCluster.nodes[0].starsystem.planets[0];
         var layout = planet.layout(universe);
         Assert.isNotNull(layout);
     }

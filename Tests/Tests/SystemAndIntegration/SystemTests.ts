@@ -157,7 +157,7 @@ class SystemTests extends TestFixture
 		var starsystemBeyondLinkName =
 			linkPortalToGoTo.name.split(" to ")[1];
 
-		var network = world.network;
+		var network = world.starCluster;
 		var starsystemBeyondLink = network.starsystemByName(starsystemBeyondLinkName);
 
 		var factionUserKnowledge = factionUser.knowledge;
@@ -215,7 +215,7 @@ class SystemTests extends TestFixture
 
 		var shipLoc = ship.locatable().loc;
 
-		while (shipLoc.placeName.startsWith(NetworkLink2.name))
+		while (shipLoc.placeName.startsWith(StarClusterLink.name))
 		{
 			world.updateForRound_IgnoringNotifications(uwpe);
 		}

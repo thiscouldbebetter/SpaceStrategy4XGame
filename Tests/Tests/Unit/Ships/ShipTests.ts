@@ -4,14 +4,22 @@ class ShipTests extends TestFixture
 	universe: Universe;
 	world: WorldExtended;
 	ship: Ship;
+	
+	universeAndWorldAsUwpe: UniverseWorldPlaceEntities;
 
 	constructor()
 	{
 		super(ShipTests.name);
+
 		this.universe = new EnvironmentMock().universeBuild();
 		this.world = this.universe.world as WorldExtended;
-		var faction = this.world.factions[0];
+		var faction = this.world.factions()[0];
 		this.ship = faction.ships[0];
+	
+		this.universeAndWorldAsUwpe = new UniverseWorldPlaceEntities
+		(
+			this.universe, this.world, null, null, null
+		);
 	}
 
 	tests(): ( () => void )[]
@@ -40,12 +48,12 @@ class ShipTests extends TestFixture
 
 	linkPortalEnterThenExit(): void
 	{
-		var network = this.world.network;
+		var network = this.world.starCluster;
 		var starsystemFrom = this.ship.starsystem(this.world);
 		var linkPortal = starsystemFrom.linkPortals[0];
 		this.ship.linkPortalEnter(network, linkPortal, this.ship);
 		var link = linkPortal.link(network);
-		this.ship.linkExit(this.world, link);
+		this.ship.linkExit(link, this.universeAndWorldAsUwpe);
 	}
 
 	// Tests.
@@ -72,7 +80,7 @@ class ShipTests extends TestFixture
 
 	devicesUsable(): void
 	{
-		var devicesUsable = this.ship.deviceUser().devicesUsable(this.ship);
+		var devicesUsable = this.ship.deviceUser().devicesUsable();
 		Assert.isNotNull(devicesUsable);
 	}
 
@@ -98,7 +106,7 @@ class ShipTests extends TestFixture
 	movementThroughLinkPerTurn(): void
 	{
 		var link = null;
-		var speed = this.ship.movementSpeedThroughLinkThisRound(link);
+		var speed = this.ship.speedThroughLinkThisRound(link);
 		Assert.isNotNull(speed);
 	}
 

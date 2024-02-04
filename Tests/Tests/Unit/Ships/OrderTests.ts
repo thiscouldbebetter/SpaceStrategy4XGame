@@ -13,7 +13,7 @@ class OrderTests extends TestFixture
 
 		this.universe = new EnvironmentMock().universeBuild();
 		this.world = this.universe.world as WorldExtended;
-		this.starsystem = this.world.factions[0].starsystemHome(this.world);
+		this.starsystem = this.world.factions()[0].starsystemHome(this.world);
 		this.ship = this.starsystem.ships[0];
 		this.order = new Order().defnSet
 		(

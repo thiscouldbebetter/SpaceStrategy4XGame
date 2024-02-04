@@ -53,24 +53,24 @@ class MapLayoutTests extends TestFixture {
     // instance methods
     bodiesNeighboringCursor() {
         var map = this.mapLayoutBuild();
-        var entities = map.bodiesNeighboringCursor();
+        var entities = map.entitiesNeighboringCursor();
         Assert.isNotNull(entities);
     }
     bodiesNeighboringPosInCells() {
         var map = this.mapLayoutBuild();
         var centerPosInCells = Coords.zeroes();
-        var entities = map.bodiesNeighboringPosInCells(centerPosInCells);
+        var entities = map.entitiesNeighboringPosInCells(centerPosInCells);
         Assert.isNotNull(entities);
     }
     bodyAtPosInCells() {
         var map = this.mapLayoutBuild();
         var posInCells = Coords.zeroes();
-        var entityAtPos = map.bodyAtPosInCells(posInCells);
+        var entityAtPos = map.entityAtPosInCells(posInCells);
         Assert.isNotNull(entityAtPos);
     }
     bodyAtCursor() {
         var map = this.mapLayoutBuild();
-        var entityAtCursor = map.bodyAtCursor();
+        var entityAtCursor = map.entityAtCursor();
         Assert.isNotNull(entityAtCursor);
     }
     terrainAtPosInCells() {

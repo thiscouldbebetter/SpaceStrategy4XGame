@@ -351,7 +351,9 @@ class Starsystem extends PlaceBase {
             venue = venueAsVenueFader.venueCurrent();
         }
         var venueAsVenueStarsystem = venue;
-        var camera = venueAsVenueStarsystem.cameraEntity.camera();
+        var camera = venueTypeName == VenueStarsystem.name
+            ? venueAsVenueStarsystem.cameraEntity.camera()
+            : null;
         return camera;
     }
     draw(universe, world, display) {

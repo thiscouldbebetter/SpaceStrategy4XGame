@@ -9,7 +9,7 @@ class FactionTests extends TestFixture {
     }
     tests() {
         var returnTests = [
-            this.fromName,
+            this.fromDefnName,
             this.planetHome,
             this.researchSessionStart,
             this.starsystemHome,
@@ -18,7 +18,6 @@ class FactionTests extends TestFixture {
             this.allies,
             this.enemies,
             this.factionsMatchingRelationshipState,
-            this.relationsInitialize,
             this.relationshipByFactionName,
             this.selfAndAllies,
             this.strategicValue,
@@ -29,8 +28,9 @@ class FactionTests extends TestFixture {
         return returnTests;
     }
     // Tests.
-    fromName() {
-        var faction = Faction.fromName("Faction");
+    fromDefnName() {
+        var defn = FactionDefn.Instances()._All[0];
+        var faction = Faction.fromDefnName(defn.name);
         Assert.isNotNull(faction);
     }
     planetHome() {
@@ -72,9 +72,6 @@ class FactionTests extends TestFixture {
         var factions = this.faction.factionsMatchingRelationshipState(this.world, DiplomaticRelationshipState.Instances().Peace);
         Assert.isNotNull(factions);
     }
-    relationsInitialize() {
-        this.faction.relationsInitialize(this.universe);
-    }
     relationshipByFactionName() {
         var relationship = this.faction.relationshipByFactionName(this.factionOther.name);
         Assert.isNull(relationship);
@@ -89,7 +86,7 @@ class FactionTests extends TestFixture {
     }
     // notifications
     notificationSessionStart() {
-        this.faction.notificationSessionStart(this.universe);
+        this.faction.notificationSessionStart(this.universe, Coords.zeroes());
     }
     // turns
     researchThisRound() {

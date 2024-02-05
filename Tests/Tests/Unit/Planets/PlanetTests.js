@@ -31,7 +31,8 @@ class PlanetTests extends TestFixture {
         Assert.isTrue(this.planet.ships.indexOf(ship) == -1);
         this.planet.shipAddToOrbit(ship, this.universe);
         Assert.isTrue(this.planet.ships.indexOf(ship) >= 0);
-        this.planet.shipLeaveOrbit(ship, this.world);
+        var uwpe = new UniverseWorldPlaceEntities(this.universe, this.world, null, null, null);
+        this.planet.shipLeaveOrbit(ship, uwpe);
         Assert.isTrue(this.planet.ships.indexOf(ship) == -1);
     }
     shipBuild() {

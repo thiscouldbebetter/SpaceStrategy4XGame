@@ -94,7 +94,10 @@ var Mesh = gf.Mesh;
 var Transform_Camera = gf.Transform_Camera;
 var Transform_Locate = gf.Transform_Locate;
 var Transform_Orient = gf.Transform_Orient;
+var Transform_OrientForCamera = gf.Transform_OrientForCamera;
+var Transform_Perspective = gf.Transform_Perspective;
 var Transform_Translate = gf.Transform_Translate;
+var Transform_TranslateInvert = gf.Transform_TranslateInvert;
 var Transforms = gf.Transforms;
 // Input.
 var ActionToInputsMapping = gf.ActionToInputsMapping;

@@ -22,6 +22,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlScrollbar.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlSelect.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlSelectOption.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlSoundScheme.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlStyle.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlTabbed.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Controls/ControlTextBox.js"></script>
@@ -34,6 +35,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Color.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Drawable.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Display2D.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Display/DisplayFarToNear.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/DisplayTest.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/DisplayRecorder.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/VenueFader.js"></script>
@@ -44,6 +46,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualCircleGradient.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualDirectional.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualDynamic.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualEllipse.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualGroup.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualImageFromLibrary.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualImageImmediate.js"></script>
@@ -53,6 +56,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualOffset.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualPolygon.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualRectangle.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualRotate.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualSelect.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Display/Visuals/VisualText.js"></script>
 
@@ -143,6 +147,7 @@
 <script type="text/javascript" src="../../../Source/Framework/Source/Model/Talk/ConversationDefn.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Profiles/Profile.js"></script>
+<script type="text/javascript" src="../../../Source/Framework/Source/Profiles/SaveState.js"></script>
 
 <script type="text/javascript" src="../../../Source/Framework/Source/Storage/FileHelper.js"></script>
 <script type="text/javascript" src="../../../Source/Framework/Source/Storage/Serializer.js"></script>
@@ -192,6 +197,7 @@
 <script type="text/javascript" src="../../../Source/Factions/FactionDefn.js"></script>
 <script type="text/javascript" src="../../../Source/Factions/FactionDiplomacy.js"></script>
 <script type="text/javascript" src="../../../Source/Factions/FactionIntelligence.js"></script>
+<script type="text/javascript" src="../../../Source/Factions/FactionNames.js"></script>
 <script type="text/javascript" src="../../../Source/Factions/FactionKnowledge.js"></script>
 <script type="text/javascript" src="../../../Source/Factions/Factionable.js"></script>
 
@@ -240,6 +246,7 @@
 <script type="text/javascript" src="../../../Source/Starsystems/Cursor.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/LinkPortal.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/Star.js"></script>
+<script type="text/javascript" src="../../../Source/Starsystems/StarNames.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/StarType.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/Starsystem.js"></script>
 <script type="text/javascript" src="../../../Source/Starsystems/VenueStarsystem.js"></script>
@@ -300,9 +307,6 @@
 <script type="text/javascript" src="Layouts/ResourceTests.js"></script>
 <script type="text/javascript" src="Layouts/VenueLayoutTests.js"></script>
 
-<!-- Networks. -->
-<script type="text/javascript" src="Networks/NetworkTests.js"></script>
-
 <!-- Notifications. -->
 <script type="text/javascript" src="Notifications/NotificationTests.js"></script>
 <script type="text/javascript" src="Notifications/NotificationSessionTests.js"></script>
@@ -318,6 +322,9 @@
 <script type="text/javascript" src="Ships/OrderDefnTests.js"></script>
 <script type="text/javascript" src="Ships/ProjectileTests.js"></script>
 <script type="text/javascript" src="Ships/ShipTests.js"></script>
+
+<!-- StarClusters. -->
+<script type="text/javascript" src="StarClusters/StarClusterTests.js"></script>
 
 <!-- Starsystems. -->
 <script type="text/javascript" src="Starsystems/StarsystemTests.js"></script>
@@ -350,9 +357,6 @@
 			new ResourceTests(),
 			new VenueLayoutTests(),
 
-			// Networks.
-			new Network2Tests(),
-
 			// Notifications.
 			new Notification2Tests(),
 			new NotificationSessionTests(),
@@ -368,6 +372,9 @@
 			new OrderDefnTests(),
 			new ProjectileTests(),
 			new ShipTests(),
+
+			// StarClusters.
+			new StarClusterTests(),
 
 			// Starsystems.
 			new StarsystemTests()

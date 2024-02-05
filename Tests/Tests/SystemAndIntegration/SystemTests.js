@@ -13,7 +13,7 @@ class SystemTests extends TestFixture {
     playFromStart() {
         var universe = new EnvironmentMock().universeBuild();
         var world = universe.world;
-        var factionUser = world.factions[0];
+        var factionUser = world.factions()[0];
         var starsystemUser = factionUser.starsystemHome(world);
         var planetUser = factionUser.planetHome(world);
         var positionsAvailableToBuildAt = planetUser.cellPositionsAvailableToBuildOnSurface(universe);
@@ -28,12 +28,14 @@ class SystemTests extends TestFixture {
         Assert.isTrue(buildableLaboratory.isComplete);
         var researcher = factionUser.technologyResearcher;
         var technologiesNeededToBuildShipNames = [
-            "Drives, Basic",
-            "Generators, Basic",
-            "Biology, Basic",
-            "Shields, Basic",
-            "Space Structures, Basic",
-            "Weapons, Basic"
+            "Orbital Structures",
+            "Interplanetary Exploration",
+            "Tonklin Diary",
+            "Xenobiology",
+            "Environmental Encapsulation",
+            "Spectral Analysis",
+            "Superconductivity",
+            "Spacetime Surfing"
         ];
         for (var t = 0; t < technologiesNeededToBuildShipNames.length; t++) {
             var technologyToResearchName = technologiesNeededToBuildShipNames[t];
@@ -90,7 +92,7 @@ class SystemTests extends TestFixture {
         factionUser, universe.display.sizeInPixels // sizeDialog
         );
         Assert.isNotNull(ship);
-        ship.planetOrbitExit(world, planetUser);
+        ship.planetOrbitExit(planetUser, uwpe);
         var linkPortalToGoTo = starsystemUser.linkPortals[0];
         Assert.isNotNull(linkPortalToGoTo);
         var starsystemBeyondLinkName = linkPortalToGoTo.name.split(" to ")[1];
@@ -106,13 +108,13 @@ class SystemTests extends TestFixture {
         var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
         while (shipOrder.isComplete == false) {
             var shipTurnAndMove = ship.deviceUser();
-            var shipEnergyBeforeMove = shipTurnAndMove.energyRemainingThisRound();
-            if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove(ship)) {
+            var shipEnergyBeforeMove = shipTurnAndMove.energyRemainingThisRound(uwpe);
+            if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove()) {
                 world.updateForRound_IgnoringNotifications(uwpe);
             }
             else {
                 while (shipOrder.isComplete == false
-                    && shipTurnAndMove.energyRemainingThisRound() == shipEnergyBeforeMove) {
+                    && shipTurnAndMove.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove) {
                     shipOrder.obey(uwpe);
                     universe.updateForTimerTick();
                 }
@@ -130,27 +132,21 @@ class SystemTests extends TestFixture {
         Assert.isTrue(shipLoc.placeName.endsWith(starsystemBeyondLink.name));
         Assert.isTrue(starsystemsKnown.length == 2);
         Assert.isTrue(starsystemsKnown.indexOf(starsystemBeyondLink) >= 0);
-        var starsystemArrivedAt = world.network.starsystemByName(starsystemBeyondLinkName);
+        var starsystemArrivedAt = world.starCluster.starsystemByName(starsystemBeyondLinkName);
         universe.venueNextSet(starsystemArrivedAt.toVenue()); // Can this be avoided?
         var planetsInStarsystemArrivedAt = starsystemArrivedAt.planets;
         var planetToColonize = planetsInStarsystemArrivedAt.find(x => x.factionable().faction() == null);
         if (planetToColonize != null) {
             shipOrder.defnSet(orderDefns.Go).entityBeingTargetedSet(planetToColonize);
-            /*
-            .assignToEntityOrderable
-            (
-                ship
-            );
-            */
             while (shipOrder.isComplete == false) {
                 var shipDeviceUser = ship.deviceUser();
-                var shipEnergyBeforeMove = shipDeviceUser.energyRemainingThisRound();
-                if (shipEnergyBeforeMove < shipDeviceUser.energyPerMove(ship)) {
+                var shipEnergyBeforeMove = shipDeviceUser.energyRemainingThisRound(uwpe);
+                if (shipEnergyBeforeMove < shipDeviceUser.energyPerMove()) {
                     world.updateForRound_IgnoringNotifications(uwpe);
                 }
                 else {
                     while (shipOrder.isComplete == false
-                        && shipDeviceUser.energyRemainingThisRound() == shipEnergyBeforeMove) {
+                        && shipDeviceUser.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove) {
                         shipOrder.obey(uwpe);
                         universe.updateForTimerTick();
                     }

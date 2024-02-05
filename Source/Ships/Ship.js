@@ -587,9 +587,6 @@ class Ship extends Entity {
         deviceUser.updateForRound(uwpe);
     }
     // Visuals.
-    visual(world) {
-        return new VisualNone(); // todo
-    }
     static visualForColorAndScaleFactor(color, scaleFactor) {
         var visualBody = new VisualGroup([
             new VisualPolygon(new Path([

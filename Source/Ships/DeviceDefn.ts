@@ -42,14 +42,17 @@ class DeviceDefn
 
 	use(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var entityUsing = uwpe.entity;
-		var deviceUser = DeviceUser.ofEntity(entityUsing);
-		var energyNeededIsAvailable =
-			deviceUser.energyRemainsThisRound(this.energyPerUse);
-		if (energyNeededIsAvailable)
+		if (this._use != null)
 		{
-			deviceUser.energyRemainingThisRoundSubtract(this.energyPerUse);
-			this._use(uwpe);
+			var entityUsing = uwpe.entity;
+			var deviceUser = DeviceUser.ofEntity(entityUsing);
+			var energyNeededIsAvailable =
+				deviceUser.energyRemainsThisRound(this.energyPerUse);
+			if (energyNeededIsAvailable)
+			{
+				deviceUser.energyRemainingThisRoundSubtract(this.energyPerUse);
+				this._use(uwpe);
+			}
 		}
 	}
 }

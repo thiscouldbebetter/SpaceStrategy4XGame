@@ -12,6 +12,6 @@ class SoundHelperMock implements SoundHelper
 	soundVolume: number;
 	soundWithNamePlayAsEffect(universe: Universe, soundName: string): void {}
 	soundWithNamePlayAsMusic(universe: Universe, soundName: string): void {}
-	soundWithNameStop(name: string): void
+	soundWithNameStop(name: string): void {}
 	soundsAllStop(universe: Universe): void {}
 }

@@ -5,7 +5,7 @@ class EnvironmentMock {
         var display = DisplayTest.default();
         var soundHelper = new SoundHelperMock();
         var mediaLibrary = MediaLibrary.default();
-        var controlBuilder = new ControlBuilderExtended();
+        var controlBuilder = new ControlBuilderExtended(ControlBuilder.default());
         var worldCreatorSettings = {
             "starsystemCount": 12,
             "factionCount": 2,
@@ -16,14 +16,6 @@ class EnvironmentMock {
                 return areAllSettingsValid;
             }
         };
-        /*
-        var worldCreator = new WorldCreator
-        (
-            (u: Universe, wc: WorldCreator) => WorldExtended.create(u, wc),
-            null,
-            worldCreatorSettings
-        );
-        */
         var worldCreator = new WorldCreator((universe, worldCreator) => {
             return new WorldExtendedCreator(universe, worldCreator).create();
         }, (universe, worldCreator) => {

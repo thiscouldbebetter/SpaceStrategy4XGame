@@ -17,6 +17,17 @@ class StarClusterLink implements EntityPropertyBase
 		this.ships = new Array<Ship>();
 	}
 
+	static fromNamesOfNodesLinked(node0Name: string, node1Name: string): StarClusterLink
+	{
+		var linkType = StarClusterLinkType.Instances().Normal;
+		var link = new StarClusterLink
+		(
+			linkType,
+			[node0Name, node1Name]
+		);
+		return link;
+	}
+
 	direction(cluster: StarCluster): Coords
 	{
 		return this.displacement(cluster).normalize();

@@ -6,6 +6,11 @@ class StarClusterLink {
         this.name = this.namesOfNodesLinked.join("-");
         this.ships = new Array();
     }
+    static fromNamesOfNodesLinked(node0Name, node1Name) {
+        var linkType = StarClusterLinkType.Instances().Normal;
+        var link = new StarClusterLink(linkType, [node0Name, node1Name]);
+        return link;
+    }
     direction(cluster) {
         return this.displacement(cluster).normalize();
     }

@@ -53,7 +53,7 @@ class Faction implements EntityProperty<Faction>
 
 		this.notificationSession = new NotificationSession(this.name, []);
 
-		this.shipsBuiltSoFarCount = ships.length;
+		this.shipsBuiltSoFarCount = this.ships.length;
 	}
 
 	static fromEntity(entity: Entity): Faction
@@ -63,17 +63,21 @@ class Faction implements EntityProperty<Faction>
 
 	static fromDefnName(defnName: string): Faction
 	{
+		var colorRed = Color.Instances().Red;
+		var technologyResearcher = TechnologyResearcher.default();
+		var factionKnowledge = FactionKnowledge.fromFactionSelfName(defnName);
+
 		var faction = new Faction
 		(
 			defnName,
 			null, // homeStarsystemName,
 			null, // homePlanetName,
-			Color.Instances().Red,
+			colorRed,
 			null, // diplomacy
-			TechnologyResearcher.default(),
+			technologyResearcher,
 			null, // planets
 			null, // ships
-			FactionKnowledge.fromFactionSelfName(defnName),
+			factionKnowledge,
 			null, // intelligence
 			null // visuals
 		);

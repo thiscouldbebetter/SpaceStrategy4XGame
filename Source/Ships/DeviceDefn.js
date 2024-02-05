@@ -15,12 +15,14 @@ class DeviceDefn {
         this._initialize(uwpe);
     }
     use(uwpe) {
-        var entityUsing = uwpe.entity;
-        var deviceUser = DeviceUser.ofEntity(entityUsing);
-        var energyNeededIsAvailable = deviceUser.energyRemainsThisRound(this.energyPerUse);
-        if (energyNeededIsAvailable) {
-            deviceUser.energyRemainingThisRoundSubtract(this.energyPerUse);
-            this._use(uwpe);
+        if (this._use != null) {
+            var entityUsing = uwpe.entity;
+            var deviceUser = DeviceUser.ofEntity(entityUsing);
+            var energyNeededIsAvailable = deviceUser.energyRemainsThisRound(this.energyPerUse);
+            if (energyNeededIsAvailable) {
+                deviceUser.energyRemainingThisRoundSubtract(this.energyPerUse);
+                this._use(uwpe);
+            }
         }
     }
 }

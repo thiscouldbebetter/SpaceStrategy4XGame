@@ -327,7 +327,6 @@ class Ship extends Entity
 		(
 			x => (x.starsystem.ships.indexOf(this) >= 0)
 		);
-
 		var starsystemFound =
 		(
 			starClusterNodeFound == null ? null : starClusterNodeFound.starsystem
@@ -1171,11 +1170,6 @@ class Ship extends Entity
 	}
 
 	// Visuals.
-
-	visual(world: WorldExtended): VisualBase
-	{
-		return new VisualNone(); // todo
-	}
 
 	static visualForColorAndScaleFactor(color: Color, scaleFactor: number): VisualBase
 	{

@@ -33,6 +33,7 @@ class MapLayoutTests extends TestFixture
 		(
 			"Surface",
 			".",
+			"[description]",
 			visual
 		);
 		var terrains = [ terrain ];

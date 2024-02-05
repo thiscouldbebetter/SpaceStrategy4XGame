@@ -1,5 +1,5 @@
 
-class Network2Tests extends TestFixture
+class StarClusterTests extends TestFixture
 {
 	universe: Universe;
 	network: StarCluster;
@@ -7,7 +7,7 @@ class Network2Tests extends TestFixture
 
 	constructor()
 	{
-		super(Network2Tests.name);
+		super(StarClusterTests.name);
 
 		this.universe = new EnvironmentMock().universeBuild();
 		this.network = this.networkBuildRandom();
@@ -20,7 +20,7 @@ class Network2Tests extends TestFixture
 		var numberOfNodes = 12;
 		var network = StarCluster.generateRandom
 		(
-			this.universe, "[networkName]", nodeDefns, numberOfNodes
+			this.universe, nodeDefns, numberOfNodes
 		);
 		return network;
 	}

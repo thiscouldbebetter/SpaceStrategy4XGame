@@ -22,7 +22,7 @@ class SystemTests extends TestFixture
 	{
 		var universe = new EnvironmentMock().universeBuild();
 		var world = universe.world as WorldExtended;
-		var factionUser = world.factions[0];
+		var factionUser = world.factions()[0];
 		var starsystemUser = factionUser.starsystemHome(world);
 		var planetUser = factionUser.planetHome(world);
 		var positionsAvailableToBuildAt =
@@ -48,12 +48,14 @@ class SystemTests extends TestFixture
 
 		var technologiesNeededToBuildShipNames =
 		[
-			"Drives, Basic",
-			"Generators, Basic",
-			"Biology, Basic",
-			"Shields, Basic",
-			"Space Structures, Basic",
-			"Weapons, Basic"
+			"Orbital Structures",
+			"Interplanetary Exploration",
+			"Tonklin Diary",
+			"Xenobiology",
+			"Environmental Encapsulation",
+			"Spectral Analysis",
+			"Superconductivity",
+			"Spacetime Surfing"
 		];
 
 		for (var t = 0; t < technologiesNeededToBuildShipNames.length; t++)
@@ -148,7 +150,7 @@ class SystemTests extends TestFixture
 
 		Assert.isNotNull(ship);
 
-		ship.planetOrbitExit(world, planetUser);
+		ship.planetOrbitExit(planetUser, uwpe);
 
 		var linkPortalToGoTo = starsystemUser.linkPortals[0];
 
@@ -187,9 +189,10 @@ class SystemTests extends TestFixture
 		{
 			var shipTurnAndMove = ship.deviceUser();
 
-			var shipEnergyBeforeMove = shipTurnAndMove.energyRemainingThisRound();
+			var shipEnergyBeforeMove =
+				shipTurnAndMove.energyRemainingThisRound(uwpe);
 
-			if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove(ship) )
+			if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove() )
 			{
 				world.updateForRound_IgnoringNotifications(uwpe);
 			}
@@ -198,7 +201,7 @@ class SystemTests extends TestFixture
 				while
 				(
 					shipOrder.isComplete == false
-					&& shipTurnAndMove.energyRemainingThisRound() == shipEnergyBeforeMove
+					&& shipTurnAndMove.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove
 				)
 				{
 					shipOrder.obey(uwpe);
@@ -226,7 +229,7 @@ class SystemTests extends TestFixture
 		Assert.isTrue(starsystemsKnown.indexOf(starsystemBeyondLink) >= 0);
 
 		var starsystemArrivedAt =
-			world.network.starsystemByName(starsystemBeyondLinkName);
+			world.starCluster.starsystemByName(starsystemBeyondLinkName);
 
 		universe.venueNextSet(starsystemArrivedAt.toVenue()); // Can this be avoided?
 
@@ -243,20 +246,15 @@ class SystemTests extends TestFixture
 			(
 				planetToColonize
 			);
-			/*
-			.assignToEntityOrderable
-			(
-				ship
-			);
-			*/
 
 			while (shipOrder.isComplete == false)
 			{
 				var shipDeviceUser = ship.deviceUser();
 
-				var shipEnergyBeforeMove = shipDeviceUser.energyRemainingThisRound();
+				var shipEnergyBeforeMove =
+					shipDeviceUser.energyRemainingThisRound(uwpe);
 
-				if (shipEnergyBeforeMove < shipDeviceUser.energyPerMove(ship) )
+				if (shipEnergyBeforeMove < shipDeviceUser.energyPerMove() )
 				{
 					world.updateForRound_IgnoringNotifications(uwpe);
 				}
@@ -265,7 +263,7 @@ class SystemTests extends TestFixture
 					while
 					(
 						shipOrder.isComplete == false
-						&& shipDeviceUser.energyRemainingThisRound() == shipEnergyBeforeMove
+						&& shipDeviceUser.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove
 					)
 					{
 						shipOrder.obey(uwpe);

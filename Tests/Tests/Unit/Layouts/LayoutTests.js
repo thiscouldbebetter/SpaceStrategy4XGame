@@ -48,7 +48,7 @@ class LayoutTests extends TestFixture {
         var universe = this.universeBuild();
         var world = universe.world;
         var layout = this.layoutBuild(universe);
-        var faction = Faction.fromName("[name]");
+        var faction = Faction.fromDefnName("[name]");
         var parentModel = new Entity("[name]", []); // todo
         layout.updateForRound(universe, world, faction, parentModel);
     }

@@ -7,5 +7,6 @@ class SoundHelperMock {
     soundForMusicPause() { }
     soundWithNamePlayAsEffect(universe, soundName) { }
     soundWithNamePlayAsMusic(universe, soundName) { }
+    soundWithNameStop(name) { }
     soundsAllStop(universe) { }
 }

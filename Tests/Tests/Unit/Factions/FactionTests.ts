@@ -19,7 +19,7 @@ class FactionTests extends TestFixture
 	{
 		var returnTests =
 		[
-			this.fromName,
+			this.fromDefnName,
 			this.planetHome,
 			this.researchSessionStart,
 			this.starsystemHome,
@@ -28,7 +28,6 @@ class FactionTests extends TestFixture
 			this.allies,
 			this.enemies,
 			this.factionsMatchingRelationshipState,
-			this.relationsInitialize,
 			this.relationshipByFactionName,
 			this.selfAndAllies,
 			this.strategicValue,
@@ -42,9 +41,10 @@ class FactionTests extends TestFixture
 
 	// Tests.
 
-	fromName(): void
+	fromDefnName(): void
 	{
-		var faction = Faction.fromName("Faction");
+		var defn = FactionDefn.Instances()._All[0];
+		var faction = Faction.fromDefnName(defn.name);
 		Assert.isNotNull(faction);
 	}
 
@@ -111,11 +111,6 @@ class FactionTests extends TestFixture
 		Assert.isNotNull(factions);
 	}
 
-	relationsInitialize(): void
-	{
-		this.faction.relationsInitialize(this.universe);
-	}
-
 	relationshipByFactionName(): void
 	{
 		var relationship =
@@ -139,7 +134,7 @@ class FactionTests extends TestFixture
 
 	notificationSessionStart(): void
 	{
-		this.faction.notificationSessionStart(this.universe);
+		this.faction.notificationSessionStart(this.universe, Coords.zeroes() );
 	}
 
 	// turns

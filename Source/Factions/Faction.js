@@ -14,18 +14,21 @@ class Faction {
         this._visualsForShipsByHullSize = visualsForShipsByHullSize; // todo
         this.name = this.defnName;
         this.notificationSession = new NotificationSession(this.name, []);
-        this.shipsBuiltSoFarCount = ships.length;
+        this.shipsBuiltSoFarCount = this.ships.length;
     }
     static fromEntity(entity) {
         return entity.propertyByName(Faction.name);
     }
     static fromDefnName(defnName) {
+        var colorRed = Color.Instances().Red;
+        var technologyResearcher = TechnologyResearcher.default();
+        var factionKnowledge = FactionKnowledge.fromFactionSelfName(defnName);
         var faction = new Faction(defnName, null, // homeStarsystemName,
         null, // homePlanetName,
-        Color.Instances().Red, null, // diplomacy
-        TechnologyResearcher.default(), null, // planets
+        colorRed, null, // diplomacy
+        technologyResearcher, null, // planets
         null, // ships
-        FactionKnowledge.fromFactionSelfName(defnName), null, // intelligence
+        factionKnowledge, null, // intelligence
         null // visuals
         );
         var diplomacy = FactionDiplomacy.fromFactionSelf(faction);

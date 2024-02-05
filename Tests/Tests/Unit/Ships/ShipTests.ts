@@ -36,9 +36,7 @@ class ShipTests extends TestFixture
 			this.movementThroughLinkPerTurn,
 			this.planetOrbitEnter,
 			this.toControl,
-			this.updateForTurn,
-			this.draw,
-			this.visual
+			this.updateForTurn
 		];
 
 		return returnTests;
@@ -105,7 +103,7 @@ class ShipTests extends TestFixture
 
 	movementThroughLinkPerTurn(): void
 	{
-		var link = null;
+		var link = StarClusterLink.fromNamesOfNodesLinked("todo", "todo2");
 		var speed = this.ship.speedThroughLinkThisRound(link);
 		Assert.isNotNull(speed);
 	}
@@ -153,26 +151,5 @@ class ShipTests extends TestFixture
 		(
 			this.universe, this.world, faction
 		);
-	}
-
-	// drawable
-
-	draw(): void
-	{
-		var camera = Camera.default();
-
-		this.ship.draw
-		(
-			this.universe,
-			10, // nodeRadiusActual,
-			camera,
-			new Coords(0, 0, 0) // drawPos
-		);
-	}
-
-	visual(): void
-	{
-		var visual = this.ship.visual(this.world);
-		Assert.isNotNull(visual);
 	}
 }

@@ -22,6 +22,7 @@ class SystemTests extends TestFixture {
         var buildableLaboratory = Buildable.fromDefnAndPosIncomplete(buildableDefns.SurfaceLaboratory, posToBuildAt);
         var buildableLabAsEntity = buildableLaboratory.toEntity(world);
         planetUser.buildableEntityBuild(universe, buildableLabAsEntity);
+        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
         while (buildableLaboratory.isComplete == false) {
             world.updateForRound_IgnoringNotifications(uwpe);
         }

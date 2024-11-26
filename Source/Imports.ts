@@ -49,6 +49,7 @@ import Display = gf.Display;
 import Display2D = gf.Display2D;
 import DisplayFarToNear = gf.DisplayFarToNear;
 import DisplayRecorder = gf.DisplayRecorder;
+import DisplayTest = gf.DisplayTest;
 import VenueFader = gf.VenueFader;
 import VenueLayered = gf.VenueLayered;
 
@@ -227,6 +228,12 @@ import VenueFileUpload = gf.VenueFileUpload;
 import BitStream = gf.BitStream;
 import ByteStreamFromString = gf.ByteStreamFromString;
 import CompressorLZW = gf.CompressorLZW;
+
+// Tests.
+
+import Assert = gf.Assert;
+import TestFixture = gf.TestFixture;
+import TestSuite = gf.TestSuite;
 
 // Utility.
 

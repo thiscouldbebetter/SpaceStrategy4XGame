@@ -36,6 +36,7 @@ var Drawable = gf.Drawable;
 var Display2D = gf.Display2D;
 var DisplayFarToNear = gf.DisplayFarToNear;
 var DisplayRecorder = gf.DisplayRecorder;
+var DisplayTest = gf.DisplayTest;
 var VenueFader = gf.VenueFader;
 var VenueLayered = gf.VenueLayered;
 var VisualCameraProjection = gf.VisualCameraProjection;
@@ -163,6 +164,10 @@ var VenueFileUpload = gf.VenueFileUpload;
 var BitStream = gf.BitStream;
 var ByteStreamFromString = gf.ByteStreamFromString;
 var CompressorLZW = gf.CompressorLZW;
+// Tests.
+var Assert = gf.Assert;
+var TestFixture = gf.TestFixture;
+var TestSuite = gf.TestSuite;
 // Utility.
 var DateTime = gf.DateTime;
 var IDHelper = gf.IDHelper;

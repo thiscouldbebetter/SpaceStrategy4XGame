@@ -106,7 +106,7 @@ class SystemTests extends TestFixture {
         var shipOrder = new Order().defnSet(orderDefns.Go).entityBeingTargetedSet(linkPortalToGoTo);
         ship.orderSet(shipOrder);
         universe.venueNextSet(starsystemUser.toVenue()); // Can this be avoided?
-        var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
+        uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
         while (shipOrder.isComplete == false) {
             var shipTurnAndMove = ship.deviceUser();
             var shipEnergyBeforeMove = shipTurnAndMove.energyRemainingThisRound(uwpe);

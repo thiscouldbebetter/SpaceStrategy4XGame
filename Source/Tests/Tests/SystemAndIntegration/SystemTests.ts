@@ -38,6 +38,7 @@ class SystemTests extends TestFixture
 		planetUser.buildableEntityBuild(universe, buildableLabAsEntity);
 
 		var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+
 		while (buildableLaboratory.isComplete == false)
 		{
 			world.updateForRound_IgnoringNotifications(uwpe);
@@ -181,7 +182,7 @@ class SystemTests extends TestFixture
 
 		universe.venueNextSet(starsystemUser.toVenue() ); // Can this be avoided?
 
-		var uwpe = new UniverseWorldPlaceEntities
+		uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, world, null, ship, null
 		);

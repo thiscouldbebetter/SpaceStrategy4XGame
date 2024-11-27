@@ -17,7 +17,8 @@ class TechnologyResearcher
 		this._faction = faction;
 		this.technologyBeingResearchedName = technologyBeingResearchedName;
 		this.researchAccumulated = researchAccumulated;
-		this.technologiesKnownNames = technologiesKnownNames;
+		this.technologiesKnownNames = new Array<string>();
+		technologiesKnownNames.forEach(x => this.technologyLearnByName(x) );
 	}
 
 	static default(): TechnologyResearcher
@@ -227,7 +228,7 @@ class TechnologyResearcher
 	{
 		if (this.technologyBeingResearched != null)
 		{
-			this.technologyLearnByName(this.technologyBeingResearched.name);
+			this.technologyLearnByName(this.technologyBeingResearchedName);
 			this.technologyBeingResearchedSet(null);
 		}
 
@@ -254,10 +255,9 @@ class TechnologyResearcher
 	{
 		var returnValue = false;
 
-		var technologyToCheckName = technologyToCheck.name;
-
 		var isAlreadyKnown =
-			(this.technologiesKnownNames.indexOf(technologyToCheckName) >= 0);
+			this.technologyIsKnown(technologyToCheck);
+
 
 		if (isAlreadyKnown == false)
 		{
@@ -309,7 +309,7 @@ class TechnologyResearcher
 				technologyToLearnName
 			);
 		}
-		
+
 		return this;
 	}
 

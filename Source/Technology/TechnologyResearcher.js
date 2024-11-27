@@ -4,7 +4,8 @@ class TechnologyResearcher {
         this._faction = faction;
         this.technologyBeingResearchedName = technologyBeingResearchedName;
         this.researchAccumulated = researchAccumulated;
-        this.technologiesKnownNames = technologiesKnownNames;
+        this.technologiesKnownNames = new Array();
+        technologiesKnownNames.forEach(x => this.technologyLearnByName(x));
     }
     static default() {
         return new TechnologyResearcher(null, // faction
@@ -117,7 +118,7 @@ class TechnologyResearcher {
     }
     technologyBeingResearchedLearn() {
         if (this.technologyBeingResearched != null) {
-            this.technologyLearnByName(this.technologyBeingResearched.name);
+            this.technologyLearnByName(this.technologyBeingResearchedName);
             this.technologyBeingResearchedSet(null);
         }
         return this;
@@ -135,8 +136,7 @@ class TechnologyResearcher {
     }
     technologyIsAvailableForResearch(technologyToCheck) {
         var returnValue = false;
-        var technologyToCheckName = technologyToCheck.name;
-        var isAlreadyKnown = (this.technologiesKnownNames.indexOf(technologyToCheckName) >= 0);
+        var isAlreadyKnown = this.technologyIsKnown(technologyToCheck);
         if (isAlreadyKnown == false) {
             var prerequisites = technologyToCheck.namesOfPrerequisiteTechnologies;
             var areAllPrerequisitesKnownSoFar = true;

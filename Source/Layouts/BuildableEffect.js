@@ -39,6 +39,8 @@ class BuildableEffect {
 class BuildableEffect_Instances {
     constructor() {
         this.None = new BuildableEffect("None", 0, (uwpe) => { });
-        this.ThrowError = new BuildableEffect("Throw Error", 0, (uwpe) => { throw new Error(BuildableEffect.name); });
+        this.ThrowError = new BuildableEffect("Throw Error", 0, (uwpe) => {
+            throw new Error(BuildableEffect.name + " for " + uwpe.entity.name + " not yet implemented!");
+        });
     }
 }

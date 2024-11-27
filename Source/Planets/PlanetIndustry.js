@@ -65,10 +65,14 @@ class PlanetIndustry {
                 industryAccumulated.clear();
                 buildableInProgress.isComplete = true;
                 buildableInProgress._visual = null;
+                /*
+                // Possible leftover from when planets could stockpile ship components.
                 var buildableAsItem = buildableEntityInProgress.item();
-                if (buildableAsItem != null) {
+                if (buildableAsItem != null)
+                {
                     planet.itemHolder().itemAdd(buildableAsItem);
                 }
+                */
                 planet.resourcesThisRoundReset();
                 var intelligenceComputer = FactionIntelligence.Instances().Computer;
                 var buildablesAreChosenAutomatically = this.buildablesAreChosenAutomatically

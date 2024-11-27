@@ -28,26 +28,31 @@ class SystemTests extends TestFixture {
         }
         Assert.isTrue(buildableLaboratory.isComplete);
         var researcher = factionUser.technologyResearcher;
+        var tn = new TechnologyNamesLegacy();
         var technologiesNeededToBuildShipNames = [
-            "Orbital Structures",
-            "Interplanetary Exploration",
-            "Tonklin Diary",
-            "Xenobiology",
-            "Environmental Encapsulation",
-            "Spectral Analysis",
-            "Superconductivity",
-            "Spacetime Surfing"
+            tn.OrbitalStructures,
+            tn.InterplanetaryExploration,
+            tn.TonklinDiary,
+            tn.Xenobiology,
+            tn.EnvironmentalEncapsulation,
+            tn.SpectralAnalysis,
+            tn.Superconductivity,
+            tn.SpacetimeSurfing
         ];
         for (var t = 0; t < technologiesNeededToBuildShipNames.length; t++) {
             var technologyToResearchName = technologiesNeededToBuildShipNames[t];
             var technologiesAvailableToResearch = researcher.technologiesAvailableForResearch(world);
             var technologyToResearch = technologiesAvailableToResearch.find(x => x.name == technologyToResearchName);
-            researcher.technologyResearch(technologyToResearch);
-            var hasTechnologyBeenDiscoveredYet = false;
-            while (hasTechnologyBeenDiscoveredYet == false) {
-                world.updateForRound_IgnoringNotifications(uwpe);
-                hasTechnologyBeenDiscoveredYet =
-                    researcher.technologyIsKnown(technologyToResearch);
+            // If WorldExtendedCreator.isDebuggingMode is set (hardcoded!),
+            // then some technologies might already be known.
+            if (technologyToResearch != null) {
+                researcher.technologyResearch(technologyToResearch);
+                var hasTechnologyBeenDiscoveredYet = false;
+                while (hasTechnologyBeenDiscoveredYet == false) {
+                    world.updateForRound_IgnoringNotifications(uwpe);
+                    hasTechnologyBeenDiscoveredYet =
+                        researcher.technologyIsKnown(technologyToResearch);
+                }
             }
         }
         positionsAvailableToBuildAt =

@@ -223,16 +223,18 @@ class WorldExtendedCreator
 		
 		if (this.isDebuggingMode)
 		{
+			var tns = new TechnologyNamesLegacy();
+
 			var technologiesToLearnNames =
 			[
-				"Orbital Structures",
-				"Interplanetary Exploration",
-				"Tonklin Diary",
-				"Xenobiology",
-				"Environmental Encapsulation",
-				"Spectral Analysis",
-				"Superconductivity",
-				"Spacetime Surfing"
+				tns.OrbitalStructures,
+				tns.InterplanetaryExploration,
+				tns.TonklinDiary,
+				tns.Xenobiology,
+				tns.EnvironmentalEncapsulation,
+				tns.SpectralAnalysis,
+				tns.Superconductivity,
+				tns.SpacetimeSurfing
 			];
 			
 			technologiesToLearnNames.forEach

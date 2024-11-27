@@ -73,6 +73,15 @@ class BuildableEffect_Instances
 	constructor()
 	{
 		this.None = new BuildableEffect("None", 0, (uwpe: UniverseWorldPlaceEntities) => {} );
-		this.ThrowError = new BuildableEffect("Throw Error", 0, (uwpe: UniverseWorldPlaceEntities) => { throw new Error(BuildableEffect.name); } );
+
+		this.ThrowError = new BuildableEffect
+		(
+			"Throw Error",
+			0,
+			(uwpe: UniverseWorldPlaceEntities) =>
+			{
+				throw new Error(BuildableEffect.name + " for " + uwpe.entity.name + " not yet implemented!");
+			}
+		);
 	}
 }

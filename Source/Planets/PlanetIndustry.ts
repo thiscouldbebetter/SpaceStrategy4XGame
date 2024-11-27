@@ -135,11 +135,14 @@ class PlanetIndustry
 				buildableInProgress.isComplete = true;
 				buildableInProgress._visual = null;
 
+				/*
+				// Possible leftover from when planets could stockpile ship components.
 				var buildableAsItem = buildableEntityInProgress.item();
 				if (buildableAsItem != null)
 				{
 					planet.itemHolder().itemAdd(buildableAsItem);
 				}
+				*/
 
 				planet.resourcesThisRoundReset();
 

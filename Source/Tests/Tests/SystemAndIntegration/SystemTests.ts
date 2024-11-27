@@ -48,16 +48,18 @@ class SystemTests extends TestFixture
 
 		var researcher = factionUser.technologyResearcher;
 
+		var tn = new TechnologyNamesLegacy();
+
 		var technologiesNeededToBuildShipNames =
 		[
-			"Orbital Structures",
-			"Interplanetary Exploration",
-			"Tonklin Diary",
-			"Xenobiology",
-			"Environmental Encapsulation",
-			"Spectral Analysis",
-			"Superconductivity",
-			"Spacetime Surfing"
+			tn.OrbitalStructures,
+			tn.InterplanetaryExploration,
+			tn.TonklinDiary,
+			tn.Xenobiology,
+			tn.EnvironmentalEncapsulation,
+			tn.SpectralAnalysis,
+			tn.Superconductivity,
+			tn.SpacetimeSurfing
 		];
 
 		for (var t = 0; t < technologiesNeededToBuildShipNames.length; t++)
@@ -74,15 +76,20 @@ class SystemTests extends TestFixture
 					x => x.name == technologyToResearchName
 				);
 
-			researcher.technologyResearch(technologyToResearch);
-
-			var hasTechnologyBeenDiscoveredYet = false;
-			while (hasTechnologyBeenDiscoveredYet == false)
+			// If WorldExtendedCreator.isDebuggingMode is set (hardcoded!),
+			// then some technologies might already be known.
+			if (technologyToResearch != null)
 			{
-				world.updateForRound_IgnoringNotifications(uwpe);
+				researcher.technologyResearch(technologyToResearch);
 
-				hasTechnologyBeenDiscoveredYet =
-					researcher.technologyIsKnown(technologyToResearch);
+				var hasTechnologyBeenDiscoveredYet = false;
+				while (hasTechnologyBeenDiscoveredYet == false)
+				{
+					world.updateForRound_IgnoringNotifications(uwpe);
+
+					hasTechnologyBeenDiscoveredYet =
+						researcher.technologyIsKnown(technologyToResearch);
+				}
 			}
 		}
 

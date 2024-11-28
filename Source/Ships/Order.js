@@ -4,6 +4,9 @@ class Order //
     constructor() {
         this.clear();
     }
+    static fromDefn(defn) {
+        return new Order().defnSet(defn);
+    }
     clear() {
         this.defn = OrderDefn.Instances().DoNothing;
         this.entityBeingOrdered = null;

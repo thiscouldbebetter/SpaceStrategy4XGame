@@ -12,6 +12,11 @@ class Order //
 		this.clear();
 	}
 
+	static fromDefn(defn: OrderDefn): Order
+	{
+		return new Order().defnSet(defn);
+	}
+
 	clear(): Order
 	{
 		this.defn = OrderDefn.Instances().DoNothing;
@@ -33,7 +38,7 @@ class Order //
 		this.defn = value;
 		return this;
 	}
-	
+
 	deviceToUseSet(value: Device): Order
 	{
 		this.deviceToUse = value;
@@ -45,13 +50,13 @@ class Order //
 		this.entityBeingOrdered = value;
 		return this;
 	}
-	
+
 	entityBeingTargetedSet(value: Entity): Order
 	{
 		this.entityBeingTargeted = value;
 		return this;
 	}
-	
+
 	isAwaitingTarget(): boolean
 	{
 		return (this.entityBeingTargeted == null);

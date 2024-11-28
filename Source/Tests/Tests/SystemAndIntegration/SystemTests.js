@@ -152,7 +152,7 @@ class SystemTests extends TestFixture {
         var starsystemsKnown = factionUserKnowledge.starsystems(world);
         Assert.isTrue(starsystemsKnown.length == 1);
         var orderDefns = OrderDefn.Instances();
-        var shipOrder = Order.fromDefn(orderDefns.Go).entityBeingTargetedSet(linkPortalToGoTo);
+        var shipOrder = Order.fromDefn(orderDefns.Go).entityBeingOrderedSet(ship).entityBeingTargetedSet(linkPortalToGoTo);
         ship.orderSet(shipOrder);
         universe.venueNextSet(starsystemUser.toVenue()); // Can this be avoided?
         uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
@@ -163,10 +163,13 @@ class SystemTests extends TestFixture {
                 world.updateForRound_IgnoringNotifications(uwpe);
             }
             else {
+                var shipEnergyRemaining = shipTurnAndMove.energyRemainingThisRound(uwpe);
                 while (shipOrder.isComplete == false
-                    && shipTurnAndMove.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove) {
+                    && shipEnergyRemaining == shipEnergyBeforeMove) {
                     shipOrder.obey(uwpe);
                     universe.updateForTimerTick();
+                    shipEnergyRemaining =
+                        shipTurnAndMove.energyRemainingThisRound(uwpe);
                 }
             }
         }

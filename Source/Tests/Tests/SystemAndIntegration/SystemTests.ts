@@ -318,6 +318,9 @@ class SystemTests extends TestFixture
 		var shipOrder = Order.fromDefn
 		(
 			orderDefns.Go
+		).entityBeingOrderedSet
+		(
+			ship
 		).entityBeingTargetedSet
 		(
 			linkPortalToGoTo
@@ -345,14 +348,19 @@ class SystemTests extends TestFixture
 			}
 			else
 			{
+				var shipEnergyRemaining =
+					shipTurnAndMove.energyRemainingThisRound(uwpe);
+
 				while
 				(
 					shipOrder.isComplete == false
-					&& shipTurnAndMove.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove
+					&& shipEnergyRemaining == shipEnergyBeforeMove
 				)
 				{
 					shipOrder.obey(uwpe);
 					universe.updateForTimerTick();
+					shipEnergyRemaining =
+						shipTurnAndMove.energyRemainingThisRound(uwpe);
 				}
 			}
 		}

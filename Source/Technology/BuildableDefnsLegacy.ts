@@ -485,10 +485,11 @@ class BuildableDefnsLegacy
 			}
 			else
 			{
-				var shipBuilder = new ShipBuilder();
+				var venueLayout = universe.venueCurrent() as VenueLayout;
+				var shipBuilder = new ShipBuilder(venueLayout);
 				universe.venueCurrentRemove();
 				var shipBuilderAsControl =
-					shipBuilder.toControl(universe, displaySize, universe.venueCurrent() );
+					shipBuilder.toControl(universe, displaySize);
 				var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
 				universe.venueTransitionTo(shipBuilderAsVenue);
 			}

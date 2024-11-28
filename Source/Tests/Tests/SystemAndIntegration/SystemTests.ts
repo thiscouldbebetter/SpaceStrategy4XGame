@@ -109,9 +109,18 @@ class SystemTests extends TestFixture
 			world.updateForRound_IgnoringNotifications(uwpe);
 		}
 
+		planetUser.jumpTo(universe); // Sets up a VenueLayout.
+		var venuePlanetUserLayout = universe.venueNext() as VenueLayout;
+
 		positionsAvailableToBuildAt =
 			planetUser.cellPositionsAvailableToOccupyInOrbit(universe);
 		posToBuildAt = positionsAvailableToBuildAt[0];
+
+		var shipyard = new ShipBuilder(venuePlanetUserLayout);
+
+		shipyard.buildablesAvailableInitialize(universe);
+
+		shipyard.hullSizeSelectDefault();
 
 		var shipComponentsAsBuildableDefns =
 		[
@@ -123,36 +132,13 @@ class SystemTests extends TestFixture
 
 		for (var i = 0; i < shipComponentsAsBuildableDefns.length; i++)
 		{
-			var shipComponentAsBuildableDefn = shipComponentsAsBuildableDefns[i];
-
-			var buildableShipComponent =
-				Buildable.fromDefn(shipComponentAsBuildableDefn);
-			var buildableShipComponentAsEntity = buildableShipComponent.toEntity(world);
-			planetUser.buildableEntityBuild(universe, buildableShipComponentAsEntity);
-
-			Assert.isFalse(buildableShipComponent.isComplete);
-
-			while (buildableShipComponent.isComplete == false)
-			{
-				world.updateForRound_IgnoringNotifications(uwpe);
-			}
-
-			Assert.isTrue(buildableShipComponent.isComplete);
+			var component = shipComponentsAsBuildableDefns[i];
+			shipyard.componentAddToBuild(component);
 		}
 
-		var shipyard = new ShipBuilder();
 		var ship = shipyard.build
 		(
-			/*
 			universe,
-			world,
-			factionUser,
-			planetUser,
-			shipyardEntity,
-			shipComponentNames
-			*/
-			universe,
-			null, // todo - venuePrev,
 			factionUser,
 			universe.display.sizeInPixels // sizeDialog
 		);

@@ -1,7 +1,7 @@
 
 class ShipBuilder
 {
-	shipName: string;
+	venueLayout: VenueLayout;
 
 	buildableDefnsAvailable: BuildableDefn[];
 	buildableDefnAvailableSelected: BuildableDefn;
@@ -14,10 +14,14 @@ class ShipBuilder
 	shipHullSizesAvailable: ShipHullSize[];
 	shipHullSizeSelected: ShipHullSize;
 
+	shipName: string;
+
 	statusMessage: string;
 
-	constructor()
+	constructor(venueLayout: VenueLayout)
 	{
+		this.venueLayout = venueLayout;
+
 		this.shipName = "Ship";
 
 		this.buildableDefnsAvailable = null;
@@ -26,144 +30,122 @@ class ShipBuilder
 		this.buildableDefnsToBuild = [];
 		this.buildableDefnToBuildSelected = null;
 
-		this.shipHullSizeSelected = null;
+		this.hullSizeSelect(null);
 
 		this.statusMessage = "Select available components and click Add to add them to the ship plans."
 	}
 
-	build(universe: Universe, venuePrev: Venue, faction: Faction, sizeDialog: Coords): Ship
+	build(universe: Universe, faction: Faction, sizeDialog: Coords): Ship
 	{
 		var returnValue: Ship = null;
 
-		var categories = BuildableCategory.Instances();
+		var canShipBeBuilt = this.canBuild();
 
-		var doesShipHaveAGenerator =
-			this.buildableDefnsToBuild.some
-			(
-				(bd: BuildableDefn) => bd.categories.some
-				(
-					(c: BuildableCategory) => c == categories.ShipGenerator
-				)
-			);
-			
-		var doesShipHaveADrive =
-			this.buildableDefnsToBuild.some
-			(
-				(bd: BuildableDefn) => bd.categories.some
-				(
-					(c: BuildableCategory) => c == categories.ShipDrive
-				)
-			);
-
-		var doesShipHaveAGeneratorAndDrive =
-			doesShipHaveAGenerator
-			&& doesShipHaveADrive;
-		
-		var canShipBeBuilt = doesShipHaveAGeneratorAndDrive;
-		
 		if (canShipBeBuilt == false)
 		{
-			var messageLines =
-			[
-				"Ships must have generators and drives.",
-				"Also, a starlane drive is needed",
-				"to leave the home starsystem."
-			];
-
-			var message = messageLines.join("\n");
-
-			var venueToReturnTo = universe.venueCurrent();
-
-			var venue = VenueMessage.fromTextAcknowledgeAndSize
-			(
-				message,
-				() => universe.venueJumpTo(venueToReturnTo),
-				sizeDialog
-			);
-
-			universe.venueJumpTo(venue);
+			this.build_CannotBuild(universe, sizeDialog);
 		}
 		else
 		{
-			var planet = (venuePrev as VenueLayout).modelParent as Planet;
-			var shipPosInCells =
-				planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
-
-			var industryToBuild = this.industryToBuildTotal();
-
-			var shipHullSize = this.shipHullSizeSelected;
-			var visual = faction.visualForShipWithHullSize(shipHullSize);
-
-			var effects = BuildableEffect.Instances();
-			var effectNone = effects.None;
-
-			var effectsAvailableForUse = Ship.effectsAvailableForUse();
-
-			var shipAsBuildableDefn = new BuildableDefn
-			(
-				this.shipName,
-				false, // isItem
-				(m: MapLayout, p: Coords) => true, // hack - Should be orbit only.
-				Coords.zeroes(), // sizeInPixels
-				visual,
-				industryToBuild, // industryToBuild
-				effectNone, // effectPerRound
-				effectsAvailableForUse,
-				null, // categories
-				null, // entityProperties
-				null, // modifyOnBuild
-				null // description
-			);
-
-			/*
-			var shipAsBuildable = new Buildable
-			(
-				shipAsBuildableDefn,
-				shipPosInCells,
-				false, // isComplete,
-				false // isAutomated
-			);
-			*/
-
-			var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
-
-			var shipComponentEntities =
-				this.buildableDefnsToBuild.map
-				(
-					(x: BuildableDefn) =>
-					{
-						var buildable = Buildable.fromDefn(x);
-						var entity = new Entity(x.name, [buildable] );
-						return entity;
-					}
-				);
-
-			var shipEntity =
-				new Ship
-				(
-					this.shipName,
-					this.shipHullSizeSelected,
-					shipBodyDefn,
-					shipPosInCells,
-					faction,
-					shipComponentEntities
-				);
-
-			returnValue = shipEntity;
-
-			// hack
-			var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual)
-			shipEntity.propertyAdd(shipDrawable);
-
-			var venuePrevAsVenueLayout = venuePrev as VenueLayout;
-			var layout = venuePrevAsVenueLayout.layout;
-
-			layout.buildableEntityBuild(shipEntity);
-
-			universe.venueTransitionTo(venuePrevAsVenueLayout);
+			returnValue = this.build_CanBuild(universe, faction);
 		}
 
 		return returnValue;
+	}
+
+	build_CanBuild(universe: Universe, faction: Faction): Ship
+	{
+		var returnValue: Ship = null;
+
+		var layout = this.venueLayout.layout;
+		var planet = this.venueLayout.modelParent as Planet;
+		var shipPosInCells =
+			planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
+
+		var industryToBuild = this.industryToBuildTotal();
+
+		var shipHullSize = this.shipHullSizeSelected;
+		var visual = faction.visualForShipWithHullSize(shipHullSize);
+
+		var effects = BuildableEffect.Instances();
+		var effectNone = effects.None;
+
+		var effectsAvailableForUse = Ship.effectsAvailableForUse();
+
+		var shipAsBuildableDefn = new BuildableDefn
+		(
+			this.shipName,
+			false, // isItem
+			(m: MapLayout, p: Coords) => true, // hack - Should be orbit only.
+			Coords.zeroes(), // sizeInPixels
+			visual,
+			industryToBuild, // industryToBuild
+			effectNone, // effectPerRound
+			effectsAvailableForUse,
+			null, // categories
+			null, // entityProperties
+			null, // modifyOnBuild
+			null // description
+		);
+
+		var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
+
+		var shipComponentEntities =
+			this.buildableDefnsToBuild.map
+			(
+				(x: BuildableDefn) =>
+				{
+					var buildable = Buildable.fromDefn(x);
+					var entity = new Entity(x.name, [buildable] );
+					return entity;
+				}
+			);
+
+		var shipEntity =
+			new Ship
+			(
+				this.shipName,
+				this.shipHullSizeSelected,
+				shipBodyDefn,
+				shipPosInCells,
+				faction,
+				shipComponentEntities
+			);
+
+		returnValue = shipEntity;
+
+		// hack
+		var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual)
+		shipEntity.propertyAdd(shipDrawable);
+
+		layout.buildableEntityBuild(shipEntity);
+
+		universe.venueTransitionTo(this.venueLayout);
+
+		return returnValue;
+	}
+
+	build_CannotBuild(universe: Universe, sizeDialog: Coords): void
+	{
+		var messageLines =
+		[
+			"Ships must have generators and drives.",
+			"Also, a starlane drive is needed",
+			"to leave the home starsystem."
+		];
+
+		var message = messageLines.join("\n");
+
+		var venueToReturnTo = universe.venueCurrent();
+
+		var venue = VenueMessage.fromTextAcknowledgeAndSize
+		(
+			message,
+			() => universe.venueJumpTo(venueToReturnTo),
+			sizeDialog
+		);
+
+		universe.venueJumpTo(venue);
 	}
 
 	buildableDefnAvailableSelectedSet(value: BuildableDefn): void
@@ -178,39 +160,8 @@ class ShipBuilder
 		this.statusMessage = value.description;
 	}
 
-	industryToBuildTotal(): number
+	buildablesAvailableInitialize(universe: Universe): void
 	{
-		var sumSoFar = this.shipHullSizeSelected.industryToBuild;
-		this.buildableDefnsToBuild.forEach(x => sumSoFar += x.industryToBuild);
-		return sumSoFar;
-	}
-
-	componentCount(): number
-	{
-		return this.buildableDefnsToBuild.length;
-	}
-	
-	componentCountMax(): number
-	{
-		return this.shipHullSizeSelected.componentCountMax;
-	}
-	
-	componentCountOverMax(): string
-	{
-		return "" + this.componentCount() + "/" + this.componentCountMax()
-	}
-
-	// Controls.
-
-	toControl
-	(
-		universe: Universe,
-		size: Coords,
-		venuePrev: Venue
-	): ControlBase
-	{
-		var shipBuilder = this;
-
 		var world = universe.world as WorldExtended;
 		var faction = world.factionCurrent();
 		var researcher = faction.technologyResearcher;
@@ -228,7 +179,111 @@ class ShipBuilder
 		var shipHullSizesAvailable =
 			shipHullSizeNamesAvailable.map(x => ShipHullSize.byName(x) );
 		this.shipHullSizesAvailable = shipHullSizesAvailable;
-		this.shipHullSizeSelected = this.shipHullSizesAvailable[0];
+	}
+
+	canBuild(): boolean
+	{
+		var categories = BuildableCategory.Instances();
+
+		var doesShipHaveAGenerator =
+			this.buildableDefnsToBuild.some
+			(
+				(bd: BuildableDefn) => bd.categories.some
+				(
+					(c: BuildableCategory) => c == categories.ShipGenerator
+				)
+			);
+
+		var doesShipHaveADrive =
+			this.buildableDefnsToBuild.some
+			(
+				(bd: BuildableDefn) => bd.categories.some
+				(
+					(c: BuildableCategory) => c == categories.ShipDrive
+				)
+			);
+
+		var doesShipHaveAGeneratorAndDrive =
+			doesShipHaveAGenerator
+			&& doesShipHaveADrive;
+
+		var canShipBeBuilt = doesShipHaveAGeneratorAndDrive;
+
+		return canShipBeBuilt;
+	}
+
+	componentAddToBuild(componentToAdd: BuildableDefn): void
+	{
+		var componentsToBuildCount = this.componentCount();
+		var componentsToBuildMax = this.componentCountMax();
+
+		var canAddMoreComponents =
+			(componentsToBuildCount < componentsToBuildMax);
+
+		if (canAddMoreComponents)
+		{
+			this.buildableDefnsToBuild.push(componentToAdd);
+		}
+	}
+
+	componentSelectedAddToBuild(): void
+	{
+		var componentToAdd =
+			this.buildableDefnAvailableSelected;
+
+		if (componentToAdd != null)
+		{
+			this.componentAddToBuild(componentToAdd);
+		}
+	}
+
+	industryToBuildTotal(): number
+	{
+		var sumSoFar = this.shipHullSizeSelected.industryToBuild;
+		this.buildableDefnsToBuild.forEach(x => sumSoFar += x.industryToBuild);
+		return sumSoFar;
+	}
+
+	hullSizeSelect(value: ShipHullSize): ShipBuilder
+	{
+		this.shipHullSizeSelected = value;
+		return this;
+	}
+
+	hullSizeSelectDefault(): ShipBuilder
+	{
+		var hullSizeDefault = this.shipHullSizesAvailable[0];
+		return this.hullSizeSelect(hullSizeDefault);
+	}
+
+	componentCount(): number
+	{
+		return this.buildableDefnsToBuild.length;
+	}
+
+	componentCountMax(): number
+	{
+		return (this.shipHullSizeSelected == null ? 0 : this.shipHullSizeSelected.componentCountMax);
+	}
+
+	componentCountOverMax(): string
+	{
+		return "" + this.componentCount() + "/" + this.componentCountMax()
+	}
+
+	// Controls.
+
+	toControl
+	(
+		universe: Universe,
+		size: Coords
+	): ControlBase
+	{
+		var shipBuilder = this;
+
+		this.buildablesAvailableInitialize(universe);
+
+		this.hullSizeSelectDefault();
 
 		if (size == null)
 		{
@@ -250,26 +305,7 @@ class ShipBuilder
 
 		var back = () =>
 		{
-			universe.venueTransitionTo(venuePrev);
-		};
-
-		var add = () =>
-		{
-			var componentsToBuildCount = this.componentCount();
-			var componentsToBuildMax = this.componentCountMax();
-			
-			var canAddMoreComponents =
-				(componentsToBuildCount < componentsToBuildMax);
-
-			if (canAddMoreComponents)
-			{
-				var buildableDefnToAdd =
-					shipBuilder.buildableDefnAvailableSelected;
-				if (buildableDefnToAdd != null)
-				{
-					shipBuilder.buildableDefnsToBuild.push(buildableDefnToAdd);
-				}
-			}
+			universe.venueTransitionTo(this.venueLayout);
 		};
 
 		var remove = () =>
@@ -396,7 +432,7 @@ class ShipBuilder
 			), // bindingForItemSelected
 			DataBinding.fromGet( (c: BuildableDefn) => c ), // bindingForItemValue
 			DataBinding.fromTrue(), // isEnabled
-			add // confirm
+			() => this.componentSelectedAddToBuild() // confirm
 		);
 
 		var labelShipItems = ControlLabel.from4Uncentered
@@ -468,7 +504,7 @@ class ShipBuilder
 			font,
 			true, // hasBorder
 			DataBinding.fromTrue(), // isEnabled
-			add // click
+			() => this.componentSelectedAddToBuild() // click
 		);
 
 		var listShipComponents = ControlList.from10
@@ -545,6 +581,9 @@ class ShipBuilder
 			back // click
 		);
 
+		var world = universe.world as WorldExtended;
+		var faction = world.factionCurrent();
+
 		var buttonBuild = ControlButton.from5
 		(
 			Coords.fromXY
@@ -555,34 +594,37 @@ class ShipBuilder
 			buttonSize.clone(),
 			"Build",
 			font,
-			() => this.build(universe, venuePrev, faction, sizeDialog) // click
+			() => this.build(universe, faction, sizeDialog) // click
 		);
+
+		var childControls =
+		[
+			labelName,
+			textName,
+			buttonNameRandomize,
+			labelHullSize,
+			selectHullSize,
+			labelComponentsAvailable,
+			listComponentsAvailable,
+			buttonAdd,
+			labelShipItems,
+			textComponentCountOverMax,
+			labelCost,
+			textCost,
+			listShipComponents,
+			buttonRemove,
+			infoStatus,
+			buttonCancel,
+			buttonBuild
+		];
 
 		var returnValue = new ControlContainer
 		(
 			"containerShipBuilder",
 			Coords.create(), // pos
 			size.clone(),
-			// children
-			[
-				labelName,
-				textName,
-				buttonNameRandomize,
-				labelHullSize,
-				selectHullSize,
-				labelComponentsAvailable,
-				listComponentsAvailable,
-				buttonAdd,
-				labelShipItems,
-				textComponentCountOverMax,
-				labelCost,
-				textCost,
-				listShipComponents,
-				buttonRemove,
-				infoStatus,
-				buttonCancel,
-				buttonBuild
-			],
+
+			childControls,
 
 			[ new Action("Back", back) ],
 
@@ -592,6 +634,7 @@ class ShipBuilder
 
 		return returnValue;
 	}
+
 }
 
 class ShipHullSize

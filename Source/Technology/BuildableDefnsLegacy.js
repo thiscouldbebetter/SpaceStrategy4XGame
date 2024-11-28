@@ -127,9 +127,10 @@ class BuildableDefnsLegacy {
                 universe.venueJumpTo(VenueMessage.fromTextAcknowledgeAndSize("No free cells in orbit.", cannotBuildAcknowledge, dialogSize));
             }
             else {
-                var shipBuilder = new ShipBuilder();
+                var venueLayout = universe.venueCurrent();
+                var shipBuilder = new ShipBuilder(venueLayout);
                 universe.venueCurrentRemove();
-                var shipBuilderAsControl = shipBuilder.toControl(universe, displaySize, universe.venueCurrent());
+                var shipBuilderAsControl = shipBuilder.toControl(universe, displaySize);
                 var shipBuilderAsVenue = shipBuilderAsControl.toVenue();
                 universe.venueTransitionTo(shipBuilderAsVenue);
             }

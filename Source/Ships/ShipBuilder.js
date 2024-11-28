@@ -1,78 +1,72 @@
 "use strict";
 class ShipBuilder {
-    constructor() {
+    constructor(venueLayout) {
+        this.venueLayout = venueLayout;
         this.shipName = "Ship";
         this.buildableDefnsAvailable = null;
         this.buildableDefnAvailableSelected = null;
         this.buildableDefnsToBuild = [];
         this.buildableDefnToBuildSelected = null;
-        this.shipHullSizeSelected = null;
+        this.hullSizeSelect(null);
         this.statusMessage = "Select available components and click Add to add them to the ship plans.";
     }
-    build(universe, venuePrev, faction, sizeDialog) {
+    build(universe, faction, sizeDialog) {
         var returnValue = null;
-        var categories = BuildableCategory.Instances();
-        var doesShipHaveAGenerator = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipGenerator));
-        var doesShipHaveADrive = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipDrive));
-        var doesShipHaveAGeneratorAndDrive = doesShipHaveAGenerator
-            && doesShipHaveADrive;
-        var canShipBeBuilt = doesShipHaveAGeneratorAndDrive;
+        var canShipBeBuilt = this.canBuild();
         if (canShipBeBuilt == false) {
-            var messageLines = [
-                "Ships must have generators and drives.",
-                "Also, a starlane drive is needed",
-                "to leave the home starsystem."
-            ];
-            var message = messageLines.join("\n");
-            var venueToReturnTo = universe.venueCurrent();
-            var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
-            universe.venueJumpTo(venue);
+            this.build_CannotBuild(universe, sizeDialog);
         }
         else {
-            var planet = venuePrev.modelParent;
-            var shipPosInCells = planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
-            var industryToBuild = this.industryToBuildTotal();
-            var shipHullSize = this.shipHullSizeSelected;
-            var visual = faction.visualForShipWithHullSize(shipHullSize);
-            var effects = BuildableEffect.Instances();
-            var effectNone = effects.None;
-            var effectsAvailableForUse = Ship.effectsAvailableForUse();
-            var shipAsBuildableDefn = new BuildableDefn(this.shipName, false, // isItem
-            (m, p) => true, // hack - Should be orbit only.
-            Coords.zeroes(), // sizeInPixels
-            visual, industryToBuild, // industryToBuild
-            effectNone, // effectPerRound
-            effectsAvailableForUse, null, // categories
-            null, // entityProperties
-            null, // modifyOnBuild
-            null // description
-            );
-            /*
-            var shipAsBuildable = new Buildable
-            (
-                shipAsBuildableDefn,
-                shipPosInCells,
-                false, // isComplete,
-                false // isAutomated
-            );
-            */
-            var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
-            var shipComponentEntities = this.buildableDefnsToBuild.map((x) => {
-                var buildable = Buildable.fromDefn(x);
-                var entity = new Entity(x.name, [buildable]);
-                return entity;
-            });
-            var shipEntity = new Ship(this.shipName, this.shipHullSizeSelected, shipBodyDefn, shipPosInCells, faction, shipComponentEntities);
-            returnValue = shipEntity;
-            // hack
-            var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual);
-            shipEntity.propertyAdd(shipDrawable);
-            var venuePrevAsVenueLayout = venuePrev;
-            var layout = venuePrevAsVenueLayout.layout;
-            layout.buildableEntityBuild(shipEntity);
-            universe.venueTransitionTo(venuePrevAsVenueLayout);
+            returnValue = this.build_CanBuild(universe, faction);
         }
         return returnValue;
+    }
+    build_CanBuild(universe, faction) {
+        var returnValue = null;
+        var layout = this.venueLayout.layout;
+        var planet = this.venueLayout.modelParent;
+        var shipPosInCells = planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
+        var industryToBuild = this.industryToBuildTotal();
+        var shipHullSize = this.shipHullSizeSelected;
+        var visual = faction.visualForShipWithHullSize(shipHullSize);
+        var effects = BuildableEffect.Instances();
+        var effectNone = effects.None;
+        var effectsAvailableForUse = Ship.effectsAvailableForUse();
+        var shipAsBuildableDefn = new BuildableDefn(this.shipName, false, // isItem
+        (m, p) => true, // hack - Should be orbit only.
+        Coords.zeroes(), // sizeInPixels
+        visual, industryToBuild, // industryToBuild
+        effectNone, // effectPerRound
+        effectsAvailableForUse, null, // categories
+        null, // entityProperties
+        null, // modifyOnBuild
+        null // description
+        );
+        var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
+        var shipComponentEntities = this.buildableDefnsToBuild.map((x) => {
+            var buildable = Buildable.fromDefn(x);
+            var entity = new Entity(x.name, [buildable]);
+            return entity;
+        });
+        var shipEntity = new Ship(this.shipName, this.shipHullSizeSelected, shipBodyDefn, shipPosInCells, faction, shipComponentEntities);
+        returnValue = shipEntity;
+        // hack
+        var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual);
+        shipEntity.propertyAdd(shipDrawable);
+        layout.buildableEntityBuild(shipEntity);
+        universe.venueTransitionTo(this.venueLayout);
+        return returnValue;
+    }
+    build_CannotBuild(universe, sizeDialog) {
+        var messageLines = [
+            "Ships must have generators and drives.",
+            "Also, a starlane drive is needed",
+            "to leave the home starsystem."
+        ];
+        var message = messageLines.join("\n");
+        var venueToReturnTo = universe.venueCurrent();
+        var venue = VenueMessage.fromTextAcknowledgeAndSize(message, () => universe.venueJumpTo(venueToReturnTo), sizeDialog);
+        universe.venueJumpTo(venue);
     }
     buildableDefnAvailableSelectedSet(value) {
         this.buildableDefnAvailableSelected = value;
@@ -82,23 +76,7 @@ class ShipBuilder {
         this.buildableDefnToBuildSelected = value;
         this.statusMessage = value.description;
     }
-    industryToBuildTotal() {
-        var sumSoFar = this.shipHullSizeSelected.industryToBuild;
-        this.buildableDefnsToBuild.forEach(x => sumSoFar += x.industryToBuild);
-        return sumSoFar;
-    }
-    componentCount() {
-        return this.buildableDefnsToBuild.length;
-    }
-    componentCountMax() {
-        return this.shipHullSizeSelected.componentCountMax;
-    }
-    componentCountOverMax() {
-        return "" + this.componentCount() + "/" + this.componentCountMax();
-    }
-    // Controls.
-    toControl(universe, size, venuePrev) {
-        var shipBuilder = this;
+    buildablesAvailableInitialize(universe) {
         var world = universe.world;
         var faction = world.factionCurrent();
         var researcher = faction.technologyResearcher;
@@ -110,7 +88,57 @@ class ShipBuilder {
         var shipHullSizeNamesAvailable = buildableDefnsAvailableForShipHulls.map(x => x.name.split(" ")[0]);
         var shipHullSizesAvailable = shipHullSizeNamesAvailable.map(x => ShipHullSize.byName(x));
         this.shipHullSizesAvailable = shipHullSizesAvailable;
-        this.shipHullSizeSelected = this.shipHullSizesAvailable[0];
+    }
+    canBuild() {
+        var categories = BuildableCategory.Instances();
+        var doesShipHaveAGenerator = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipGenerator));
+        var doesShipHaveADrive = this.buildableDefnsToBuild.some((bd) => bd.categories.some((c) => c == categories.ShipDrive));
+        var doesShipHaveAGeneratorAndDrive = doesShipHaveAGenerator
+            && doesShipHaveADrive;
+        var canShipBeBuilt = doesShipHaveAGeneratorAndDrive;
+        return canShipBeBuilt;
+    }
+    componentAddToBuild(componentToAdd) {
+        var componentsToBuildCount = this.componentCount();
+        var componentsToBuildMax = this.componentCountMax();
+        var canAddMoreComponents = (componentsToBuildCount < componentsToBuildMax);
+        if (canAddMoreComponents) {
+            this.buildableDefnsToBuild.push(componentToAdd);
+        }
+    }
+    componentSelectedAddToBuild() {
+        var componentToAdd = this.buildableDefnAvailableSelected;
+        if (componentToAdd != null) {
+            this.componentAddToBuild(componentToAdd);
+        }
+    }
+    industryToBuildTotal() {
+        var sumSoFar = this.shipHullSizeSelected.industryToBuild;
+        this.buildableDefnsToBuild.forEach(x => sumSoFar += x.industryToBuild);
+        return sumSoFar;
+    }
+    hullSizeSelect(value) {
+        this.shipHullSizeSelected = value;
+        return this;
+    }
+    hullSizeSelectDefault() {
+        var hullSizeDefault = this.shipHullSizesAvailable[0];
+        return this.hullSizeSelect(hullSizeDefault);
+    }
+    componentCount() {
+        return this.buildableDefnsToBuild.length;
+    }
+    componentCountMax() {
+        return (this.shipHullSizeSelected == null ? 0 : this.shipHullSizeSelected.componentCountMax);
+    }
+    componentCountOverMax() {
+        return "" + this.componentCount() + "/" + this.componentCountMax();
+    }
+    // Controls.
+    toControl(universe, size) {
+        var shipBuilder = this;
+        this.buildablesAvailableInitialize(universe);
+        this.hullSizeSelectDefault();
         if (size == null) {
             size = universe.display.sizeDefault();
         }
@@ -122,18 +150,7 @@ class ShipBuilder {
         var labelHeight = margin * 3;
         var listSize = Coords.fromXY((size.x - margin * 3) / 2, size.y - margin * 7 - buttonSize.y - labelHeight * 4);
         var back = () => {
-            universe.venueTransitionTo(venuePrev);
-        };
-        var add = () => {
-            var componentsToBuildCount = this.componentCount();
-            var componentsToBuildMax = this.componentCountMax();
-            var canAddMoreComponents = (componentsToBuildCount < componentsToBuildMax);
-            if (canAddMoreComponents) {
-                var buildableDefnToAdd = shipBuilder.buildableDefnAvailableSelected;
-                if (buildableDefnToAdd != null) {
-                    shipBuilder.buildableDefnsToBuild.push(buildableDefnToAdd);
-                }
-            }
+            universe.venueTransitionTo(this.venueLayout);
         };
         var remove = () => {
             var buildableDefnToRemove = shipBuilder.buildableDefnToBuildSelected;
@@ -175,7 +192,7 @@ class ShipBuilder {
         font, new DataBinding(this, (c) => c.buildableDefnAvailableSelected, (c, v) => c.buildableDefnAvailableSelectedSet(v)), // bindingForItemSelected
         DataBinding.fromGet((c) => c), // bindingForItemValue
         DataBinding.fromTrue(), // isEnabled
-        add // confirm
+        () => this.componentSelectedAddToBuild() // confirm
         );
         var labelShipItems = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
@@ -192,7 +209,7 @@ class ShipBuilder {
         var buttonAdd = ControlButton.from8("buttonAdd", Coords.fromXY(size.x / 2 - buttonSize.x - margin / 2, size.y - margin * 2 - labelHeight - buttonSize.y), // pos
         buttonSize.clone(), "Add", font, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
-        add // click
+        () => this.componentSelectedAddToBuild() // click
         );
         var listShipComponents = ControlList.from10("listShipComponents", Coords.fromXY(size.x - margin - listSize.x, margin * 4 + labelHeight * 3), // pos
         listSize.clone(), DataBinding.fromContextAndGet(this, (c) => c.buildableDefnsToBuild), // items
@@ -213,13 +230,12 @@ class ShipBuilder {
         var buttonCancel = ControlButton.from5(Coords.fromXY(size.x - margin * 2 - buttonSize.x * 2, size.y - margin - buttonSize.y), // pos
         buttonSize.clone(), "Cancel", font, back // click
         );
+        var world = universe.world;
+        var faction = world.factionCurrent();
         var buttonBuild = ControlButton.from5(Coords.fromXY(size.x - margin - buttonSize.x, size.y - margin - buttonSize.y), // pos
-        buttonSize.clone(), "Build", font, () => this.build(universe, venuePrev, faction, sizeDialog) // click
+        buttonSize.clone(), "Build", font, () => this.build(universe, faction, sizeDialog) // click
         );
-        var returnValue = new ControlContainer("containerShipBuilder", Coords.create(), // pos
-        size.clone(), 
-        // children
-        [
+        var childControls = [
             labelName,
             textName,
             buttonNameRandomize,
@@ -237,7 +253,9 @@ class ShipBuilder {
             infoStatus,
             buttonCancel,
             buttonBuild
-        ], [new Action("Back", back)], [new ActionToInputsMapping("Back", [Input.Names().Escape], true)]);
+        ];
+        var returnValue = new ControlContainer("containerShipBuilder", Coords.create(), // pos
+        size.clone(), childControls, [new Action("Back", back)], [new ActionToInputsMapping("Back", [Input.Names().Escape], true)]);
         return returnValue;
     }
 }

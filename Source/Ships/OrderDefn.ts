@@ -88,47 +88,55 @@ class OrderDefn_Instances
 			deviceUser.energyRemainingThisRoundIsEnoughToMove(uwpe);
 		if (hasEnoughEnergy)
 		{
-			var energyPerMove = deviceUser.energyPerMove();
-			deviceUser.energyRemainingThisRoundSubtract(energyPerMove);
-			var orderable = Orderable.fromEntity(shipMoving);
-			var order = orderable.order(shipMoving);
-			var targetFinal = order.entityBeingTargeted;
-			var targetFinalPos = targetFinal.locatable().loc.pos;
-			var entityMovingPos = shipMoving.locatable().loc.pos;
-			var displacementToTargetFinal =
-				targetFinalPos.clone().subtract(entityMovingPos);
-			var distanceToTargetFinal = displacementToTargetFinal.magnitude();
-			var distanceMaxPerMove = deviceUser.distanceMaxPerMove(uwpe);
-			var entityTargetImmediate: Entity; 
-			if (distanceToTargetFinal <= distanceMaxPerMove)
-			{
-				entityTargetImmediate = targetFinal;
-			}
-			else
-			{
-				var directionToTarget =
-					displacementToTargetFinal.divideScalar(distanceToTargetFinal);
-				var displacementToTargetImmediate =
-					directionToTarget.multiplyScalar(distanceMaxPerMove);
-				var targetImmediatePos =
-					displacementToTargetImmediate.add(entityMovingPos);
-				var targetAsLocatable = Locatable.fromPos(targetImmediatePos);
-				entityTargetImmediate = Entity.fromProperty(targetAsLocatable);
-			}
+			OrderDefn_Instances.go_HasEnoughEnergy(uwpe);
+		}
+	}
 
-			var actor = shipMoving.actor();
-			var activity = actor.activity;
-			var activityDefnDoNothing = ActivityDefn.Instances().DoNothing;
-			if (activity.defnName == activityDefnDoNothing.name)
-			{
-				activity.defnNameAndTargetEntitySet
-				(
-					"MoveToTargetCollideAndEndMove", entityTargetImmediate
-				);
-				var universe = uwpe.universe;
-				var venue = universe.venueCurrent() as VenueStarsystem;
-				venue.entityMoving = shipMoving;
-			}
+	static go_HasEnoughEnergy(uwpe: UniverseWorldPlaceEntities): void
+	{
+		var shipMoving = uwpe.entity as Ship;
+		var deviceUser = DeviceUser.ofEntity(shipMoving);
+
+		var energyPerMove = deviceUser.energyPerMove();
+		deviceUser.energyRemainingThisRoundSubtract(energyPerMove);
+		var orderable = Orderable.fromEntity(shipMoving);
+		var order = orderable.order(shipMoving);
+		var targetFinal = order.entityBeingTargeted;
+		var targetFinalPos = targetFinal.locatable().loc.pos;
+		var entityMovingPos = shipMoving.locatable().loc.pos;
+		var displacementToTargetFinal =
+			targetFinalPos.clone().subtract(entityMovingPos);
+		var distanceToTargetFinal = displacementToTargetFinal.magnitude();
+		var distanceMaxPerMove = deviceUser.distanceMaxPerMove(uwpe);
+		var entityTargetImmediate: Entity; 
+		if (distanceToTargetFinal <= distanceMaxPerMove)
+		{
+			entityTargetImmediate = targetFinal;
+		}
+		else
+		{
+			var directionToTarget =
+				displacementToTargetFinal.divideScalar(distanceToTargetFinal);
+			var displacementToTargetImmediate =
+				directionToTarget.multiplyScalar(distanceMaxPerMove);
+			var targetImmediatePos =
+				displacementToTargetImmediate.add(entityMovingPos);
+			var targetAsLocatable = Locatable.fromPos(targetImmediatePos);
+			entityTargetImmediate = Entity.fromProperty(targetAsLocatable);
+		}
+
+		var actor = shipMoving.actor();
+		var activity = actor.activity;
+		var activityDefnDoNothing = ActivityDefn.Instances().DoNothing;
+		if (activity.defnName == activityDefnDoNothing.name)
+		{
+			activity.defnNameAndTargetEntitySet
+			(
+				"MoveToTargetCollideAndEndMove", entityTargetImmediate
+			);
+			var universe = uwpe.universe;
+			var venue = universe.venueCurrent() as VenueStarsystem;
+			venue.entityMoving = shipMoving;
 		}
 	}
 

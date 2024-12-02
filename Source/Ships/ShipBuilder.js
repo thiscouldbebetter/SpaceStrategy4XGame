@@ -8,7 +8,8 @@ class ShipBuilder {
         this.buildableDefnsToBuild = [];
         this.buildableDefnToBuildSelected = null;
         this.hullSizeSelect(null);
-        this.statusMessage = "Select available components and click Add to add them to the ship plans.";
+        this.statusMessage =
+            "Select available components and click Add to add them to the ship plans.";
     }
     build(universe, faction, sizeDialog) {
         var returnValue = null;
@@ -22,7 +23,7 @@ class ShipBuilder {
         return returnValue;
     }
     build_CanBuild(universe, faction) {
-        var returnValue = null;
+        var shipBuilt = null;
         var layout = this.venueLayout.layout;
         var planet = this.venueLayout.modelParent;
         var shipPosInCells = planet.cellPositionsAvailableToOccupyInOrbit(universe)[0];
@@ -43,19 +44,23 @@ class ShipBuilder {
         null // description
         );
         var shipBodyDefn = Ship.bodyDefnBuild(faction.color); // hack - Different hull sizes.
+        var world = universe.world;
         var shipComponentEntities = this.buildableDefnsToBuild.map((x) => {
             var buildable = Buildable.fromDefn(x);
-            var entity = new Entity(x.name, [buildable]);
+            var entity = 
+            // new Entity(x.name, [buildable] );
+            buildable.toEntity(world);
             return entity;
         });
         var shipEntity = new Ship(this.shipName, this.shipHullSizeSelected, shipBodyDefn, shipPosInCells, faction, shipComponentEntities);
-        returnValue = shipEntity;
+        shipBuilt = shipEntity;
+        faction.shipAdd(shipBuilt);
         // hack
         var shipDrawable = Drawable.fromVisual(shipAsBuildableDefn.visual);
         shipEntity.propertyAdd(shipDrawable);
         layout.buildableEntityBuild(shipEntity);
         universe.venueTransitionTo(this.venueLayout);
-        return returnValue;
+        return shipBuilt;
     }
     build_CannotBuild(universe, sizeDialog) {
         var messageLines = [

@@ -5,7 +5,7 @@ class Order //
 	entityBeingOrdered: Entity;
 	deviceToUse: Device;
 	entityBeingTargeted: Entity;
-	isComplete: boolean;
+	_isComplete: boolean;
 
 	constructor()
 	{
@@ -23,13 +23,13 @@ class Order //
 		this.entityBeingOrdered = null;
 		this.deviceToUse = null;
 		this.entityBeingTargeted = null;
-		this.isComplete = false;
+		this.isCompleteSet(false);
 		return this;
 	}
 
 	complete(): Order
 	{
-		this.isComplete = true;
+		this.isCompleteSet(true);
 		return this;
 	}
 
@@ -60,6 +60,17 @@ class Order //
 	isAwaitingTarget(): boolean
 	{
 		return (this.entityBeingTargeted == null);
+	}
+
+	isComplete(): boolean
+	{
+		return this._isComplete;
+	}
+
+	isCompleteSet(value: boolean): Order
+	{
+		this._isComplete = value;
+		return this;
 	}
 
 	obey(uwpe: UniverseWorldPlaceEntities): void

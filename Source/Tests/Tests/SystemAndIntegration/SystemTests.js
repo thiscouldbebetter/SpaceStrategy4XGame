@@ -28,15 +28,16 @@ class SystemTests extends TestFixture {
             var shipOrder = ship.order();
             var orderDefns = OrderDefn.Instances();
             shipOrder.defnSet(orderDefns.Go).entityBeingTargetedSet(planetToColonize);
-            while (shipOrder.isComplete == false) {
+            while (shipOrder.isComplete() == false) {
                 var shipDeviceUser = ship.deviceUser();
                 var shipEnergyBeforeMove = shipDeviceUser.energyRemainingThisRound(uwpe);
-                if (shipEnergyBeforeMove < shipDeviceUser.energyPerMove()) {
+                var shipEnergyPerMove = shipDeviceUser.energyPerMove();
+                if (shipEnergyBeforeMove < shipEnergyPerMove) {
                     world.updateForRound_IgnoringNotifications(uwpe);
                 }
                 else {
                     var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, null, ship, null);
-                    while (shipOrder.isComplete == false
+                    while (shipOrder.isComplete() == false
                         && shipDeviceUser.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove) {
                         shipOrder.obey(uwpe);
                         universe.updateForTimerTick();
@@ -156,26 +157,27 @@ class SystemTests extends TestFixture {
         ship.orderSet(shipOrder);
         universe.venueNextSet(starsystemUser.toVenue()); // Can this be avoided?
         uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
-        while (shipOrder.isComplete == false) {
-            var shipTurnAndMove = ship.deviceUser();
-            var shipEnergyBeforeMove = shipTurnAndMove.energyRemainingThisRound(uwpe);
-            if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove()) {
+        while (shipOrder.isComplete() == false) {
+            var shipDeviceUser = ship.deviceUser();
+            var shipEnergyBeforeMove = shipDeviceUser.energyRemainingThisRound(uwpe);
+            var shipEnergyPerMove = shipDeviceUser.energyPerMove();
+            if (shipEnergyBeforeMove < shipEnergyPerMove) {
                 world.updateForRound_IgnoringNotifications(uwpe);
             }
             else {
-                var shipEnergyRemaining = shipTurnAndMove.energyRemainingThisRound(uwpe);
-                while (shipOrder.isComplete == false
+                var shipEnergyRemaining = shipDeviceUser.energyRemainingThisRound(uwpe);
+                while (shipOrder.isComplete() == false
                     && shipEnergyRemaining == shipEnergyBeforeMove) {
                     shipOrder.obey(uwpe);
                     universe.updateForTimerTick();
                     shipEnergyRemaining =
-                        shipTurnAndMove.energyRemainingThisRound(uwpe);
+                        shipDeviceUser.energyRemainingThisRound(uwpe);
                 }
             }
         }
         // There's something weird going on with these two lines.
         shipOrder.clear();
-        shipOrder.isComplete = false; // hack - This shouldn't be necessary, but is.
+        shipOrder.isCompleteSet(false); // hack - This shouldn't be necessary, but is.
         universe.venueCurrent = null;
         var shipLoc = ship.locatable().loc;
         while (shipLoc.placeName.startsWith(StarClusterLink.name)) {

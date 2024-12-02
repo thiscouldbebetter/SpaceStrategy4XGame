@@ -12,11 +12,11 @@ class Order //
         this.entityBeingOrdered = null;
         this.deviceToUse = null;
         this.entityBeingTargeted = null;
-        this.isComplete = false;
+        this.isCompleteSet(false);
         return this;
     }
     complete() {
-        this.isComplete = true;
+        this.isCompleteSet(true);
         return this;
     }
     defnSet(value) {
@@ -37,6 +37,13 @@ class Order //
     }
     isAwaitingTarget() {
         return (this.entityBeingTargeted == null);
+    }
+    isComplete() {
+        return this._isComplete;
+    }
+    isCompleteSet(value) {
+        this._isComplete = value;
+        return this;
     }
     obey(uwpe) {
         var entityBeingOrdered = this.entityBeingOrdered;

@@ -72,14 +72,16 @@ class SystemTests extends TestFixture
 				planetToColonize
 			);
 
-			while (shipOrder.isComplete == false)
+			while (shipOrder.isComplete() == false)
 			{
 				var shipDeviceUser = ship.deviceUser();
 
 				var shipEnergyBeforeMove =
 					shipDeviceUser.energyRemainingThisRound(uwpe);
 
-				if (shipEnergyBeforeMove < shipDeviceUser.energyPerMove() )
+				var shipEnergyPerMove = shipDeviceUser.energyPerMove();
+
+				if (shipEnergyBeforeMove < shipEnergyPerMove)
 				{
 					world.updateForRound_IgnoringNotifications(uwpe);
 				}
@@ -92,7 +94,7 @@ class SystemTests extends TestFixture
 
 					while
 					(
-						shipOrder.isComplete == false
+						shipOrder.isComplete() == false
 						&& shipDeviceUser.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove
 					)
 					{
@@ -335,39 +337,41 @@ class SystemTests extends TestFixture
 			universe, world, null, ship, null
 		);
 
-		while (shipOrder.isComplete == false)
+		while (shipOrder.isComplete() == false)
 		{
-			var shipTurnAndMove = ship.deviceUser();
+			var shipDeviceUser = ship.deviceUser();
 
 			var shipEnergyBeforeMove =
-				shipTurnAndMove.energyRemainingThisRound(uwpe);
+				shipDeviceUser.energyRemainingThisRound(uwpe);
 
-			if (shipEnergyBeforeMove < shipTurnAndMove.energyPerMove() )
+			var shipEnergyPerMove = shipDeviceUser.energyPerMove();
+
+			if (shipEnergyBeforeMove < shipEnergyPerMove)
 			{
 				world.updateForRound_IgnoringNotifications(uwpe);
 			}
 			else
 			{
 				var shipEnergyRemaining =
-					shipTurnAndMove.energyRemainingThisRound(uwpe);
+					shipDeviceUser.energyRemainingThisRound(uwpe);
 
 				while
 				(
-					shipOrder.isComplete == false
+					shipOrder.isComplete() == false
 					&& shipEnergyRemaining == shipEnergyBeforeMove
 				)
 				{
 					shipOrder.obey(uwpe);
 					universe.updateForTimerTick();
 					shipEnergyRemaining =
-						shipTurnAndMove.energyRemainingThisRound(uwpe);
+						shipDeviceUser.energyRemainingThisRound(uwpe);
 				}
 			}
 		}
 
 		// There's something weird going on with these two lines.
 		shipOrder.clear();
-		shipOrder.isComplete = false; // hack - This shouldn't be necessary, but is.
+		shipOrder.isCompleteSet(false); // hack - This shouldn't be necessary, but is.
 
 		universe.venueCurrent = null;
 

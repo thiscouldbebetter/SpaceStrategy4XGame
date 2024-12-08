@@ -15,13 +15,13 @@ class ActivityDefn_Instances2 {
         var target = activity.targetEntity();
         var distanceToTarget = ship.moveTowardTargetAndReturnDistance(target);
         if (distanceToTarget == 0) {
-            activity.clear();
             var targetCollidable = target.collidable();
             if (targetCollidable != null) {
                 var shipCollidable = ship.collidable();
                 uwpe.entitySet(ship).entity2Set(target);
                 shipCollidable.collideEntitiesForUniverseWorldPlaceEntities(uwpe);
             }
+            activity.clear();
             var universe = uwpe.universe;
             var world = universe.world;
             var venueStarsystem = universe.venueCurrent();

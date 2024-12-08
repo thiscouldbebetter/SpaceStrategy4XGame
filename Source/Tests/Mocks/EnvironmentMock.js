@@ -30,7 +30,7 @@ class EnvironmentMock {
         return universe;
     }
     mediaLibraryBuild() {
-        var contentPath = "../Content/";
+        var contentPath = "../../../../Content/";
         var contentPathImages = contentPath + "Images/";
         var contentPathImagesTitles = contentPathImages + "Titles/";
         //var contentPathAudio = contentPath + "Audio/";

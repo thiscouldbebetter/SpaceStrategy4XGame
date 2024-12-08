@@ -380,6 +380,7 @@ class SystemTests extends TestFixture
 		var shipPlaceName = shipLoc.placeName();
 		Assert.isTrue(shipPlaceName.startsWith(Starsystem.name));
 		Assert.isTrue(shipPlaceName.endsWith(starsystemBeyondLink.name));
+		starsystemsKnown = factionUserKnowledge.starsystems(world);
 		Assert.isTrue(starsystemsKnown.length == 2);
 		Assert.isTrue(starsystemsKnown.indexOf(starsystemBeyondLink) >= 0);
 

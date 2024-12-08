@@ -35,8 +35,6 @@ class ActivityDefn_Instances2
 			ship.moveTowardTargetAndReturnDistance(target);
 		if (distanceToTarget == 0)
 		{
-			activity.clear();
-
 			var targetCollidable = target.collidable();
 			if (targetCollidable != null)
 			{
@@ -44,6 +42,8 @@ class ActivityDefn_Instances2
 				uwpe.entitySet(ship).entity2Set(target);
 				shipCollidable.collideEntitiesForUniverseWorldPlaceEntities(uwpe);
 			}
+
+			activity.clear();
 
 			var universe = uwpe.universe;
 			var world = universe.world as WorldExtended;

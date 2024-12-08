@@ -115,7 +115,7 @@ class Ship extends Entity {
         return Orderable.fromEntity(this);
     }
     planet(world) {
-        var planetName = this.locatable().loc.placeName.split(":")[1];
+        var planetName = this.locatable().loc.placeName().split(":")[1];
         var starsystemName = planetName.split(" ")[0];
         var starsystem = world.starCluster.starsystemByName(starsystemName);
         var planet = starsystem.planets.find(x => x.ships.indexOf(this) >= 0);
@@ -177,7 +177,7 @@ class Ship extends Entity {
     }
     toStringDescription() {
         var returnValue = this.name
-            + " - " + this.locatable().loc.placeName
+            + " - " + this.locatable().loc.placeName()
             + " - Integrity: " + this.integrityCurrentOverMax();
         var order = this.order();
         var orderAsString = order.toStringDescription();
@@ -210,13 +210,15 @@ class Ship extends Entity {
     // movement
     linkPortalEnter(cluster, linkPortal, ship) {
         var deviceUser = ship.deviceUser();
+        // Whether the link portal can actually be entered or not,
+        // the order and activity will be cleared.
+        ship.orderable().order(ship).clear();
+        ship.actor().activity.clear();
         var starlaneDrives = deviceUser.devicesStarlaneDrives();
         if (starlaneDrives.length == 0) {
             this.nudgeInFrontOfEntityIfTouching(linkPortal);
         }
         else {
-            ship.orderable().order(ship).clear();
-            ship.actor().activity.clear();
             var starsystemFrom = linkPortal.starsystemFrom(cluster);
             var starsystemTo = linkPortal.starsystemTo(cluster);
             var link = linkPortal.link(cluster);
@@ -228,7 +230,7 @@ class Ship extends Entity {
             var linkStarsystem1 = linkNode1.starsystem;
             var isLinkForward = (starsystemTo == linkStarsystem1);
             var shipLoc = this.locatable().loc;
-            shipLoc.placeName = StarClusterLink.name + ":" + link.name;
+            shipLoc.placeNameSet(StarClusterLink.name + ":" + link.name);
             var nodeFrom = (isLinkForward ? linkNode0 : linkNode1);
             shipLoc.pos.overwriteWith(nodeFrom.locatable().loc.pos);
             var linkDirection = link.displacement(cluster).normalize();
@@ -254,7 +256,7 @@ class Ship extends Entity {
         var nodeSource = nodesLinked[indexOfNodeSource];
         var starsystemDestination = nodeDestination.starsystem;
         var starsystemSource = nodeSource.starsystem;
-        shipLoc.placeName = Starsystem.name + ":" + starsystemDestination.name;
+        shipLoc.placeNameSet(Starsystem.name + ":" + starsystemDestination.name);
         var portalToExitFrom = starsystemDestination.linkPortalByStarsystemName(starsystemSource.name);
         var exitPos = portalToExitFrom.locatable().loc.pos;
         var shipPos = shipLoc.pos;
@@ -304,7 +306,9 @@ class Ship extends Entity {
             var directionToTarget = displacementToTarget.divideScalar(distanceToTarget);
             var displacementToMove = directionToTarget.multiplyScalar(speed);
             shipPos.add(displacementToMove);
-            distanceToTarget -= speed;
+            displacementToTarget =
+                this._displacement.overwriteWith(targetPos).subtract(shipPos);
+            distanceToTarget = displacementToTarget.magnitude();
         }
         else {
             shipPos.overwriteWith(targetPos);
@@ -337,8 +341,7 @@ class Ship extends Entity {
         if (canEnterOrbit) {
             starsystem.shipRemove(this);
             planet.shipAddToOrbit(this, universe);
-            this.locatable().loc.placeName =
-                Planet.name + ":" + planet.name;
+            this.locatable().loc.placeNameSet(Planet.name + ":" + planet.name);
             var faction = this.faction();
             faction.knowledge.planetAdd(planet);
         }

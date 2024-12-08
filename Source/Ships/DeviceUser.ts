@@ -445,6 +445,8 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this.energyRemainingThisRound(uwpe); // Do the calculations, but ignore the result for now.
 	}
 
+	propertyName(): string { return DeviceUser.name; }
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.

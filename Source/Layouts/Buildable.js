@@ -37,6 +37,7 @@ class Buildable {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Buildable.name; }
     updateForTimerTick(uwpe) { }
     // Clonable.
     clone() {

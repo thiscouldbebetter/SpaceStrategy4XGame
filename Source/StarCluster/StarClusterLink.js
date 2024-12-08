@@ -120,6 +120,7 @@ class StarClusterLink {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return StarClusterLink.name; }
     updateForTimerTick(uwpe) { }
     // Equatable
     equals(other) { return false; }

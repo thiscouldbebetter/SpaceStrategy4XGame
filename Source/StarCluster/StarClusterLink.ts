@@ -226,6 +226,7 @@ class StarClusterLink implements EntityPropertyBase
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return StarClusterLink.name; }
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable

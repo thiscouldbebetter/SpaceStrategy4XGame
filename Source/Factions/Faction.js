@@ -371,6 +371,7 @@ class Faction {
     initialize(uwpe) {
         this.ships.forEach(x => x.initialize(uwpe));
     }
+    propertyName() { return Faction.name; }
     updateForTimerTick(uwpe) {
         var universe = uwpe.universe;
         var venueCurrent = universe.venueCurrent();

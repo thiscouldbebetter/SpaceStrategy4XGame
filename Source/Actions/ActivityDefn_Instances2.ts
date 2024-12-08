@@ -35,8 +35,7 @@ class ActivityDefn_Instances2
 			ship.moveTowardTargetAndReturnDistance(target);
 		if (distanceToTarget == 0)
 		{
-			var doNothing = ActivityDefn.Instances().DoNothing;
-			activity.clear().defnSet(doNothing);
+			activity.clear();
 
 			var targetCollidable = target.collidable();
 			if (targetCollidable != null)

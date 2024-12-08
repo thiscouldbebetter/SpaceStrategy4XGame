@@ -47,6 +47,7 @@ class Device {
     // EntityProperty.
     finalize(uwpe) { }
     updateForTimerTick(uwpe) { }
+    propertyName() { return Device.name; }
     initialize(uwpe) { }
     // Clonable.
     clone() {

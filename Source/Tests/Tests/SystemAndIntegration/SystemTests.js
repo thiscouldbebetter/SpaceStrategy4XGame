@@ -45,7 +45,7 @@ class SystemTests extends TestFixture {
                 }
             }
             var shipLoc = ship.locatable().loc;
-            var shipLocPlaceName = shipLoc.placeName;
+            var shipLocPlaceName = shipLoc.placeName();
             Assert.isTrue(shipLocPlaceName.startsWith(Planet.name));
             Assert.isTrue(shipLocPlaceName.endsWith(planetToColonize.name));
             Assert.isNull(planetToColonize.factionable().faction());
@@ -128,7 +128,8 @@ class SystemTests extends TestFixture {
             buildableDefns.ShipDrive1TonklinMotor,
             buildableDefns.ShipGenerator1ProtonShaver,
             buildableDefns.ShipItemColonizer,
-            buildableDefns.ShipItemColonizer
+            buildableDefns.ShipItemColonizer,
+            buildableDefns.ShipStarlaneDrive1StarLaneDrive
         ];
         for (var i = 0; i < shipComponentsAsBuildableDefns.length; i++) {
             var component = shipComponentsAsBuildableDefns[i];
@@ -157,7 +158,7 @@ class SystemTests extends TestFixture {
         ship.orderSet(shipOrder);
         universe.venueNextSet(starsystemUser.toVenue()); // Can this be avoided?
         uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
-        while (shipOrder.isComplete() == false) {
+        while (shipOrder.isNothing() == false) {
             var shipDeviceUser = ship.deviceUser();
             var shipEnergyBeforeMove = shipDeviceUser.energyRemainingThisRound(uwpe);
             var shipEnergyPerMove = shipDeviceUser.energyPerMove();
@@ -165,13 +166,11 @@ class SystemTests extends TestFixture {
                 world.updateForRound_IgnoringNotifications(uwpe);
             }
             else {
-                var shipEnergyRemaining = shipDeviceUser.energyRemainingThisRound(uwpe);
-                while (shipOrder.isComplete() == false
-                    && shipEnergyRemaining == shipEnergyBeforeMove) {
-                    shipOrder.obey(uwpe);
+                shipOrder.obey(uwpe);
+                var shipActor = ship.actor();
+                var shipActivity = shipActor.activity;
+                while (shipActivity.isDoNothing() == false) {
                     universe.updateForTimerTick();
-                    shipEnergyRemaining =
-                        shipDeviceUser.energyRemainingThisRound(uwpe);
                 }
             }
         }
@@ -180,11 +179,12 @@ class SystemTests extends TestFixture {
         shipOrder.isCompleteSet(false); // hack - This shouldn't be necessary, but is.
         universe.venueCurrent = null;
         var shipLoc = ship.locatable().loc;
-        while (shipLoc.placeName.startsWith(StarClusterLink.name)) {
+        while (shipLoc.placeName().startsWith(StarClusterLink.name)) {
             world.updateForRound_IgnoringNotifications(uwpe);
         }
-        Assert.isTrue(shipLoc.placeName.startsWith(Starsystem.name));
-        Assert.isTrue(shipLoc.placeName.endsWith(starsystemBeyondLink.name));
+        var shipPlaceName = shipLoc.placeName();
+        Assert.isTrue(shipPlaceName.startsWith(Starsystem.name));
+        Assert.isTrue(shipPlaceName.endsWith(starsystemBeyondLink.name));
         Assert.isTrue(starsystemsKnown.length == 2);
         Assert.isTrue(starsystemsKnown.indexOf(starsystemBeyondLink) >= 0);
         return starsystemBeyondLink;

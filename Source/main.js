@@ -7,6 +7,7 @@ function main() {
     );
     var contentPath = "../Content/";
     var contentPathImages = contentPath + "Images/";
+    var contentPathImagesTitles = contentPathImages + "Titles/";
     var contentPathAudio = contentPath + "Audio/";
     var contentPathVideo = contentPath + "Video/";
     var contentPathFonts = contentPath + "Fonts/";
@@ -14,9 +15,9 @@ function main() {
     var mediaLibrary = new MediaLibrary("", // contentDirectoryPath - Already incorporated into item paths?
     // images
     [
-        new Image2("Titles_Opening", contentPathImages + "Opening.png"),
-        new Image2("Titles_Producer", contentPathImages + "Producer.png"),
-        new Image2("Titles_Title", contentPathImages + "Title.png"),
+        new Image2("Titles_Opening", contentPathImagesTitles + "Opening.png"),
+        new Image2("Titles_Producer", contentPathImagesTitles + "Producer.png"),
+        new Image2("Titles_Title", contentPathImagesTitles + "Title.png"),
     ], 
     // sounds
     [
@@ -70,7 +71,7 @@ function main() {
         return worldCreatorToControl(universe, worldCreator);
     }, worldCreatorSettings);
     var universe = Universe.create("Space_Strategy_4X", null, // version,
-    new TimerHelper(20), display, mediaLibrary, controlBuilder, worldCreator);
+    new TimerHelper(20), display, new SoundHelperLive(), mediaLibrary, controlBuilder, worldCreator);
     universe.initialize((x) => { x.start(); });
 }
 function worldCreatorToControl(universe, worldCreator) {

@@ -29,13 +29,6 @@ class Factionable implements EntityProperty<Factionable>
 		this._faction = faction;
 	}
 
-	// EntityProperty.
-
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
-	{
-		// Do nothing.
-	}
-
 	// Clonable.
 
 	clone(): Factionable
@@ -52,9 +45,17 @@ class Factionable implements EntityProperty<Factionable>
 	// EntityProperty.
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
+
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{
 		// Do nothing;
+	}
+
+	propertyName(): string { return Factionable.name; }
+
+	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
+	{
+		// Do nothing.
 	}
 
 	// Equatable

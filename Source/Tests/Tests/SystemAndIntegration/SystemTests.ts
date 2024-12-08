@@ -106,7 +106,7 @@ class SystemTests extends TestFixture
 
 			var shipLoc = ship.locatable().loc;
 
-			var shipLocPlaceName = shipLoc.placeName;
+			var shipLocPlaceName = shipLoc.placeName();
 			Assert.isTrue(shipLocPlaceName.startsWith(Planet.name));
 			Assert.isTrue(shipLocPlaceName.endsWith(planetToColonize.name));
 
@@ -266,7 +266,8 @@ class SystemTests extends TestFixture
 			buildableDefns.ShipDrive1TonklinMotor,
 			buildableDefns.ShipGenerator1ProtonShaver,
 			buildableDefns.ShipItemColonizer,
-			buildableDefns.ShipItemColonizer
+			buildableDefns.ShipItemColonizer,
+			buildableDefns.ShipStarlaneDrive1StarLaneDrive
 		];
 
 		for (var i = 0; i < shipComponentsAsBuildableDefns.length; i++)
@@ -337,7 +338,7 @@ class SystemTests extends TestFixture
 			universe, world, null, ship, null
 		);
 
-		while (shipOrder.isComplete() == false)
+		while (shipOrder.isNothing() == false)
 		{
 			var shipDeviceUser = ship.deviceUser();
 
@@ -352,19 +353,13 @@ class SystemTests extends TestFixture
 			}
 			else
 			{
-				var shipEnergyRemaining =
-					shipDeviceUser.energyRemainingThisRound(uwpe);
+				shipOrder.obey(uwpe);
 
-				while
-				(
-					shipOrder.isComplete() == false
-					&& shipEnergyRemaining == shipEnergyBeforeMove
-				)
+				var shipActor = ship.actor();
+				var shipActivity = shipActor.activity;
+				while (shipActivity.isDoNothing() == false)
 				{
-					shipOrder.obey(uwpe);
 					universe.updateForTimerTick();
-					shipEnergyRemaining =
-						shipDeviceUser.energyRemainingThisRound(uwpe);
 				}
 			}
 		}
@@ -377,13 +372,14 @@ class SystemTests extends TestFixture
 
 		var shipLoc = ship.locatable().loc;
 
-		while (shipLoc.placeName.startsWith(StarClusterLink.name))
+		while (shipLoc.placeName().startsWith(StarClusterLink.name))
 		{
 			world.updateForRound_IgnoringNotifications(uwpe);
 		}
 
-		Assert.isTrue(shipLoc.placeName.startsWith(Starsystem.name));
-		Assert.isTrue(shipLoc.placeName.endsWith(starsystemBeyondLink.name));
+		var shipPlaceName = shipLoc.placeName();
+		Assert.isTrue(shipPlaceName.startsWith(Starsystem.name));
+		Assert.isTrue(shipPlaceName.endsWith(starsystemBeyondLink.name));
 		Assert.isTrue(starsystemsKnown.length == 2);
 		Assert.isTrue(starsystemsKnown.indexOf(starsystemBeyondLink) >= 0);
 

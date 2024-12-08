@@ -83,6 +83,7 @@ class Device implements EntityProperty<Device>
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return Device.name; }
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Clonable.

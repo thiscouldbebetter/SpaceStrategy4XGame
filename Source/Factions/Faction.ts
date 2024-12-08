@@ -887,6 +887,8 @@ class Faction implements EntityProperty<Faction>
 		this.ships.forEach(x => x.initialize(uwpe));
 	}
 
+	propertyName(): string { return Faction.name; }
+
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var universe = uwpe.universe;

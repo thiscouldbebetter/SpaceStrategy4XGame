@@ -137,8 +137,15 @@ class Starsystem extends PlaceBase {
     }
     linkPortalAdd(universe, linkPortalToAdd) {
         this.linkPortals.push(linkPortalToAdd);
-        var uwpe = new UniverseWorldPlaceEntities(universe, universe.world, this, linkPortalToAdd, null);
+        /*
+        // Had to be commented out after Framework upgrade.
+        var uwpe = new UniverseWorldPlaceEntities
+        (
+            universe, universe.world, this, linkPortalToAdd, null
+        );
         this.entitySpawn(uwpe);
+        */
+        this.entityToSpawnAdd(linkPortalToAdd);
     }
     linkPortalByStarsystemName(starsystemName) {
         if (this._linkPortalsByStarsystemName == null) {
@@ -195,8 +202,7 @@ class Starsystem extends PlaceBase {
         var shipsBelongingToEnemies = this.ships.filter(x => factionsInStarsystemEnemy.some(y => x.factionable().faction() == y));
         shipsBelongingToEnemies.forEach(x => x.sleepCancel());
         this.ships.push(shipToAdd);
-        shipToAdd.locatable().loc.placeName =
-            Starsystem.name + ":" + this.name;
+        shipToAdd.locatable().loc.placeNameSet(Starsystem.name + ":" + this.name);
         factionsInStarsystem.forEach(faction => {
             var factionKnowledge = faction.knowledge;
             factionKnowledge.shipAdd(shipToAdd, uwpe);

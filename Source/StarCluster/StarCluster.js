@@ -175,13 +175,16 @@ class StarCluster extends PlaceBase {
     }
     nodesAsEntities() {
         if (this._nodesAsEntities == null) {
-            this._nodesAsEntities = this.nodes.map(x => new Entity(x.name, [x, x.locatable()]));
+            this._nodesAsEntities = this.nodes.map(x => new Entity(x.name, [
+                // x, // Removed after Framework upgrade.
+                x.locatable()
+            ]));
         }
         return this._nodesAsEntities;
     }
     placeForEntityLocatable(entityLocatable) {
         var returnPlace = null;
-        var placeTypeColonName = entityLocatable.locatable().loc.placeName;
+        var placeTypeColonName = entityLocatable.locatable().loc.placeName();
         var placeTypeAndName = placeTypeColonName.split(":");
         var placeType = placeTypeAndName[0];
         var placeName = placeTypeAndName[1];

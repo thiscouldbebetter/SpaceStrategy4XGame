@@ -356,7 +356,14 @@ class StarCluster extends PlaceBase
 		{
 			this._nodesAsEntities = this.nodes.map
 			(
-				x => new Entity(x.name, [x, x.locatable()] )
+				x => new Entity
+				(
+					x.name,
+					[
+						// x, // Removed after Framework upgrade.
+						x.locatable()
+					]
+				)
 			);
 		}
 
@@ -368,7 +375,7 @@ class StarCluster extends PlaceBase
 		var returnPlace = null;
 
 		var placeTypeColonName =
-			entityLocatable.locatable().loc.placeName;
+			entityLocatable.locatable().loc.placeName();
 		var placeTypeAndName = placeTypeColonName.split(":");
 		var placeType = placeTypeAndName[0];
 		var placeName = placeTypeAndName[1];

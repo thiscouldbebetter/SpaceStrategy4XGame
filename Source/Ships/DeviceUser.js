@@ -250,6 +250,7 @@ class DeviceUser {
     initialize(uwpe) {
         this.energyRemainingThisRound(uwpe); // Do the calculations, but ignore the result for now.
     }
+    propertyName() { return DeviceUser.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) {

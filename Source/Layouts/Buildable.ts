@@ -74,6 +74,7 @@ class Buildable implements EntityProperty<Buildable>
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return Buildable.name; }
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Clonable.

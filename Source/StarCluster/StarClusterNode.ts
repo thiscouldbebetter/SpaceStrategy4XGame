@@ -29,7 +29,8 @@ class StarClusterNode extends Entity
 				),
 				new Controllable
 				(
-					(uwpe, size, controlTypeName) => StarClusterNode.toControl(uwpe, size, controlTypeName)
+					(uwpe, size, controlTypeName) =>
+						StarClusterNode.toControl(uwpe, size, controlTypeName)
 				),
 				Drawable.fromVisual(star.starType.visualFromOutside() ),
 				Locatable.fromPos(pos)

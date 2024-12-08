@@ -15,6 +15,7 @@ function main()
 
 	var contentPath = "../Content/";
 	var contentPathImages = contentPath + "Images/";
+	var contentPathImagesTitles = contentPathImages + "Titles/";
 	var contentPathAudio = contentPath + "Audio/";
 	var contentPathVideo = contentPath + "Video/";
 	var contentPathFonts = contentPath + "Fonts/";
@@ -26,9 +27,9 @@ function main()
 
 		// images
 		[
-			new Image2("Titles_Opening", contentPathImages + "Opening.png"),
-			new Image2("Titles_Producer", contentPathImages + "Producer.png"),
-			new Image2("Titles_Title", contentPathImages + "Title.png"),
+			new Image2("Titles_Opening", contentPathImagesTitles + "Opening.png"),
+			new Image2("Titles_Producer", contentPathImagesTitles + "Producer.png"),
+			new Image2("Titles_Title", contentPathImagesTitles + "Title.png"),
 		],
 		// sounds
 		[
@@ -111,6 +112,7 @@ function main()
 		null, // version,
 		new TimerHelper(20),
 		display,
+		new SoundHelperLive(),
 		mediaLibrary,
 		controlBuilder,
 		worldCreator

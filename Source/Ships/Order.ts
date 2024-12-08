@@ -73,6 +73,11 @@ class Order //
 		return this;
 	}
 
+	isNothing(): boolean
+	{
+		return (this.defn == OrderDefn.Instances().DoNothing);
+	}
+
 	obey(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var entityBeingOrdered = this.entityBeingOrdered;
@@ -113,6 +118,7 @@ class Orderable implements EntityPropertyBase
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return Orderable.name; }
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.

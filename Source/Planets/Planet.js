@@ -187,7 +187,7 @@ class Planet extends Entity {
             this.ships.push(shipToAdd);
             var placeName = Planet.name + ":" + this.name;
             var shipLoc = shipToAdd.locatable().loc;
-            shipLoc.placeName = placeName;
+            shipLoc.placeNameSet(placeName);
             var cellPos = this.cellPositionsAvailableToOccupyInOrbit(universe)[0];
             shipLoc.pos.overwriteWith(cellPos);
             var layout = this.layout(universe);
@@ -200,7 +200,7 @@ class Planet extends Entity {
         var planetPos = this.locatable().loc.pos;
         var world = uwpe.world;
         var starsystem = this.starsystem(world);
-        shipLoc.placeName = Starsystem.name + starsystem.name;
+        shipLoc.placeNameSet(Starsystem.name + starsystem.name);
         shipLoc.pos.overwriteWith(planetPos); // todo - offset.
         starsystem.shipAdd(shipToLeaveOrbit, uwpe);
     }

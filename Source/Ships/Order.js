@@ -45,6 +45,9 @@ class Order //
         this._isComplete = value;
         return this;
     }
+    isNothing() {
+        return (this.defn == OrderDefn.Instances().DoNothing);
+    }
     obey(uwpe) {
         var entityBeingOrdered = this.entityBeingOrdered;
         uwpe.entitySet(entityBeingOrdered);
@@ -70,6 +73,7 @@ class Orderable {
     // EntityProperty.
     finalize(uwpe) { }
     initialize(uwpe) { }
+    propertyName() { return Orderable.name; }
     updateForTimerTick(uwpe) { }
     // Equatable.
     equals(other) { return false; }

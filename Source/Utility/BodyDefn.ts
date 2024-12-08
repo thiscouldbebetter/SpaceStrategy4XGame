@@ -25,6 +25,7 @@ class BodyDefn implements EntityPropertyBase
 
 	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	propertyName(): string { return BodyDefn.name; }
 	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
 
 	// Equatable.

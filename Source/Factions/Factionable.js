@@ -16,10 +16,6 @@ class Factionable {
     factionSet(faction) {
         this._faction = faction;
     }
-    // EntityProperty.
-    updateForTimerTick(uwpe) {
-        // Do nothing.
-    }
     // Clonable.
     clone() {
         return new Factionable(this.faction());
@@ -32,6 +28,10 @@ class Factionable {
     finalize(uwpe) { }
     initialize(uwpe) {
         // Do nothing;
+    }
+    propertyName() { return Factionable.name; }
+    updateForTimerTick(uwpe) {
+        // Do nothing.
     }
     // Equatable
     equals(other) {

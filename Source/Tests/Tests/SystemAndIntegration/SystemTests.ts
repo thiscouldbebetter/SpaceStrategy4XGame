@@ -52,80 +52,10 @@ class SystemTests extends TestFixture
 			universe, factionUser, planetUser, ship
 		);
 
-		universe.venueNextSet(starsystemArrivedAt.toVenue()); // Can this be avoided?
-
-		var planetsInStarsystemArrivedAt = starsystemArrivedAt.planets;
-		var planetToColonize =
-			planetsInStarsystemArrivedAt.find(x => x.factionable().faction() == null);
-
-		if (planetToColonize != null)
-		{
-			var shipOrder = ship.order();
-
-			var orderDefns = OrderDefn.Instances();
-
-			shipOrder.defnSet
-			(
-				orderDefns.Go
-			).entityBeingTargetedSet
-			(
-				planetToColonize
-			);
-
-			while (shipOrder.isComplete() == false)
-			{
-				var shipDeviceUser = ship.deviceUser();
-
-				var shipEnergyBeforeMove =
-					shipDeviceUser.energyRemainingThisRound(uwpe);
-
-				var shipEnergyPerMove = shipDeviceUser.energyPerMove();
-
-				if (shipEnergyBeforeMove < shipEnergyPerMove)
-				{
-					world.updateForRound_IgnoringNotifications(uwpe);
-				}
-				else
-				{
-					var uwpe = new UniverseWorldPlaceEntities
-					(
-						universe, universe.world, null, ship, null
-					);
-
-					while
-					(
-						shipOrder.isComplete() == false
-						&& shipDeviceUser.energyRemainingThisRound(uwpe) == shipEnergyBeforeMove
-					)
-					{
-						shipOrder.obey(uwpe);
-						universe.updateForTimerTick();
-					}
-				}
-			}
-
-			var shipLoc = ship.locatable().loc;
-
-			var shipLocPlaceName = shipLoc.placeName();
-			Assert.isTrue(shipLocPlaceName.startsWith(Planet.name));
-			Assert.isTrue(shipLocPlaceName.endsWith(planetToColonize.name));
-
-			Assert.isNull(planetToColonize.factionable().faction() );
-
-			var wasColonizationSuccessful =
-				ship.planetColonize(universe, world);
-
-			Assert.isTrue(wasColonizationSuccessful);
-
-			var shipFaction = ship.factionable().faction();
-			var planetToColonizeFaction = planetToColonize.factionable().faction();
-			var starsystemArrivedAtFaction = starsystemArrivedAt.faction(world);
-
-			Assert.areEqual(shipFaction, planetToColonizeFaction);
-			Assert.areEqual(shipFaction, starsystemArrivedAtFaction);
-
-			Assert.isTrue(factionUser.planets.indexOf(planetToColonize) >= 0);
-		}
+		this.playFromStart_ColonizePlanetWithShipInStarsystem
+		(
+			ship, starsystemArrivedAt, universe
+		);
 	}
 
 	playFromStart_BuildLaboratory
@@ -316,6 +246,100 @@ class SystemTests extends TestFixture
 		var starsystemsKnown = factionUserKnowledge.starsystems(world);
 		Assert.isTrue(starsystemsKnown.length == 1);
 
+		this.moveShipInStarsystemUntilItReachesEntity
+		(
+			ship, starsystemUser, linkPortalToGoTo, universe
+		);
+
+		universe.venueNextSet(null);
+		universe.updateForTimerTick();
+
+		var shipLoc = ship.locatable().loc;
+
+		while (shipLoc.placeName().startsWith(StarClusterLink.name))
+		{
+			var uwpe = new UniverseWorldPlaceEntities
+			(
+				universe, world, null, ship, null
+			);
+
+			world.updateForRound_IgnoringNotifications(uwpe);
+		}
+
+		var shipPlaceName = shipLoc.placeName();
+		Assert.isTrue(shipPlaceName.startsWith(Starsystem.name));
+		Assert.isTrue(shipPlaceName.endsWith(starsystemBeyondLink.name));
+		starsystemsKnown = factionUserKnowledge.starsystems(world);
+		Assert.isTrue(starsystemsKnown.length == 2);
+		Assert.isTrue(starsystemsKnown.indexOf(starsystemBeyondLink) >= 0);
+
+		return starsystemBeyondLink;
+	}
+
+
+	playFromStart_ColonizePlanetWithShipInStarsystem
+	(
+		ship: Ship,
+		starsystemArrivedAt: Starsystem,
+		universe: Universe
+	): void
+	{
+		var world = universe.world as WorldExtended;
+		var factionUser = world.factions()[0];
+
+		universe.venueNextSet(starsystemArrivedAt.toVenue()); // Can this be avoided?
+		universe.updateForTimerTick();
+
+		var planetsInStarsystemArrivedAt = starsystemArrivedAt.planets;
+		var planetToColonize =
+			planetsInStarsystemArrivedAt.find(x => x.factionable().faction() == null);
+
+		if (planetToColonize == null)
+		{
+			// todo - Make sure this doesn't happen.
+			throw new Error("No planet to colonize!");
+		}
+		else
+		{
+			this.moveShipInStarsystemUntilItReachesEntity
+			(
+				ship, starsystemArrivedAt, planetToColonize, universe
+			);
+
+			var shipLoc = ship.locatable().loc;
+
+			var shipLocPlaceName = shipLoc.placeName();
+			Assert.isTrue(shipLocPlaceName.startsWith(Planet.name));
+			Assert.isTrue(shipLocPlaceName.endsWith(planetToColonize.name));
+
+			Assert.isNull(planetToColonize.factionable().faction() );
+
+			var wasColonizationSuccessful =
+				ship.planetColonize(universe, world);
+
+			Assert.isTrue(wasColonizationSuccessful);
+
+			var shipFaction = ship.factionable().faction();
+			var planetToColonizeFaction = planetToColonize.factionable().faction();
+			var starsystemArrivedAtFaction = starsystemArrivedAt.faction(world);
+
+			Assert.areEqual(shipFaction, planetToColonizeFaction);
+			Assert.areEqual(shipFaction, starsystemArrivedAtFaction);
+
+			Assert.isTrue(factionUser.planets.indexOf(planetToColonize) >= 0);
+		}
+	}
+
+	// Helpers.
+
+	moveShipInStarsystemUntilItReachesEntity
+	(
+		ship: Ship, starsystem: Starsystem, entityToGoTo: Entity, universe: Universe
+	): void
+	{
+		universe.venueNextSet(starsystem.toVenue() );
+		universe.updateForTimerTick();
+
 		var orderDefns = OrderDefn.Instances();
 
 		var shipOrder = Order.fromDefn
@@ -326,17 +350,19 @@ class SystemTests extends TestFixture
 			ship
 		).entityBeingTargetedSet
 		(
-			linkPortalToGoTo
+			entityToGoTo
 		);
 
 		ship.orderSet(shipOrder);
 
-		universe.venueNextSet(starsystemUser.toVenue() ); // Can this be avoided?
+		var world = universe.world as WorldExtended;
 
-		uwpe = new UniverseWorldPlaceEntities
+		var uwpe = new UniverseWorldPlaceEntities
 		(
 			universe, world, null, ship, null
 		);
+
+		var shipOrder = ship.order();
 
 		while (shipOrder.isNothing() == false)
 		{
@@ -368,23 +394,6 @@ class SystemTests extends TestFixture
 		shipOrder.clear();
 		shipOrder.isCompleteSet(false); // hack - This shouldn't be necessary, but is.
 
-		universe.venueCurrent = null;
-
-		var shipLoc = ship.locatable().loc;
-
-		while (shipLoc.placeName().startsWith(StarClusterLink.name))
-		{
-			world.updateForRound_IgnoringNotifications(uwpe);
-		}
-
-		var shipPlaceName = shipLoc.placeName();
-		Assert.isTrue(shipPlaceName.startsWith(Starsystem.name));
-		Assert.isTrue(shipPlaceName.endsWith(starsystemBeyondLink.name));
-		starsystemsKnown = factionUserKnowledge.starsystems(world);
-		Assert.isTrue(starsystemsKnown.length == 2);
-		Assert.isTrue(starsystemsKnown.indexOf(starsystemBeyondLink) >= 0);
-
-		return starsystemBeyondLink;
 	}
 
 }

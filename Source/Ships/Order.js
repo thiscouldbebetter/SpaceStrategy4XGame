@@ -9,7 +9,7 @@ class Order //
     }
     clear() {
         this.defn = OrderDefn.Instances().DoNothing;
-        this.entityBeingOrdered = null;
+        this.entityBeingOrderedSet(null);
         this.deviceToUse = null;
         this.entityBeingTargeted = null;
         this.isCompleteSet(false);

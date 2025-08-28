@@ -108,14 +108,14 @@ class DiplomaticSession
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"Diplomacy",
 			Coords.fromXY(0, 0), // pos
 			containerSize,
 			// children
 			[
-				ControlButton.from8
+				ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 				(
 					"buttonBack",
 					Coords.fromXY(margin, margin), // pos
@@ -142,7 +142,7 @@ class DiplomaticSession
 					fontNameAndHeight
 				),
 
-				ControlList.from8
+				ControlList.fromNamePosSizeItemsTextFontSelectedValue
 				(
 					"listFactions",
 					Coords.fromXY(margin, margin * 2 + controlHeight * 2), // pos
@@ -165,7 +165,7 @@ class DiplomaticSession
 					DataBinding.fromContext(null) // bindingForItemValue
 				),
 
-				ControlButton.from8
+				ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 				(
 					"buttonTalk",
 					Coords.fromXY(margin, margin * 3 + controlHeight * 6), // pos

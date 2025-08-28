@@ -43,6 +43,11 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		// universe.soundHelper.soundForMusicPause(universe);
 	}
 
+	finalizeIsComplete(): boolean
+	{
+		return true;
+	}
+
 	initialize(universe: Universe): void
 	{
 		var controlRoot = this.toControl(universe);
@@ -51,9 +56,14 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		this.layout.initialize(universe);
 
 		var soundHelper = universe.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
+		soundHelper.soundWithName(universe, "Music_Title").play(universe, 1);
 
 		this.hasBeenUpdatedSinceDrawn = true;
+	}
+
+	initializeIsComplete(): boolean
+	{
+		return true;
 	}
 
 	model(): any
@@ -240,7 +250,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 		var childControls = new Array<ControlBase>();
 
-		var labelBuildableName = ControlLabel.from4Uncentered
+		var labelBuildableName = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(1, 1).multiply(margin),
 			listSize,
@@ -366,7 +376,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 		childControls.push(buttonDone);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerBuildableDetails",
 			displaySize.clone().subtract(containerSize).half(), // pos
@@ -419,7 +429,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 		var terrainAtCursor = map.terrainAtCursor();
 		var terrainDescription = terrainAtCursor.name + ": " + terrainAtCursor.description;
 
-		var labelTerrainDescription = ControlLabel.from4Uncentered
+		var labelTerrainDescription = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			margin,
 			labelSize,
@@ -427,7 +437,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var labelFacilityToBuild = ControlLabel.from4Uncentered
+		var labelFacilityToBuild = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin.x, margin.y + labelSize.y),
 			labelSize,
@@ -435,7 +445,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var listBuildables = ControlList.from8
+		var listBuildables = ControlList.fromNamePosSizeItemsTextFontSelectedValue
 		(
 			"listBuildables",
 			Coords.fromXY
@@ -464,7 +474,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			DataBinding.fromGet( (c: BuildableDefn) => c.name) // bindingForItemValue
 		);
 
-		var textFacilityToBuild = ControlLabel.from4Uncentered
+		var textFacilityToBuild = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -498,7 +508,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			universe.venueJumpTo(venueLayout);
 		}
 
-		var buttonBuild = ControlButton.from8
+		var buttonBuild = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonBuild",
 			Coords.fromXY(
@@ -517,7 +527,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			buttonBuild_Clicked
 		);
 
-		var buttonCancel = ControlButton.from8
+		var buttonCancel = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonCancel",
 			Coords.fromXY
@@ -533,7 +543,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			buttonCancel_Clicked
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerBuild",
 			displaySize.clone().subtract(containerSize).half(), // pos
@@ -569,7 +579,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 		buttonWidth /= 2; // To make it match the Back buttons in starsystem and cluster.
 
-		var buttonBack = ControlButton.from8
+		var buttonBack = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonBack",
 			Coords.fromXY
@@ -605,7 +615,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			containerInnerSize.y * 1.4
 		);
 
-		var container = ControlContainer.from4
+		var container = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerMain",
 			Coords.fromXY(0, 0), // pos
@@ -680,7 +690,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 		var size = containerInnerSize;
 
-		var labelName = ControlLabel.from4Uncentered
+		var labelName = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin), // pos
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
@@ -688,7 +698,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var textPlace = ControlLabel.from4Uncentered
+		var textPlace = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(column1PosX,  margin), // pos
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
@@ -699,7 +709,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var labelType = ControlLabel.from4Uncentered
+		var labelType = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight * 1), // pos
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
@@ -707,7 +717,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var textPlanetType = ControlLabel.from4Uncentered
+		var textPlanetType = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(column1PosX,  margin + controlHeight * 1), // pos
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
@@ -718,7 +728,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var labelOwnedBy = ControlLabel.from4Uncentered
+		var labelOwnedBy = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight * 2), // pos
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
@@ -726,7 +736,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var textFaction = ControlLabel.from4Uncentered
+		var textFaction = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(column1PosX,  margin + controlHeight * 2), // pos
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
@@ -738,7 +748,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerTimeAndPlace",
 			Coords.fromXY(margin, margin),
@@ -782,7 +792,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			containerInnerSize.x - margin * 2, controlHeight
 		);
 
-		var labelPopulation = ControlLabel.from4Uncentered
+		var labelPopulation = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight * 0), // pos
 			controlSize,
@@ -790,7 +800,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var textPopulation = ControlLabel.from4Uncentered
+		var textPopulation = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(column1PosX, margin + controlHeight * 0), // pos
 			controlSize,
@@ -802,7 +812,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var labelIndustry = ControlLabel.from4Uncentered
+		var labelIndustry = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight * 1), // pos
 			controlSize,
@@ -810,7 +820,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var textIndustry = ControlLabel.from4Uncentered
+		var textIndustry = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(column1PosX, margin + controlHeight * 1), // pos
 			controlSize,
@@ -822,7 +832,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var labelProsperity = ControlLabel.from4Uncentered
+		var labelProsperity = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight * 2), // pos
 			controlSize,
@@ -830,7 +840,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var textProsperity = ControlLabel.from4Uncentered
+		var textProsperity = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(column1PosX, margin + controlHeight * 2), // pos
 			controlSize,
@@ -842,7 +852,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var labelResearch = ControlLabel.from4Uncentered
+		var labelResearch = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight * 3), // pos
 			controlSize,
@@ -850,7 +860,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			fontNameAndHeight
 		);
 
-		var textResearch = ControlLabel.from4Uncentered
+		var textResearch = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(column1PosX, margin + controlHeight * 3), // pos
 			controlSize,
@@ -883,7 +893,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 			margin, containerMainSize.y - margin - containerInnerSize.y
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerPopulationAndProduction",
 			controlPos,
@@ -921,7 +931,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 			var display = universe.display;
 
-			display.drawBackground(null, null);
+			display.drawBackground();
 
 			this.visualBackgroundDraw(universe);
 

@@ -1,5 +1,5 @@
 
-class BodyDefn implements EntityPropertyBase
+class BodyDefn extends EntityPropertyBase<BodyDefn>
 {
 	name: string;
 	size: Coords;
@@ -9,6 +9,8 @@ class BodyDefn implements EntityPropertyBase
 
 	constructor(name: string, size: Coords, visual: VisualBase)
 	{
+		super();
+
 		this.name = name;
 		this.size = size;
 		this.visual = visual;
@@ -20,14 +22,4 @@ class BodyDefn implements EntityPropertyBase
 	{
 		return entity.propertyByName(BodyDefn.name) as BodyDefn;
 	}
-
-	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-	propertyName(): string { return BodyDefn.name; }
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
-
-	// Equatable.
-	equals(other: BodyDefn): boolean { return false; }
 }

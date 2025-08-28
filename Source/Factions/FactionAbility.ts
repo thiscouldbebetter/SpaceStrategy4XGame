@@ -441,7 +441,7 @@ class FactionAbility_Instances
 		for (var i = 0; i < ships.length; i++)
 		{
 			var ship = ships[i];
-			ship.killable().integritySetToMax();
+			Killable.of(ship).integritySetToMax();
 		}
 	}
 

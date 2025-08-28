@@ -1,5 +1,5 @@
 
-class StarClusterLink implements EntityPropertyBase
+class StarClusterLink extends EntityPropertyBase<StarClusterLink>
 {
 	type: StarClusterLinkType;
 	namesOfNodesLinked: string[];
@@ -9,6 +9,8 @@ class StarClusterLink implements EntityPropertyBase
 
 	constructor(type: StarClusterLinkType, namesOfNodesLinked: string[])
 	{
+		super();
+
 		this.type = type;
 		this.namesOfNodesLinked = namesOfNodesLinked;
 
@@ -37,8 +39,8 @@ class StarClusterLink implements EntityPropertyBase
 	{
 		var nodesLinked = this.nodesLinked(cluster);
 
-		var node0Pos = nodesLinked[0].locatable().loc.pos;
-		var node1Pos = nodesLinked[1].locatable().loc.pos;
+		var node0Pos = Locatable.of(nodesLinked[0]).loc.pos;
+		var node1Pos = Locatable.of(nodesLinked[1]).loc.pos;
 
 		var returnValue = node1Pos.clone().subtract
 		(
@@ -108,7 +110,7 @@ class StarClusterLink implements EntityPropertyBase
 			for (var i = 0; i < this.ships.length; i++)
 			{
 				var ship = this.ships[i];
-				var shipLoc = ship.locatable().loc;
+				var shipLoc = Locatable.of(ship).loc;
 				var shipPos = shipLoc.pos;
 				var shipVel = shipLoc.vel;
 				var shipAsDeviceUser = ship.deviceUser();
@@ -122,7 +124,7 @@ class StarClusterLink implements EntityPropertyBase
 				var isShipMovingForward = (shipVel.dotProduct(direction) > 0);
 				var nodeIndexFrom = (isShipMovingForward ? 0 : 1);
 				var nodeFrom = nodesLinked[nodeIndexFrom];
-				var nodeFromPos = nodeFrom.locatable().loc.pos;
+				var nodeFromPos = Locatable.of(nodeFrom).loc.pos;
 				var distanceAlongLink = shipPos.clone().subtract
 				(
 					nodeFromPos
@@ -160,8 +162,8 @@ class StarClusterLink implements EntityPropertyBase
 	{
 		var cluster = (universe.world as WorldExtended).starCluster;
 		var nodesLinked = this.nodesLinked(cluster);
-		var nodeFromPos = nodesLinked[0].locatable().loc.pos;
-		var nodeToPos = nodesLinked[1].locatable().loc.pos;
+		var nodeFromPos = Locatable.of(nodesLinked[0]).loc.pos;
+		var nodeToPos = Locatable.of(nodesLinked[1]).loc.pos;
 
 		camera.coordsTransformWorldToView
 		(
@@ -222,15 +224,6 @@ class StarClusterLink implements EntityPropertyBase
 		return this;
 	}
 
-	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-	propertyName(): string { return StarClusterLink.name; }
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
-
-	// Equatable
-	equals(other: EntityPropertyBase): boolean { return false; }
 }
 
 class StarClusterLinkType

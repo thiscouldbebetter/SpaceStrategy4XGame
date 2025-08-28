@@ -70,7 +70,7 @@ class StarClusterNode extends Entity
 			10
 		);
 
-		var labelStarsystemName = ControlLabel.from4Uncentered
+		var labelStarsystemName = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin),
 			Coords.fromXY(0, 0), // this.size
@@ -78,7 +78,7 @@ class StarClusterNode extends Entity
 			fontNameAndHeight
 		);
 
-		var labelStarsystemHolder = ControlLabel.from4Uncentered
+		var labelStarsystemHolder = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlSpacing),
 			Coords.fromXY(0, 0), // this.size
@@ -112,7 +112,7 @@ class StarClusterNode extends Entity
 			}
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerStarsystem",
 			Coords.fromXY(viewSize.x - margin - containerSize.x, margin), // pos
@@ -132,7 +132,7 @@ class StarClusterNode extends Entity
 
 	draw(uwpe: UniverseWorldPlaceEntities): void
 	{
-		var visual = this.drawable().visual;
+		var visual = Drawable.of(this).visual;
 		visual.draw(uwpe, uwpe.universe.display);
 	}
 }

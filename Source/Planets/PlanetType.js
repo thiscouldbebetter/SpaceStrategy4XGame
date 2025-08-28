@@ -11,10 +11,10 @@ class PlanetType {
         return PlanetType.Instances().random();
     }
     static Instances() {
-        if (PlanetType._instances == null) {
-            PlanetType._instances = new PlanetType_Instances();
+        if (this._instances == null) {
+            this._instances = new PlanetType_Instances();
         }
-        return PlanetType._instances;
+        return this._instances;
     }
     bodyDefn() {
         if (this._bodyDefn == null) {
@@ -113,8 +113,8 @@ class PlanetType {
         var planet = uwpe.entity;
         var faction = planet.factionable().faction();
         var returnValue = (faction == null
-            ? new VisualNone()
-            : new VisualOffset(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColorsFillAndBorder("Owned by " + faction.name, FontNameAndHeight.fromHeightInPixels(fontHeightInPixels), colors.Black, colors.White)));
+            ? VisualNone.Instance
+            : VisualOffset.fromOffsetAndChild(Coords.fromXY(0, planet.planetType.size.radiusInPixels * 2), VisualText.fromTextImmediateFontAndColorsFillAndBorder("Owned by " + faction.name, FontNameAndHeight.fromHeightInPixels(fontHeightInPixels), colors.Black, colors.White)));
         return returnValue;
     }
     visualProjected() {

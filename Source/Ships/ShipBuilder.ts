@@ -332,7 +332,7 @@ class ShipBuilder
 			}
 		};
 
-		var labelName = ControlLabel.from4Uncentered
+		var labelName = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin), // pos
 			Coords.fromXY(listSize.x, labelHeight), // size
@@ -370,7 +370,7 @@ class ShipBuilder
 			nameRandomize // click
 		);
 
-		var labelHullSize = ControlLabel.from4Uncentered
+		var labelHullSize = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin * 2 + labelHeight), // pos
 			Coords.fromXY(listSize.x, labelHeight), // size
@@ -405,7 +405,7 @@ class ShipBuilder
 			font
 		);
 
-		var labelComponentsAvailable = ControlLabel.from4Uncentered
+		var labelComponentsAvailable = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin * 3 + labelHeight * 2), // pos
 			Coords.fromXY(listSize.x, labelHeight), // size
@@ -443,7 +443,7 @@ class ShipBuilder
 			() => this.componentSelectedAddToBuild() // confirm
 		);
 
-		var labelShipItems = ControlLabel.from4Uncentered
+		var labelShipItems = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -455,7 +455,7 @@ class ShipBuilder
 			font
 		);
 
-		var textComponentCountOverMax = ControlLabel.from4Uncentered
+		var textComponentCountOverMax = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -471,7 +471,7 @@ class ShipBuilder
 			font
 		);
 
-		var labelCost = ControlLabel.from4Uncentered
+		var labelCost = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -483,7 +483,7 @@ class ShipBuilder
 			font
 		);
 
-		var textCost = ControlLabel.from4Uncentered
+		var textCost = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -499,7 +499,7 @@ class ShipBuilder
 			font
 		);
 
-		var buttonAdd = ControlButton.from8
+		var buttonAdd = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonAdd",
 			Coords.fromXY
@@ -545,7 +545,7 @@ class ShipBuilder
 			remove // confirm
 		);
 
-		var buttonRemove = ControlButton.from8
+		var buttonRemove = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonRemove",
 			Coords.fromXY
@@ -561,7 +561,7 @@ class ShipBuilder
 			remove // click
 		);
 
-		var infoStatus = ControlLabel.from4Uncentered
+		var infoStatus = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -634,9 +634,9 @@ class ShipBuilder
 
 			childControls,
 
-			[ new Action("Back", back) ],
+			[ Action.fromNameAndPerform("Back", back) ],
 
-			[ new ActionToInputsMapping( "Back", [ Input.Names().Escape ], true ) ],
+			[ new ActionToInputsMapping( "Back", [ Input.Instances().Escape.name ], true ) ],
 
 		);
 

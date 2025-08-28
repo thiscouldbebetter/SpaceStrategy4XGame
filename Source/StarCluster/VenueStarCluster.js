@@ -12,8 +12,8 @@ class VenueStarCluster extends VenueWorld {
     cameraCenterOnSelection() {
         var entitySelected = this.entitySelected();
         if (entitySelected != null) {
-            var targetPosNew = entitySelected.locatable().loc.pos;
-            var cameraConstrainable = this.cameraEntity.constrainable();
+            var targetPosNew = Locatable.of(entitySelected).loc.pos;
+            var cameraConstrainable = Constrainable.of(this.cameraEntity);
             var constraint = cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
             var constraintDistance = constraint;
             var cameraSpeed = 1; // todo
@@ -29,7 +29,7 @@ class VenueStarCluster extends VenueWorld {
         this.cameraMove(0, cameraSpeed);
     }
     cameraIn(cameraSpeed) {
-        var cameraConstrainable = this.cameraEntity.constrainable();
+        var cameraConstrainable = Constrainable.of(this.cameraEntity);
         var constraint = cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
         var constraintDistance = constraint;
         constraintDistance.distanceToHold -= cameraSpeed / 2;
@@ -42,7 +42,7 @@ class VenueStarCluster extends VenueWorld {
         this.cameraMove(0 - cameraSpeed, 0);
     }
     cameraOut(cameraSpeed) {
-        var cameraConstrainable = this.cameraEntity.constrainable();
+        var cameraConstrainable = Constrainable.of(this.cameraEntity);
         var constraint = cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
         var constraintDistance = constraint;
         constraintDistance.distanceToHold += cameraSpeed / 2;
@@ -52,8 +52,8 @@ class VenueStarCluster extends VenueWorld {
         this.hasBeenUpdatedSinceDrawn = true;
     }
     cameraReset() {
-        var cameraConstrainable = this.cameraEntity.constrainable();
-        var camera = this.cameraEntity.camera();
+        var cameraConstrainable = Constrainable.of(this.cameraEntity);
+        var camera = Camera.of(this.cameraEntity);
         var origin = Coords.create();
         var constraint = cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
         var constraintDistance = constraint;
@@ -66,7 +66,7 @@ class VenueStarCluster extends VenueWorld {
         this.hasBeenUpdatedSinceDrawn = true;
     }
     cameraMove(horizontal, vertical) {
-        var camera = this.cameraEntity.camera();
+        var camera = Camera.of(this.cameraEntity);
         var cameraAction = new Action_CameraMove([horizontal, vertical]);
         cameraAction.perform(camera);
         this.hasBeenUpdatedSinceDrawn = true;
@@ -103,7 +103,7 @@ class VenueStarCluster extends VenueWorld {
         );
         var containerSelection = controlBuilder.selection(universe, Coords.fromXY(containerMainSize.x - margin - containerInnerSize.x, containerMainSize.y - margin - containerInnerSize.y), // pos
         containerInnerSize, margin);
-        var container = ControlContainer.from4("containerNetwork", Coords.fromXY(0, 0), // pos
+        var container = ControlContainer.fromNamePosSizeAndChildren("containerNetwork", Coords.fromXY(0, 0), // pos
         containerMainSize, 
         // children
         [
@@ -125,7 +125,7 @@ class VenueStarCluster extends VenueWorld {
         */
         if (shouldDraw) {
             this.hasBeenUpdatedSinceDrawn = false;
-            universe.display.drawBackground(null, null);
+            universe.display.drawBackground();
             var world = universe.world;
             var playerFaction = world.factionPlayer();
             var playerKnowledge = playerFaction.knowledge;
@@ -144,10 +144,10 @@ class VenueStarCluster extends VenueWorld {
         world.initialize(uwpe);
         this.venueControls = this.toControl(universe).toVenue();
         var soundHelper = universe.soundHelper;
-        soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
+        soundHelper.soundWithName(universe, "Music_Title").play(universe, 1);
         var origin = Coords.create();
         // hack
-        var camera = this.cameraEntity.camera();
+        var camera = Camera.of(this.cameraEntity);
         var cameraLocatable = new Locatable(camera.loc);
         this.cameraEntity.propertyAdd(cameraLocatable);
         var constraints = [
@@ -168,7 +168,7 @@ class VenueStarCluster extends VenueWorld {
         var world = universe.world;
         var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
         world.updateForTimerTick(uwpe);
-        this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
+        Constrainable.of(this.cameraEntity).constrain(uwpe.entitySet(this.cameraEntity));
         this.draw(universe);
         this.venueControls.updateForTimerTick(universe);
         this.updateForTimerTick_Input(universe, world);
@@ -180,9 +180,9 @@ class VenueStarCluster extends VenueWorld {
     updateForTimerTick_Input_MouseClicked(universe, world) {
         var inputHelper = universe.inputHelper;
         if (inputHelper.isMouseClicked()) {
-            universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
+            universe.soundHelper.soundWithName(universe, "Sound").play(universe, 1);
             var mouseClickPos = inputHelper.mouseClickPos.clone();
-            var camera = this.cameraEntity.camera();
+            var camera = Camera.of(this.cameraEntity);
             var cameraPos = camera.loc.pos;
             var rayFromCameraThroughClick = new Ray(cameraPos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
             ).subtract(cameraPos).normalize());
@@ -219,44 +219,44 @@ class VenueStarCluster extends VenueWorld {
     }
     updateForTimerTick_Input_InputsActive(universe, world) {
         var inputHelper = universe.inputHelper;
+        var inputs = Input.Instances();
         var inputsActive = inputHelper.inputsPressed;
         for (var i = 0; i < inputsActive.length; i++) {
-            var inputActive = inputsActive[i].name;
-            if (inputActive == "Escape") {
+            var inputActive = inputsActive[i];
+            if (inputActive == inputs.Escape) {
                 var venueNext = universe.controlBuilder.gameAndSettings1(universe).toVenue();
                 universe.venueTransitionTo(venueNext);
             }
             var cameraSpeed = 20;
-            var inputNames = Input.Names();
-            if (inputActive == inputNames.MouseMove) {
+            if (inputActive == inputs.MouseMove) {
                 // Do nothing.
             }
-            else if (inputActive == inputNames.MouseClick) {
+            else if (inputActive == inputs.MouseClick) {
                 // Mouse clicks are handled through controls.
             }
-            else if (inputActive == "a") {
+            else if (inputActive == inputs.a) {
                 this.cameraLeft(cameraSpeed);
             }
-            else if (inputActive == "d") {
+            else if (inputActive == inputs.d) {
                 this.cameraRight(cameraSpeed);
             }
-            else if (inputActive == "s") {
+            else if (inputActive == inputs.s) {
                 this.cameraDown(cameraSpeed);
             }
-            else if (inputActive == "w") {
+            else if (inputActive == inputs.w) {
                 this.cameraUp(cameraSpeed);
             }
-            else if (inputActive == "f") {
+            else if (inputActive == inputs.f) {
                 this.cameraOut(cameraSpeed);
             }
-            else if (inputActive == inputNames.MouseWheelDown) {
+            else if (inputActive == inputs.MouseWheelDown) {
                 this.cameraOut(cameraSpeed);
                 inputHelper.inputRemove(inputActive);
             }
-            else if (inputActive == "r") {
+            else if (inputActive == inputs.r) {
                 this.cameraIn(cameraSpeed);
             }
-            else if (inputActive == inputNames.MouseWheelUp) {
+            else if (inputActive == inputs.MouseWheelUp) {
                 this.cameraIn(cameraSpeed);
                 inputHelper.inputRemove(inputActive);
             }

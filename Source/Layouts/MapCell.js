@@ -1,5 +1,5 @@
 "use strict";
-class MapCell {
+class MapCell2 {
     constructor(pos, terrain, body) {
         this.pos = pos;
         this.terrain = terrain;

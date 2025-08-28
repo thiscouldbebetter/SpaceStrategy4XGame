@@ -90,11 +90,11 @@ class FactionKnowledge {
                     // This was happening even though the exact same instance of pos
                     // is passed to the instantions of Locatable and Collidable,
                     // because Collidable is implicitly cloning it.
-                    nodeActual.collidable().colliderResetToRestPosition();
+                    Collidable.of(nodeActual).colliderResetToRestPosition();
                 }
                 else {
                     returnValue = new StarClusterNode(FactionKnowledge.TextUnknownStarsystem, // name
-                    nodeActual.defn, nodeActual.locatable().loc.pos, nodeActual.starsystem.star, null // starsystem
+                    nodeActual.defn, Locatable.of(nodeActual).loc.pos, nodeActual.starsystem.star, null // starsystem
                     );
                 }
                 return returnValue;

@@ -1,5 +1,5 @@
 
-class Buildable implements EntityProperty<Buildable>
+class Buildable extends EntityPropertyBase<Buildable>
 {
 	defn: BuildableDefn;
 	pos: Coords;
@@ -17,6 +17,8 @@ class Buildable implements EntityProperty<Buildable>
 		isAutomated: boolean
 	)
 	{
+		super();
+
 		this.defn = defn;
 		var loc = Disposition.fromPos(pos);
 		this._locatable = new Locatable(loc);
@@ -69,26 +71,4 @@ class Buildable implements EntityProperty<Buildable>
 		}
 		return this._entity;
 	}
-
-	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-	propertyName(): string { return Buildable.name; }
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
-
-	// Clonable.
-
-	clone(): Buildable
-	{
-		throw new Error("Not yet implemented.");
-	}
-
-	overwriteWith(other: Buildable): Buildable
-	{
-		throw new Error("Not yet implemented.");
-	}
-
-	// Equatable.
-	equals(other: Buildable): boolean { return false; }
 }

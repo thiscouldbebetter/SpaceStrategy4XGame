@@ -1,6 +1,7 @@
 "use strict";
-class StarClusterLink {
+class StarClusterLink extends EntityPropertyBase {
     constructor(type, namesOfNodesLinked) {
+        super();
         this.type = type;
         this.namesOfNodesLinked = namesOfNodesLinked;
         this.name = this.namesOfNodesLinked.join("-");
@@ -16,8 +17,8 @@ class StarClusterLink {
     }
     displacement(cluster) {
         var nodesLinked = this.nodesLinked(cluster);
-        var node0Pos = nodesLinked[0].locatable().loc.pos;
-        var node1Pos = nodesLinked[1].locatable().loc.pos;
+        var node0Pos = Locatable.of(nodesLinked[0]).loc.pos;
+        var node1Pos = Locatable.of(nodesLinked[1]).loc.pos;
         var returnValue = node1Pos.clone().subtract(node0Pos);
         return returnValue;
     }
@@ -57,7 +58,7 @@ class StarClusterLink {
             var shipsExitingLink = new Array();
             for (var i = 0; i < this.ships.length; i++) {
                 var ship = this.ships[i];
-                var shipLoc = ship.locatable().loc;
+                var shipLoc = Locatable.of(ship).loc;
                 var shipPos = shipLoc.pos;
                 var shipVel = shipLoc.vel;
                 var shipAsDeviceUser = ship.deviceUser();
@@ -69,7 +70,7 @@ class StarClusterLink {
                 var isShipMovingForward = (shipVel.dotProduct(direction) > 0);
                 var nodeIndexFrom = (isShipMovingForward ? 0 : 1);
                 var nodeFrom = nodesLinked[nodeIndexFrom];
-                var nodeFromPos = nodeFrom.locatable().loc.pos;
+                var nodeFromPos = Locatable.of(nodeFrom).loc.pos;
                 var distanceAlongLink = shipPos.clone().subtract(nodeFromPos).magnitude();
                 if (distanceAlongLink >= length) {
                     shipsExitingLink.push(ship);
@@ -88,8 +89,8 @@ class StarClusterLink {
     draw(universe, camera, nodeRadiusActual, drawPosFrom, drawPosTo) {
         var cluster = universe.world.starCluster;
         var nodesLinked = this.nodesLinked(cluster);
-        var nodeFromPos = nodesLinked[0].locatable().loc.pos;
-        var nodeToPos = nodesLinked[1].locatable().loc.pos;
+        var nodeFromPos = Locatable.of(nodesLinked[0]).loc.pos;
+        var nodeToPos = Locatable.of(nodesLinked[1]).loc.pos;
         camera.coordsTransformWorldToView(drawPosFrom.overwriteWith(nodeFromPos));
         camera.coordsTransformWorldToView(drawPosTo.overwriteWith(nodeToPos));
         if (drawPosFrom.z <= 0 || drawPosTo.z <= 0) {
@@ -117,13 +118,6 @@ class StarClusterLink {
     overwriteWith(other) {
         return this;
     }
-    // EntityProperty.
-    finalize(uwpe) { }
-    initialize(uwpe) { }
-    propertyName() { return StarClusterLink.name; }
-    updateForTimerTick(uwpe) { }
-    // Equatable
-    equals(other) { return false; }
 }
 class StarClusterLinkType {
     constructor(name, frictionDivisor, color) {

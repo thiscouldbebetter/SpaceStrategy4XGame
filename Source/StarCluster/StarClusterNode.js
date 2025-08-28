@@ -25,9 +25,9 @@ class StarClusterNode extends Entity {
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var buttonSize = Coords.fromXY(containerSize.x - margin * 4, 10);
-        var labelStarsystemName = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), Coords.fromXY(0, 0), // this.size
+        var labelStarsystemName = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), Coords.fromXY(0, 0), // this.size
         DataBinding.fromContext(this.name), fontNameAndHeight);
-        var labelStarsystemHolder = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(0, 0), // this.size
+        var labelStarsystemHolder = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin + controlSpacing), Coords.fromXY(0, 0), // this.size
         DataBinding.fromContextAndGet(networkNode, (c) => (c.starsystem == null ? "?" : c.starsystem.factionNameGet(world))), fontNameAndHeight);
         var buttonView = ControlButton.from5(Coords.fromXY(margin, margin + controlSpacing * 2), // pos
         buttonSize, // size
@@ -39,7 +39,7 @@ class StarClusterNode extends Entity {
                 universe.venueTransitionTo(new VenueStarsystem(venueCurrent, starsystemToView));
             }
         });
-        var returnValue = ControlContainer.from4("containerStarsystem", Coords.fromXY(viewSize.x - margin - containerSize.x, margin), // pos
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerStarsystem", Coords.fromXY(viewSize.x - margin - containerSize.x, margin), // pos
         Coords.fromXY(containerSize.x - margin * 2, 40), // size
         // children
         [
@@ -51,7 +51,7 @@ class StarClusterNode extends Entity {
     }
     // Drawable.
     draw(uwpe) {
-        var visual = this.drawable().visual;
+        var visual = Drawable.of(this).visual;
         visual.draw(uwpe, uwpe.universe.display);
     }
 }

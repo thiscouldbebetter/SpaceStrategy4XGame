@@ -19,7 +19,7 @@ class Constraint_LookAt implements Constraint
 	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var body = uwpe.entity;
-		var bodyLoc = body.locatable().loc;
+		var bodyLoc = Locatable.of(body).loc;
 		var bodyPos = bodyLoc.pos;
 		var bodyOrientation = bodyLoc.orientation;
 

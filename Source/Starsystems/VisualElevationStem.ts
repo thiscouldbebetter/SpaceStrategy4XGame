@@ -1,5 +1,5 @@
 
-class VisualElevationStem implements VisualBase
+class VisualElevationStem implements Visual<VisualElevationStem>
 {
 	drawPosTip: Coords;
 	drawPosPlane: Coords;
@@ -24,7 +24,7 @@ class VisualElevationStem implements VisualBase
 
 		var entity = uwpe.entity;
 
-		var drawablePosWorld = entity.locatable().loc.pos;
+		var drawablePosWorld = Locatable.of(entity).loc.pos;
 
 		var drawPosTip = camera.coordsTransformWorldToView
 		(
@@ -44,10 +44,13 @@ class VisualElevationStem implements VisualBase
 		);
 	}
 
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	initializeIsComplete(): boolean { return true; }
+
 	// Clonable.
-	clone(): VisualBase { return this; }
-	overwriteWith(other: VisualBase): VisualBase { return this; }
+	clone(): VisualElevationStem { return this; }
+	overwriteWith(other: VisualBase): VisualElevationStem { return this; }
 	
 	// Transformable.
-	transform(transform: TransformBase): VisualBase { return this; }
+	transform(transform: TransformBase): VisualElevationStem { return this; }
 }

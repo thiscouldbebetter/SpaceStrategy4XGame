@@ -24,7 +24,7 @@ class Constraint_HoldDistanceFromTarget implements Constraint
 	constrain(uwpe: UniverseWorldPlaceEntities): void
 	{
 		var body = uwpe.entity;
-		var bodyPos = body.locatable().loc.pos;
+		var bodyPos = Locatable.of(body).loc.pos;
 
 		var directionOfBodyFromTarget = this.displacement.overwriteWith
 		(

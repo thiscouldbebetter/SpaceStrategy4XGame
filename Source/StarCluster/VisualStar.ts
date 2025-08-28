@@ -55,7 +55,7 @@ class VisualStar implements Visual<VisualStar>
 		var starClusterNode = uwpe.entity as StarClusterNode;
 
 		var display = universe.display;
-		var nodePos = starClusterNode.locatable().loc.pos;
+		var nodePos = Locatable.of(starClusterNode).loc.pos;
 
 		var drawPos = this._drawPos.overwriteWith(nodePos);
 		var camera = world.camera;
@@ -229,6 +229,9 @@ class VisualStar implements Visual<VisualStar>
 			uwpe.entitySet(drawableTransformed), display
 		);
 	}
+
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	initializeIsComplete(): boolean { return true; }
 
 	// Clonable.
 

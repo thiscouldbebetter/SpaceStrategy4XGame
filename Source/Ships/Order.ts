@@ -3,7 +3,7 @@ class Order //
 {
 	defn: OrderDefn;
 	entityBeingOrdered: Entity;
-	deviceToUse: Device;
+	deviceToUse: Device2;
 	entityBeingTargeted: Entity;
 	_isComplete: boolean;
 
@@ -39,7 +39,7 @@ class Order //
 		return this;
 	}
 
-	deviceToUseSet(value: Device): Order
+	deviceToUseSet(value: Device2): Order
 	{
 		this.deviceToUse = value;
 		return this;
@@ -91,7 +91,7 @@ class Order //
 	}
 }
 
-class Orderable implements EntityPropertyBase
+class Orderable extends EntityPropertyBase<Orderable>
 {
 	_order: Order;
 
@@ -99,7 +99,7 @@ class Orderable implements EntityPropertyBase
 	{
 		return entity.propertyByName(Orderable.name) as Orderable;
 	}
-	
+
 	order(entityOrderable: Entity): Order
 	{
 		if (this._order == null)
@@ -108,19 +108,9 @@ class Orderable implements EntityPropertyBase
 		}
 		return this._order;
 	}
-	
+
 	orderSet(value: Order): void
 	{
 		this._order = value;
 	}
-
-	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-	propertyName(): string { return Orderable.name; }
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
-
-	// Equatable.
-	equals(other: EntityPropertyBase): boolean { return false; }
 }

@@ -42,13 +42,13 @@ class StarClusterTests extends TestFixture {
     }
     scale() {
         var networkBeforeScaling = this.networkBuildRandom();
-        var node0PosBeforeScaling = networkBeforeScaling.nodes[0].locatable().loc.pos;
+        var node0PosBeforeScaling = Locatable.of(networkBeforeScaling.nodes[0]).loc.pos;
         var scaleFactor = 2;
         var networkAfterDoubling = networkBeforeScaling.clone().scale(scaleFactor);
-        var node0PosAfterDoubling = networkAfterDoubling.nodes[0].locatable().loc.pos;
+        var node0PosAfterDoubling = Locatable.of(networkAfterDoubling.nodes[0]).loc.pos;
         Assert.isFalse(node0PosBeforeScaling.equals(node0PosAfterDoubling));
         var networkAfterDoublingThenHalving = networkAfterDoubling.clone().scale(1 / scaleFactor);
-        var node0PosAfterDoublingThenHalving = networkAfterDoublingThenHalving.nodes[0].locatable().loc.pos;
+        var node0PosAfterDoublingThenHalving = Locatable.of(networkAfterDoublingThenHalving.nodes[0]).loc.pos;
         Assert.isTrue(node0PosBeforeScaling.equals(node0PosAfterDoublingThenHalving));
     }
     // turns

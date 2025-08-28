@@ -10,7 +10,7 @@ class CollisionExtended {
     static rayAndEntitiesCollidable(ray, entitiesCollidable, listToAddTo) {
         for (var i = 0; i < entitiesCollidable.length; i++) {
             var entity = entitiesCollidable[i];
-            var collidable = entity.collidable();
+            var collidable = Collidable.of(entity);
             if (collidable != null) {
                 var collider = collidable.collider;
                 var collision = new CollisionExtended();
@@ -40,7 +40,7 @@ class CollisionExtended {
     rayAndSphere(ray, sphere) {
         var rayDirection = ray.direction;
         var displacementFromSphereCenterToCamera = ray.vertex.clone().subtract(sphere.center);
-        var sphereRadius = sphere.radius;
+        var sphereRadius = sphere.radius();
         var sphereRadiusSquared = sphereRadius * sphereRadius;
         var a = rayDirection.dotProduct(rayDirection);
         var b = 2 * rayDirection.dotProduct(displacementFromSphereCenterToCamera);

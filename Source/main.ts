@@ -33,9 +33,9 @@ function main()
 		],
 		// sounds
 		[
-			new SoundFromFile("Music_Title", contentPathAudio + "Music/Music.mp3"),
-			new SoundFromFile("Music_Producer", contentPathAudio + "Music/Producer.mp3"),
-			new SoundFromFile("Sound", contentPathAudio + "Effects/Sine-440Hz-250ms-Fading.mp3"),
+			SoundFromFile.fromNameSourcePathAndIsRepeating("Music_Title", contentPathAudio + "Music/Music.mp3", true),
+			SoundFromFile.fromNameSourcePathAndIsRepeating("Effects_Producer", contentPathAudio + "Music/Producer.mp3", false),
+			SoundFromFile.fromNameSourcePathAndIsRepeating("Sound", contentPathAudio + "Effects/Sine-440Hz-250ms-Fading.mp3", false),
 		],
 		// videos
 		[
@@ -110,11 +110,12 @@ function main()
 	(
 		"Space_Strategy_4X",
 		null, // version,
-		new TimerHelper(20),
+		TimerHelper.fromTicksPerSecond(20),
 		display,
 		new SoundHelperLive(),
 		mediaLibrary,
 		controlBuilder,
+		ProfileHelper.maximal(),
 		worldCreator
 	);
 	universe.initialize( (x: any) => { x.start() });
@@ -135,7 +136,7 @@ function worldCreatorToControl
 	var buttonSize =
 		Coords.fromXY(4, 1).multiplyScalar(controlHeight);
 
-	var labelWorldCreationSettings = ControlLabel.from4Uncentered
+	var labelWorldCreationSettings = ControlLabel.fromPosSizeTextFontUncentered
 	(
 		Coords.fromXY(margin, margin), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
@@ -145,7 +146,7 @@ function worldCreatorToControl
 
 	var labelOffsetY = controlHeight / 6;
 
-	var labelWorldStarsystemCount = ControlLabel.from4Uncentered
+	var labelWorldStarsystemCount = ControlLabel.fromPosSizeTextFontUncentered
 	(
 		Coords.fromXY(margin, margin * 2 + controlHeight + labelOffsetY), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
@@ -191,7 +192,7 @@ function worldCreatorToControl
 		fontNameAndHeight
 	);
 
-	var labelWorldFactionCount = ControlLabel.from4Uncentered
+	var labelWorldFactionCount = ControlLabel.fromPosSizeTextFontUncentered
 	(
 		Coords.fromXY(margin, margin * 3 + controlHeight * 2 + labelOffsetY), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
@@ -216,7 +217,7 @@ function worldCreatorToControl
 		DataBinding.fromTrue() // isEnabled
 	);
 
-	var labelFactionType = ControlLabel.from4Uncentered
+	var labelFactionType = ControlLabel.fromPosSizeTextFontUncentered
 	(
 		Coords.fromXY(margin, margin * 4 + controlHeight * 3 + labelOffsetY), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
@@ -251,7 +252,7 @@ function worldCreatorToControl
 		fontNameAndHeight
 	);
 
-	var textSpecialAbility = ControlLabel.from4Uncentered
+	var textSpecialAbility = ControlLabel.fromPosSizeTextFontUncentered
 	(
 		Coords.fromXY(margin, margin * 5 + controlHeight * 4), // pos
 		Coords.fromXY(sizeMinusMargins.x, controlHeight), // size
@@ -283,7 +284,7 @@ function worldCreatorToControl
 		fontNameAndHeight
 	);
 
-	var labelFactionColor = ControlLabel.from4Uncentered
+	var labelFactionColor = ControlLabel.fromPosSizeTextFontUncentered
 	(
 		Coords.fromXY(margin, margin * 6 + controlHeight * 5 + labelOffsetY), // pos
 		Coords.fromXY(size.x - margin * 2, controlHeight),
@@ -318,7 +319,7 @@ function worldCreatorToControl
 		fontNameAndHeight
 	);
 
-	var buttonCreate = ControlButton.from11
+	var buttonCreate = ControlButton.from9
 	(
 		"buttonCreate",
 		Coords.fromXY
@@ -343,7 +344,7 @@ function worldCreatorToControl
 		false // canBeHeldDown
 	);
 
-	var returnControl = ControlContainer.from4
+	var returnControl = ControlContainer.fromNamePosSizeAndChildren
 	(
 		"containerWorldCreator",
 		Coords.zeroes(), // pos

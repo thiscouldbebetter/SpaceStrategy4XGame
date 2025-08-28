@@ -45,8 +45,8 @@ class OrderDefn_Instances {
         var orderable = Orderable.fromEntity(shipMoving);
         var order = orderable.order(shipMoving);
         var targetFinal = order.entityBeingTargeted;
-        var targetFinalPos = targetFinal.locatable().loc.pos;
-        var entityMovingPos = shipMoving.locatable().loc.pos;
+        var targetFinalPos = Locatable.of(targetFinal).loc.pos;
+        var entityMovingPos = Locatable.of(shipMoving).loc.pos;
         var displacementToTargetFinal = targetFinalPos.clone().subtract(entityMovingPos);
         var distanceToTargetFinal = displacementToTargetFinal.magnitude();
         var distanceMaxPerMove = deviceUser.distanceMaxPerMove(uwpe);
@@ -61,7 +61,7 @@ class OrderDefn_Instances {
             var targetAsLocatable = Locatable.fromPos(targetImmediatePos);
             entityTargetImmediate = Entity.fromProperty(targetAsLocatable);
         }
-        var actor = shipMoving.actor();
+        var actor = Actor.of(shipMoving);
         var activity = actor.activity;
         var activityDefnDoNothing = ActivityDefn.Instances().DoNothing;
         if (activity.defnName == activityDefnDoNothing.name) {

@@ -4,7 +4,7 @@ class Action_CylinderMove_DistanceAlongAxis {
         this.distanceToMove = distanceToMove;
     }
     perform(actor) {
-        var constraint = actor.constrainable().constraintByClassName(Constraint_PositionOnCylinder.name);
+        var constraint = Constrainable.of(actor).constraintByClassName(Constraint_PositionOnCylinder.name);
         var constraintCylinder = constraint;
         constraintCylinder.distanceFromCenterAlongAxis += this.distanceToMove;
     }

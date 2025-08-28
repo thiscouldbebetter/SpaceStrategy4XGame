@@ -1,5 +1,5 @@
 
-class VisualGrid implements VisualBase
+class VisualGrid implements Visual<VisualGrid>
 {
 	gridSizeInCells: Coords;
 	gridCellSizeInPixels: Coords;
@@ -98,10 +98,13 @@ class VisualGrid implements VisualBase
 		}
 	}
 
+	initialize(uwpe: UniverseWorldPlaceEntities): void {}
+	initializeIsComplete(): boolean { return true; }
+
 	// Clonable.
-	clone(): VisualBase { return this; }
-	overwriteWith(other: VisualBase): VisualBase { return this; }
-	
+	clone(): VisualGrid { return this; }
+	overwriteWith(other: VisualBase): VisualGrid { return this; }
+
 	// Transformable.
-	transform(transform: TransformBase): VisualBase { return this; }
+	transform(transform: TransformBase): VisualGrid { return this; }
 }

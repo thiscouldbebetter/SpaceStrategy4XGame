@@ -9,7 +9,7 @@ class Constraint_LookAt {
     }
     constrain(uwpe) {
         var body = uwpe.entity;
-        var bodyLoc = body.locatable().loc;
+        var bodyLoc = Locatable.of(body).loc;
         var bodyPos = bodyLoc.pos;
         var bodyOrientation = bodyLoc.orientation;
         var bodyOrientationForwardNew = this.targetPos.clone().subtract(bodyPos).normalize();

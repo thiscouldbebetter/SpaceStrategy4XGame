@@ -22,7 +22,7 @@ class ControlBuilderExtended extends ControlBuilder
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
-		var labelSelection = ControlLabel.from4Uncentered
+		var labelSelection = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin), // pos
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size
@@ -30,7 +30,7 @@ class ControlBuilderExtended extends ControlBuilder
 			fontNameAndHeight
 		);
 
-		var textSelectionName = ControlLabel.from4Uncentered
+		var textSelectionName = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + labelHeight), // pos
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size
@@ -85,7 +85,7 @@ class ControlBuilderExtended extends ControlBuilder
 				(
 					universe, universe.world, place, v, null
 				);
-				var controllable = v.controllable();
+				var controllable = Controllable.of(v);
 				var control = controllable.toControl
 				(
 					uwpe,
@@ -99,7 +99,7 @@ class ControlBuilderExtended extends ControlBuilder
 		var buttonSize =
 			Coords.fromXY((size.x - margin * 3) / 2, buttonHeight);
 
-		var buttonCenter = ControlButton.from8
+		var buttonCenter = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonCenter", // name,
 			Coords.fromXY(margin, size.y - margin - buttonHeight), // pos
@@ -142,7 +142,7 @@ class ControlBuilderExtended extends ControlBuilder
 			venueCurrent.entitySelectedDetailsView(universe);
 		};
 
-		var buttonDetails = ControlButton.from8
+		var buttonDetails = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonDetails", // name,
 			Coords.fromXY
@@ -197,7 +197,7 @@ class ControlBuilderExtended extends ControlBuilder
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
-		var labelPlanetsLinksShips = ControlLabel.from4Uncentered
+		var labelPlanetsLinksShips = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin), // pos
 			Coords.fromXY(size.x - margin * 2, controlHeight), // size
@@ -205,7 +205,7 @@ class ControlBuilderExtended extends ControlBuilder
 			fontNameAndHeight
 		);
 
-		var textPlanetsLinksShipsCount = ControlLabel.from4Uncentered
+		var textPlanetsLinksShipsCount = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(size.x / 2, margin), // pos
 			Coords.fromXY(size.x - margin * 2, controlHeight), // size
@@ -228,7 +228,7 @@ class ControlBuilderExtended extends ControlBuilder
 			size.y - margin * 4 - controlHeight * 2 - buttonSize.y
 		);
 
-		var listPlanetsLinksShips = ControlList.from7
+		var listPlanetsLinksShips = ControlList.fromNamePosSizeItemsTextFontSelected
 		(
 			"listPlanetsLinksShips",
 			Coords.fromXY(margin, margin * 2 + controlHeight * 1), // pos
@@ -252,7 +252,7 @@ class ControlBuilderExtended extends ControlBuilder
 			)
 		);
 
-		var buttonSelect = ControlButton.from8
+		var buttonSelect = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonSelect", // name,
 			Coords.fromXY(margin, size.y - margin - buttonSize.y), // pos
@@ -269,7 +269,7 @@ class ControlBuilderExtended extends ControlBuilder
 				venueStarsystem.entitySelect(venueStarsystem.entityHighlighted)
 		);
 
-		var buttonTarget = ControlButton.from8
+		var buttonTarget = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonTarget", // name,
 			Coords.fromXY
@@ -335,7 +335,7 @@ class ControlBuilderExtended extends ControlBuilder
 				- size.y
 		);
 
-		var labelView = ControlLabel.from4Uncentered
+		var labelView = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin),// pos
 			Coords.fromXY(containerInnerSize.x, labelHeight), // size
@@ -345,7 +345,7 @@ class ControlBuilderExtended extends ControlBuilder
 
 		var buttonSize = Coords.fromXY(1, 1).multiplyScalar(buttonWidthAndHeight);
 
-		var buttonViewRotateUp = ControlButton.from11
+		var buttonViewRotateUp = ControlButton.from9
 		(
 			"buttonViewRotateUp",
 			Coords.fromXY
@@ -365,7 +365,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewRotateDown = ControlButton.from11
+		var buttonViewRotateDown = ControlButton.from9
 		(
 			"buttonViewRotateDown",
 			Coords.fromXY
@@ -385,7 +385,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewRotateLeft = ControlButton.from11
+		var buttonViewRotateLeft = ControlButton.from9
 		(
 			"buttonViewRotateLeft",
 			Coords.fromXY
@@ -405,7 +405,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewRotateRight = ControlButton.from11
+		var buttonViewRotateRight = ControlButton.from9
 		(
 			"buttonViewRotateRight",
 			Coords.fromXY
@@ -425,7 +425,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewZoomIn = ControlButton.from11
+		var buttonViewZoomIn = ControlButton.from9
 		(
 			"buttonViewZoomIn",
 			Coords.fromXY
@@ -445,7 +445,7 @@ class ControlBuilderExtended extends ControlBuilder
 			true // canBeHeldDown
 		);
 
-		var buttonViewZoomOut = ControlButton.from11
+		var buttonViewZoomOut = ControlButton.from9
 		(
 			"buttonViewZoomOut",
 			Coords.fromXY
@@ -481,7 +481,7 @@ class ControlBuilderExtended extends ControlBuilder
 			}
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerViewControls",
 			pos,

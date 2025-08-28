@@ -186,7 +186,7 @@ class Planet extends Entity {
         else {
             this.ships.push(shipToAdd);
             var placeName = Planet.name + ":" + this.name;
-            var shipLoc = shipToAdd.locatable().loc;
+            var shipLoc = Locatable.of(shipToAdd).loc;
             shipLoc.placeNameSet(placeName);
             var cellPos = this.cellPositionsAvailableToOccupyInOrbit(universe)[0];
             shipLoc.pos.overwriteWith(cellPos);
@@ -196,8 +196,8 @@ class Planet extends Entity {
     }
     shipLeaveOrbit(shipToLeaveOrbit, uwpe) {
         ArrayHelper.remove(this.ships, shipToLeaveOrbit);
-        var shipLoc = shipToLeaveOrbit.locatable().loc;
-        var planetPos = this.locatable().loc.pos;
+        var shipLoc = Locatable.of(shipToLeaveOrbit).loc;
+        var planetPos = Locatable.of(this).loc.pos;
         var world = uwpe.world;
         var starsystem = this.starsystem(world);
         shipLoc.placeNameSet(Starsystem.name + starsystem.name);
@@ -240,9 +240,9 @@ class Planet extends Entity {
         return returnValue;
     }
     toControl_Starsystem(universe, size) {
-        var returnValue = ControlContainer.from4("containerPlanet", Coords.fromXY(0, 0), // pos
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerPlanet", Coords.fromXY(0, 0), // pos
         size, [
-            ControlLabel.from4Uncentered(Coords.fromXY(0, 0), // pos
+            ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(0, 0), // pos
             Coords.fromXY(size.x, 0), // size
             DataBinding.fromContext(this.name), FontNameAndHeight.fromHeightInPixels(10))
         ]);

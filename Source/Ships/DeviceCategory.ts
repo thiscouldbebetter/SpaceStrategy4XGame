@@ -11,11 +11,11 @@ class DeviceCategory
 	static _instances: DeviceCategory_Instances;
 	static Instances()
 	{
-		if (DeviceCategory._instances == null)
+		if (this._instances == null)
 		{
-			DeviceCategory._instances = new DeviceCategory_Instances();
+			this._instances = new DeviceCategory_Instances();
 		}
-		return DeviceCategory._instances;
+		return this._instances;
 	}
 }
 

@@ -77,7 +77,7 @@ class Star extends Entity
 
 	toControl(universe: Universe, size: Coords): ControlBase
 	{
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerStar",
 			Coords.fromXY(0, 0), // pos

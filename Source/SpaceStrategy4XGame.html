@@ -1,16 +1,23 @@
 <html>
 <body>
 
+<script type="text/javascript" src="Framework/Source/_ImportGameFrameworkNamespace.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Helpers/ArrayHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Helpers/NumberHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Helpers/StringHelper.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Helpers/_Imports.js"></script>
 
 <!-- hack -->
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/EntityProperty.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Controls/ControlActionNames.js"></script>
+<script type="text/javascript" src="Framework/Source/Model/_Imports.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Controls/ControlBase.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Controls/ControlActionNames.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlBuilder.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlButton.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/ControlCheckbox.js"></script>
@@ -32,6 +39,8 @@
 <script type="text/javascript" src="Framework/Source/Controls/DataBinding.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/VenueControls.js"></script>
 <script type="text/javascript" src="Framework/Source/Controls/VenueMessage.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Controls/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Display/Color.js"></script>
 <script type="text/javascript" src="Framework/Source/Display/Drawable.js"></script>
@@ -62,6 +71,8 @@
 
 <script type="text/javascript" src="Framework/Source/Display/Visuals/Animation/VisualAnimation.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Display/_Imports.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Geometry/Camera.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Coords.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Disposition.js"></script>
@@ -72,10 +83,12 @@
 
 <script type="text/javascript" src="Framework/Source/Geometry/Collisions/Collision.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionHelper.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionTracker.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/Box.js"></script>
-<script type="text/javascript" src="Framework/Source/Geometry/Shapes/BoxRotated.js"></script>
+<script type="text/javascript" src="Framework/Source/Geometry/Constraints/Constraint.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/ShapeBase.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Geometry/Shapes/BoxAxisAligned.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Cylinder.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Edge.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Shapes/Face.js"></script>
@@ -106,10 +119,17 @@
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transform_TranslateInvert.js"></script>
 <script type="text/javascript" src="Framework/Source/Geometry/Transforms/Transforms.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Geometry/_Imports.js"></script>
+
+<!-- Depends on MapOfCells. -->
+<script type="text/javascript" src="Framework/Source/Geometry/Collisions/CollisionTracker.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Input/ActionToInputsMapping.js"></script>
 <script type="text/javascript" src="Framework/Source/Input/Input.js"></script>
 <script type="text/javascript" src="Framework/Source/Input/InputHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Input/UserInputListener.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Input/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Media/Font.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/FontNameAndHeight.js"></script>
@@ -125,11 +145,13 @@
 <script type="text/javascript" src="Framework/Source/Media/Audio/SoundHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Media/Audio/VisualSound.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Media/Text/TextString.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Text/TextStringFromImage.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/Audio/SoundEffectSynthesizer/Source/SoundSequence.js"></script>
 
-<script type="text/javascript" src="Framework/Source/Media/Text/BinaryFileToImageTranscoder/Source/BinaryFileToImageTranscoder.js"></script>
-<script type="text/javascript" src="Framework/Source/Media/Text/BinaryFileToImageTranscoder/Source/Coords.js"></script>
+<script type="text/javascript" src="Framework/Source/Media/Audio/SoundEffectSynthesizer/Source/WavFileViewer/Source/SoundFromWavFile.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Media/Text/TextString.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Media/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Model/Entity.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/EntityBuilder.js"></script>
@@ -170,8 +192,13 @@
 <script type="text/javascript" src="Framework/Source/Model/Talk/Talker.js"></script>
 <script type="text/javascript" src="Framework/Source/Model/Talk/WordBubble.js"></script>
 
+<script type="text/javascript" src="Framework/Source/Model/_Imports.js"></script>
+
 <script type="text/javascript" src="Framework/Source/Profiles/Profile.js"></script>
+<script type="text/javascript" src="Framework/Source/Profiles/ProfileHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Profiles/SaveState.js"></script>
+
+<script type="text/javascript" src="Framework/Source/Profiles/_Imports.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Storage/FileHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Storage/Serializer.js"></script>
@@ -184,6 +211,7 @@
 <script type="text/javascript" src="Framework/Source/Storage/Compressor/CompressorLZW.js"></script>
 
 <script type="text/javascript" src="Framework/Source/Utility/DateTime.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/DebugSettings.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/IDHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/PlatformHelper.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/Randomizer.js"></script>
@@ -195,7 +223,7 @@
 <script type="text/javascript" src="Framework/Source/Utility/ValueBreakGroup.js"></script>
 <script type="text/javascript" src="Framework/Source/Utility/VenueTask.js"></script>
 
-<script type="text/javascript" src="Imports.js"></script>
+<script type="text/javascript" src="Framework/Source/Utility/_Imports.js"></script>
 
 <!-- End Framework includes. -->
 

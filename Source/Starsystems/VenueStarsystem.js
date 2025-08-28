@@ -14,9 +14,9 @@ class VenueStarsystem {
         if (shouldDraw) {
             this.hasBeenUpdatedSinceDrawn = false;
             var display = universe.display;
-            display.drawBackground(null, null);
+            display.drawBackground();
             this.starsystem.draw(universe, world, display);
-            var uwpe = new UniverseWorldPlaceEntities(universe, world, null, null, null);
+            var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
             uwpe.entitySet(this.cursor);
             this.cursor.draw(uwpe, display);
             this.venueControls.draw(universe);
@@ -90,6 +90,9 @@ class VenueStarsystem {
     finalize(universe) {
         // universe.soundHelper.soundForMusicPause(universe);
     }
+    finalizeIsComplete() {
+        return true;
+    }
     initialize(universe) {
         var starsystem = this.starsystem;
         var world = universe.world;
@@ -97,7 +100,7 @@ class VenueStarsystem {
         var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);
         this.venueControls = this.toControl(universe).toVenue();
         var soundHelper = universe.soundHelper;
-        soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
+        soundHelper.soundWithName(universe, "Music_Title").play(universe, 1);
         var viewSize = universe.display.sizeInPixels.clone();
         var focalLength = viewSize.y;
         viewSize.z = focalLength * 4;
@@ -124,6 +127,9 @@ class VenueStarsystem {
         this.entities.push(...starsystem.ships);
         this.hasBeenUpdatedSinceDrawn = true;
     }
+    initializeIsComplete() {
+        return true;
+    }
     model() {
         return this.starsystem;
     }
@@ -149,9 +155,9 @@ class VenueStarsystem {
     updateForTimerTick(universe) {
         var world = universe.world;
         var uwpe = new UniverseWorldPlaceEntities(universe, world, this.starsystem, null, null);
-        this.cameraEntity.constrainable().constrain(uwpe.entitySet(this.cameraEntity));
+        Constrainable.of(this.cameraEntity).constrain(uwpe.entitySet(this.cameraEntity));
         if (this.cursor != null) {
-            this.cursor.constrainable().constrain(uwpe.entitySet(this.cursor));
+            Constrainable.of(this.cursor).constrain(uwpe.entitySet(this.cursor));
         }
         this.starsystem.updateForTimerTick(uwpe);
         var factionsPresent = this.factionsPresent(world);
@@ -200,11 +206,11 @@ class VenueStarsystem {
         }
     }
     updateForTimerTick_Input_Mouse(universe) {
-        universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
+        universe.soundHelper.soundWithName(universe, "Sound").play(universe, 1);
         var inputHelper = universe.inputHelper;
         var mouseClickPos = this._mouseClickPos.overwriteWith(inputHelper.mouseClickPos);
         var camera = this.camera();
-        var rayFromCameraThroughClick = new Ray(camera.loc.pos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
+        var rayFromCameraThroughClick = Ray.fromVertexAndDirection(camera.loc.pos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
         ).subtract(camera.loc.pos).normalize());
         var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, this.entities, [] // listToAddTo
         );
@@ -312,7 +318,7 @@ class VenueStarsystem {
             var targetPos = Coords.create();
             entityTarget = new Entity("Target", [
                 new BodyDefn("MoveTarget", targetPos, null),
-                this.cursor.locatable().clone()
+                Locatable.of(this.cursor).clone()
             ]);
         }
         else {
@@ -346,14 +352,14 @@ class VenueStarsystem {
     }
     // camera
     camera() {
-        return this.cameraEntity.camera();
+        return Camera.of(this.cameraEntity);
     }
     cameraCenterOnSelection() {
         var entitySelected = this.entitySelected();
         if (entitySelected != null) {
-            var constraint = this.cameraEntity.constrainable().constraintByClassName(Constraint_PositionOnCylinder.name);
+            var constraint = Constrainable.of(this.cameraEntity).constraintByClassName(Constraint_PositionOnCylinder.name);
             var constraintPosition = constraint;
-            var selectionPos = entitySelected.locatable().loc.pos;
+            var selectionPos = Locatable.of(entitySelected).loc.pos;
             constraintPosition.center.overwriteWith(selectionPos);
         }
     }
@@ -414,7 +420,7 @@ class VenueStarsystem {
             + containerPlanetsLinksAndShipsSize.y
             + containerMoveRepeatOrPassSize.y), // pos
         containerSelectionSize, margin);
-        var containerMain = ControlContainer.from4("containerStarsystem", Coords.fromXY(0, 0), // pos
+        var containerMain = ControlContainer.fromNamePosSizeAndChildren("containerStarsystem", Coords.fromXY(0, 0), // pos
         containerMainSize, 
         // children
         [

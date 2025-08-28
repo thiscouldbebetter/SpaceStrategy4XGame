@@ -44,7 +44,7 @@ class BuildableDefn {
         properties.push(buildable);
         properties.push(buildable.locatable());
         properties.push(Drawable.fromVisual(this.visual));
-        var returnEntity = new Entity(this.name, properties);
+        var returnEntity = Entity.fromNameAndProperties(this.name, properties);
         var uwpe = new UniverseWorldPlaceEntities(null, world, null, returnEntity, null);
         if (this.entityProperties != null) {
             var propertiesActualized = this.entityProperties(uwpe);
@@ -102,20 +102,21 @@ class BuildableDefn {
             visualOverlayShadedRectangle,
             visualOverlayText
         ]);
-        var visualOverlay = new VisualSelect(new Map([
-            ["Complete", new VisualNone()],
-            ["Incomplete", visualOverlayTextAndShade]
-        ]), this.visualWrap_SelectChildNames);
+        var visualOverlay = VisualSelect.fromSelectChildToShowAndChildren(this.visualWrap_SelectChildToShow, [
+            VisualNone.Instance,
+            visualOverlayTextAndShade
+        ]);
         var visualWrapped = new VisualGroup([
             visualToWrap,
             visualOverlay
         ]);
         return visualWrapped;
     }
-    visualWrap_SelectChildNames(uwpe, d) {
+    visualWrap_SelectChildToShow(uwpe, visualSelect) {
         var buildableAsEntity = uwpe.entity;
         var buildable = Buildable.ofEntity(buildableAsEntity);
-        return (buildable.isComplete ? ["Complete"] : ["Incomplete"]);
+        var childToShowIndex = buildable.isComplete ? 0 : 1;
+        return visualSelect.children[childToShowIndex];
     }
     // Clonable.
     clone() {

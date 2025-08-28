@@ -11,7 +11,7 @@ class Action_CylinderMove_Yaw
 	perform(actor: Entity)
 	{
 		var constraint =
-			actor.constrainable().constraintByClassName(Constraint_PositionOnCylinder.name);
+			Constrainable.of(actor).constraintByClassName(Constraint_PositionOnCylinder.name);
 		var constraintCylinder = constraint as Constraint_PositionOnCylinder;
 
 		constraintCylinder.yawInTurns += this.turnsToMove;

@@ -44,7 +44,7 @@ class Constraint_PositionOnCylinder implements Constraint
 		NumberHelper.wrapToRangeMinMax(this.yawInTurns, 0, 1);
 		var yawInRadians = this.yawInTurns * Polar.RadiansPerTurn;
 
-		var bodyLoc = body.locatable().loc;
+		var bodyLoc = Locatable.of(body).loc;
 		var bodyPos = bodyLoc.pos;
 		var bodyOrientation = bodyLoc.orientation;
 

@@ -1,10 +1,11 @@
 "use strict";
-class DeviceUser {
+class DeviceUser extends EntityPropertyBase {
     constructor(devices) {
+        super();
         this._devices = devices;
     }
     static fromEntities(entities) {
-        var devices = entities.map(x => Device.ofEntity(x)).filter(x => (x != null));
+        var devices = entities.map(x => Device2.ofEntity(x)).filter(x => (x != null));
         var deviceUser = new DeviceUser(devices);
         return deviceUser;
     }
@@ -238,15 +239,7 @@ class DeviceUser {
         }
         this.energyRemainingThisRoundReset(uwpe);
     }
-    // Clonable.
-    clone() {
-        throw new Error("Not yet implemented.");
-    }
-    overwriteWith(other) {
-        throw new Error("Not yet implemented.");
-    }
     // EntityProperty.
-    finalize(uwpe) { }
     initialize(uwpe) {
         this.energyRemainingThisRound(uwpe); // Do the calculations, but ignore the result for now.
     }

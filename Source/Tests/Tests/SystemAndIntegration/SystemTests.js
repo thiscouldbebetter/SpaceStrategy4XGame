@@ -120,7 +120,7 @@ class SystemTests extends TestFixture {
         this.moveShipInStarsystemUntilItReachesEntity(ship, starsystemUser, linkPortalToGoTo, universe);
         universe.venueNextSet(null);
         universe.updateForTimerTick();
-        var shipLoc = ship.locatable().loc;
+        var shipLoc = Locatable.of(ship).loc;
         while (shipLoc.placeName().startsWith(StarClusterLink.name)) {
             var uwpe = new UniverseWorldPlaceEntities(universe, world, null, ship, null);
             world.updateForRound_IgnoringNotifications(uwpe);
@@ -146,7 +146,7 @@ class SystemTests extends TestFixture {
         }
         else {
             this.moveShipInStarsystemUntilItReachesEntity(ship, starsystemArrivedAt, planetToColonize, universe);
-            var shipLoc = ship.locatable().loc;
+            var shipLoc = Locatable.of(ship).loc;
             var shipLocPlaceName = shipLoc.placeName();
             Assert.isTrue(shipLocPlaceName.startsWith(Planet.name));
             Assert.isTrue(shipLocPlaceName.endsWith(planetToColonize.name));
@@ -180,7 +180,7 @@ class SystemTests extends TestFixture {
             }
             else {
                 shipOrder.obey(uwpe);
-                var shipActor = ship.actor();
+                var shipActor = Actor.of(ship);
                 var shipActivity = shipActor.activity;
                 while (shipActivity.isDoNothing() == false) {
                     universe.updateForTimerTick();

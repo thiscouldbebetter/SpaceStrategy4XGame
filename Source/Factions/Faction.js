@@ -1,6 +1,7 @@
 "use strict";
-class Faction {
+class Faction extends EntityPropertyBase {
     constructor(defnName, homeStarsystemName, homePlanetName, color, diplomacy, technologyResearcher, planets, ships, knowledge, intelligence, visualsForShipsByHullSize) {
+        super();
         this.defnName = defnName;
         this.homeStarsystemName = homeStarsystemName;
         this.homePlanetName = homePlanetName;
@@ -108,10 +109,10 @@ class Faction {
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var faction = this;
         var size = Coords.fromXY(containerInnerSize.x, controlHeight * 2 + margin * 3);
-        var labelFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var labelFaction = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
         DataBinding.fromContext("Faction:"), fontNameAndHeight);
-        var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
+        var textFaction = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin * 2 + containerInnerSize.x * .3, margin), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
         DataBinding.fromContext(faction.name), fontNameAndHeight);
         var childControls = [
@@ -119,7 +120,7 @@ class Faction {
             textFaction
         ];
         if (includeDetailsButton) {
-            var buttonDetails = ControlButton.from8("buttonDetails", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+            var buttonDetails = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonDetails", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
             Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
             "Details", fontNameAndHeight, true, // hasBorder
             DataBinding.fromTrue(), // isEnabled
@@ -128,7 +129,7 @@ class Faction {
             );
             childControls.push(buttonDetails);
         }
-        var returnValue = ControlContainer.from4("containerFaction", Coords.fromXY(containerOuterSize.x
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerFaction", Coords.fromXY(containerOuterSize.x
             - margin
             - containerInnerSize.x, margin), // pos
         size, childControls);
@@ -145,17 +146,17 @@ class Faction {
         );
         var faction = this;
         var controlSize = Coords.fromXY(margin * 16, controlHeight);
-        var labelFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var labelFaction = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos
         controlSize, DataBinding.fromContext("Faction:"), fontNameAndHeight);
-        var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin), // pos
+        var textFaction = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin * 8, margin), // pos
         controlSize, DataBinding.fromContext(faction.name), fontNameAndHeight);
-        var labelFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2), // pos
+        var labelFactionType = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin * 2), // pos
         controlSize, DataBinding.fromContext("Type:"), fontNameAndHeight);
-        var textFactionType = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin * 2), // pos
+        var textFactionType = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin * 8, margin * 2), // pos
         controlSize, DataBinding.fromContext(faction.defnName), fontNameAndHeight);
-        var labelAbility = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 3), // pos
+        var labelAbility = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin * 3), // pos
         controlSize, DataBinding.fromContext("Ability:"), fontNameAndHeight);
-        var textAbility = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin * 3), // pos
+        var textAbility = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin * 8, margin * 3), // pos
         controlSize, DataBinding.fromContext(faction.defn().ability.toString(universe.world)), fontNameAndHeight);
         var abilityUse = () => {
             var world = universe.world;
@@ -169,12 +170,12 @@ class Faction {
                 VenueMessage.fromText("todo - Can't use ability yet.");
             }
         };
-        var buttonAbilityUse = ControlButton.from8("buttonAbilityUse", Coords.fromXY(margin * 24, margin * 3), // pos
+        var buttonAbilityUse = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonAbilityUse", Coords.fromXY(margin * 24, margin * 3), // pos
         controlSize, "Use", fontNameAndHeight, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         abilityUse // click
         );
-        var containerStatus = ControlContainer.from4("Status", Coords.create(), tabbedControlSize, 
+        var containerStatus = ControlContainer.fromNamePosSizeAndChildren("Status", Coords.create(), tabbedControlSize, 
         // children
         [
             labelFaction, textFaction,
@@ -211,13 +212,13 @@ class Faction {
     toControl_Details_Planets(universe, size, margin, controlHeight, fontNameAndHeight) {
         var world = universe.world;
         var faction = this;
-        var labelPlanets = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var labelPlanets = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), // size
         DataBinding.fromContext("Planets:"), fontNameAndHeight);
-        var textPlanetCount = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin), // pos
+        var textPlanetCount = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin * 8, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), // size
         DataBinding.fromContextAndGet(faction, (c) => "" + c.planets.length), fontNameAndHeight);
-        var listPlanets = ControlList.from8("listPlanets", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+        var listPlanets = ControlList.fromNamePosSizeItemsTextFontSelectedValue("listPlanets", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
         Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
         DataBinding.fromContextAndGet(faction, (c) => faction.planets), // items
         DataBinding.fromGet((c) => c.toStringDescription(universe, world)), // bindingForItemText
@@ -227,13 +228,13 @@ class Faction {
             c.planetSelected = v;
         }), null // bindingForItemValue
         );
-        var buttonGoToSelected = ControlButton.from8("buttonGoToSelected", Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+        var buttonGoToSelected = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonGoToSelected", Coords.fromXY(margin, size.y - margin - controlHeight), // pos
         Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
         "Go To", fontNameAndHeight, true, // hasBorder
         DataBinding.fromContextAndGet(faction, (c) => (c.planetSelected != null)), // isEnabled
         () => faction.planetSelected.jumpTo(universe) // click
         );
-        var containerPlanets = ControlContainer.from4("Planets", Coords.create(), size, 
+        var containerPlanets = ControlContainer.fromNamePosSizeAndChildren("Planets", Coords.create(), size, 
         // children
         [
             labelPlanets,
@@ -245,13 +246,13 @@ class Faction {
     }
     toControl_Details_Ships(universe, size, margin, controlHeight, fontNameAndHeight) {
         var faction = this;
-        var labelShips = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var labelShips = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), // size
         DataBinding.fromContext("Ships:"), fontNameAndHeight);
-        var textShipCount = ControlLabel.from4Uncentered(Coords.fromXY(margin * 8, margin), // pos
+        var textShipCount = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin * 8, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), // size
         DataBinding.fromContextAndGet(faction, (c) => "" + c.ships.length), fontNameAndHeight);
-        var listShips = ControlList.from8("listShips", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
+        var listShips = ControlList.fromNamePosSizeItemsTextFontSelectedValue("listShips", Coords.fromXY(margin, margin * 2 + controlHeight), // pos
         Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2), // size
         DataBinding.fromContextAndGet(faction, (c) => faction.ships), // items
         DataBinding.fromGet((c) => c.toStringDescription()), // bindingForItemText
@@ -261,13 +262,13 @@ class Faction {
             c.shipSelected = v;
         }), null // bindingForItemValue
         );
-        var buttonGoToSelected = ControlButton.from8("buttonGoToSelected", Coords.fromXY(margin, size.y - margin - controlHeight), // pos
+        var buttonGoToSelected = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonGoToSelected", Coords.fromXY(margin, size.y - margin - controlHeight), // pos
         Coords.fromXY(5, 1).multiplyScalar(controlHeight), // size
         "Go To", fontNameAndHeight, true, // hasBorder
         DataBinding.fromContextAndGet(faction, (c) => (c.shipSelected != null)), // isEnabled
         () => faction.shipSelected.jumpTo(universe) // click
         );
-        var containerShips = ControlContainer.from4("Ships", Coords.create(), size, 
+        var containerShips = ControlContainer.fromNamePosSizeAndChildren("Ships", Coords.create(), size, 
         // children
         [
             labelShips,
@@ -367,7 +368,6 @@ class Faction {
         this.technologyResearcher.updateForRound(universe, world, this);
     }
     // EntityProperty.
-    finalize(uwpe) { }
     initialize(uwpe) {
         this.ships.forEach(x => x.initialize(uwpe));
     }

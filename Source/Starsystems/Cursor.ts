@@ -41,7 +41,7 @@ class Cursor extends Entity
 		var colors = Color.Instances();
 		var colorWhite = colors.White;
 		
-		var visualCrosshairs = new VisualGroup
+		var visualCrosshairs = VisualGroup.fromChildren
 		([
 			VisualCircle.fromRadiusAndColors(radius, null, colorWhite),
 			new VisualLine
@@ -56,22 +56,18 @@ class Cursor extends Entity
 
 		var cursor = this;
 
-		var visualReticle = new VisualSelect
+		var visualReticle = VisualSelect.fromSelectChildToShowAndChildren
 		(
-			new Map
-			([
-				[ "None", new VisualNone() ],
-				[ "Crosshairs", visualCrosshairs ]
-			]),
 			// selectChildNames
-			(
-				uwpe: UniverseWorldPlaceEntities, display: Display
-			) =>
-				cursor.visualReticleSelectChildNames(uwpe, display)
-
+			(uwpe: UniverseWorldPlaceEntities, visualSelect: VisualSelect) =>
+				cursor.visualReticleSelectChildToShow(uwpe, visualSelect),
+			[
+				VisualNone.Instance,
+				visualCrosshairs
+			]
 		);
 
-		var visualHover = new VisualText
+		var visualHover = VisualText.fromTextBindingFontAndColorsFillAndBorder
 		(
 			DataBinding.fromContextAndGet
 			(
@@ -83,7 +79,7 @@ class Cursor extends Entity
 			colors.White
 		);
 
-		var visual = new VisualGroup
+		var visual = VisualGroup.fromChildren
 		([
 			visualHover,
 			visualReticle
@@ -157,22 +153,16 @@ class Cursor extends Entity
 		return returnValue;
 	}
 
-	visualReticleSelectChildNames
+	visualReticleSelectChildToShow
 	(
-		uwpe: UniverseWorldPlaceEntities, display: Display
+		uwpe: UniverseWorldPlaceEntities, visualSelect: VisualSelect
 	)
 	{
-		var returnValue;
 		var cursor = uwpe.entity as Cursor;
-		if (cursor.entityUsingCursorToTarget == null)
-		{
-			returnValue = "None";
-		}
-		else
-		{
-			returnValue = "Crosshairs";
-		}
-		return [ returnValue ];
+		var childToShowIndex =
+			(cursor.entityUsingCursorToTarget == null) ? 0 : 1;
+		var childToShow = visualSelect.children[childToShowIndex];
+		return childToShow;
 	}
 
 

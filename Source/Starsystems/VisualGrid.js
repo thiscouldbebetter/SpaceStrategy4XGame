@@ -48,6 +48,8 @@ class VisualGrid {
             }
         }
     }
+    initialize(uwpe) { }
+    initializeIsComplete() { return true; }
     // Clonable.
     clone() { return this; }
     overwriteWith(other) { return this; }

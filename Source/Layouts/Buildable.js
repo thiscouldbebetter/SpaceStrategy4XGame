@@ -1,6 +1,7 @@
 "use strict";
-class Buildable {
+class Buildable extends EntityPropertyBase {
     constructor(defn, pos, isComplete, isAutomated) {
+        super();
         this.defn = defn;
         var loc = Disposition.fromPos(pos);
         this._locatable = new Locatable(loc);
@@ -34,18 +35,4 @@ class Buildable {
         }
         return this._entity;
     }
-    // EntityProperty.
-    finalize(uwpe) { }
-    initialize(uwpe) { }
-    propertyName() { return Buildable.name; }
-    updateForTimerTick(uwpe) { }
-    // Clonable.
-    clone() {
-        throw new Error("Not yet implemented.");
-    }
-    overwriteWith(other) {
-        throw new Error("Not yet implemented.");
-    }
-    // Equatable.
-    equals(other) { return false; }
 }

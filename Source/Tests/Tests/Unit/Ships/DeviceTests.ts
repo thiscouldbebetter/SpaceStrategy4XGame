@@ -4,7 +4,7 @@ class DeviceTests extends TestFixture
 	universe: Universe;
 	world: WorldExtended;
 	ship: Ship;
-	device: Device;
+	device: Device2;
 	uwpe: UniverseWorldPlaceEntities;
 
 	constructor()

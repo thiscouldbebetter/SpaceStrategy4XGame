@@ -175,7 +175,7 @@ class FactionKnowledge
 						// is passed to the instantions of Locatable and Collidable,
 						// because Collidable is implicitly cloning it.
 
-						nodeActual.collidable().colliderResetToRestPosition();
+						Collidable.of(nodeActual).colliderResetToRestPosition();
 					}
 					else
 					{
@@ -183,7 +183,7 @@ class FactionKnowledge
 						(
 							FactionKnowledge.TextUnknownStarsystem, // name
 							nodeActual.defn,
-							nodeActual.locatable().loc.pos,
+							Locatable.of(nodeActual).loc.pos,
 							nodeActual.starsystem.star,
 							null // starsystem
 						)

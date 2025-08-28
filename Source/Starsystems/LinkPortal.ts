@@ -112,7 +112,7 @@ class LinkPortal extends Entity
 		var world = uwpe.world as WorldExtended;
 		var name = linkPortal.nameAccordingToFactionPlayerKnowledge(world);
 
-		var returnValue = ControlLabel.from4Uncentered
+		var returnValue = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(0, 0),
 			size,
@@ -158,14 +158,9 @@ class LinkPortal extends Entity
 			visualsForLinkTypes.push(visualCenter);
 		}
 
-		var visual: VisualBase = new VisualSelect
+		var visual: VisualBase = VisualSelect.fromSelectChildToShowAndChildren
 		(
-			new Map<string,VisualBase>
-			([
-				[ "Normal", visualsForLinkTypes[0] ],
-				[ "Hard", visualsForLinkTypes[1] ],
-			]),
-			(uwpe: UniverseWorldPlaceEntities, display: Display) =>
+			(uwpe: UniverseWorldPlaceEntities, visualSelect: VisualSelect) =>
 			{
 				var linkPortal = uwpe.entity as LinkPortal;
 				var world = uwpe.world as WorldExtended;
@@ -173,8 +168,12 @@ class LinkPortal extends Entity
 				var link = linkPortal.link(starCluster);
 				var linkType = link.type;
 				var visualName = linkType.name;
-				return [ visualName ];
-			}
+				var childToShowIndex =
+					(visualName == "Normal") ? 0 : 1;
+				var childToShow = visualSelect.children[childToShowIndex];
+				return childToShow;
+			},
+			visualsForLinkTypes
 		);
 
 		return visual;

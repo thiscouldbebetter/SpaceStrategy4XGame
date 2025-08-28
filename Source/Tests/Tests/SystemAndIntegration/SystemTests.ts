@@ -254,7 +254,7 @@ class SystemTests extends TestFixture
 		universe.venueNextSet(null);
 		universe.updateForTimerTick();
 
-		var shipLoc = ship.locatable().loc;
+		var shipLoc = Locatable.of(ship).loc;
 
 		while (shipLoc.placeName().startsWith(StarClusterLink.name))
 		{
@@ -306,7 +306,7 @@ class SystemTests extends TestFixture
 				ship, starsystemArrivedAt, planetToColonize, universe
 			);
 
-			var shipLoc = ship.locatable().loc;
+			var shipLoc = Locatable.of(ship).loc;
 
 			var shipLocPlaceName = shipLoc.placeName();
 			Assert.isTrue(shipLocPlaceName.startsWith(Planet.name));
@@ -381,7 +381,7 @@ class SystemTests extends TestFixture
 			{
 				shipOrder.obey(uwpe);
 
-				var shipActor = ship.actor();
+				var shipActor = Actor.of(ship);
 				var shipActivity = shipActor.activity;
 				while (shipActivity.isDoNothing() == false)
 				{

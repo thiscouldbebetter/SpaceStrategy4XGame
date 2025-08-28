@@ -9,7 +9,7 @@ class Constraint_Cursor {
         this._min = Coords.create();
         this._mousePos = Coords.create();
         this._xyPlaneNormal = new Coords(0, 0, 1);
-        this._boundsToRestrictTo = Box.fromMinAndMax(Coords.create(), Coords.create());
+        this._boundsToRestrictTo = BoxAxisAligned.fromMinAndMax(Coords.create(), Coords.create());
         this._positiveInfinity = 1000000000; // Number.POSITIVE_INFINITY;
         this._negativeInfinity = -1000000000; // Number.NEGATIVE_INFINITY;
     }
@@ -26,7 +26,7 @@ class Constraint_Cursor {
         mousePos.subtract(camera.viewSizeHalf);
         var directionFromCameraToMousePosProjected = this._displacement.overwriteWith(cameraOrientation.forward).multiplyScalar(camera.focalLength).add(this._cameraRightOrDown.overwriteWith(cameraOrientation.right).multiplyScalar(mousePos.x)).add(this._cameraRightOrDown.overwriteWith(cameraOrientation.down).multiplyScalar(mousePos.y)).normalize();
         var rayFromCameraToMousePos = new Ray(cameraPos, directionFromCameraToMousePosProjected);
-        var cursorPos = cursor.locatable().loc.pos;
+        var cursorPos = Locatable.of(cursor).loc.pos;
         if (cursor.hasXYPositionBeenSpecified == false) {
             this._boundsToRestrictTo.fromMinAndMax(this._min.overwriteWithDimensions(this._negativeInfinity, this._negativeInfinity, 0), this._max.overwriteWithDimensions(this._positiveInfinity, this._positiveInfinity, 0));
             var planeToRestrictTo = new Plane(this._xyPlaneNormal, 0);

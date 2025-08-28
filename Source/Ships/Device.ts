@@ -1,5 +1,5 @@
 
-class Device implements EntityProperty<Device>
+class Device2 extends EntityPropertyBase<Device2>
 {
 	_defn: DeviceDefn;
 
@@ -12,13 +12,15 @@ class Device implements EntityProperty<Device>
 
 	constructor(defn: DeviceDefn)
 	{
+		super();
+
 		this._defn = defn;
 		this.usesRemainingThisRoundReset();
 	}
 
-	static ofEntity(entity: Entity): Device
+	static ofEntity(entity: Entity): Device2
 	{
-		return entity.propertyByName(Device.name) as Device;
+		return entity.propertyByName(Device2.name) as Device2;
 	}
 
 	canBeUsedThisRoundByDeviceUser(deviceUser: DeviceUser): boolean
@@ -78,28 +80,5 @@ class Device implements EntityProperty<Device>
 		var defn = this.defn();
 		this.usesRemainingThisRound = defn.usesPerRound;
 	}
-
-	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
-	updateForTimerTick(uwpe: UniverseWorldPlaceEntities): void {}
-	propertyName(): string { return Device.name; }
-	initialize(uwpe: UniverseWorldPlaceEntities): void {}
-
-	// Clonable.
-
-	clone(): Device
-	{
-		throw new Error("Not yet implemented.");
-	}
-
-	overwriteWith(other: Device): Device
-	{
-		throw new Error("Not yet implemented.");
-	}
-
-	// Equatable.
-
-	equals(other: Device): boolean { return false; } // todo
 
 }

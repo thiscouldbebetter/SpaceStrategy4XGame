@@ -72,25 +72,25 @@ class FactionDiplomacy {
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
         var listSize = Coords.fromXY(listWidth, controlSpacing * 4);
-        var labelFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var labelFaction = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(columnWidth, controlSpacing), // size
         DataBinding.fromContext("Faction:"), fontNameAndHeight);
-        var textFaction = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + columnWidth, margin), // pos
+        var textFaction = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin * 2 + columnWidth, margin), // pos
         Coords.fromXY(columnWidth, controlSpacing), // size,
         DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null ? "[none]" : c.factionSelected.name)), fontNameAndHeight);
-        var labelRelationship = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlSpacing), // pos
+        var labelRelationship = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin + controlSpacing), // pos
         Coords.fromXY(columnWidth, controlSpacing), // size
         DataBinding.fromContext("Relationship:"), fontNameAndHeight);
-        var textRelationship = ControlLabel.from4Uncentered(Coords.fromXY(margin + columnWidth, margin + controlSpacing), // pos
+        var textRelationship = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin + columnWidth, margin + controlSpacing), // pos
         Coords.fromXY(columnWidth, controlSpacing), // size,
         DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null
             ? "-"
             :
                 (c.factionSelected.relationshipByFactionName(diplomaticSession.factionActing.name).state.name))), fontNameAndHeight);
-        var labelPlanets = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlSpacing * 2), // pos
+        var labelPlanets = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin + controlSpacing * 2), // pos
         Coords.fromXY(columnWidth, controlSpacing), // size
         DataBinding.fromContext("Planets:"), fontNameAndHeight);
-        var listPlanets = ControlList.from8("listPlanets", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
+        var listPlanets = ControlList.fromNamePosSizeItemsTextFontSelectedValue("listPlanets", Coords.fromXY(margin, margin + controlSpacing * 3), // pos
         listSize, DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null
             ? new Array()
             : c.factionSelected.planets)), // items
@@ -103,10 +103,10 @@ class FactionDiplomacy {
             }
         }), null // bindingForItemValue
         );
-        var labelShips = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlSpacing * 7), // pos
+        var labelShips = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin + controlSpacing * 7), // pos
         Coords.fromXY(columnWidth, controlSpacing), // size
         DataBinding.fromContext("Ships:"), fontNameAndHeight);
-        var listShips = ControlList.from7("listShips", Coords.fromXY(margin, margin + controlSpacing * 8), // pos
+        var listShips = ControlList.fromNamePosSizeItemsTextFontSelected("listShips", Coords.fromXY(margin, margin + controlSpacing * 8), // pos
         listSize, DataBinding.fromContextAndGet(diplomaticSession, (c) => (c.factionSelected == null ? new Array() : c.factionSelected.ships)), // options
         DataBinding.fromGet((c) => c.toStringDescription()), // bindingForOptionText,
         fontNameAndHeight, 
@@ -116,7 +116,7 @@ class FactionDiplomacy {
                 c.factionSelected.shipSelected = v;
             }
         }));
-        var returnValue = ControlContainer.from4("containerFactionIntelligence", pos, containerSize, 
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerFactionIntelligence", pos, containerSize, 
         // children
         [
             labelFaction,

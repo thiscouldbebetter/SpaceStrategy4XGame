@@ -26,6 +26,8 @@ class EnvironmentMock
 			}
 		};
 
+		var profileHelper = ProfileHelper.maximal();
+
 		var worldCreator = new WorldCreator
 		(
 			(universe, worldCreator) =>
@@ -39,7 +41,7 @@ class EnvironmentMock
 			worldCreatorSettings
 		);
 
-		var universe = new Universe
+		var universe = Universe.create
 		(
 			"TestUniverse",
 			"[version]",
@@ -48,6 +50,7 @@ class EnvironmentMock
 			soundHelper,
 			mediaLibrary,
 			controlBuilder,
+			profileHelper,
 			worldCreator
 		);
 

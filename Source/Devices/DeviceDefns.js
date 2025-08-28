@@ -45,7 +45,7 @@ class DeviceDefns {
         [categories.ShipShield], // categories
         (uwpe) => // intialize
          {
-            var device = Device.ofEntity(uwpe.entity2);
+            var device = Device2.ofEntity(uwpe.entity2);
             device.isActive = false;
         }, (uwpe) => // updateForRound
          {
@@ -83,7 +83,7 @@ class DeviceDefns {
         }, (uwpe) => // updateForRound
          {
             // todo
-            //var device = Device.ofEntity(uwpe.entity2);
+            //var device = Device2.ofEntity(uwpe.entity2);
             //device.usesThisTurn = 3;
         }, 1, // usesPerRound
         1, // energyPerUse
@@ -105,7 +105,7 @@ class DeviceDefns {
             else // if (target != null)
             {
                 device.usesThisTurn--;
-                var targetKillable = target.killable();
+                var targetKillable = Killable.of(target);
                 targetKillable.integrity -= 1;
                 if (targetKillable.integrity <= 0)
                 {

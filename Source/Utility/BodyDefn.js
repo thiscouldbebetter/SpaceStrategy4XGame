@@ -1,6 +1,7 @@
 "use strict";
-class BodyDefn {
+class BodyDefn extends EntityPropertyBase {
     constructor(name, size, visual) {
+        super();
         this.name = name;
         this.size = size;
         this.visual = visual;
@@ -9,11 +10,4 @@ class BodyDefn {
     static fromEntity(entity) {
         return entity.propertyByName(BodyDefn.name);
     }
-    // EntityProperty.
-    finalize(uwpe) { }
-    initialize(uwpe) { }
-    propertyName() { return BodyDefn.name; }
-    updateForTimerTick(uwpe) { }
-    // Equatable.
-    equals(other) { return false; }
 }

@@ -165,7 +165,7 @@ class FactionDiplomacy
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var listSize = Coords.fromXY(listWidth, controlSpacing * 4);
 
-		var labelFaction = ControlLabel.from4Uncentered
+		var labelFaction = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin), // pos
 			Coords.fromXY(columnWidth, controlSpacing), // size
@@ -173,7 +173,7 @@ class FactionDiplomacy
 			fontNameAndHeight
 		);
 
-		var textFaction = ControlLabel.from4Uncentered
+		var textFaction = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin * 2 + columnWidth, margin), // pos
 			Coords.fromXY(columnWidth, controlSpacing), // size,
@@ -186,7 +186,7 @@ class FactionDiplomacy
 			fontNameAndHeight
 		);
 
-		var labelRelationship = ControlLabel.from4Uncentered
+		var labelRelationship = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlSpacing), // pos
 			Coords.fromXY(columnWidth, controlSpacing), // size
@@ -194,7 +194,7 @@ class FactionDiplomacy
 			fontNameAndHeight
 		);
 
-		var textRelationship = ControlLabel.from4Uncentered
+		var textRelationship = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin + columnWidth, margin + controlSpacing), // pos
 			Coords.fromXY(columnWidth, controlSpacing), // size,
@@ -217,7 +217,7 @@ class FactionDiplomacy
 			fontNameAndHeight
 		);
 
-		var labelPlanets = ControlLabel.from4Uncentered
+		var labelPlanets = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlSpacing * 2), // pos
 			Coords.fromXY(columnWidth, controlSpacing), // size
@@ -225,7 +225,7 @@ class FactionDiplomacy
 			fontNameAndHeight
 		);
 
-		var listPlanets = ControlList.from8
+		var listPlanets = ControlList.fromNamePosSizeItemsTextFontSelectedValue
 		(
 			"listPlanets",
 			Coords.fromXY(margin, margin + controlSpacing * 3), // pos
@@ -262,7 +262,7 @@ class FactionDiplomacy
 			null // bindingForItemValue
 		);
 
-		var labelShips = ControlLabel.from4Uncentered
+		var labelShips = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlSpacing * 7), // pos
 			Coords.fromXY(columnWidth, controlSpacing), // size
@@ -270,7 +270,7 @@ class FactionDiplomacy
 			fontNameAndHeight
 		);
 
-		var listShips = ControlList.from7
+		var listShips = ControlList.fromNamePosSizeItemsTextFontSelected
 		(
 			"listShips",
 			Coords.fromXY(margin, margin + controlSpacing * 8), // pos
@@ -302,7 +302,7 @@ class FactionDiplomacy
 			)
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerFactionIntelligence",
 			pos,

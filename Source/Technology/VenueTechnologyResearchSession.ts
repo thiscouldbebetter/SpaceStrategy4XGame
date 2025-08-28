@@ -20,6 +20,8 @@ class VenueTechnologyResearchSession implements Venue
 		// Do nothing.
 	}
 
+	finalizeIsComplete(): boolean { return true; }
+
 	initialize(universe: Universe)
 	{
 		this.venueControls = new VenueControls
@@ -30,6 +32,8 @@ class VenueTechnologyResearchSession implements Venue
 			), null
 		);
 	}
+
+	initializeIsComplete(): boolean { return true; }
 
 	updateForTimerTick(universe: Universe)
 	{

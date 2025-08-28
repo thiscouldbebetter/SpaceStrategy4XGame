@@ -100,7 +100,7 @@ class Ship extends Entity
 		var ship = uwpe.entity as Ship;
 		var entityToCollideWith = uwpe.entity2;
 
-		var shipTarget = ship.actor().activity.targetEntity();
+		var shipTarget = Actor.of(ship).activity.targetEntity();
 		var isEntityToCollideWithTargetedByShip =
 			(shipTarget == entityToCollideWith); // No unintentional collisions!
 
@@ -166,7 +166,7 @@ class Ship extends Entity
 
 	integrityCurrentOverMax(): string
 	{
-		return this.killable().integrityCurrentOverMax();
+		return Killable.of(this).integrityCurrentOverMax();
 	}
 
 	isAwaitingTarget(): boolean
@@ -230,7 +230,7 @@ class Ship extends Entity
 
 	planet(world: WorldExtended): Planet
 	{
-		var planetName = this.locatable().loc.placeName().split(":")[1];
+		var planetName = Locatable.of(this).loc.placeName().split(":")[1];
 		var starsystemName = planetName.split(" ")[0];
 		var starsystem = world.starCluster.starsystemByName(starsystemName);
 
@@ -254,7 +254,7 @@ class Ship extends Entity
 			&& planetBeingOrbitedFaction == null
 		)
 		{
-			var itemHolder = this.itemHolder();
+			var itemHolder = ItemHolder.of(this);
 
 			var itemDefnNameHub = world.defn.itemDefnByName("Colony Hub").name;
 
@@ -338,7 +338,7 @@ class Ship extends Entity
 	{
 		var returnValue =
 			this.name
-			+ " - " + this.locatable().loc.placeName()
+			+ " - " + Locatable.of(this).loc.placeName()
 			+ " - Integrity: " + this.integrityCurrentOverMax();
 		
 		var order = this.order();
@@ -352,7 +352,7 @@ class Ship extends Entity
 
 	// Devices.
 
-	deviceSelect(deviceToSelect: Device): void
+	deviceSelect(deviceToSelect: Device2): void
 	{
 		var deviceUser = this.deviceUser();
 		deviceUser.deviceSelect(deviceToSelect);
@@ -397,7 +397,7 @@ class Ship extends Entity
 		// Whether the link portal can actually be entered or not,
 		// the order and activity will be cleared.
 		ship.orderable().order(ship).clear();
-		ship.actor().activity.clear();
+		Actor.of(ship).activity.clear();
 
 		var starlaneDrives = deviceUser.devicesStarlaneDrives();
 
@@ -421,12 +421,12 @@ class Ship extends Entity
 			var linkStarsystem1 = linkNode1.starsystem;
 			var isLinkForward = (starsystemTo == linkStarsystem1);
 
-			var shipLoc = this.locatable().loc;
+			var shipLoc = Locatable.of(this).loc;
 
 			shipLoc.placeNameSet(StarClusterLink.name + ":" + link.name);
 
 			var nodeFrom = (isLinkForward ? linkNode0 : linkNode1);
-			shipLoc.pos.overwriteWith(nodeFrom.locatable().loc.pos);
+			shipLoc.pos.overwriteWith(Locatable.of(nodeFrom).loc.pos);
 
 			var linkDirection = link.displacement(cluster).normalize();
 			if (isLinkForward == false)
@@ -445,7 +445,7 @@ class Ship extends Entity
 		var world = uwpe.world as WorldExtended;
 		var cluster = world.starCluster;
 
-		var shipLoc = ship.locatable().loc;
+		var shipLoc = Locatable.of(ship).loc;
 
 		var shipVel = shipLoc.vel;
 		var linkDisplacement = link.displacement(cluster);
@@ -464,7 +464,7 @@ class Ship extends Entity
 
 		var portalToExitFrom =
 			starsystemDestination.linkPortalByStarsystemName(starsystemSource.name);
-		var exitPos = portalToExitFrom.locatable().loc.pos;
+		var exitPos = Locatable.of(portalToExitFrom).loc.pos;
 		var shipPos = shipLoc.pos;
 		shipPos.overwriteWith(exitPos);
 		ship.nudgeInFrontOfEntityIfTouching(portalToExitFrom);
@@ -520,8 +520,8 @@ class Ship extends Entity
 		target: Entity
 	): number
 	{
-		var shipPos = this.locatable().loc.pos;
-		var targetPos = target.locatable().loc.pos;
+		var shipPos = Locatable.of(this).loc.pos;
+		var targetPos = Locatable.of(target).loc.pos;
 		var displacementToTarget =
 			this._displacement.overwriteWith(targetPos).subtract(shipPos);
 		var distanceToTarget = displacementToTarget.magnitude();
@@ -550,21 +550,19 @@ class Ship extends Entity
 
 		var shipToNudge = this;
 
-		var shipToNudgePos = shipToNudge.locatable().loc.pos;
+		var shipToNudgePos = Locatable.of(shipToNudge).loc.pos;
 		var entityToNudgeInFrontOfPos =
-			entityToNudgeInFrontOf.locatable().loc.pos;
+			Locatable.of(entityToNudgeInFrontOf).loc.pos;
 
-		var distanceBetweenShipAndEntity = this._displacement.overwriteWith
-		(
-			entityToNudgeInFrontOfPos
-		).subtract
-		(
-			shipToNudgePos
-		).magnitude();
+		var distanceBetweenShipAndEntity =
+			this._displacement
+				.overwriteWith(entityToNudgeInFrontOfPos)
+				.subtract(shipToNudgePos)
+				.magnitude();
 
 		var distanceBetweenShipAndEntityMin =
-			(shipToNudge.collidable().collider as Sphere).radius
-			+ (entityToNudgeInFrontOf.collidable().collider as Sphere).radius
+			(Collidable.of(shipToNudge).collider as Sphere).radius()
+			+ (Collidable.of(entityToNudgeInFrontOf).collider as Sphere).radius()
 			+ 1;
 
 		var isShipTooCloseToEntity =
@@ -610,7 +608,7 @@ class Ship extends Entity
 			starsystem.shipRemove(this);
 			planet.shipAddToOrbit(this, universe);
 
-			this.locatable().loc.placeNameSet
+			Locatable.of(this).loc.placeNameSet
 			(
 				Planet.name + ":" + planet.name
 			);
@@ -707,7 +705,7 @@ class Ship extends Entity
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
-		var returnControl = ControlContainer.from4
+		var returnControl = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerShipStatus",
 			Coords.fromXY(0, 0), // pos
@@ -777,8 +775,8 @@ class Ship extends Entity
 			{
 				var sensorRange = shipSensing.deviceUser().sensorRange(shipSensing);
 
-				var shipSensingPos = shipSensing.locatable().loc.pos;
-				var shipBeingSensedPos = ship.locatable().loc.pos;
+				var shipSensingPos = Locatable.of(shipSensing).loc.pos;
+				var shipBeingSensedPos = Locatable.of(ship).loc.pos;
 
 				var distance = displacement.overwriteWith
 				(
@@ -800,7 +798,7 @@ class Ship extends Entity
 
 		if (shipVitalsAreVisible)
 		{
-			var labelIntegrity = ControlLabel.from4Uncentered
+			var labelIntegrity = ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY(margin, margin),
 				labelSize,
@@ -808,7 +806,7 @@ class Ship extends Entity
 				fontNameAndHeight
 			);
 
-			var textIntegrity = ControlLabel.from4Uncentered
+			var textIntegrity = ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY(containerSize.x / 4, margin),
 				labelSize,
@@ -819,7 +817,7 @@ class Ship extends Entity
 				fontNameAndHeight
 			);
 
-			var labelEnergy = ControlLabel.from4Uncentered
+			var labelEnergy = ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY(containerSize.x / 2, margin),
 				labelSize,
@@ -827,7 +825,7 @@ class Ship extends Entity
 				fontNameAndHeight
 			);
 
-			var textEnergy = ControlLabel.from4Uncentered
+			var textEnergy = ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY(containerSize.x * 3/4, margin),
 				labelSize,
@@ -858,7 +856,7 @@ class Ship extends Entity
 
 		if (shipIsCommandable)
 		{
-			var buttonMove = ControlButton.from8
+			var buttonMove = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 			(
 				"buttonMove",
 				Coords.fromXY
@@ -894,7 +892,7 @@ class Ship extends Entity
 				() => ship.moveSleepOrWake() // click
 			);
 
-			var labelDevices = ControlLabel.from4Uncentered
+			var labelDevices = ControlLabel.fromPosSizeTextFontUncentered
 			(
 				Coords.fromXY
 				(
@@ -918,7 +916,7 @@ class Ship extends Entity
 				margin * 3 + labelHeight + buttonHeight
 			); // pos
 
-			var listDevices = ControlList.from8
+			var listDevices = ControlList.fromNamePosSizeItemsTextFontSelectedValue
 			(
 				"listDevices",
 				listPos,
@@ -931,19 +929,19 @@ class Ship extends Entity
 				),
 				DataBinding.fromGet
 				(
-					(c: Device) => c.nameAndUsesRemainingThisRound()
+					(c: Device2) => c.nameAndUsesRemainingThisRound()
 				), // bindingForOptionText
 				fontNameAndHeight,
 				new DataBinding
 				(
 					ship,
 					(c: Ship) => c.deviceUser().deviceSelected(),
-					(c: Ship, v: Device) => c.deviceSelect(v)
+					(c: Ship, v: Device2) => c.deviceSelect(v)
 				), // dataBindingForItemSelected
 				DataBinding.fromContext(null) // bindingForItemValue
 			);
 
-			var buttonDeviceUse = ControlButton.from8
+			var buttonDeviceUse = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 			(
 				"buttonDeviceUse",
 				Coords.fromXY(margin, listPos.y + listSize.y), // pos
@@ -976,7 +974,7 @@ class Ship extends Entity
 			childControls.push(...childControlsCommands);
 		}
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerShip",
 			Coords.fromXY(0, 0), // pos
@@ -1211,24 +1209,22 @@ class Ship extends Entity
 			visualProjected
 		]);
 
-		var visualSelect = new VisualSelect
+		var visualSelect = VisualSelect.fromSelectChildToShowAndChildren
 		(
-			new Map<string, VisualBase>
-			([
-				[ "Projected", visualProjectedWithStem ],
-				[ "Default", visualBody ],
-			]),
-
-			(uwpe: UniverseWorldPlaceEntities, d: Display) =>
+			(uwpe: UniverseWorldPlaceEntities, visualSelect: VisualSelect) =>
 			{
-				return Ship.visualNameSelect(uwpe, d)
-			}
+				return Ship.visualChildToShowSelect(uwpe, visualSelect)
+			},
+			[ 
+				visualProjectedWithStem, // "Projected"
+				visualBody // "Default"
+			]
 		)
 
 		return visualSelect;
 	}
 
-	static visualNameSelect(uwpe: UniverseWorldPlaceEntities, d: Display): string[]
+	static visualChildToShowSelect(uwpe: UniverseWorldPlaceEntities, visualSelect: VisualSelect): VisualBase
 	{
 		var universe = uwpe.universe;
 		var venueCurrent = universe.venueCurrent();
@@ -1238,10 +1234,11 @@ class Ship extends Entity
 			(venueCurrentTypeName == VenueStarCluster.name)
 			|| (venueCurrentTypeName == VenueStarsystem.name);
 
-		var childVisualName =
-			shouldBeProjected ? "Projected" : "Default";
+		var childVisualIndex =
+			shouldBeProjected ? 0 : 1;
+		var childVisualToShow = visualSelect.children[childVisualIndex];
 
-		return [ childVisualName ];
+		return childVisualToShow;
 	}
 
 }

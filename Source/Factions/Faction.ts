@@ -1,5 +1,5 @@
 
-class Faction implements EntityProperty<Faction>
+class Faction extends EntityPropertyBase<Faction>
 {
 	defnName: string;
 	homeStarsystemName: string;
@@ -37,6 +37,8 @@ class Faction implements EntityProperty<Faction>
 		visualsForShipsByHullSize: Map<ShipHullSize, VisualBase>
 	)
 	{
+		super();
+
 		this.defnName = defnName;
 		this.homeStarsystemName = homeStarsystemName;
 		this.homePlanetName = homePlanetName;
@@ -221,7 +223,7 @@ class Faction implements EntityProperty<Faction>
 			controlHeight * 2 + margin * 3
 		);
 
-		var labelFaction = ControlLabel.from4Uncentered
+		var labelFaction = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin),// pos
 			Coords.fromXY
@@ -233,7 +235,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var textFaction = ControlLabel.from4Uncentered
+		var textFaction = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -256,7 +258,7 @@ class Faction implements EntityProperty<Faction>
 
 		if (includeDetailsButton)
 		{
-			var buttonDetails = ControlButton.from8
+			var buttonDetails = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 			(
 				"buttonDetails",
 				Coords.fromXY
@@ -275,7 +277,7 @@ class Faction implements EntityProperty<Faction>
 			childControls.push(buttonDetails);
 		}
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerFaction",
 			Coords.fromXY
@@ -318,7 +320,7 @@ class Faction implements EntityProperty<Faction>
 			controlHeight
 		);
 
-		var labelFaction = ControlLabel.from4Uncentered
+		var labelFaction = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin),// pos
 			controlSize,
@@ -326,7 +328,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var textFaction = ControlLabel.from4Uncentered
+		var textFaction = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin * 8, margin), // pos
 			controlSize,
@@ -334,7 +336,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var labelFactionType = ControlLabel.from4Uncentered
+		var labelFactionType = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin * 2),// pos
 			controlSize,
@@ -342,7 +344,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var textFactionType = ControlLabel.from4Uncentered
+		var textFactionType = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin * 8, margin * 2), // pos
 			controlSize,
@@ -350,7 +352,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var labelAbility = ControlLabel.from4Uncentered
+		var labelAbility = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin * 3),// pos
 			controlSize,
@@ -358,7 +360,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var textAbility = ControlLabel.from4Uncentered
+		var textAbility = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin * 8, margin * 3), // pos
 			controlSize,
@@ -382,7 +384,7 @@ class Faction implements EntityProperty<Faction>
 			}
 		};
 
-		var buttonAbilityUse = ControlButton.from8
+		var buttonAbilityUse = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonAbilityUse",
 			Coords.fromXY(margin * 24, margin * 3), // pos
@@ -394,7 +396,7 @@ class Faction implements EntityProperty<Faction>
 			abilityUse // click
 		);
 
-		var containerStatus = ControlContainer.from4
+		var containerStatus = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"Status",
 			Coords.create(),
@@ -486,7 +488,7 @@ class Faction implements EntityProperty<Faction>
 		var world = universe.world as WorldExtended;
 		var faction = this;
 
-		var labelPlanets = ControlLabel.from4Uncentered
+		var labelPlanets = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin),// pos
 			Coords.fromXY
@@ -498,7 +500,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var textPlanetCount = ControlLabel.from4Uncentered
+		var textPlanetCount = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin * 8, margin), // pos
 			Coords.fromXY
@@ -514,7 +516,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var listPlanets = ControlList.from8
+		var listPlanets = ControlList.fromNamePosSizeItemsTextFontSelectedValue
 		(
 			"listPlanets",
 			Coords.fromXY(margin, margin * 2 + controlHeight), // pos
@@ -546,7 +548,7 @@ class Faction implements EntityProperty<Faction>
 			null // bindingForItemValue
 		);
 
-		var buttonGoToSelected = ControlButton.from8
+		var buttonGoToSelected = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonGoToSelected",
 			Coords.fromXY(margin, size.y - margin - controlHeight), // pos
@@ -561,7 +563,7 @@ class Faction implements EntityProperty<Faction>
 			() => faction.planetSelected.jumpTo(universe) // click
 		);
 
-		var containerPlanets = ControlContainer.from4
+		var containerPlanets = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"Planets",
 			Coords.create(),
@@ -589,7 +591,7 @@ class Faction implements EntityProperty<Faction>
 	{
 		var faction = this;
 
-		var labelShips = ControlLabel.from4Uncentered
+		var labelShips = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin),// pos
 			Coords.fromXY
@@ -601,7 +603,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var textShipCount = ControlLabel.from4Uncentered
+		var textShipCount = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin * 8, margin), // pos
 			Coords.fromXY
@@ -617,7 +619,7 @@ class Faction implements EntityProperty<Faction>
 			fontNameAndHeight
 		);
 
-		var listShips = ControlList.from8
+		var listShips = ControlList.fromNamePosSizeItemsTextFontSelectedValue
 		(
 			"listShips",
 			Coords.fromXY(margin, margin * 2 + controlHeight), // pos
@@ -649,7 +651,7 @@ class Faction implements EntityProperty<Faction>
 			null // bindingForItemValue
 		);
 
-		var buttonGoToSelected = ControlButton.from8
+		var buttonGoToSelected = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonGoToSelected",
 			Coords.fromXY(margin, size.y - margin - controlHeight), // pos
@@ -664,7 +666,7 @@ class Faction implements EntityProperty<Faction>
 			() => faction.shipSelected.jumpTo(universe) // click
 		);
 
-		var containerShips = ControlContainer.from4
+		var containerShips = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"Ships",
 			Coords.create(),
@@ -879,8 +881,6 @@ class Faction implements EntityProperty<Faction>
 	}
 
 	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{

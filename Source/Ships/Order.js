@@ -57,7 +57,7 @@ class Order //
         return this.defn.description + " " + this.entityBeingTargeted.name;
     }
 }
-class Orderable {
+class Orderable extends EntityPropertyBase {
     static fromEntity(entity) {
         return entity.propertyByName(Orderable.name);
     }
@@ -70,11 +70,4 @@ class Orderable {
     orderSet(value) {
         this._order = value;
     }
-    // EntityProperty.
-    finalize(uwpe) { }
-    initialize(uwpe) { }
-    propertyName() { return Orderable.name; }
-    updateForTimerTick(uwpe) { }
-    // Equatable.
-    equals(other) { return false; }
 }

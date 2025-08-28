@@ -1,10 +1,12 @@
 
-class Factionable implements EntityProperty<Factionable>
+class Factionable extends EntityPropertyBase<Factionable>
 {
 	_faction: Faction;
 
 	constructor(faction: Faction)
 	{
+		super();
+
 		this._faction = faction;
 	}
 
@@ -43,8 +45,6 @@ class Factionable implements EntityProperty<Factionable>
 	}
 
 	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{

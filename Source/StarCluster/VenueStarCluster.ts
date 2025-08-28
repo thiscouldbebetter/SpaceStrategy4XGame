@@ -28,9 +28,9 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 		var entitySelected = this.entitySelected();
 		if (entitySelected != null)
 		{
-			var targetPosNew = entitySelected.locatable().loc.pos;
+			var targetPosNew = Locatable.of(entitySelected).loc.pos;
 
-			var cameraConstrainable = this.cameraEntity.constrainable();
+			var cameraConstrainable = Constrainable.of(this.cameraEntity);
 			var constraint =
 				cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
 			var constraintDistance =
@@ -57,7 +57,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	cameraIn(cameraSpeed: number): void
 	{
-		var cameraConstrainable = this.cameraEntity.constrainable();
+		var cameraConstrainable = Constrainable.of(this.cameraEntity);
 		var constraint =
 			cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
 		var constraintDistance = constraint as Constraint_HoldDistanceFromTarget;
@@ -77,7 +77,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	cameraOut(cameraSpeed: number): void
 	{
-		var cameraConstrainable = this.cameraEntity.constrainable();
+		var cameraConstrainable = Constrainable.of(this.cameraEntity);
 		var constraint =
 			cameraConstrainable.constraintByClassName(Constraint_HoldDistanceFromTarget.name);
 		var constraintDistance = constraint as Constraint_HoldDistanceFromTarget;
@@ -92,8 +92,8 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	cameraReset(): void
 	{
-		var cameraConstrainable = this.cameraEntity.constrainable();
-		var camera = this.cameraEntity.camera();
+		var cameraConstrainable = Constrainable.of(this.cameraEntity);
+		var camera = Camera.of(this.cameraEntity);
 
 		var origin = Coords.create();
 		var constraint =
@@ -114,7 +114,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 	cameraMove(horizontal: number, vertical: number): void
 	{
-		var camera = this.cameraEntity.camera();
+		var camera = Camera.of(this.cameraEntity);
 		var cameraAction = new Action_CameraMove([horizontal, vertical]);
 		cameraAction.perform(camera);
 
@@ -211,7 +211,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 			margin
 		);
 
-		var container = ControlContainer.from4
+		var container = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerNetwork",
 			Coords.fromXY(0, 0), // pos
@@ -245,7 +245,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 		{
 			this.hasBeenUpdatedSinceDrawn = false;
 
-			universe.display.drawBackground(null, null);
+			universe.display.drawBackground();
 			var world = universe.world as WorldExtended;
 			var playerFaction = world.factionPlayer();
 			var playerKnowledge = playerFaction.knowledge;
@@ -271,12 +271,12 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 		this.venueControls = this.toControl(universe).toVenue();
 
 		var soundHelper = universe.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
+		soundHelper.soundWithName(universe, "Music_Title").play(universe, 1);
 
 		var origin = Coords.create();
 
 		// hack
-		var camera = this.cameraEntity.camera();
+		var camera = Camera.of(this.cameraEntity);
 		var cameraLocatable = new Locatable(camera.loc);
 		this.cameraEntity.propertyAdd(cameraLocatable);
 
@@ -316,7 +316,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 		world.updateForTimerTick(uwpe);
 
-		this.cameraEntity.constrainable().constrain
+		Constrainable.of(this.cameraEntity).constrain
 		(
 			uwpe.entitySet(this.cameraEntity)
 		);
@@ -340,11 +340,11 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 		if (inputHelper.isMouseClicked())
 		{
-			universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
+			universe.soundHelper.soundWithName(universe, "Sound").play(universe, 1);
 
 			var mouseClickPos = inputHelper.mouseClickPos.clone();
 
-			var camera = this.cameraEntity.camera();
+			var camera = Camera.of(this.cameraEntity);
 			var cameraPos = camera.loc.pos;
 			var rayFromCameraThroughClick = new Ray
 			(
@@ -416,13 +416,14 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 	updateForTimerTick_Input_InputsActive(universe: Universe, world: WorldExtended): void
 	{
 		var inputHelper = universe.inputHelper;
+		var inputs = Input.Instances();
 
 		var inputsActive = inputHelper.inputsPressed;
 		for (var i = 0; i < inputsActive.length; i++)
 		{
-			var inputActive = inputsActive[i].name;
+			var inputActive = inputsActive[i];
 
-			if (inputActive == "Escape")
+			if (inputActive == inputs.Escape)
 			{
 				var venueNext: Venue =
 					universe.controlBuilder.gameAndSettings1(universe).toVenue();
@@ -431,46 +432,44 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 			var cameraSpeed = 20;
 
-			var inputNames = Input.Names();
-
-			if (inputActive == inputNames.MouseMove)
+			if (inputActive == inputs.MouseMove)
 			{
 				// Do nothing.
 			}
-			else if (inputActive == inputNames.MouseClick)
+			else if (inputActive == inputs.MouseClick)
 			{
 				// Mouse clicks are handled through controls.
 			}
-			else if (inputActive == "a")
+			else if (inputActive == inputs.a)
 			{
 				this.cameraLeft(cameraSpeed);
 			}
-			else if (inputActive == "d")
+			else if (inputActive == inputs.d)
 			{
 				this.cameraRight(cameraSpeed);
 			}
-			else if (inputActive == "s")
+			else if (inputActive == inputs.s)
 			{
 				this.cameraDown(cameraSpeed);
 			}
-			else if (inputActive == "w")
+			else if (inputActive == inputs.w)
 			{
 				this.cameraUp(cameraSpeed);
 			}
-			else if (inputActive == "f")
+			else if (inputActive == inputs.f)
 			{
 				this.cameraOut(cameraSpeed);
 			}
-			else if (inputActive == inputNames.MouseWheelDown)
+			else if (inputActive == inputs.MouseWheelDown)
 			{
 				this.cameraOut(cameraSpeed);
 				inputHelper.inputRemove(inputActive);
 			}
-			else if (inputActive == "r")
+			else if (inputActive == inputs.r)
 			{
 				this.cameraIn(cameraSpeed);
 			}
-			else if (inputActive == inputNames.MouseWheelUp)
+			else if (inputActive == inputs.MouseWheelUp)
 			{
 				this.cameraIn(cameraSpeed);
 				inputHelper.inputRemove(inputActive);

@@ -27,7 +27,7 @@ class VisualStar {
         var world = universe.world;
         var starClusterNode = uwpe.entity;
         var display = universe.display;
-        var nodePos = starClusterNode.locatable().loc.pos;
+        var nodePos = Locatable.of(starClusterNode).loc.pos;
         var drawPos = this._drawPos.overwriteWith(nodePos);
         var camera = world.camera;
         camera.coordsTransformWorldToView(drawPos);
@@ -118,6 +118,8 @@ class VisualStar {
         drawablePosTransformed.y += radiusApparent * 2;
         visualText.draw(uwpe.entitySet(drawableTransformed), display);
     }
+    initialize(uwpe) { }
+    initializeIsComplete() { return true; }
     // Clonable.
     clone() {
         return this; // todo

@@ -56,7 +56,7 @@ class BuildableDefnsBasic {
         // entityModifyOnBuild
         (uwpe) => {
             if (deviceDefn != null) {
-                var device = new Device(deviceDefn);
+                var device = new Device2(deviceDefn);
                 uwpe.entity.propertyAdd(device);
             }
         }, description);

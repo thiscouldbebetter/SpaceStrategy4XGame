@@ -229,7 +229,7 @@ class BuildableDefnsBasic
 				{
 					if (deviceDefn != null)
 					{
-						var device = new Device(deviceDefn);
+						var device = new Device2(deviceDefn);
 						uwpe.entity.propertyAdd(device);
 					}
 				},

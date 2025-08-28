@@ -33,7 +33,7 @@ class Star extends Entity {
         return returnValue;
     }
     toControl(universe, size) {
-        var returnValue = ControlContainer.from4("containerStar", Coords.fromXY(0, 0), // pos
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerStar", Coords.fromXY(0, 0), // pos
         size, [
             new ControlLabel("labelName", Coords.fromXY(0, 0), // pos
             Coords.fromXY(size.x, 0), // size

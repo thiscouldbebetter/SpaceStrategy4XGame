@@ -26,7 +26,7 @@ class CollisionExtended
 		for (var i = 0; i < entitiesCollidable.length; i++)
 		{
 			var entity = entitiesCollidable[i];
-			var collidable = entity.collidable();
+			var collidable = Collidable.of(entity);
 
 			if (collidable != null)
 			{
@@ -94,7 +94,7 @@ class CollisionExtended
 		(
 			sphere.center
 		);
-		var sphereRadius = sphere.radius;
+		var sphereRadius = sphere.radius();
 		var sphereRadiusSquared = sphereRadius * sphereRadius;
 
 		var a = rayDirection.dotProduct(rayDirection);

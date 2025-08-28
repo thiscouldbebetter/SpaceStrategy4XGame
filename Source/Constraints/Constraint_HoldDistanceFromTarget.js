@@ -11,7 +11,7 @@ class Constraint_HoldDistanceFromTarget {
     }
     constrain(uwpe) {
         var body = uwpe.entity;
-        var bodyPos = body.locatable().loc.pos;
+        var bodyPos = Locatable.of(body).loc.pos;
         var directionOfBodyFromTarget = this.displacement.overwriteWith(bodyPos).subtract(this.targetPos).normalize();
         bodyPos.overwriteWith(directionOfBodyFromTarget).multiplyScalar(this.distanceToHold).add(this.targetPos).round();
     }

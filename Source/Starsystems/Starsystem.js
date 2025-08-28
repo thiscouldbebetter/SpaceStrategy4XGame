@@ -39,12 +39,12 @@ class Starsystem extends PlaceBase {
         var planetsInOrderOfIncreasingDistanceFromSun = new Array();
         for (var i = 0; i < numberOfPlanets; i++) {
             var planet = Planet.generateRandom(universe, name, size);
-            var planetPos = planet.locatable().loc.pos;
+            var planetPos = Locatable.of(planet).loc.pos;
             var planetDistanceFromSun = planetPos.magnitude();
             var p = 0;
             for (p = 0; p < planetsInOrderOfIncreasingDistanceFromSun.length; p++) {
                 var planetExisting = planetsInOrderOfIncreasingDistanceFromSun[p];
-                var planetExistingDistanceFromSun = planetExisting.locatable().loc.pos.magnitude();
+                var planetExistingDistanceFromSun = Locatable.of(planetExisting).loc.pos.magnitude();
                 if (planetDistanceFromSun < planetExistingDistanceFromSun) {
                     break;
                 }
@@ -202,7 +202,7 @@ class Starsystem extends PlaceBase {
         var shipsBelongingToEnemies = this.ships.filter(x => factionsInStarsystemEnemy.some(y => x.factionable().faction() == y));
         shipsBelongingToEnemies.forEach(x => x.sleepCancel());
         this.ships.push(shipToAdd);
-        shipToAdd.locatable().loc.placeNameSet(Starsystem.name + ":" + this.name);
+        Locatable.of(shipToAdd).loc.placeNameSet(Starsystem.name + ":" + this.name);
         factionsInStarsystem.forEach(faction => {
             var factionKnowledge = faction.knowledge;
             factionKnowledge.shipAdd(shipToAdd, uwpe);
@@ -212,7 +212,7 @@ class Starsystem extends PlaceBase {
     }
     shipRemove(shipToRemove) {
         ArrayHelper.remove(this.ships, shipToRemove);
-        this.entityRemove(shipToRemove);
+        this.entityRemove(UniverseWorldPlaceEntities.fromEntity(shipToRemove));
         this.cachesClear();
     }
     toVenue() {
@@ -231,7 +231,7 @@ class Starsystem extends PlaceBase {
             var venue = universe.venueCurrent();
             return (venue instanceof VenueStarsystem ? venue.entitiesAreMoving() == false : false);
         });
-        var buttonRepeat = ControlButton.from8("buttonRepeat", Coords.fromXY(margin, margin), // pos
+        var buttonRepeat = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonRepeat", Coords.fromXY(margin, margin), // pos
         buttonHalfSize, "Repeat", fontNameAndHeight, true, // hasBorder
         buttonsRepeatAndPassAreEnabled, () => {
             var venueCurrent = universe.venueCurrent();
@@ -245,14 +245,14 @@ class Starsystem extends PlaceBase {
                 }
             }
         });
-        var buttonPass = ControlButton.from8("buttonPass", Coords.fromXY(margin * 2 + buttonHalfSize.x, margin), // pos
+        var buttonPass = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonPass", Coords.fromXY(margin * 2 + buttonHalfSize.x, margin), // pos
         buttonHalfSize, "Pass", fontNameAndHeight, true, // hasBorder
         buttonsRepeatAndPassAreEnabled, () => {
             var venueCurrent = universe.venueCurrent();
             var starsystem = venueCurrent.starsystem;
             starsystem.factionToMoveAdvance(world);
         });
-        var returnValue = ControlContainer.from3("containerMoveRepeatOrPass", pos.clone(), size.clone(), 
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerMoveRepeatOrPass", pos.clone(), size.clone(), 
         // children
         [
             buttonRepeat,
@@ -266,28 +266,28 @@ class Starsystem extends PlaceBase {
         controlHeight /= 2;
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var labelPlanetsLinksShips = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var labelPlanetsLinksShips = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), // size
         DataBinding.fromContext("Objects:"), // text
         fontNameAndHeight);
-        var textPlanetsLinksShipsCount = ControlLabel.from4Uncentered(Coords.fromXY(size.x / 2, margin), // pos
+        var textPlanetsLinksShipsCount = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(size.x / 2, margin), // pos
         Coords.fromXY(size.x - margin * 2, controlHeight), // size
         DataBinding.fromContextAndGet(starsystem, (c) => "" + c.entitiesForPlanetsLinkPortalsAndShips().length), fontNameAndHeight);
         var buttonSize = Coords.fromXY((size.x - margin * 3) / 2, controlHeight * 2);
         var listSize = Coords.fromXY(size.x - margin * 2, size.y - margin * 4 - controlHeight * 2 - buttonSize.y);
-        var listPlanetsLinksShips = ControlList.from7("listPlanetsLinksShips", Coords.fromXY(margin, margin * 2 + controlHeight * 1), // pos
+        var listPlanetsLinksShips = ControlList.fromNamePosSizeItemsTextFontSelected("listPlanetsLinksShips", Coords.fromXY(margin, margin * 2 + controlHeight * 1), // pos
         listSize, 
         // items
         DataBinding.fromContextAndGet(venueStarsystem, (c) => c.starsystem.entitiesForPlanetsLinkPortalsAndShips()), DataBinding.fromGet((c) => c.name), // bindingForItemText
         fontNameAndHeight, new DataBinding(venueStarsystem, (c) => c.entityHighlighted, (c, v) => c.entityHighlighted = v));
-        var buttonSelect = ControlButton.from8("buttonSelect", // name,
+        var buttonSelect = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonSelect", // name,
         Coords.fromXY(margin, size.y - margin - buttonSize.y), // pos
         buttonSize, "Select", // text,
         fontNameAndHeight, true, // hasBorder
         DataBinding.fromContextAndGet(venueStarsystem, (c) => (c.entityHighlighted != null)), // isEnabled
         () => // click
          venueStarsystem.entitySelect(venueStarsystem.entityHighlighted));
-        var buttonTarget = ControlButton.from8("buttonTarget", // name,
+        var buttonTarget = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonTarget", // name,
         Coords.fromXY(margin * 2 + buttonSize.x, size.y - margin - buttonSize.y), // pos
         buttonSize, "Target", // text,
         fontNameAndHeight, true, // hasBorder
@@ -311,14 +311,14 @@ class Starsystem extends PlaceBase {
         var world = universe.world;
         var fontHeightInPixels = margin;
         var fontNameAndHeight = FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
-        var textPlace = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var textPlace = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
         DataBinding.fromContextAndGet(starsystem, c => c.name + " System"), fontNameAndHeight);
         var textLiteralOwnedBy = "Owned by:";
-        var labelOwnedBy = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + controlHeight), // pos
+        var labelOwnedBy = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin + controlHeight), // pos
         Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
         DataBinding.fromContext(textLiteralOwnedBy), fontNameAndHeight);
-        var textOwnedBy = ControlLabel.from4Uncentered(Coords.fromXY(margin + textLiteralOwnedBy.length * fontHeightInPixels * 0.45, margin + controlHeight), // pos
+        var textOwnedBy = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin + textLiteralOwnedBy.length * fontHeightInPixels * 0.45, margin + controlHeight), // pos
         Coords.fromXY(containerInnerSize.x - margin * 3, controlHeight), // size
         DataBinding.fromContextAndGet(starsystem, c => c.factionNameGet(world)), fontNameAndHeight);
         var childControls = [
@@ -327,7 +327,7 @@ class Starsystem extends PlaceBase {
             textOwnedBy
         ];
         var size = Coords.fromXY(containerInnerSize.x, margin * 3 + controlHeight * 2);
-        var returnValue = ControlContainer.from4("containerTimeAndPlace", Coords.fromXY(margin, margin), size, childControls);
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("containerTimeAndPlace", Coords.fromXY(margin, margin), size, childControls);
         return returnValue;
     }
     // moves
@@ -358,19 +358,19 @@ class Starsystem extends PlaceBase {
         }
         var venueAsVenueStarsystem = venue;
         var camera = venueTypeName == VenueStarsystem.name
-            ? venueAsVenueStarsystem.cameraEntity.camera()
+            ? Camera.of(venueAsVenueStarsystem.cameraEntity)
             : null;
         return camera;
     }
     draw(universe, world, display) {
         var uwpe = new UniverseWorldPlaceEntities(universe, world, this, null, null);
         this.visualGrid.draw(uwpe, display);
-        var entitiesDrawable = this.drawables();
+        var entitiesDrawable = Drawable.entitiesFromPlace(this);
         var displayFarToNear = new DisplayFarToNear(universe.display);
         universe.display = displayFarToNear;
         entitiesDrawable.forEach(entityDrawable => {
             uwpe.entitySet(entityDrawable);
-            var drawable = entityDrawable.drawable();
+            var drawable = Drawable.of(entityDrawable);
             drawable.draw(uwpe);
         });
         displayFarToNear.flush();
@@ -379,7 +379,7 @@ class Starsystem extends PlaceBase {
     draw_Body(uwpe, display) {
         var universe = uwpe.universe;
         var entity = uwpe.entity;
-        var bodyPos = entity.locatable().loc.pos;
+        var bodyPos = Locatable.of(entity).loc.pos;
         this.posSaved.overwriteWith(bodyPos);
         var camera = this.camera2(universe);
         camera.coordsTransformWorldToView(bodyPos);

@@ -16,12 +16,13 @@ class EnvironmentMock {
                 return areAllSettingsValid;
             }
         };
+        var profileHelper = ProfileHelper.maximal();
         var worldCreator = new WorldCreator((universe, worldCreator) => {
             return new WorldExtendedCreator(universe, worldCreator).create();
         }, (universe, worldCreator) => {
             return worldCreatorToControl(universe, worldCreator);
         }, worldCreatorSettings);
-        var universe = new Universe("TestUniverse", "[version]", timerHelper, display, soundHelper, mediaLibrary, controlBuilder, worldCreator);
+        var universe = Universe.create("TestUniverse", "[version]", timerHelper, display, soundHelper, mediaLibrary, controlBuilder, profileHelper, worldCreator);
         universe.initialize(() => { });
         universe.soundHelper = new SoundHelperMock();
         var uwpe = UniverseWorldPlaceEntities.fromUniverse(universe);

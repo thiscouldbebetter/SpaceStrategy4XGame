@@ -1,6 +1,7 @@
 "use strict";
-class Factionable {
+class Factionable extends EntityPropertyBase {
     constructor(faction) {
+        super();
         this._faction = faction;
     }
     static ofEntity(entity) {
@@ -25,7 +26,6 @@ class Factionable {
         return this;
     }
     // EntityProperty.
-    finalize(uwpe) { }
     initialize(uwpe) {
         // Do nothing;
     }

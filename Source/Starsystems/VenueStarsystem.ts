@@ -43,13 +43,13 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 			var display = universe.display;
 
-			display.drawBackground(null, null);
+			display.drawBackground();
 
 			this.starsystem.draw(universe, world, display);
 
-			var uwpe = new UniverseWorldPlaceEntities
+			var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld
 			(
-				universe, world, null, null, null
+				universe, world
 			);
 
 			uwpe.entitySet(this.cursor);
@@ -166,6 +166,11 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		// universe.soundHelper.soundForMusicPause(universe);
 	}
 
+	finalizeIsComplete(): boolean
+	{
+		return true;
+	}
+
 	initialize(universe: Universe): void
 	{
 		var starsystem = this.starsystem;
@@ -178,7 +183,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		this.venueControls = this.toControl(universe).toVenue();
 
 		var soundHelper = universe.soundHelper;
-		soundHelper.soundWithNamePlayAsMusic(universe, "Music_Title");
+		soundHelper.soundWithName(universe, "Music_Title").play(universe, 1);
 
 		var viewSize = universe.display.sizeInPixels.clone();
 		var focalLength = viewSize.y;
@@ -233,6 +238,11 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		this.hasBeenUpdatedSinceDrawn = true;
 	}
 
+	initializeIsComplete(): boolean
+	{
+		return true;
+	}
+
 	model(): Starsystem
 	{
 		return this.starsystem;
@@ -277,14 +287,14 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			universe, world, this.starsystem, null, null
 		);
 
-		this.cameraEntity.constrainable().constrain
+		Constrainable.of(this.cameraEntity).constrain
 		(
 			uwpe.entitySet(this.cameraEntity)
 		);
 
 		if (this.cursor != null)
 		{
-			this.cursor.constrainable().constrain
+			Constrainable.of(this.cursor).constrain
 			(
 				uwpe.entitySet(this.cursor)
 			);
@@ -362,7 +372,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	updateForTimerTick_Input_Mouse(universe: Universe): void
 	{
-		universe.soundHelper.soundWithNamePlayAsEffect(universe, "Sound");
+		universe.soundHelper.soundWithName(universe, "Sound").play(universe, 1);
 
 		var inputHelper = universe.inputHelper;
 		var mouseClickPos = this._mouseClickPos.overwriteWith
@@ -372,7 +382,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 		var camera = this.camera();
 
-		var rayFromCameraThroughClick = new Ray
+		var rayFromCameraThroughClick = Ray.fromVertexAndDirection
 		(
 			camera.loc.pos,
 			camera.coordsTransformViewToWorld
@@ -570,7 +580,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 				"Target",
 				[
 					new BodyDefn("MoveTarget", targetPos, null),
-					this.cursor.locatable().clone()
+					Locatable.of(this.cursor).clone()
 				]
 			);
 		}
@@ -651,7 +661,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	camera(): Camera
 	{
-		return this.cameraEntity.camera();
+		return Camera.of(this.cameraEntity);
 	}
 
 	cameraCenterOnSelection(): void
@@ -660,12 +670,12 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		if (entitySelected != null)
 		{
 			var constraint =
-				this.cameraEntity.constrainable().constraintByClassName
+				Constrainable.of(this.cameraEntity).constraintByClassName
 				(
 					Constraint_PositionOnCylinder.name
 				);
 			var constraintPosition = constraint as Constraint_PositionOnCylinder;
-			var selectionPos = entitySelected.locatable().loc.pos;
+			var selectionPos = Locatable.of(entitySelected).loc.pos;
 			constraintPosition.center.overwriteWith(selectionPos);
 		}
 	}
@@ -823,7 +833,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			margin
 		);
 
-		var containerMain = ControlContainer.from4
+		var containerMain = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerStarsystem",
 			Coords.fromXY(0, 0), // pos

@@ -4,10 +4,10 @@ class DeviceCategory {
         this.name = name;
     }
     static Instances() {
-        if (DeviceCategory._instances == null) {
-            DeviceCategory._instances = new DeviceCategory_Instances();
+        if (this._instances == null) {
+            this._instances = new DeviceCategory_Instances();
         }
-        return DeviceCategory._instances;
+        return this._instances;
     }
 }
 class DeviceCategory_Instances {

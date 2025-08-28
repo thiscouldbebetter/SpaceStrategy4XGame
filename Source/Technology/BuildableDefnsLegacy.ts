@@ -375,7 +375,7 @@ class BuildableDefnsLegacy
 				(uwpe: UniverseWorldPlaceEntities) =>
 					deviceDefn == null
 					? []
-					: [ new Device(deviceDefn) ],
+					: [ new Device2(deviceDefn) ],
 				// entityModifyOnBuild
 				null,
 				description
@@ -1450,12 +1450,12 @@ class BuildableDefnsLegacy
 				(
 					entityFiring.name + "_" + Projectile.name,
 					projectileDefn,
-					entityFiring.locatable().loc.pos.clone(),
+					Locatable.of(entityFiring).loc.pos.clone(),
 					entityFiring, // entityFiredFrom
 					entityBeingTargeted
 				);
 
-				projectile.actor().activity = 
+				Actor.of(projectile).activity = 
 					Activity.fromDefnNameAndTargetEntity
 					(
 						"MoveToTargetCollideAndEndMove",
@@ -1470,8 +1470,8 @@ class BuildableDefnsLegacy
 			{
 				device.projectile = null;
 
-				var projectilePos = projectile.locatable().loc.pos;
-				var targetPos = entityBeingTargeted.locatable().loc.pos;
+				var projectilePos = Locatable.of(projectile).loc.pos;
+				var targetPos = Locatable.of(entityBeingTargeted).loc.pos;
 
 				if (projectilePos.equals(targetPos))
 				{

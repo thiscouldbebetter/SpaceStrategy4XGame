@@ -23,11 +23,11 @@ class PlanetType
 	static _instances: PlanetType_Instances;
 	static Instances(): PlanetType_Instances
 	{
-		if (PlanetType._instances == null)
+		if (this._instances == null)
 		{
-			PlanetType._instances = new PlanetType_Instances();
+			this._instances = new PlanetType_Instances();
 		}
-		return PlanetType._instances;
+		return this._instances;
 	}
 
 	private _bodyDefn: BodyDefn;
@@ -221,8 +221,8 @@ class PlanetType
 		var returnValue: VisualBase = 
 		(
 			faction == null
-			? new VisualNone()
-			: new VisualOffset
+			? VisualNone.Instance
+			: VisualOffset.fromOffsetAndChild
 			(
 				Coords.fromXY
 				(

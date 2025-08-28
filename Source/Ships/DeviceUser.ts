@@ -1,14 +1,14 @@
 
-class DeviceUser implements EntityProperty<DeviceUser>
+class DeviceUser extends EntityPropertyBase<DeviceUser>
 {
-	_deviceSelected: Device;
-	_devices: Device[];
-	_devicesDrives: Device[];
-	_devicesGenerators: Device[];
-	_devicesSensors: Device[];
-	_devicesShields: Device[];
-	_devicesStarlaneDrives: Device[];
-	_devicesUsable: Device[];
+	_deviceSelected: Device2;
+	_devices: Device2[];
+	_devicesDrives: Device2[];
+	_devicesGenerators: Device2[];
+	_devicesSensors: Device2[];
+	_devicesShields: Device2[];
+	_devicesStarlaneDrives: Device2[];
+	_devicesUsable: Device2[];
 
 	_distanceMaxPerMove: number;
 	_energyPerMove: number;
@@ -18,8 +18,10 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	_shielding: number;
 	_speedThroughLink: number;
 
-	constructor(devices: Device[])
+	constructor(devices: Device2[])
 	{
+		super();
+
 		this._devices = devices;
 	}
 
@@ -27,7 +29,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 	{
 		var devices = entities.map
 		(
-			x => Device.ofEntity(x)
+			x => Device2.ofEntity(x)
 		).filter
 		(
 			x => (x != null)
@@ -55,22 +57,22 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 	// Devices.
 
-	deviceAdd(deviceToAdd: Device): void
+	deviceAdd(deviceToAdd: Device2): void
 	{
 		this._devices.push(deviceToAdd);
 	}
 
-	deviceRemove(deviceToRemove: Device): void
+	deviceRemove(deviceToRemove: Device2): void
 	{
 		this._devices.splice(this._devices.indexOf(deviceToRemove), 1);
 	}
 
-	deviceSelect(deviceToSelect: Device): void
+	deviceSelect(deviceToSelect: Device2): void
 	{
 		this._deviceSelected = deviceToSelect;
 	}
 
-	deviceSelected(): Device
+	deviceSelected(): Device2
 	{
 		return this._deviceSelected;
 	}
@@ -85,12 +87,12 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		return canBeUsed;
 	}
 
-	devices(): Device[]
+	devices(): Device2[]
 	{
 		return this._devices;
 	}
 
-	devicesDrives(): Device[]
+	devicesDrives(): Device2[]
 	{
 		if (this._devicesDrives == null)
 		{
@@ -100,14 +102,14 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 			this._devicesDrives = devices.filter
 			(
-				(x: Device) => x.defn().categories.indexOf(categoryShipDrive) >= 0
+				(x: Device2) => x.defn().categories.indexOf(categoryShipDrive) >= 0
 			);
 		}
 
 		return this._devicesDrives;
 	}
 
-	devicesGenerators(): Device[]
+	devicesGenerators(): Device2[]
 	{
 		if (this._devicesGenerators == null)
 		{
@@ -118,14 +120,14 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 			this._devicesGenerators = devices.filter
 			(
-				(x: Device) => x.defn().categories.indexOf(categoryShipGenerators) >= 0
+				(x: Device2) => x.defn().categories.indexOf(categoryShipGenerators) >= 0
 			);
 		}
 
 		return this._devicesGenerators;
 	}
 
-	devicesSensors(): Device[]
+	devicesSensors(): Device2[]
 	{
 		if (this._devicesSensors == null)
 		{
@@ -135,14 +137,14 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 			this._devicesSensors = devices.filter
 			(
-				(x: Device) => x.defn().categories.indexOf(categoryShipSensor) >= 0
+				(x: Device2) => x.defn().categories.indexOf(categoryShipSensor) >= 0
 			);
 		}
 
 		return this._devicesSensors;
 	}
 
-	devicesShields(): Device[]
+	devicesShields(): Device2[]
 	{
 		if (this._devicesShields == null)
 		{
@@ -152,14 +154,14 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 			this._devicesShields = devices.filter
 			(
-				(x: Device) => x.defn().categories.indexOf(categoryShipShield) >= 0
+				(x: Device2) => x.defn().categories.indexOf(categoryShipShield) >= 0
 			);
 		}
 
 		return this._devicesShields;
 	}
 
-	devicesStarlaneDrives(): Device[]
+	devicesStarlaneDrives(): Device2[]
 	{
 		if (this._devicesStarlaneDrives == null)
 		{
@@ -169,14 +171,14 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 			this._devicesStarlaneDrives = devices.filter
 			(
-				(x: Device) => x.defn().categories.indexOf(categories.ShipStarlaneDrive) >= 0
+				(x: Device2) => x.defn().categories.indexOf(categories.ShipStarlaneDrive) >= 0
 			);
 		}
 
 		return this._devicesStarlaneDrives;
 	}
 
-	devicesUsable(): Device[]
+	devicesUsable(): Device2[]
 	{
 		if (this._devicesUsable == null)
 		{
@@ -184,7 +186,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 
 			this._devicesUsable = devices.filter
 			(
-				(x: Device) => x.defn().isActive
+				(x: Device2) => x.defn().isActive
 			);
 		}
 
@@ -423,22 +425,7 @@ class DeviceUser implements EntityProperty<DeviceUser>
 		this.energyRemainingThisRoundReset(uwpe);
 	}
 
-
-	// Clonable.
-
-	clone(): DeviceUser
-	{
-		throw new Error("Not yet implemented.");
-	}
-
-	overwriteWith(other: DeviceUser): DeviceUser
-	{
-		throw new Error("Not yet implemented.");
-	}
-
 	// EntityProperty.
-
-	finalize(uwpe: UniverseWorldPlaceEntities): void {}
 
 	initialize(uwpe: UniverseWorldPlaceEntities): void
 	{

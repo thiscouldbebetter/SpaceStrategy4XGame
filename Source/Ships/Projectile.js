@@ -46,7 +46,7 @@ class Projectile extends Entity {
             var ship = target;
             if (ship != projectile.shipFiredFrom) {
                 var shipTargeted = ship;
-                projectile.killable().kill();
+                Killable.of(projectile).kill();
                 // var shipTargetedShields = shipTargeted.deviceUser().devicesShields();
                 var damageAbsorbedByShield = 0; // todo
                 var projectileDefn = projectile.defn;
@@ -54,7 +54,7 @@ class Projectile extends Entity {
                 if (damageTakenByTarget < 0) {
                     damageTakenByTarget = 0;
                 }
-                shipTargeted.killable().integritySubtract(projectileDefn.damagePerHit);
+                Killable.of(shipTargeted).integritySubtract(projectileDefn.damagePerHit);
                 didCollide = true;
             }
         }
@@ -72,7 +72,7 @@ class Projectile extends Entity {
     }
     // instance methods
     collideWithEntity(uwpe, target) {
-        var collidable = this.collidable();
+        var collidable = Collidable.of(this);
         var collision = Collision.fromEntitiesColliding(this, target);
         collidable.collisionHandle(uwpe, collision);
     }
@@ -80,8 +80,8 @@ class Projectile extends Entity {
         return this.shipFiredFrom.faction();
     }
     moveTowardTargetAndReturnDistance(target) {
-        var projectilePos = this.locatable().loc.pos;
-        var targetPos = target.locatable().loc.pos;
+        var projectilePos = Locatable.of(this).loc.pos;
+        var targetPos = Locatable.of(target).loc.pos;
         var displacementToTarget = this._displacement.overwriteWith(targetPos).subtract(projectilePos);
         var distanceToTarget = displacementToTarget.magnitude();
         var speed = 1;
@@ -116,7 +116,7 @@ class ProjectileDefn_Instances {
     constructor() {
         var colors = Color.Instances();
         var dimension = 3;
-        var visualEllipse = VisualEllipse.fromSemiaxesAndColorFill(dimension, dimension / 2, colors.Yellow);
+        var visualEllipse = VisualEllipse.fromSemiaxesHorizontalAndVerticalAndColorFill(dimension, dimension / 2, colors.Yellow);
         // Because it's a rotating ellipse, the second half of the animation
         // looks exactly the same as the first, so just do half a rotation.
         var halfRotation = 0.5;

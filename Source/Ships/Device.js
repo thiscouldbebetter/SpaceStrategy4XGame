@@ -1,11 +1,12 @@
 "use strict";
-class Device {
+class Device2 extends EntityPropertyBase {
     constructor(defn) {
+        super();
         this._defn = defn;
         this.usesRemainingThisRoundReset();
     }
     static ofEntity(entity) {
-        return entity.propertyByName(Device.name);
+        return entity.propertyByName(Device2.name);
     }
     canBeUsedThisRoundByDeviceUser(deviceUser) {
         var defn = this.defn();
@@ -44,18 +45,4 @@ class Device {
         var defn = this.defn();
         this.usesRemainingThisRound = defn.usesPerRound;
     }
-    // EntityProperty.
-    finalize(uwpe) { }
-    updateForTimerTick(uwpe) { }
-    propertyName() { return Device.name; }
-    initialize(uwpe) { }
-    // Clonable.
-    clone() {
-        throw new Error("Not yet implemented.");
-    }
-    overwriteWith(other) {
-        throw new Error("Not yet implemented.");
-    }
-    // Equatable.
-    equals(other) { return false; } // todo
 }

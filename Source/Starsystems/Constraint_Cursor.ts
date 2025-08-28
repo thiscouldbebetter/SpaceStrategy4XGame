@@ -3,7 +3,7 @@ class Constraint_Cursor implements Constraint
 {
 	name: string;
 
-	_boundsToRestrictTo: Box;
+	_boundsToRestrictTo: BoxAxisAligned;
 	_cameraRightOrDown: Coords;
 	_displacement: Coords;
 	_max: Coords;
@@ -26,7 +26,7 @@ class Constraint_Cursor implements Constraint
 		this._mousePos = Coords.create();
 		this._xyPlaneNormal = new Coords(0, 0, 1);
 
-		this._boundsToRestrictTo = Box.fromMinAndMax(Coords.create(), Coords.create());
+		this._boundsToRestrictTo = BoxAxisAligned.fromMinAndMax(Coords.create(), Coords.create());
 		this._positiveInfinity = 1000000000; // Number.POSITIVE_INFINITY;
 		this._negativeInfinity = -1000000000; // Number.NEGATIVE_INFINITY;
 	}
@@ -79,7 +79,7 @@ class Constraint_Cursor implements Constraint
 		var rayFromCameraToMousePos =
 			new Ray(cameraPos, directionFromCameraToMousePosProjected );
 
-		var cursorPos = cursor.locatable().loc.pos;
+		var cursorPos = Locatable.of(cursor).loc.pos;
 
 		if (cursor.hasXYPositionBeenSpecified == false)
 		{

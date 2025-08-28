@@ -164,7 +164,7 @@ class ShipBuilder {
                 buildableDefnsToBuild.splice(buildableDefnsToBuild.indexOf(buildableDefnToRemove), 1);
             }
         };
-        var labelName = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos
+        var labelName = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Name:"), font);
         var textName = new ControlTextBox("textName", Coords.fromXY(margin * 12, margin), // pos
@@ -178,7 +178,7 @@ class ShipBuilder {
         };
         var buttonNameRandomize = ControlButton.from5(textName.pos.clone().addXY(textName.size.x + margin, 0), Coords.fromXY(buttonSize.x * 1.5, textName.size.y), "Randomize", font, nameRandomize // click
         );
-        var labelHullSize = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + labelHeight), // pos
+        var labelHullSize = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin * 2 + labelHeight), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Hull Size:"), font);
         var selectHullSize = new ControlSelect("selectHullSize", Coords.fromXY(margin * 12, margin * 2 + labelHeight), // pos
@@ -188,7 +188,7 @@ class ShipBuilder {
         DataBinding.fromGet((c) => c), // bindingForOptionValues,
         DataBinding.fromGet((c) => c.name), // bindingForOptionText
         font);
-        var labelComponentsAvailable = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 3 + labelHeight * 2), // pos
+        var labelComponentsAvailable = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Components Available:"), font);
         var listComponentsAvailable = ControlList.from10("listComponentsAvailable", Coords.fromXY(margin, margin * 4 + labelHeight * 3), // pos
@@ -199,19 +199,19 @@ class ShipBuilder {
         DataBinding.fromTrue(), // isEnabled
         () => this.componentSelectedAddToBuild() // confirm
         );
-        var labelShipItems = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x, margin * 3 + labelHeight * 2), // pos
+        var labelShipItems = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(size.x - margin - listSize.x, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Components to Build into Ship:"), font);
-        var textComponentCountOverMax = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.57, margin * 3 + labelHeight * 2), // pos
+        var textComponentCountOverMax = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.57, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(labelHeight * 8, labelHeight), // size
         DataBinding.fromContextAndGet(this, (c) => c.componentCountOverMax()), font);
-        var labelCost = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.82, margin * 3 + labelHeight * 2), // pos
+        var labelCost = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.82, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(listSize.x, labelHeight), // size
         DataBinding.fromContext("Cost:"), font);
-        var textCost = ControlLabel.from4Uncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.92, margin * 3 + labelHeight * 2), // pos
+        var textCost = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(size.x - margin - listSize.x + listSize.x * 0.92, margin * 3 + labelHeight * 2), // pos
         Coords.fromXY(labelHeight * 8, labelHeight), // size
         DataBinding.fromContextAndGet(this, (c) => "" + c.industryToBuildTotal()), font);
-        var buttonAdd = ControlButton.from8("buttonAdd", Coords.fromXY(size.x / 2 - buttonSize.x - margin / 2, size.y - margin * 2 - labelHeight - buttonSize.y), // pos
+        var buttonAdd = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonAdd", Coords.fromXY(size.x / 2 - buttonSize.x - margin / 2, size.y - margin * 2 - labelHeight - buttonSize.y), // pos
         buttonSize.clone(), "Add", font, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         () => this.componentSelectedAddToBuild() // click
@@ -224,12 +224,12 @@ class ShipBuilder {
         DataBinding.fromTrue(), // isEnabled
         remove // confirm
         );
-        var buttonRemove = ControlButton.from8("buttonRemove", Coords.fromXY(size.x / 2 + margin / 2, size.y - margin * 2 - labelHeight - buttonSize.y), // pos
+        var buttonRemove = ControlButton.fromNamePosSizeTextFontBorderEnabledClick("buttonRemove", Coords.fromXY(size.x / 2 + margin / 2, size.y - margin * 2 - labelHeight - buttonSize.y), // pos
         buttonSize.clone(), "Remove", font, true, // hasBorder
         DataBinding.fromTrue(), // isEnabled
         remove // click
         );
-        var infoStatus = ControlLabel.from4Uncentered(Coords.fromXY(margin, size.y - margin - labelHeight), // pos
+        var infoStatus = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, size.y - margin - labelHeight), // pos
         Coords.fromXY(size.x, fontHeight), // size
         DataBinding.fromContextAndGet(this, c => c.statusMessage), font);
         var buttonCancel = ControlButton.from5(Coords.fromXY(size.x - margin * 2 - buttonSize.x * 2, size.y - margin - buttonSize.y), // pos
@@ -260,7 +260,7 @@ class ShipBuilder {
             buttonBuild
         ];
         var returnValue = new ControlContainer("containerShipBuilder", Coords.create(), // pos
-        size.clone(), childControls, [new Action("Back", back)], [new ActionToInputsMapping("Back", [Input.Names().Escape], true)]);
+        size.clone(), childControls, [Action.fromNameAndPerform("Back", back)], [new ActionToInputsMapping("Back", [Input.Instances().Escape.name], true)]);
         return returnValue;
     }
 }

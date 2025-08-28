@@ -5,6 +5,9 @@ class SoundHelperMock {
     initialize() { return 0; }
     reset() { }
     soundForMusicPause() { }
+    soundWithName(universe, name) {
+        return null;
+    }
     soundWithNamePlayAsEffect(universe, soundName) { }
     soundWithNamePlayAsMusic(universe, soundName) { }
     soundWithNameStop(name) { }

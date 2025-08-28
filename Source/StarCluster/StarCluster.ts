@@ -136,7 +136,7 @@ class StarCluster extends PlaceBase
 				for (var j = 0; j < i; j++)
 				{
 					var nodeOther = nodesNotYetLinked[j];
-					var nodeOtherPos = nodeOther.locatable().loc.pos;
+					var nodeOtherPos = Locatable.of(nodeOther).loc.pos;
 
 					displacementOfNodeNewFromOther.overwriteWith
 					(
@@ -176,10 +176,10 @@ class StarCluster extends PlaceBase
 
 		var nodePositions = nodesNotYetLinked.map
 		(
-			x => x.locatable().loc.pos
+			x => Locatable.of(x).loc.pos
 		);
-		var boundsActual = Box.create().containPoints(nodePositions);
-		var boundsDesired = new Box
+		var boundsActual = BoxAxisAligned.create().containPoints(nodePositions);
+		var boundsDesired = BoxAxisAligned.fromCenterAndSize
 		(
 			Coords.create(), // center
 			Coords.ones().multiplyScalar(2 * radiusMax) // size
@@ -213,19 +213,17 @@ class StarCluster extends PlaceBase
 			for (var i = 0; i < nodesLinked.length; i++)
 			{
 				var nodeLinked = nodesLinked[i];
-				var nodeLinkedPos = nodeLinked.locatable().loc.pos;
+				var nodeLinkedPos = Locatable.of(nodeLinked).loc.pos;
 
 				for (var j = 0; j < nodesNotYetLinked.length; j++)
 				{
 					var nodeToLink = nodesNotYetLinked[j];
 
-					var distanceBetweenNodes = tempPos.overwriteWith
-					(
-						nodeLinkedPos
-					).subtract
-					(
-						nodeToLink.locatable().loc.pos
-					).magnitude();
+					var distanceBetweenNodes =
+						tempPos
+							.overwriteWith(nodeLinkedPos)
+							.subtract(Locatable.of(nodeToLink).loc.pos)
+							.magnitude();
 
 					if (distanceBetweenNodes <= distanceBetweenNodePairClosestSoFar)
 					{
@@ -361,7 +359,7 @@ class StarCluster extends PlaceBase
 					x.name,
 					[
 						// x, // Removed after Framework upgrade.
-						x.locatable()
+						Locatable.of(x)
 					]
 				)
 			);
@@ -375,7 +373,7 @@ class StarCluster extends PlaceBase
 		var returnPlace = null;
 
 		var placeTypeColonName =
-			entityLocatable.locatable().loc.placeName();
+			Locatable.of(entityLocatable).loc.placeName();
 		var placeTypeAndName = placeTypeColonName.split(":");
 		var placeType = placeTypeAndName[0];
 		var placeName = placeTypeAndName[1];
@@ -425,7 +423,7 @@ class StarCluster extends PlaceBase
 		for (var i = 0; i < this.nodes.length; i++)
 		{
 			var node = this.nodes[i];
-			node.locatable().loc.pos.multiplyScalar(scaleFactor);
+			Locatable.of(node).loc.pos.multiplyScalar(scaleFactor);
 		}
 
 		return this;
@@ -464,7 +462,7 @@ class StarCluster extends PlaceBase
 			venue = venueAsVenueFader.venueCurrent();
 		}
 		var venueAsVenueStarCluster = venue as VenueStarCluster;
-		var camera = venueAsVenueStarCluster.cameraEntity.camera();
+		var camera = Camera.of(venueAsVenueStarCluster.cameraEntity);
 		return camera;
 	}
 
@@ -508,7 +506,7 @@ class StarCluster extends PlaceBase
 			var entityDrawableToSort = entitiesDrawableToSort[i];
 			camera.coordsTransformWorldToView
 			(
-				drawPos.overwriteWith(entityDrawableToSort.locatable().loc.pos)
+				drawPos.overwriteWith(Locatable.of(entityDrawableToSort).loc.pos)
 			);
 
 			if (drawPos.z > 0)
@@ -517,7 +515,7 @@ class StarCluster extends PlaceBase
 				for (j = 0; j < drawablesSortedByZ.length; j++)
 				{
 					var drawableSorted = drawablesSortedByZ[j];
-					var drawableSortedPos = drawableSorted.locatable().loc.pos.clone();
+					var drawableSortedPos = Locatable.of(drawableSorted).loc.pos.clone();
 					var drawableSortedDrawPos = camera.coordsTransformWorldToView
 					(
 						drawableSortedPos
@@ -550,7 +548,7 @@ class StarCluster extends PlaceBase
 			}
 			else if (entityTypeName == Ship.name)
 			{
-				var visual = entity.drawable().visual;
+				var visual = Drawable.of(entity).visual;
 				visual.draw(uwpe, universe.display);
 			}
 		}
@@ -584,7 +582,7 @@ class StarCluster extends PlaceBase
 		var fontNameAndHeight =
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 
-		var textPlace = ControlLabel.from4Uncentered
+		var textPlace = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin,  margin), // pos
 			Coords.fromXY
@@ -606,7 +604,7 @@ class StarCluster extends PlaceBase
 		);
 
 		var textRoundColonSpace = "Round:";
-		var labelRound = ControlLabel.from4Uncentered
+		var labelRound = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + controlHeight), // pos
 			Coords.fromXY(containerInnerSize.x - margin * 2, controlHeight), // size
@@ -614,7 +612,7 @@ class StarCluster extends PlaceBase
 			fontNameAndHeight
 		);
 
-		var textRound = ControlLabel.from4Uncentered
+		var textRound = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -685,7 +683,7 @@ class StarCluster extends PlaceBase
 			margin * 3 + controlHeight * 2
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerTimeAndPlace",
 			Coords.fromXY(margin, margin),

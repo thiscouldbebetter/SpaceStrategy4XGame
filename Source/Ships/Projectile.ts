@@ -104,7 +104,7 @@ class Projectile extends Entity
 			{
 				var shipTargeted = ship;
 
-				projectile.killable().kill();
+				Killable.of(projectile).kill();
 
 				// var shipTargetedShields = shipTargeted.deviceUser().devicesShields();
 				var damageAbsorbedByShield = 0; // todo
@@ -115,7 +115,7 @@ class Projectile extends Entity
 				{
 					damageTakenByTarget = 0;
 				}
-				shipTargeted.killable().integritySubtract(projectileDefn.damagePerHit);
+				Killable.of(shipTargeted).integritySubtract(projectileDefn.damagePerHit);
 				didCollide = true;
 			}
 		}
@@ -141,7 +141,7 @@ class Projectile extends Entity
 
 	collideWithEntity(uwpe: UniverseWorldPlaceEntities, target: Entity): void
 	{
-		var collidable = this.collidable();
+		var collidable = Collidable.of(this);
 		var collision = Collision.fromEntitiesColliding(this, target);
 		collidable.collisionHandle(uwpe, collision);
 	}
@@ -156,8 +156,8 @@ class Projectile extends Entity
 		target: Entity
 	): number
 	{
-		var projectilePos = this.locatable().loc.pos;
-		var targetPos = target.locatable().loc.pos;
+		var projectilePos = Locatable.of(this).loc.pos;
+		var targetPos = Locatable.of(target).loc.pos;
 		var displacementToTarget =
 			this._displacement.overwriteWith(targetPos).subtract(projectilePos);
 		var distanceToTarget = displacementToTarget.magnitude();
@@ -220,7 +220,7 @@ class ProjectileDefn_Instances
 		var colors = Color.Instances();
 		var dimension = 3;
 
-		var visualEllipse = VisualEllipse.fromSemiaxesAndColorFill
+		var visualEllipse = VisualEllipse.fromSemiaxesHorizontalAndVerticalAndColorFill
 		(
 			dimension, dimension / 2, colors.Yellow
 		);

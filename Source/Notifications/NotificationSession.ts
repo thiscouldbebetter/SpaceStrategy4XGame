@@ -115,7 +115,7 @@ class NotificationSession
 		var listHeight = controlHeight * 8;
 		var buttonPosY = containerSize.y - margin * 2 - controlHeight * 2;
 
-		var labelNotifications = ControlLabel.from4Uncentered
+		var labelNotifications = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin), // pos
 			Coords.fromXY(columnWidth, controlHeight), // size
@@ -123,7 +123,7 @@ class NotificationSession
 			fontNameAndHeight
 		);
 
-		var listNotifications = ControlList.from8
+		var listNotifications = ControlList.fromNamePosSizeItemsTextFontSelectedValue
 		(
 			"listNotifications",
 			Coords.fromXY(margin, margin + controlHeight), // pos
@@ -148,7 +148,7 @@ class NotificationSession
 			DataBinding.fromContext(null) // bindingForItemValue
 		);
 
-		var labelSelected = ControlLabel.from4Uncentered
+		var labelSelected = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin * 2 + controlHeight + listHeight), // pos
 			Coords.fromXY(columnWidth, controlHeight), // size
@@ -156,7 +156,7 @@ class NotificationSession
 			fontNameAndHeight
 		);
 
-		var textNotificationSelected = ControlLabel.from4Uncentered
+		var textNotificationSelected = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin * 2 + controlHeight * 2 + listHeight), // pos
 			Coords.fromXY(columnWidth, controlHeight), // size
@@ -175,7 +175,7 @@ class NotificationSession
 			(c: NotificationSession) => (c.notificationSelected != null)
 		);
 
-		var buttonGoToSelected = ControlButton.from8
+		var buttonGoToSelected = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonGoToSelected",
 			Coords.fromXY
@@ -190,7 +190,7 @@ class NotificationSession
 			() => notificationSession.notificationSelectedGoTo(universe) // click
 		);
 
-		var buttonDismissSelected = ControlButton.from8
+		var buttonDismissSelected = ControlButton.fromNamePosSizeTextFontBorderEnabledClick
 		(
 			"buttonDismissSelected",
 			Coords.fromXY
@@ -217,7 +217,7 @@ class NotificationSession
 			() => notificationSession.notificationsAllDismiss(universe) // click
 		);
 
-		var textMessage = ControlLabel.from4Uncentered
+		var textMessage = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, containerSize.y - margin - controlHeight), // pos
 			Coords.fromXY(columnWidth, controlHeight), // size
@@ -228,7 +228,7 @@ class NotificationSession
 			fontNameAndHeight
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"Alerts",
 			Coords.fromXY(0, 0), // pos
@@ -281,7 +281,7 @@ class NotificationSession
 			FontNameAndHeight.fromHeightInPixels(fontHeightInPixels);
 		var buttonPosY = containerSize.y - margin - buttonHeight;
 
-		var textNotificationSingle = ControlLabel.from4Centered
+		var textNotificationSingle = ControlLabel.fromPosSizeTextFontCentered
 		(
 			Coords.fromXY(margin, margin), // pos
 			textNotificationSingleSize,
@@ -317,7 +317,7 @@ class NotificationSession
 		var containerPos =
 			universe.display.sizeInPixels.clone().subtract(containerSize).half();
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"containerNotificationSingle",
 			containerPos,

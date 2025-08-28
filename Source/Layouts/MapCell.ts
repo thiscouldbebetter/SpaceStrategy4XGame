@@ -1,5 +1,5 @@
 
-class MapCell
+class MapCell2
 {
 	pos: Coords;
 	terrain: MapTerrain;

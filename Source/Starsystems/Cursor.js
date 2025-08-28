@@ -18,21 +18,21 @@ class Cursor extends Entity {
         var radius = 5;
         var colors = Color.Instances();
         var colorWhite = colors.White;
-        var visualCrosshairs = new VisualGroup([
+        var visualCrosshairs = VisualGroup.fromChildren([
             VisualCircle.fromRadiusAndColors(radius, null, colorWhite),
             new VisualLine(Coords.fromXY(-radius, 0), Coords.fromXY(radius, 0), colorWhite, null),
             new VisualLine(Coords.fromXY(0, -radius), Coords.fromXY(0, radius), colorWhite, null),
         ]);
         var cursor = this;
-        var visualReticle = new VisualSelect(new Map([
-            ["None", new VisualNone()],
-            ["Crosshairs", visualCrosshairs]
-        ]), 
+        var visualReticle = VisualSelect.fromSelectChildToShowAndChildren(
         // selectChildNames
-        (uwpe, display) => cursor.visualReticleSelectChildNames(uwpe, display));
-        var visualHover = new VisualText(DataBinding.fromContextAndGet(UniverseWorldPlaceEntities.create(), // hack - See VisualText.draw().
+        (uwpe, visualSelect) => cursor.visualReticleSelectChildToShow(uwpe, visualSelect), [
+            VisualNone.Instance,
+            visualCrosshairs
+        ]);
+        var visualHover = VisualText.fromTextBindingFontAndColorsFillAndBorder(DataBinding.fromContextAndGet(UniverseWorldPlaceEntities.create(), // hack - See VisualText.draw().
         (uwpe) => cursor.visualHoverTextGet(uwpe)), FontNameAndHeight.fromHeightInPixels(20), colors.Black, colors.White);
-        var visual = new VisualGroup([
+        var visual = VisualGroup.fromChildren([
             visualHover,
             visualReticle
         ]);
@@ -80,15 +80,10 @@ class Cursor extends Entity {
         }
         return returnValue;
     }
-    visualReticleSelectChildNames(uwpe, display) {
-        var returnValue;
+    visualReticleSelectChildToShow(uwpe, visualSelect) {
         var cursor = uwpe.entity;
-        if (cursor.entityUsingCursorToTarget == null) {
-            returnValue = "None";
-        }
-        else {
-            returnValue = "Crosshairs";
-        }
-        return [returnValue];
+        var childToShowIndex = (cursor.entityUsingCursorToTarget == null) ? 0 : 1;
+        var childToShow = visualSelect.children[childToShowIndex];
+        return childToShow;
     }
 }

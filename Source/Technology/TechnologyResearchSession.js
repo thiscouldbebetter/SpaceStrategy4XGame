@@ -47,34 +47,34 @@ class TechnologyResearchSession {
         var rowHeight = margin * 2;
         var listPosY = margin * 3 + rowHeight * 4;
         var researcher = this.researcher;
-        var labelResearcher = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin), // pos,
+        var labelResearcher = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Researcher:"), fontNameAndHeight);
-        var textResearcher = ControlLabel.from4Uncentered(Coords.fromXY(columnWidth * 1, margin), // pos,
+        var textResearcher = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(columnWidth * 1, margin), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext(this.researcher.name()), fontNameAndHeight);
-        var labelResearchPerDay = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin + rowHeight), // pos,
+        var labelResearchPerDay = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin + rowHeight), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Research per Turn:"), //text
         fontNameAndHeight);
-        var textResearchPerTurn = ControlLabel.from4Uncentered(Coords.fromXY(columnWidth * 1, margin + rowHeight), // pos,
+        var textResearchPerTurn = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(columnWidth * 1, margin + rowHeight), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContextAndGet(this.researcher, (c) => "" + c.researchPerTurn(universe, world)), //text
         fontNameAndHeight);
-        var labelTechnologiesKnown = ControlLabel.from4Uncentered(Coords.fromXY(margin, margin * 2 + rowHeight * 3), // pos,
+        var labelTechnologiesKnown = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, margin * 2 + rowHeight * 3), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Technologies Known:"), //text
         fontNameAndHeight);
-        var listTechnologiesKnown = ControlList.from6("listTechnologiesKnown", Coords.fromXY(margin, listPosY), // pos
+        var listTechnologiesKnown = ControlList.fromNamePosSizeItemsTextFont("listTechnologiesKnown", Coords.fromXY(margin, listPosY), // pos
         listSize, 
         // items
         DataBinding.fromContext(this.researcher.technologiesKnownNames), DataBinding.fromContext(null), // bindingForItemText
         FontNameAndHeight.fromHeightInPixels(labelHeight));
-        var labelTechnologiesAvailable = ControlLabel.from4Uncentered(Coords.fromXY(margin * 2 + listSize.x, margin * 2 + rowHeight * 3), // pos,
+        var labelTechnologiesAvailable = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin * 2 + listSize.x, margin * 2 + rowHeight * 3), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Technologies Available:"), // text
         fontNameAndHeight);
-        var listTechnologiesAvailable = ControlList.from8("listTechnologiesAvailable", // name,
+        var listTechnologiesAvailable = ControlList.fromNamePosSizeItemsTextFontSelectedValue("listTechnologiesAvailable", // name,
         Coords.fromXY(margin * 2 + listSize.x, listPosY), // pos,
         listSize, 
         // items,
@@ -83,26 +83,26 @@ class TechnologyResearchSession {
         new DataBinding(researcher, (c) => c.technologyBeingResearched(world), (c, v) => c.technologyResearch(v)), // bindingForItemSelected
         DataBinding.fromGet((c) => c.name) // bindingForItemValue
         );
-        var labelTechnologyBeingResearched = ControlLabel.from4Uncentered(Coords.fromXY(margin, listPosY + listSize.y + margin), // pos,
+        var labelTechnologyBeingResearched = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, listPosY + listSize.y + margin), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Researching:"), // text
         fontNameAndHeight);
-        var textTechnologyBeingResearched = ControlLabel.from4Uncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin), // pos,
+        var textTechnologyBeingResearched = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContextAndGet(this.researcher, (c) => c.technologyBeingResearchedName), fontNameAndHeight);
-        var labelResearchAccumulated = ControlLabel.from4Uncentered(Coords.fromXY(margin, listPosY + listSize.y + margin + labelHeight), // pos,
+        var labelResearchAccumulated = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, listPosY + listSize.y + margin + labelHeight), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Research Accumulated:"), // text
         fontNameAndHeight);
-        var textResearchAccumulatedOverRequired = ControlLabel.from4Uncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin + labelHeight), // pos,
+        var textResearchAccumulatedOverRequired = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin + labelHeight), // pos,
         Coords.fromXY(30, labelHeight), // size,
         DataBinding.fromContextAndGet(this, (c) => c.researchAccumulatedOverRequired()), // text
         fontNameAndHeight);
-        var labelGrants = ControlLabel.from4Uncentered(Coords.fromXY(margin, listPosY + listSize.y + margin + labelHeight * 2), // pos,
+        var labelGrants = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin, listPosY + listSize.y + margin + labelHeight * 2), // pos,
         Coords.fromXY(size.x - margin * 2, labelHeight), // size,
         DataBinding.fromContext("Grants:"), // text
         fontNameAndHeight);
-        var textGrants = ControlLabel.from4Uncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin + labelHeight * 2), // pos,
+        var textGrants = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(margin + columnWidth * 1, listPosY + listSize.y + margin + labelHeight * 2), // pos,
         Coords.fromXY(size.x - margin * 2 - buttonHeight, labelHeight), // size,
         DataBinding.fromContextAndGet(this, (c) => {
             var tech = c.technologyBeingResearched();
@@ -118,7 +118,7 @@ class TechnologyResearchSession {
             var venueNext = universe.world.toVenue();
             universe.venueTransitionTo(venueNext);
         });
-        var returnValue = ControlContainer.from4("Research", // name,
+        var returnValue = ControlContainer.fromNamePosSizeAndChildren("Research", // name,
         Coords.fromXY(0, 0), // pos,
         size, 
         // children

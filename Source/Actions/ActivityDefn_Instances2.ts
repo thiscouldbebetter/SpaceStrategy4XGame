@@ -29,16 +29,16 @@ class ActivityDefn_Instances2
 	): void
 	{
 		var ship = uwpe.entity as Ship;
-		var activity = ship.actor().activity;
+		var activity = Actor.of(ship).activity;
 		var target = activity.targetEntity();
 		var distanceToTarget =
 			ship.moveTowardTargetAndReturnDistance(target);
 		if (distanceToTarget == 0)
 		{
-			var targetCollidable = target.collidable();
+			var targetCollidable = Collidable.of(target);
 			if (targetCollidable != null)
 			{
-				var shipCollidable = ship.collidable();
+				var shipCollidable = Collidable.of(ship);
 				uwpe.entitySet(ship).entity2Set(target);
 				shipCollidable.collideEntitiesForUniverseWorldPlaceEntities(uwpe);
 			}

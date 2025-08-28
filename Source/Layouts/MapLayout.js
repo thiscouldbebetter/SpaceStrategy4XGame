@@ -54,7 +54,7 @@ class MapLayout {
         var entities = this.entities();
         for (var i = 0; i < entities.length; i++) {
             var entity = entities[i];
-            var entityPos = entity.locatable().loc.pos;
+            var entityPos = Locatable.of(entity).loc.pos;
             if (entityPos.equals(cellPos)) {
                 returnValue = entity;
                 break;
@@ -93,7 +93,7 @@ class MapLayout {
         var mapSizeInCells = map.sizeInCells;
         var cellPos = this._cellPos;
         var drawable = this._drawable;
-        var drawPos = drawable.locatable().loc.pos;
+        var drawPos = Locatable.of(drawable).loc.pos;
         var cellSizeInPixels = map.cellSizeInPixels;
         var uwpe = new UniverseWorldPlaceEntities(universe, world, planetAsPlace, drawable, null);
         var posToRestoreAfterDraw = Coords.create();
@@ -108,10 +108,10 @@ class MapLayout {
                 terrainVisual.draw(uwpe, display);
                 var cellEntity = map.entityAtPosInCells(cellPos);
                 if (cellEntity != null) {
-                    var entityPos = cellEntity.locatable().loc.pos;
+                    var entityPos = Locatable.of(cellEntity).loc.pos;
                     posToRestoreAfterDraw.overwriteWith(entityPos);
                     entityPos.overwriteWith(drawPos);
-                    var cellBodyVisual = cellEntity.drawable().visual;
+                    var cellBodyVisual = Drawable.of(cellEntity).visual;
                     uwpe.entitySet(cellEntity);
                     cellBodyVisual.draw(uwpe, display);
                     entityPos.overwriteWith(posToRestoreAfterDraw);

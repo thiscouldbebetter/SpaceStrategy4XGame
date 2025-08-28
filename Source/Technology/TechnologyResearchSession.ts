@@ -84,7 +84,7 @@ class TechnologyResearchSession
 
 		var researcher = this.researcher;
 
-		var labelResearcher = ControlLabel.from4Uncentered
+		var labelResearcher = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin), // pos,
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size,
@@ -92,7 +92,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var textResearcher = ControlLabel.from4Uncentered
+		var textResearcher = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(columnWidth * 1, margin), // pos,
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size,
@@ -100,7 +100,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var labelResearchPerDay = ControlLabel.from4Uncentered
+		var labelResearchPerDay = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin + rowHeight), // pos,
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size,
@@ -108,7 +108,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var textResearchPerTurn = ControlLabel.from4Uncentered
+		var textResearchPerTurn = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(columnWidth * 1, margin + rowHeight), // pos,
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size,
@@ -120,7 +120,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var labelTechnologiesKnown = ControlLabel.from4Uncentered
+		var labelTechnologiesKnown = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, margin * 2 + rowHeight * 3), // pos,
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size,
@@ -128,7 +128,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var listTechnologiesKnown = ControlList.from6
+		var listTechnologiesKnown = ControlList.fromNamePosSizeItemsTextFont
 		(
 			"listTechnologiesKnown",
 			Coords.fromXY(margin, listPosY), // pos
@@ -142,7 +142,7 @@ class TechnologyResearchSession
 			FontNameAndHeight.fromHeightInPixels(labelHeight)
 		);
 
-		var labelTechnologiesAvailable = ControlLabel.from4Uncentered
+		var labelTechnologiesAvailable = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin * 2 + listSize.x, margin * 2 + rowHeight * 3), // pos,
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size,
@@ -150,7 +150,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var listTechnologiesAvailable = ControlList.from8
+		var listTechnologiesAvailable = ControlList.fromNamePosSizeItemsTextFontSelectedValue
 		(
 			"listTechnologiesAvailable", // name,
 			Coords.fromXY
@@ -182,7 +182,7 @@ class TechnologyResearchSession
 			) // bindingForItemValue
 		);
 
-		var labelTechnologyBeingResearched = ControlLabel.from4Uncentered
+		var labelTechnologyBeingResearched = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY(margin, listPosY + listSize.y + margin), // pos,
 			Coords.fromXY(size.x - margin * 2, labelHeight), // size,
@@ -190,7 +190,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var textTechnologyBeingResearched = ControlLabel.from4Uncentered
+		var textTechnologyBeingResearched = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -206,7 +206,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var labelResearchAccumulated = ControlLabel.from4Uncentered
+		var labelResearchAccumulated = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -218,7 +218,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var textResearchAccumulatedOverRequired = ControlLabel.from4Uncentered
+		var textResearchAccumulatedOverRequired = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -234,7 +234,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var labelGrants = ControlLabel.from4Uncentered
+		var labelGrants = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -246,7 +246,7 @@ class TechnologyResearchSession
 			fontNameAndHeight
 		);
 
-		var textGrants = ControlLabel.from4Uncentered
+		var textGrants = ControlLabel.fromPosSizeTextFontUncentered
 		(
 			Coords.fromXY
 			(
@@ -285,7 +285,7 @@ class TechnologyResearchSession
 			}
 		);
 
-		var returnValue = ControlContainer.from4
+		var returnValue = ControlContainer.fromNamePosSizeAndChildren
 		(
 			"Research", // name,
 			Coords.fromXY(0, 0), // pos,

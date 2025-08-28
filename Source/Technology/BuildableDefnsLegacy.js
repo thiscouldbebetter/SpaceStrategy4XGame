@@ -93,7 +93,7 @@ class BuildableDefnsLegacy {
         canBeBuiltNever, mapCellSizeInPixels, visual, industryToBuildAmount, effectTodo, null, // effectsAvailableToUse
         [category], (uwpe) => deviceDefn == null
             ? []
-            : [new Device(deviceDefn)], 
+            : [new Device2(deviceDefn)], 
         // entityModifyOnBuild
         null, description);
         var names = BuildableDefnsLegacyNames.Instance;
@@ -388,17 +388,17 @@ class BuildableDefnsLegacy {
             var projectile = device.projectile;
             if (projectile == null) {
                 var projectileDefn = ProjectileDefn.Instances().Default;
-                projectile = new Projectile(entityFiring.name + "_" + Projectile.name, projectileDefn, entityFiring.locatable().loc.pos.clone(), entityFiring, // entityFiredFrom
+                projectile = new Projectile(entityFiring.name + "_" + Projectile.name, projectileDefn, Locatable.of(entityFiring).loc.pos.clone(), entityFiring, // entityFiredFrom
                 entityBeingTargeted);
-                projectile.actor().activity =
+                Actor.of(projectile).activity =
                     Activity.fromDefnNameAndTargetEntity("MoveToTargetCollideAndEndMove", entityBeingTargeted);
                 starsystem.entityToSpawnAdd(projectile);
                 device.projectile = projectile;
             }
             else {
                 device.projectile = null;
-                var projectilePos = projectile.locatable().loc.pos;
-                var targetPos = entityBeingTargeted.locatable().loc.pos;
+                var projectilePos = Locatable.of(projectile).loc.pos;
+                var targetPos = Locatable.of(entityBeingTargeted).loc.pos;
                 if (projectilePos.equals(targetPos)) {
                     entityFiringOrder.complete();
                 }

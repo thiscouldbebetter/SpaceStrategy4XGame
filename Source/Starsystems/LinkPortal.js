@@ -52,7 +52,7 @@ class LinkPortal extends Entity {
         var linkPortal = uwpe.entity;
         var world = uwpe.world;
         var name = linkPortal.nameAccordingToFactionPlayerKnowledge(world);
-        var returnValue = ControlLabel.from4Uncentered(Coords.fromXY(0, 0), size, DataBinding.fromContext(name), FontNameAndHeight.fromHeightInPixels(10));
+        var returnValue = ControlLabel.fromPosSizeTextFontUncentered(Coords.fromXY(0, 0), size, DataBinding.fromContext(name), FontNameAndHeight.fromHeightInPixels(10));
         return returnValue;
     }
     // Drawable.
@@ -73,18 +73,17 @@ class LinkPortal extends Entity {
             );
             visualsForLinkTypes.push(visualCenter);
         }
-        var visual = new VisualSelect(new Map([
-            ["Normal", visualsForLinkTypes[0]],
-            ["Hard", visualsForLinkTypes[1]],
-        ]), (uwpe, display) => {
+        var visual = VisualSelect.fromSelectChildToShowAndChildren((uwpe, visualSelect) => {
             var linkPortal = uwpe.entity;
             var world = uwpe.world;
             var starCluster = world.starCluster;
             var link = linkPortal.link(starCluster);
             var linkType = link.type;
             var visualName = linkType.name;
-            return [visualName];
-        });
+            var childToShowIndex = (visualName == "Normal") ? 0 : 1;
+            var childToShow = visualSelect.children[childToShowIndex];
+            return childToShow;
+        }, visualsForLinkTypes);
         return visual;
     }
     static visualProjected() {

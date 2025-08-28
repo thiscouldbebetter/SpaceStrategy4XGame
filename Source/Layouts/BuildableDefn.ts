@@ -10,7 +10,7 @@ class BuildableDefn
 	effectPerRound: BuildableEffect;
 	effectsAvailableToUse: BuildableEffect[];
 	categories: BuildableCategory[];
-	entityProperties: (uwpe: UniverseWorldPlaceEntities) => EntityPropertyBase[];
+	entityProperties: (uwpe: UniverseWorldPlaceEntities) => EntityProperty[];
 	_entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void;
 	description: string;
 
@@ -25,7 +25,7 @@ class BuildableDefn
 		effectPerRound: BuildableEffect,
 		effectsAvailableToUse: BuildableEffect[],
 		categories: BuildableCategory[],
-		entityProperties: (uwpe: UniverseWorldPlaceEntities) => EntityPropertyBase[],
+		entityProperties: (uwpe: UniverseWorldPlaceEntities) => EntityProperty[],
 		entityModifyOnBuild: (uwpe: UniverseWorldPlaceEntities) => void,
 		description: string
 	)
@@ -88,13 +88,13 @@ class BuildableDefn
 
 	buildableToEntity(buildable: Buildable, world: WorldExtended): Entity
 	{
-		var properties = new Array<EntityPropertyBase>();
+		var properties = new Array<EntityProperty>();
 
 		properties.push(buildable);
 		properties.push(buildable.locatable() );
 		properties.push(Drawable.fromVisual(this.visual) );
 
-		var returnEntity = new Entity(this.name, properties);
+		var returnEntity = Entity.fromNameAndProperties(this.name, properties);
 
 		var uwpe = new UniverseWorldPlaceEntities
 		(
@@ -203,14 +203,13 @@ class BuildableDefn
 			visualOverlayText
 		]);
 
-		var visualOverlay = new VisualSelect
+		var visualOverlay = VisualSelect.fromSelectChildToShowAndChildren
 		(
-			new Map
-			([
-				[ "Complete", new VisualNone() ],
-				[ "Incomplete", visualOverlayTextAndShade ]
-			]),
-			this.visualWrap_SelectChildNames
+			this.visualWrap_SelectChildToShow,
+			[
+				VisualNone.Instance,
+				visualOverlayTextAndShade
+			]
 		)
 
 		var visualWrapped = new VisualGroup
@@ -222,11 +221,13 @@ class BuildableDefn
 		return visualWrapped;
 	}
 
-	visualWrap_SelectChildNames(uwpe: UniverseWorldPlaceEntities, d: Display): string[]
+	visualWrap_SelectChildToShow(uwpe: UniverseWorldPlaceEntities, visualSelect: VisualSelect): VisualBase
 	{
 		var buildableAsEntity = uwpe.entity;
 		var buildable = Buildable.ofEntity(buildableAsEntity);
-		return (buildable.isComplete ? ["Complete"] : ["Incomplete"] );
+		var childToShowIndex =
+			buildable.isComplete ? 0 : 1;
+		return visualSelect.children[childToShowIndex];
 	}
 
 	// Clonable.

@@ -140,55 +140,37 @@ class ControlBuilderExtended extends ControlBuilder {
         Coords.fromXY(containerInnerSize.x, labelHeight), // size
         DataBinding.fromContext("View:"), fontNameAndHeight);
         var buttonSize = Coords.fromXY(1, 1).multiplyScalar(buttonWidthAndHeight);
-        var buttonViewRotateUp = ControlButton.from9("buttonViewRotateUp", Coords.fromXY(margin + buttonWidthAndHeight, size.y - margin - buttonWidthAndHeight * 2), // pos
-        buttonSize, "^", fontNameAndHeight, true, // hasBorder
-        DataBinding.fromTrue(), // isEnabled
-        () => // click
+        var buttonViewRotateUp = ControlButton.fromPosSizeTextFontClick(Coords.fromXY(margin + buttonWidthAndHeight, size.y - margin - buttonWidthAndHeight * 2), // pos
+        buttonSize, "^", fontNameAndHeight, () => // click
          {
             universe.venueCurrent().cameraUp(cameraSpeed);
-        }, true // canBeHeldDown
-        );
-        var buttonViewRotateDown = ControlButton.from9("buttonViewRotateDown", Coords.fromXY(margin + buttonWidthAndHeight, size.y - margin - buttonWidthAndHeight), // pos
-        buttonSize, "v", fontNameAndHeight, true, // hasBorder
-        DataBinding.fromTrue(), // isEnabled
-        () => // click
+        }).canBeHeldDownSet(true);
+        var buttonViewRotateDown = ControlButton.fromPosSizeTextFontClick(Coords.fromXY(margin + buttonWidthAndHeight, size.y - margin - buttonWidthAndHeight), // pos
+        buttonSize, "v", fontNameAndHeight, () => // click
          {
             universe.venueCurrent().cameraDown(cameraSpeed);
-        }, true // canBeHeldDown
-        );
-        var buttonViewRotateLeft = ControlButton.from9("buttonViewRotateLeft", Coords.fromXY(margin, size.y - margin - buttonWidthAndHeight), // pos
-        buttonSize, "<", fontNameAndHeight, true, // hasBorder
-        DataBinding.fromTrue(), // isEnabled
-        () => // click
+        }).canBeHeldDownSet(true);
+        var buttonViewRotateLeft = ControlButton.fromPosSizeTextFontClick(Coords.fromXY(margin, size.y - margin - buttonWidthAndHeight), // pos
+        buttonSize, "<", fontNameAndHeight, () => // click
          {
             universe.venueCurrent().cameraLeft(cameraSpeed);
-        }, true // canBeHeldDown
-        );
-        var buttonViewRotateRight = ControlButton.from9("buttonViewRotateRight", Coords.fromXY(margin + buttonWidthAndHeight * 2, size.y - margin - buttonWidthAndHeight), // pos
-        buttonSize, ">", fontNameAndHeight, true, // hasBorder
-        DataBinding.fromTrue(), // isEnabled
-        () => // click
+        }).canBeHeldDownSet(true);
+        var buttonViewRotateRight = ControlButton.fromPosSizeTextFontClick(Coords.fromXY(margin + buttonWidthAndHeight * 2, size.y - margin - buttonWidthAndHeight), // pos
+        buttonSize, ">", fontNameAndHeight, () => // click
          {
             universe.venueCurrent().cameraRight(cameraSpeed);
-        }, true // canBeHeldDown
-        );
-        var buttonViewZoomIn = ControlButton.from9("buttonViewZoomIn", Coords.fromXY(size.x - margin - buttonWidthAndHeight * 2, margin), // pos
-        buttonSize, "In", fontNameAndHeight, true, // hasBorder
-        DataBinding.fromTrue(), // isEnabled
-        () => // click
+        }).canBeHeldDownSet(true);
+        var buttonViewZoomIn = ControlButton.fromPosSizeTextFontClick(Coords.fromXY(size.x - margin - buttonWidthAndHeight * 2, margin), // pos
+        buttonSize, "In", fontNameAndHeight, () => // click
          {
             universe.venueCurrent().cameraIn(cameraSpeed);
-        }, true // canBeHeldDown
-        );
-        var buttonViewZoomOut = ControlButton.from9("buttonViewZoomOut", Coords.fromXY(size.x - margin - buttonWidthAndHeight, margin), // pos
+        }).canBeHeldDownSet(true);
+        var buttonViewZoomOut = ControlButton.fromPosSizeTextFontClick(Coords.fromXY(size.x - margin - buttonWidthAndHeight, margin), // pos
         buttonSize, // size
-        "Out", fontNameAndHeight, true, // hasBorder
-        DataBinding.fromTrue(), // isEnabled
-        () => // click
+        "Out", fontNameAndHeight, () => // click
          {
             universe.venueCurrent().cameraOut(cameraSpeed);
-        }, true // canBeHeldDown
-        );
+        }).canBeHeldDownSet(true);
         var buttonViewReset = ControlButton.from5(Coords.fromXY(size.x - margin - buttonWidthAndHeight, size.y - margin - buttonWidthAndHeight), // pos
         buttonSize, "x", fontNameAndHeight, () => // click
          {

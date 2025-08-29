@@ -100,18 +100,39 @@ class StarCluster extends PlaceBase
 		numberOfNodes: number
 	): StarCluster
 	{
+		var radiusMax = 1;
+
+		var nodesNotYetLinked =
+			this.generateRandom_1(universe, nodeDefns, numberOfNodes, radiusMax);
+
+		var [nodesLinked, links] =
+			this.generateRandom_2(universe, radiusMax, nodesNotYetLinked);
+
+		var starClusterName = NameGenerator.generateName() + " Cluster";
+		var returnValue = new StarCluster(starClusterName, nodesLinked, links, []);
+
+		return returnValue;
+	}
+
+	static generateRandom_1
+	(
+		universe: Universe,
+		nodeDefns: StarClusterNodeDefn[],
+		numberOfNodes: number,
+		radiusMax: number
+	): StarClusterNode[]
+	{
 		var randomizer = universe.randomizer;
 
 		var nodesNotYetLinked = [];
 
 		var radiusMin = .25;
-		var radiusMax = 1;
 		var radiusRange = radiusMax - radiusMin;
 		var distanceBetweenNodesMin = .05;
 
 		var nodePos = Coords.create();
 		var displacementOfNodeNewFromOther = Coords.create();
-		var minusOnes = new Coords(-1, -1, -1);
+		var minusOnes = Coords.ones().multiplyScalar(-1);
 
 		var starNames = StarNames.Instance()._All;
 		var starsystemNames =
@@ -123,13 +144,15 @@ class StarCluster extends PlaceBase
 
 			while (distanceOfNodeNewFromExisting < distanceBetweenNodesMin)
 			{
-				nodePos.randomize(universe.randomizer).double().add
-				(
-					minusOnes
-				).normalize().multiplyScalar
-				(
-					radiusMin + radiusRange * Math.random()
-				);
+				nodePos
+					.randomize(randomizer)
+					.double()
+					.add(minusOnes)
+					.normalize()
+					.multiplyScalar
+					(
+						radiusMin + radiusRange * Math.random()
+					);
 
 				distanceOfNodeNewFromExisting = distanceBetweenNodesMin;
 
@@ -173,6 +196,18 @@ class StarCluster extends PlaceBase
 
 			nodesNotYetLinked.push(node);
 		}
+
+		return nodesNotYetLinked;
+	}
+
+	static generateRandom_2
+	(
+		universe: Universe,
+		radiusMax: number,
+		nodesNotYetLinked: StarClusterNode[]
+	): [ StarClusterNode[], StarClusterLink[] ]
+	{
+		var numberOfNodes = nodesNotYetLinked.length;
 
 		var nodePositions = nodesNotYetLinked.map
 		(
@@ -257,16 +292,14 @@ class StarCluster extends PlaceBase
 				(
 					linkName,
 					bodyDefnLinkPortal,
-					Coords.create().randomize(universe.randomizer).multiply
-					(
-						starsystemSize
-					).multiplyScalar
-					(
-						2
-					).subtract
-					(
-						starsystemSize
-					),
+
+					Coords
+						.create()
+						.randomize(universe.randomizer)
+						.multiply(starsystemSize)
+						.multiplyScalar(2)
+						.subtract(starsystemSize),
+
 					// starsystemNamesFromAndTo
 					[
 						starsystem.name,
@@ -286,10 +319,7 @@ class StarCluster extends PlaceBase
 		var linkTypeHard = linkTypes.Hard;
 		linksHard.forEach(x => x.type = linkTypeHard);
 
-		var starClusterName = NameGenerator.generateName() + " Cluster";
-		var returnValue = new StarCluster(starClusterName, nodesLinked, links, []);
-
-		return returnValue;
+		return [ nodesLinked, links ];
 	}
 
 	factionAdd(faction: Faction): void

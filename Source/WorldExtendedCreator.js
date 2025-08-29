@@ -92,6 +92,7 @@ class WorldExtendedCreator {
         return factions;
     }
     create_Factions_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, factionHomeStarsystem) {
+        var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(null, worldDummy);
         var factionDefn = factionDefns[i];
         var factionName = factionDefn.name;
         factionHomeStarsystem.factionSetByName(factionName);
@@ -153,13 +154,14 @@ class WorldExtendedCreator {
         [factionName], // factionNames
         [], // todo - planetNames
         factionShips.map(x => x.id), // shipIds
-        [factionHomeStarsystem.name], factionHomeStarsystem.links(starCluster).map((x) => x.name));
-        factionHomePlanet.factionable().factionSet(faction);
+        [factionHomeStarsystem.name], // starsystemNames
+        factionHomeStarsystem.links(starCluster).map((x) => x.name));
+        var factionHomePlanetFactionable = factionHomePlanet.factionable();
+        factionHomePlanetFactionable.factionSet(faction);
         var factionDiplomacy = FactionDiplomacy.fromFactionSelf(faction);
         faction.diplomacy = factionDiplomacy;
         factionTechnologyResearcher.factionSet(faction);
         starCluster.factionAdd(faction);
-        var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
         factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, uwpe));
     }
     create_Factions_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn) {

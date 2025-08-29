@@ -204,6 +204,8 @@ class WorldExtendedCreator
 		factionHomeStarsystem: Starsystem
 	): void
 	{
+		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(null, worldDummy);
+
 		var factionDefn = factionDefns[i];
 
 		var factionName = factionDefn.name;
@@ -323,14 +325,15 @@ class WorldExtendedCreator
 			[ factionName ], // factionNames
 			[], // todo - planetNames
 			factionShips.map(x => x.id), // shipIds
-			[ factionHomeStarsystem.name ],
+			[ factionHomeStarsystem.name ], // starsystemNames
 			factionHomeStarsystem.links(starCluster).map
 			(
 				(x: StarClusterLink) => x.name
 			)
 		);
 
-		factionHomePlanet.factionable().factionSet(faction);
+		var factionHomePlanetFactionable = factionHomePlanet.factionable();
+		factionHomePlanetFactionable.factionSet(faction);
 
 		var factionDiplomacy = FactionDiplomacy.fromFactionSelf(faction);
 		faction.diplomacy = factionDiplomacy;
@@ -338,8 +341,6 @@ class WorldExtendedCreator
 		factionTechnologyResearcher.factionSet(faction);
 
 		starCluster.factionAdd(faction);
-
-		var uwpe = new UniverseWorldPlaceEntities(null, worldDummy, null, null, null);
 
 		factionShips.forEach
 		(

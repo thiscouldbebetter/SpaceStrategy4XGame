@@ -164,6 +164,7 @@ class FactionKnowledge {
             world.starCluster.roundAdvanceUntilNotificationDisable();
         }
         this.starsystemsCacheClear();
+        return this;
     }
     starsystemIsKnown(starsystem) {
         return this.starsystemWithNameIsKnown(starsystem.name);

@@ -246,7 +246,7 @@ class FactionKnowledge
 		this.factionsCacheClear();
 	}
 
-	starsystemAdd(starsystem: Starsystem, uwpe: UniverseWorldPlaceEntities): void
+	starsystemAdd(starsystem: Starsystem, uwpe: UniverseWorldPlaceEntities): FactionKnowledge
 	{
 		var starsystemName = starsystem.name;
 
@@ -306,6 +306,8 @@ class FactionKnowledge
 		}
 
 		this.starsystemsCacheClear();
+
+		return this;
 	}
 
 	starsystemIsKnown(starsystem: Starsystem): boolean

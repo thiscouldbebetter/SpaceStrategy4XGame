@@ -13,10 +13,17 @@ class VenueStarsystem {
             || this.hasBeenUpdatedSinceDrawn;
         if (shouldDraw) {
             this.hasBeenUpdatedSinceDrawn = false;
+            var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
+            var collidables = Collidable.entitiesFromPlace(this.starsystem);
+            collidables.forEach(x => {
+                // hack
+                var sphere = Collidable.of(x).collider;
+                var pos = Locatable.of(x).pos();
+                sphere.center.overwriteWith(pos);
+            });
             var display = universe.display;
             display.drawBackground();
             this.starsystem.draw(universe, world, display);
-            var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(universe, world);
             uwpe.entitySet(this.cursor);
             this.cursor.draw(uwpe, display);
             this.venueControls.draw(universe);
@@ -104,9 +111,9 @@ class VenueStarsystem {
         var viewSize = universe.display.sizeInPixels.clone();
         var focalLength = viewSize.y;
         viewSize.z = focalLength * 4;
-        var camera = new Camera(viewSize, focalLength, Disposition.fromPos(new Coords(0 - focalLength, 0, 0)), null // entitiesSort
+        var camera = new Camera(viewSize, focalLength, Disposition.fromPos(Coords.fromXYZ(0 - focalLength, 0, 0)), null // entitiesSort
         );
-        var cameraLocatable = new Locatable(camera.loc);
+        var cameraLocatable = Locatable.fromDisposition(camera.loc);
         var targetForCamera = Coords.create();
         // hack
         var constraints = [
@@ -117,8 +124,8 @@ class VenueStarsystem {
             ),
             new Constraint_LookAt(targetForCamera),
         ];
-        var cameraConstrainable = new Constrainable(constraints);
-        this.cameraEntity = new Entity(Camera.name, [camera, cameraLocatable, cameraConstrainable]);
+        var cameraConstrainable = Constrainable.fromConstraints(constraints);
+        this.cameraEntity = Entity.fromNameAndProperties(Camera.name, [camera, cameraLocatable, cameraConstrainable]);
         cameraConstrainable.constrain(uwpe.entitySet(this.cameraEntity));
         this.entities = new Array();
         this.entities.push(starsystem.star);
@@ -206,12 +213,15 @@ class VenueStarsystem {
         }
     }
     updateForTimerTick_Input_Mouse(universe) {
-        universe.soundHelper.soundWithName(universe, "Sound").play(universe, 1);
+        var sound = universe.soundHelper.soundWithName(universe, "Sound");
+        sound.play(universe, 1);
         var inputHelper = universe.inputHelper;
         var mouseClickPos = this._mouseClickPos.overwriteWith(inputHelper.mouseClickPos);
         var camera = this.camera();
-        var rayFromCameraThroughClick = Ray.fromVertexAndDirection(camera.loc.pos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
-        ).subtract(camera.loc.pos).normalize());
+        var rayFromCameraThroughClick = Ray.fromVertexAndDirection(camera.loc.pos, camera
+            .coordsTransformViewToWorld(mouseClickPos, true) // ignoreZ
+            .subtract(camera.loc.pos)
+            .normalize());
         var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, this.entities, [] // listToAddTo
         );
         var bodyClicked;

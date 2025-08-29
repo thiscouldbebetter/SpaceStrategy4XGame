@@ -250,6 +250,17 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 			var playerFaction = world.factionPlayer();
 			var playerKnowledge = playerFaction.knowledge;
 			var worldKnown = playerKnowledge.world(universe, world);
+			var starsToUpdate = worldKnown.starCluster.nodes;
+			starsToUpdate.forEach
+			(
+				x =>
+				{
+					// hack
+					var sphere = Collidable.of(x).collider as Sphere;
+					var pos = Locatable.of(x).pos();
+					sphere.center.overwriteWith(pos);
+				}
+			);
 			worldKnown.starCluster.drawForCamera(universe, worldKnown.camera);
 			this.venueControls.draw(universe);
 		}
@@ -346,16 +357,13 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 
 			var camera = Camera.of(this.cameraEntity);
 			var cameraPos = camera.loc.pos;
-			var rayFromCameraThroughClick = new Ray
+			var rayFromCameraThroughClick = Ray.fromVertexAndDirection
 			(
 				cameraPos,
-				camera.coordsTransformViewToWorld
-				(
-					mouseClickPos, true // ignoreZ
-				).subtract
-				(
-					cameraPos
-				).normalize()
+				camera
+					.coordsTransformViewToWorld(mouseClickPos, true) // ignoreZ
+					.subtract(cameraPos)
+					.normalize()
 			);
 
 			var playerFaction = world.factionPlayer();
@@ -364,10 +372,12 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 				universe, world
 			);
 
+			var starsToCheck = worldKnown.starCluster.nodes;
+
 			var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable
 			(
 				rayFromCameraThroughClick,
-				worldKnown.starCluster.nodes,
+				starsToCheck,
 				[] // listToAddTo
 			);
 
@@ -391,7 +401,7 @@ class VenueStarCluster extends VenueWorld implements VenueDrawnOnlyWhenUpdated, 
 				if (bodyClicked == entitySelected)
 				{
 					var isFastForwarding = world.starCluster.roundsAreAdvancingUntilNotification();
-					
+
 					if (isFastForwarding == false)
 					{
 						var venueCurrent = universe.venueCurrent();

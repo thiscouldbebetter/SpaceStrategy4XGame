@@ -128,9 +128,7 @@ class VenueLayout implements VenueDrawnOnlyWhenUpdated
 
 		if (entityAtCursor != null)
 		{
-			var entityFaction = Factionable.ofEntity(entityAtCursor).faction();
-
-			if (entityFaction == factionCurrent)
+			if (planetFaction == factionCurrent)
 			{
 				var controlBuildableDetails =
 					this.controlBuildableDetailsBuild(universe);

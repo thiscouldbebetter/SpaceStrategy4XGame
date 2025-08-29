@@ -59,7 +59,8 @@ class WorldExtendedCreator {
                 var planet;
                 factionHomeStarsystem.planetAdd(planet);
             }
-            this.create_Factions_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, factionHomeStarsystem);
+            var faction = this.create_Factions_1_CreateFaction(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, factionHomeStarsystem);
+            factions.push(faction);
         }
         if (factionDefnNameForPlayer != null) {
             factions[0].defnName = factionDefnNameForPlayer;
@@ -91,7 +92,7 @@ class WorldExtendedCreator {
         }
         return factions;
     }
-    create_Factions_1(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, factionHomeStarsystem) {
+    create_Factions_1_CreateFaction(worldDummy, starCluster, colorsForFactions, factionDefns, technologyGraph, buildableDefns, i, factionHomeStarsystem) {
         var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(null, worldDummy);
         var factionDefn = factionDefns[i];
         var factionName = factionDefn.name;
@@ -163,6 +164,7 @@ class WorldExtendedCreator {
         factionTechnologyResearcher.factionSet(faction);
         starCluster.factionAdd(faction);
         factionShips.forEach(ship => factionHomeStarsystem.shipAdd(ship, uwpe));
+        return faction;
     }
     create_Factions_1_1_HomePlanet(worldDummy, buildableDefns, factionHomeStarsystem, factionDefn) {
         var universe = this.universe;

@@ -130,6 +130,13 @@ class VenueStarCluster extends VenueWorld {
             var playerFaction = world.factionPlayer();
             var playerKnowledge = playerFaction.knowledge;
             var worldKnown = playerKnowledge.world(universe, world);
+            var starsToUpdate = worldKnown.starCluster.nodes;
+            starsToUpdate.forEach(x => {
+                // hack
+                var sphere = Collidable.of(x).collider;
+                var pos = Locatable.of(x).pos();
+                sphere.center.overwriteWith(pos);
+            });
             worldKnown.starCluster.drawForCamera(universe, worldKnown.camera);
             this.venueControls.draw(universe);
         }
@@ -184,11 +191,14 @@ class VenueStarCluster extends VenueWorld {
             var mouseClickPos = inputHelper.mouseClickPos.clone();
             var camera = Camera.of(this.cameraEntity);
             var cameraPos = camera.loc.pos;
-            var rayFromCameraThroughClick = new Ray(cameraPos, camera.coordsTransformViewToWorld(mouseClickPos, true // ignoreZ
-            ).subtract(cameraPos).normalize());
+            var rayFromCameraThroughClick = Ray.fromVertexAndDirection(cameraPos, camera
+                .coordsTransformViewToWorld(mouseClickPos, true) // ignoreZ
+                .subtract(cameraPos)
+                .normalize());
             var playerFaction = world.factionPlayer();
             var worldKnown = playerFaction.knowledge.world(universe, world);
-            var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, worldKnown.starCluster.nodes, [] // listToAddTo
+            var starsToCheck = worldKnown.starCluster.nodes;
+            var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable(rayFromCameraThroughClick, starsToCheck, [] // listToAddTo
             );
             if (bodiesClickedAsCollisions.length > 0) {
                 var collisionNearest = bodiesClickedAsCollisions[0];

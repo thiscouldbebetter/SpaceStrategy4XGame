@@ -51,7 +51,7 @@ class BuildableDefn {
             propertiesActualized.forEach(x => returnEntity.propertyAdd(x));
         }
         if (this.isItem) {
-            returnEntity.propertyAdd(new Item(this.name, 1));
+            returnEntity.propertyAdd(Item.fromDefnName(this.name));
         }
         this.entityModifyOnBuild(uwpe);
         return returnEntity;

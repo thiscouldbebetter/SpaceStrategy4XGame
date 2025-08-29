@@ -796,9 +796,7 @@ class Starsystem extends PlaceBase
 		}
 		var venueAsVenueStarsystem = venue as VenueStarsystem;
 		var camera =
-			venueTypeName == VenueStarsystem.name
-			? Camera.of(venueAsVenueStarsystem.cameraEntity)
-			: null;
+			Camera.of(venueAsVenueStarsystem.cameraEntity);
 		return camera;
 	}
 

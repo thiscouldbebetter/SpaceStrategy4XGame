@@ -60,8 +60,7 @@ class VenueLayout {
         var factionCurrent = world.factionCurrent();
         var planetFaction = planet.faction();
         if (entityAtCursor != null) {
-            var entityFaction = Factionable.ofEntity(entityAtCursor).faction();
-            if (entityFaction == factionCurrent) {
+            if (planetFaction == factionCurrent) {
                 var controlBuildableDetails = this.controlBuildableDetailsBuild(universe);
                 universe.venueJumpTo(new VenueControls(controlBuildableDetails, null));
             }

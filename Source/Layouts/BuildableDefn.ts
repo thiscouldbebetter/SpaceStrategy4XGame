@@ -111,7 +111,7 @@ class BuildableDefn
 		{
 			returnEntity.propertyAdd
 			(
-				new Item(this.name, 1)
+				Item.fromDefnName(this.name)
 			);
 		}
 

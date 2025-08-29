@@ -134,7 +134,7 @@ class WorldExtendedCreator
 				factionHomeStarsystem.planetAdd(planet);
 			}
 
-			this.create_Factions_1
+			var faction = this.create_Factions_1_CreateFaction
 			(
 				worldDummy,
 				starCluster,
@@ -145,6 +145,8 @@ class WorldExtendedCreator
 				i,
 				factionHomeStarsystem
 			);
+
+			factions.push(faction);
 		}
 
 		if (factionDefnNameForPlayer != null)
@@ -192,7 +194,7 @@ class WorldExtendedCreator
 		return factions;
 	}
 
-	create_Factions_1
+	create_Factions_1_CreateFaction
 	(
 		worldDummy: WorldExtended,
 		starCluster: StarCluster,
@@ -202,7 +204,7 @@ class WorldExtendedCreator
 		buildableDefns: BuildableDefnsLegacy,
 		i: number,
 		factionHomeStarsystem: Starsystem
-	): void
+	): Faction
 	{
 		var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld(null, worldDummy);
 
@@ -346,6 +348,8 @@ class WorldExtendedCreator
 		(
 			ship => factionHomeStarsystem.shipAdd(ship, uwpe)
 		);
+
+		return faction;
 	}
 
 	create_Factions_1_1_HomePlanet

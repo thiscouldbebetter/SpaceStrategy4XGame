@@ -41,16 +41,28 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		{
 			this.hasBeenUpdatedSinceDrawn = false;
 
+			var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld
+			(
+				universe, world
+			);
+
+			var collidables = Collidable.entitiesFromPlace(this.starsystem);
+			collidables.forEach
+			(
+				x =>
+				{
+					// hack
+					var sphere = Collidable.of(x).collider as Sphere;
+					var pos = Locatable.of(x).pos();
+					sphere.center.overwriteWith(pos);
+				}
+			);
+
 			var display = universe.display;
 
 			display.drawBackground();
 
 			this.starsystem.draw(universe, world, display);
-
-			var uwpe = UniverseWorldPlaceEntities.fromUniverseAndWorld
-			(
-				universe, world
-			);
 
 			uwpe.entitySet(this.cursor);
 			this.cursor.draw(uwpe, display);
@@ -195,12 +207,12 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			focalLength,
 			Disposition.fromPos
 			(
-				new Coords(0 - focalLength, 0, 0), //pos,
+				Coords.fromXYZ(0 - focalLength, 0, 0), //pos,
 			),
 			null // entitiesSort
 		);
 
-		var cameraLocatable = new Locatable(camera.loc);
+		var cameraLocatable = Locatable.fromDisposition(camera.loc);
 
 		var targetForCamera = Coords.create();
 
@@ -219,9 +231,9 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 			new Constraint_LookAt(targetForCamera),
 		];
 
-		var cameraConstrainable = new Constrainable(constraints);
+		var cameraConstrainable = Constrainable.fromConstraints(constraints);
 
-		this.cameraEntity = new Entity
+		this.cameraEntity = Entity.fromNameAndProperties
 		(
 			Camera.name,
 			[ camera, cameraLocatable, cameraConstrainable ]
@@ -372,7 +384,8 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 
 	updateForTimerTick_Input_Mouse(universe: Universe): void
 	{
-		universe.soundHelper.soundWithName(universe, "Sound").play(universe, 1);
+		var sound = universe.soundHelper.soundWithName(universe, "Sound");
+		sound.play(universe, 1);
 
 		var inputHelper = universe.inputHelper;
 		var mouseClickPos = this._mouseClickPos.overwriteWith
@@ -385,13 +398,10 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 		var rayFromCameraThroughClick = Ray.fromVertexAndDirection
 		(
 			camera.loc.pos,
-			camera.coordsTransformViewToWorld
-			(
-				mouseClickPos, true // ignoreZ
-			).subtract
-			(
-				camera.loc.pos
-			).normalize()
+			camera
+				.coordsTransformViewToWorld(mouseClickPos, true) // ignoreZ
+				.subtract(camera.loc.pos)
+				.normalize()
 		);
 
 		var bodiesClickedAsCollisions = CollisionExtended.rayAndEntitiesCollidable
@@ -526,7 +536,7 @@ class VenueStarsystem implements VenueDrawnOnlyWhenUpdated, VenueWithCameraAndSe
 				universe.venueTransitionTo(venueNext);
 			}
 		}
-		else if (planetSelected.isAwaitingTarget())
+		else if (planetSelected.isAwaitingTarget() )
 		{
 			// todo
 		}
